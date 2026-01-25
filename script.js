@@ -1,25 +1,8 @@
+// Конфигурация данных
 const DB = { "morisreal": "morisreal_profile_console" };
+let isAuthorized = false; // Глобальный флаг сессии
 
-// 1. ЧАСЫ И СЕНСОРЫ
-function updateClock() {
-    const msk = new Date(new Date().getTime() + (new Date().getTimezoneOffset() * 60000) + (3 * 3600000));
-    document.querySelectorAll('.time-val').forEach(el => el.textContent = msk.toTimeString().split(' ')[0]);
-}
-setInterval(updateClock, 1000);
-
-function updateSensors() {
-    let cpu = 20 + Math.random() * 45;
-    let temp = 55 + Math.random() * 25;
-    if(document.getElementById('cpu-bar')) {
-        document.getElementById('cpu-num').textContent = Math.floor(cpu) + "%";
-        document.getElementById('cpu-bar').style.width = cpu + "%";
-        document.getElementById('temp-num').textContent = Math.floor(temp) + "°C";
-        document.getElementById('temp-bar').style.width = temp + "%";
-    }
-}
-setInterval(updateSensors, 800);
-
-// 2. ПЕРЕХОДЫ МЕЖДУ ЭКРАНАМИ
+// Функция переходов между экранами
 function transitionTo(id) {
     const fade = document.getElementById('fade-overlay');
     fade.classList.add('active');
@@ -27,87 +10,93 @@ function transitionTo(id) {
         document.querySelectorAll('.screen, #intro-screen').forEach(s => s.classList.add('hidden'));
         document.getElementById(id).classList.remove('hidden');
         closeSidebar();
-        setTimeout(() => fade.classList.remove('active'), 200);
-    }, 450);
+        setTimeout(() => fade.classList.remove('active'), 250);
+    }, 500);
 }
 
-// 3. ГЕНЕРАЦИЯ КАРТЫ ОСТРОВА (ПО ТВОЕМУ КРАСНОМУ КОНТУРУ)
+// Вход в режиме гостя
+function enterGuest() {
+    isAuthorized = false;
+    transitionTo('lobby-screen');
+}
+
+// Логика авторизации
+function handleAuth() {
+    const user = document.getElementById('auth-id').value.trim().toLowerCase();
+    const pass = document.getElementById('auth-pass').value.trim();
+    if (DB[user] === pass) {
+        isAuthorized = true;
+        document.getElementById('op-name').textContent = user.toUpperCase();
+        document.getElementById('side-user').textContent = user.toUpperCase();
+        transitionTo('main-dashboard');
+    } else {
+        alert("ОШИБКА: ДОСТУП ЗАПРЕЩЕН. ПРОВЕРЬТЕ ЛОГИН/ПАРОЛЬ.");
+    }
+}
+
+// ПЛАВНЫЕ ДАТЧИКИ (ОБНОВЛЕНИЕ РАЗ В 2 СЕКУНДЫ)
+function updateSensors() {
+    // Работает только если экран статуса активен
+    if (!document.getElementById('status-screen').classList.contains('hidden')) {
+        // Стабильный волнообразный алгоритм
+        let cpu = 25 + (Math.sin(Date.now() / 4000) * 8);
+        let temp = 60 + (Math.cos(Date.now() / 5000) * 4);
+
+        document.getElementById('cpu-num').textContent = Math.floor(cpu) + "%";
+        document.getElementById('cpu-bar').style.width = cpu + "%";
+        
+        document.getElementById('temp-num').textContent = Math.floor(temp) + "°C";
+        document.getElementById('temp-bar').style.width = temp + "%";
+    }
+}
+setInterval(updateSensors, 2000); 
+
+// КАРТА ОСТРОВА (ГЕНЕРАЦИЯ ТОЧЕК)
 function openMap() {
     transitionTo('map-screen');
     const container = document.getElementById('node-map');
-    const svg = document.getElementById('map-svg');
     container.innerHTML = "";
-    svg.innerHTML = "";
-
-    // Основные точки контура (Minecraft остров)
-    const outline = [
-        {x: 20, y: 45}, {x: 25, y: 35}, {x: 35, y: 30}, {x: 45, y: 28}, {x: 55, y: 30},
-        {x: 65, y: 35}, {x: 70, y: 45}, {x: 75, y: 55}, {x: 82, y: 50}, {x: 88, y: 45},
-        {x: 93, y: 50}, {x: 95, y: 60}, {x: 90, y: 75}, {x: 80, y: 82}, {x: 70, y: 85},
-        {x: 58, y: 80}, {x: 45, y: 75}, {x: 35, y: 78}, {x: 22, y: 75}, {x: 18, y: 65},
-        {x: 18, y: 55}, {x: 20, y: 45}
+    
+    // Координаты, описывающие форму твоего острова
+    const islandPoints = [
+        {x: 25, y: 45}, {x: 30, y: 35}, {x: 45, y: 30}, {x: 60, y: 32}, {x: 75, y: 40},
+        {x: 85, y: 55}, {x: 90, y: 50}, {x: 92, y: 65}, {x: 82, y: 80}, {x: 65, y: 85},
+        {x: 45, y: 78}, {x: 30, y: 75}, {x: 20, y: 60}
     ];
 
-    // Генерируем внутренние узлы (рельеф острова)
-    const internals = [];
-    for(let i=0; i<50; i++) {
-        let rx = 22 + Math.random() * 68;
-        let ry = 35 + Math.random() * 45;
-        internals.push({x: rx, y: ry});
-    }
-
-    const allNodes = [...outline, ...internals];
-
-    allNodes.forEach((p, i) => {
+    islandPoints.forEach((p, i) => {
         setTimeout(() => {
             const node = document.createElement('div');
             node.className = 'node';
             node.style.left = p.x + "%";
             node.style.top = p.y + "%";
             container.appendChild(node);
-
-            // Соединяем точки контура линиями
-            if (i > 0 && i < outline.length) {
-                const prev = outline[i-1];
-                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                line.setAttribute("x1", prev.x + "%");
-                line.setAttribute("y1", prev.y + "%");
-                line.setAttribute("x2", p.x + "%");
-                line.setAttribute("y2", p.y + "%");
-                line.setAttribute("class", "map-line");
-                svg.appendChild(line);
-            }
-        }, i * 15);
+        }, i * 50);
     });
 }
 
-function closeMap() { transitionTo('main-dashboard'); }
-
-// 4. ЛОГИКА АВТОРИЗАЦИИ
-function handleAuth() {
-    const u = document.getElementById('auth-id').value.trim().toLowerCase();
-    const p = document.getElementById('auth-pass').value.trim();
-    if (DB[u] === p) {
-        document.getElementById('side-user').textContent = u.toUpperCase();
+// ЗАКРЫТИЕ КАРТЫ (С ПРОВЕРКОЙ ПРАВ)
+function closeMap() {
+    if (isAuthorized) {
         transitionTo('main-dashboard');
     } else {
-        alert("ACCESS_DENIED: OPERATOR_NOT_FOUND");
+        transitionTo('lobby-screen');
     }
 }
 
-// 5. САЙДБАР
+// УПРАВЛЕНИЕ САЙДБАРОМ
 function toggleSidebar(e) {
     e.stopPropagation();
-    document.getElementById('side-panel').classList.add('active');
+    document.getElementById('side-panel').style.left = "0";
     document.getElementById('blur-shield').style.display = "block";
 }
 
 function closeSidebar() {
-    document.getElementById('side-panel').classList.remove('active');
+    document.getElementById('side-panel').style.left = "-350px";
     document.getElementById('blur-shield').style.display = "none";
 }
 
-// 6. ЗАГРУЗОЧНЫЙ ЛОГОТИП
+// ЭФФЕКТ ПЕЧАТНОЙ МАШИНКИ ПРИ ЗАГРУЗКЕ
 window.onload = () => {
     const l = document.getElementById('big-logo');
     const art = `
@@ -117,15 +106,16 @@ window.onload = () => {
 ██║   ██║██║     ██║   ██║██║╚██╔╝██║██║   ██║
 ╚██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║╚██████╔╝
  ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ `;
+    
     let i = 0;
-    const type = () => {
+    function type() {
         if(i < art.length) {
             l.textContent += art[i++];
             setTimeout(type, 1);
         } else {
+            // После завершения анимации переходим к логину
             setTimeout(() => transitionTo('login-screen'), 1000);
         }
-    };
+    }
     type();
-    updateClock();
 };
