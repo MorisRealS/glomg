@@ -7,12 +7,27 @@ const USERS = {
 
 let currentUser = null;
 
-// ЧАСЫ
-setInterval(() => {
-    const t = new Date().toLocaleTimeString();
-    if(document.getElementById('guest-clock')) document.getElementById('guest-clock').textContent = t;
-    if(document.getElementById('op-clock')) document.getElementById('op-clock').textContent = t;
-}, 1000);
+// ИНТРО
+function runIntro() {
+    const logo = `
+   ██████╗ ██╗      ██████╗ ███╗   ███╗ ██████╗ 
+  ██╔════╝ ██║     ██╔════╝ ████╗ ████║██╔════╝ 
+  ██║  ███╗██║     ██║  ███╗██╔████╔██║██║  ███╗
+  ██║   ██║██║     ██║   ██║██║╚██╔╝██║██║   ██║
+  ╚██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║╚██████╔╝
+    CORE_SYSTEM_INITIALIZING... READY
+    `;
+    const el = document.getElementById('intro-logo');
+    let i = 0;
+    const timer = setInterval(() => {
+        el.textContent += logo[i];
+        i++;
+        if (i >= logo.length) {
+            clearInterval(timer);
+            setTimeout(() => transitionTo('login-screen'), 1000);
+        }
+    }, 4);
+}
 
 // ПЕРЕХОДЫ
 function transitionTo(id) {
@@ -21,31 +36,32 @@ function transitionTo(id) {
     setTimeout(() => {
         document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
         document.getElementById(id).classList.remove('hidden');
-        if(id === 'lobby-screen') runLabLogs();
+        if(id === 'lobby-screen') startInfiniteLogs();
         if(id === 'main-dashboard') closeSidebar();
         fade.classList.remove('active');
-    }, 500);
+    }, 400);
 }
 
-// КОНСОЛЬ ЛАБОРАТОРИИ
-function runLabLogs() {
-    const logs = [
-        "> Запуск систем охлаждения Кристалла...",
-        "> Синхронизация серверных модулей: 100%",
-        "> Частота резонанса: 842.1 THz. Стабильно.",
-        "> ВНИМАНИЕ: Попытка несанкционированного доступа пресечена.",
-        "> Энергопотребление серверов: 1.42 TW.",
-        "> Статус системы: ПОЛНАЯ ГОТОВНОСТЬ."
-    ];
+// ОКНА
+function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+// ЛОГИ
+function startInfiniteLogs() {
     const box = document.getElementById('guest-logs');
-    box.innerHTML = "";
-    logs.forEach((l, i) => {
-        setTimeout(() => {
-            const d = document.createElement('div');
-            d.textContent = `[${new Date().toLocaleTimeString()}] ${l}`;
-            box.prepend(d);
-        }, i * 1400);
-    });
+    const phrases = [
+        "Считывание частоты Кристалла...", "Температура ядра: -184.2°C", "Синхронизация серверов ОНГ...", 
+        "Поток данных: СТАБИЛЬНО", "Обнаружен шум в Секторе 4", "Охлаждение: АКТИВНО", 
+        "Частота резонанса: 842.1 THz", "Энергозатраты: 1.42 TW", "Проверка биометрии...", 
+        "Отчет ОНГ: Аномалий не обнаружено", "Бэкап данных выполнен", "Система G.L.O.M.G. активна"
+    ];
+    setInterval(() => {
+        if(document.getElementById('lobby-screen').classList.contains('hidden')) return;
+        const line = document.createElement('div');
+        line.textContent = `[${new Date().toLocaleTimeString()}] ${phrases[Math.floor(Math.random()*phrases.length)]}`;
+        box.prepend(line);
+        if(box.childNodes.length > 30) box.lastChild.remove();
+    }, 1500);
 }
 
 // АВТОРИЗАЦИЯ
@@ -54,24 +70,27 @@ function handleAuth() {
     const p = document.getElementById('auth-pass').value;
     if(USERS[u] && USERS[u].pass === p) {
         currentUser = { id: u, ...USERS[u] };
-        document.getElementById('side-name').textContent = u.toUpperCase();
-        document.getElementById('side-rank').textContent = USERS[u].rank;
+        document.getElementById('side-username').textContent = u.toUpperCase();
         document.getElementById('side-avatar').textContent = USERS[u].avatar;
+        document.getElementById('p-name').textContent = u.toUpperCase();
+        document.getElementById('p-rank').textContent = USERS[u].rank;
+        document.getElementById('p-avatar').textContent = USERS[u].avatar;
+        document.getElementById('p-id').textContent = `ID_${Math.floor(Math.random()*9000 + 1000)}`;
         transitionTo('main-dashboard');
     } else { alert("ACCESS DENIED"); }
 }
 
 function enterGuest() { transitionTo('lobby-screen'); }
 
-// СЛАЙДЕР (САЙДБАР)
+// САЙДБАР
 function toggleSidebar() {
-    const s = document.getElementById('side-slider');
+    const s = document.getElementById('side-menu');
     const o = document.getElementById('side-overlay');
-    s.classList.toggle('open');
-    o.style.display = s.classList.contains('open') ? 'block' : 'none';
+    s.classList.toggle('active');
+    o.style.display = s.classList.contains('active') ? 'block' : 'none';
 }
 function closeSidebar() {
-    document.getElementById('side-slider').classList.remove('open');
+    document.getElementById('side-menu').classList.remove('active');
     document.getElementById('side-overlay').style.display = 'none';
 }
 
@@ -83,17 +102,27 @@ function openMap() {
     Object.keys(USERS).forEach(key => {
         const u = USERS[key];
         const node = document.createElement('div');
-        const isOnline = Math.random() > 0.4 || key === currentUser?.id;
+        const isOnline = (currentUser && key === currentUser.id);
         node.className = `node ${isOnline ? 'online' : ''}`;
         node.style.left = u.x + "%";
         node.style.top = u.y + "%";
         node.onclick = () => {
-            const card = document.getElementById('node-info');
-            card.classList.remove('hidden');
-            document.getElementById('node-name').textContent = key.toUpperCase();
-            document.getElementById('node-status').textContent = isOnline ? "ONLINE" : "OFFLINE";
-            document.getElementById('node-rank').textContent = u.rank;
+            const panel = document.getElementById('node-info');
+            panel.classList.remove('hidden');
+            document.getElementById('n-name').textContent = key.toUpperCase();
+            document.getElementById('n-rank').textContent = u.rank;
+            document.getElementById('n-status').textContent = isOnline ? "ONLINE" : "OFFLINE";
         };
         container.appendChild(node);
     });
 }
+
+// ЧАСЫ
+setInterval(() => {
+    const t = new Date().toLocaleTimeString();
+    ['guest-clock', 'op-clock'].forEach(id => {
+        if(document.getElementById(id)) document.getElementById(id).textContent = t;
+    });
+}, 1000);
+
+window.onload = runIntro;
