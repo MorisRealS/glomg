@@ -1,100 +1,110 @@
 const PROFILES = {
-    "kiddy": { pass: "1111", name: "KIDDY" },
-    "dykzxz": { pass: "2222", name: "DYKZXZ" },
-    "msk4ne_": { pass: "3333", name: "MSK4NE" },
-    "sumber": { pass: "4444", name: "SUMBER" },
-    "krimpi": { pass: "5555", name: "KRIMPI" }
+    "morisreal": { pass: "1111", name: "MORIS REAL" },
+    "kiddy": { pass: "2222", name: "KIDDY" },
+    "dykzxz": { pass: "3333", name: "DYKZXZ" },
+    "msk4ne_": { pass: "4444", name: "MSK4NE" }
 };
 
+// Логотип в стиле VOLTA (Buckshot Roulette)
+const voltaLogo = [
+    " ██████╗ ██╗      ██████╗ ███╗   ███╗ ██████╗ ",
+    "██╔════╝ ██║     ██╔════╝ ████╗ ████║██╔════╝ ",
+    "██║  ███╗██║     ██║  ███╗██╔████╔██║██║  ███╗",
+    "██║   ██║██║     ██║   ██║██║╚██╔╝██║██║   ██║",
+    "╚██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║╚██████╔╝",
+    " ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ ",
+    "      ++ SYSTEM TYPE: VOLTA_OS_v4 ++          "
+];
+
+const logoContainer = document.getElementById('logo-container');
 const output = document.getElementById('output');
 const cmdInput = document.getElementById('cmd');
 const glitch = document.getElementById('glitch-layer');
 
-// 4. Пафосная загрузка текста
-async function startBoot() {
-    const lines = [
-        "BOOTING ONG_OS...",
-        "KERNEL_VOLTA_REV_04 LOADED",
-        "CONNECTING TO THE GRID................ DONE",
-        "WARNING: SECURE CONNECTION ONLY",
-        "PLEASE AUTHORIZE:"
-    ];
-
-    for (let line of lines) {
-        let p = document.createElement('div');
-        p.textContent = "> " + line;
-        p.style.marginBottom = "10px";
-        output.appendChild(p);
-        await new Promise(r => setTimeout(r, 600)); // Задержка между строками
+// Посимвольный вывод текста
+async function typeText(text, target, speed = 30) {
+    const line = document.createElement('div');
+    line.className = "line";
+    target.appendChild(line);
+    for (let char of text) {
+        line.textContent += char;
+        await new Promise(r => setTimeout(r, speed));
     }
-    document.getElementById('input-container').classList.remove('hidden');
+}
+
+async function bootSequence() {
+    // Печать логотипа VOLTA
+    for (let line of voltaLogo) {
+        logoContainer.textContent += line + "\n";
+        await new Promise(r => setTimeout(r, 60));
+    }
+    
+    await new Promise(r => setTimeout(r, 800));
+    await typeText("> INITIALIZING MEMORY CHECK...", output, 20);
+    await typeText("> LOADING ONG_CORE SEGMENTS...", output, 40);
+    await typeText("> IDENTIFICATION REQUIRED:", output, 20);
+    
+    document.getElementById('input-line').classList.remove('hidden');
     cmdInput.focus();
 }
 
-setTimeout(startBoot, 1500); // Запуск после blackout
-
-// Глитч эффект
+// Глитч эффект (тонкая полоса)
 setInterval(() => {
     glitch.classList.add('glitch-active');
-    setTimeout(() => glitch.classList.remove('glitch-active'), 350);
-}, 6000);
+    setTimeout(() => glitch.classList.remove('glitch-active'), 250);
+}, 7000);
 
-// Логика консоли
-let state = "ID";
-let currentUser = null;
+let stage = "ID";
+let activeUser = null;
 
-cmdInput.addEventListener("keydown", (e) => {
+cmdInput.addEventListener("keydown", async (e) => {
     if (e.key === "Enter") {
         let val = cmdInput.value.trim().toLowerCase();
         cmdInput.value = "";
 
-        if (state === "ID") {
+        if (stage === "ID") {
             if (PROFILES[val]) {
-                currentUser = PROFILES[val];
-                print("ID ACCEPTED. ENTER PASSCODE:");
+                activeUser = PROFILES[val];
+                await typeText(`> ID [${val.toUpperCase()}] ACCEPTED.`, output, 20);
+                await typeText("> ENTER SECURE PASSCODE:", output, 20);
                 cmdInput.type = "password";
-                state = "PASS";
+                stage = "PASS";
             } else {
-                print("ACCESS DENIED: UNKNOWN ID");
+                await typeText("> ACCESS ERROR: ID NOT RECOGNIZED.", output, 20);
             }
-        } else if (state === "PASS") {
-            if (val === currentUser.pass) {
-                print("SUCCESS. INITIALIZING DASHBOARD...");
-                setTimeout(showMain, 1000);
+        } else if (stage === "PASS") {
+            if (val === activeUser.pass) {
+                await typeText("> ACCESS GRANTED. SYNCHRONIZING...", output, 20);
+                setTimeout(enterSystem, 1000);
             } else {
-                print("CRITICAL ERROR: WRONG PASSWORD");
-                setTimeout(() => location.reload(), 1000);
+                await typeText("> CRITICAL: INCORRECT PASSCODE.", output, 10);
+                setTimeout(() => location.reload(), 1200);
             }
         }
     }
 });
 
-function print(t) {
-    let p = document.createElement('div');
-    p.textContent = ">> " + t;
-    output.appendChild(p);
-}
-
-// Переход на второе окно
-function showMain() {
+function enterSystem() {
     document.getElementById('login-screen').classList.add('hidden');
     document.getElementById('main-dashboard').classList.remove('hidden');
-    document.getElementById('user-display').textContent = currentUser.name;
-    // Убираем точки на второй странице
-    document.querySelector('.halftone').style.display = 'none';
+    document.getElementById('user-display').textContent = activeUser.name;
+    // На второй странице глитч можно сделать реже или мягче
 }
 
-// 3. Плашка профиля
-const menuBtn = document.getElementById('menu-btn');
-const sidePanel = document.getElementById('side-panel');
-const dark = document.getElementById('dark-overlay');
+// Запуск при загрузке
+setTimeout(bootSequence, 1000);
 
-menuBtn.onclick = () => {
-    sidePanel.classList.toggle('active');
-    dark.style.display = sidePanel.classList.contains('active') ? 'block' : 'none';
+// Меню профиля
+const trigger = document.getElementById('menu-trigger');
+const panel = document.getElementById('side-panel');
+const blur = document.getElementById('panel-blur');
+
+trigger.onclick = () => {
+    panel.classList.toggle('active');
+    blur.style.display = panel.classList.contains('active') ? 'block' : 'none';
 };
 
-dark.onclick = () => {
-    sidePanel.classList.remove('active');
-    dark.style.display = 'none';
+blur.onclick = () => {
+    panel.classList.remove('active');
+    blur.style.display = 'none';
 };
