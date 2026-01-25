@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GLOMG_CORE_V10_STABLE</title>
+    <title>GLOMG_CORE_V11_CENTERED</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -24,7 +24,7 @@
         <div class="full-screen-center">
             <div class="auth-card anim-login-fly">
                 <div class="auth-header">
-                    <span class="auth-title">СИСТЕМА ДОСТУПА GLOMG</span>
+                    <span>СИСТЕМА ДОСТУПА</span>
                     <div class="status-dot-blink"></div>
                 </div>
                 <div class="auth-body">
@@ -53,7 +53,7 @@
         </header>
 
         <div class="lobby-scroll-container">
-            <section class="lobby-section-full">
+            <section class="lobby-section">
                 <div class="action-rows">
                     <button class="mega-btn anim-btn-fly" style="--d: 1" onclick="transitionTo('login-screen')">АВТОРИЗАЦИЯ</button>
                     <button class="mega-btn anim-btn-fly" style="--d: 2" onclick="scrollToSection('lobby-news')">НОВОСТИ</button>
@@ -61,21 +61,21 @@
                 </div>
             </section>
 
-            <section id="lobby-news" class="lobby-section-compact">
-                <div class="doc-container">
+            <section id="lobby-news" class="lobby-section">
+                <div class="doc-container text-center">
                     <h2 class="doc-title">НОВОСТИ ГРУППЫ</h2>
                     <div class="news-scroll">
-                        <div class="news-item"><span>[2026.01.25]</span> Ядро V10 запущено успешно.</div>
-                        <div class="news-item"><span>[2026.01.25]</span> Физика анимаций синхронизирована.</div>
-                        <div class="news-item"><span>[2026.01.25]</span> Протокол GLOMG активен.</div>
+                        <div class="news-item"><span>[2026.01.25]</span> Интерфейс полностью центрирован.</div>
+                        <div class="news-item"><span>[2026.01.25]</span> Позиции кнопок Dashboard исправлены.</div>
+                        <div class="news-item"><span>[2026.01.25]</span> Система GLOMG готова к работе.</div>
                     </div>
                 </div>
             </section>
 
-            <section id="lobby-about" class="lobby-section-compact">
-                <div class="doc-container">
+            <section id="lobby-about" class="lobby-section">
+                <div class="doc-container text-center">
                     <h2 class="doc-title">О НАС</h2>
-                    <p>GLOMG — это инновации и стабильность. Мы создаем будущее.</p>
+                    <p class="centered-p">GLOMG — это инновации и стабильность. Мы создаем будущее, опираясь на порядок и высокие технологии. Наша цель — полный контроль над данными.</p>
                 </div>
             </section>
         </div>
@@ -88,7 +88,8 @@
             </div>
             <div class="header-clock" id="clock">00:00:00</div>
         </header>
-        <div class="dashboard-center">
+        
+        <div class="full-screen-center">
             <div class="action-rows">
                 <button class="mega-btn anim-btn-fly" style="--d: 1">СТАТУС СИСТЕМЫ</button>
                 <button class="mega-btn anim-btn-fly" style="--d: 2">ЛОГИ ЯДРА</button>
@@ -99,9 +100,7 @@
 
     <div id="side-panel" class="side-panel">
         <div class="profile-card-sidebar">
-            <div class="avatar-frame">
-                <img src="https://img.icons8.com/ios-filled/100/a855f7/user-male-circle.png" alt="user">
-            </div>
+            <div class="avatar-frame"><img src="https://img.icons8.com/ios-filled/100/a855f7/user-male-circle.png" alt="user"></div>
             <div class="profile-meta">
                 <h3 id="side-username">GUEST</h3>
                 <div class="lvl-badge" id="side-lvl">LVL: 0</div>
@@ -109,7 +108,6 @@
             </div>
         </div>
         <div class="sidebar-nav">
-            <button class="side-link" onclick="transitionTo('login-screen')">СМЕНИТЬ АККАУНТ</button>
             <button class="side-link exit-btn" onclick="location.reload()">ВЫХОД ИЗ СИСТЕМЫ</button>
         </div>
     </div>
