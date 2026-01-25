@@ -7,10 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="vhs-container">
-        <div class="vhs-line"></div>
-        <div class="vhs-grain"></div>
-    </div>
+    <div class="vhs-container"><div class="vhs-line"></div><div class="vhs-grain"></div></div>
     <div class="bg-gradient"></div>
     <div id="fade-overlay"></div>
 
@@ -33,29 +30,28 @@
     </div>
 
     <div id="lobby-screen" class="screen hidden">
-        <header class="hotbar guest-bar">
-            <div class="hotbar-info">CORE: <span class="st-text">STABLE</span> | SYNC: <span id="guest-clock">00:00:00</span></div>
-            <button class="g-btn-mini" onclick="location.reload()">TERMINATE_SESSION</button>
+        <header class="guest-top-nav">
+            <div class="nav-left">CORE_STATUS: <span class="st-text">STABLE</span></div>
+            <div class="nav-right"><button class="g-btn-mini" onclick="location.reload()">TERMINATE</button></div>
         </header>
         <div class="guest-ui">
             <div class="system-monitor">
                 <div class="mon-card"><span>TEMP:</span> -184.2°C</div>
                 <div class="mon-card"><span>LOAD:</span> 14.5%</div>
-                <div class="mon-card"><span>SYNC:</span> 0.002ms</div>
             </div>
             <div class="terminal-container">
-                <div class="t-head">CRYSTAL_MONITOR_TERMINAL_V26</div>
+                <div class="t-head">CRYSTAL_MONITOR_V26</div>
                 <div id="guest-logs" class="t-body"></div>
             </div>
         </div>
     </div>
 
-    <header id="main-header" class="hotbar hidden">
-        <div class="menu-icon" onclick="toggleSidebar()">
-            <span></span><span></span><span></span>
+    <header id="main-header" class="main-hud hidden">
+        <div class="hud-item" onclick="toggleSidebar()">
+            <div class="menu-icon"><span></span><span></span><span></span></div>
         </div>
-        <div id="op-clock" class="purple-t">00:00:00</div>
-        <div class="sys-label">SYSTEM_STATUS: OPERATIONAL</div>
+        <div class="hud-item hud-clock" id="op-clock">00:00:00</div>
+        <div class="hud-item sys-st">SYSTEM_STATUS: <span class="st-text">OK</span></div>
     </header>
 
     <div id="main-dashboard" class="screen hidden">
@@ -66,50 +62,12 @@
         </div>
     </div>
 
-    <div id="profile-window" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span>FILE: OPERATOR_DOSSIER</span>
-                <button class="close-btn" onclick="closeModal('profile-window')">X</button>
-            </div>
-            <div class="profile-body">
-                <div class="p-avatar" id="p-avatar">?</div>
-                <div class="p-data">
-                    <p>ИМЯ: <span id="p-name" class="purple-t">---</span></p>
-                    <p>ДОЛЖНОСТЬ: <span id="p-rank" class="purple-t">---</span></p>
-                    <p>ДОПУСК: <span class="purple-t">LEVEL_4</span></p>
-                    <p>ID_CODE: <span id="p-id" class="purple-t">---</span></p>
-                </div>
-                <div class="modal-actions">
-                    <button class="g-btn-mini red-t" onclick="location.reload()">ВЫХОД (LOGOUT)</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="settings-window" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span>СИСТЕМА: КОНФИГУРАЦИЯ</span>
-                <button class="close-btn" onclick="closeModal('settings-window')">X</button>
-            </div>
-            <div class="settings-body">
-                <div class="s-info">
-                    <p>ВЕРСИЯ: G.L.O.M.G. v26.5.9-STABLE</p>
-                    <p>ЯДРО: CRYSTAL_CORE_PRIMARY</p>
-                    <p>О ПРОГРАММЕ: Мониторинг объектов ОНГ и управление Кристаллом.</p>
-                    <p>УРОВЕНЬ ДОСТУПА: ENCRYPTED_ALPHA</p>
-                </div>
-                <div class="modal-actions">
-                    <button class="g-btn-mini red-t" onclick="location.reload()">ВЫХОД ИЗ ПРОФИЛЯ</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div id="map-screen" class="screen hidden">
-        <div class="radar-full-wrap">
-            <button class="g-btn-mini back-absolute" onclick="transitionTo('main-dashboard')">ЗАКРЫТЬ КАРТУ</button>
+        <div class="radar-layout">
+            <div class="radar-header">
+                <button class="g-btn-mini red-t" onclick="transitionTo('main-dashboard')">ЗАКРЫТЬ РАДАР</button>
+                <div class="radar-title">GLOBAL_SCANNER_V2</div>
+            </div>
             <div class="huge-radar">
                 <div class="radar-scanner"></div>
                 <div class="radar-grid"></div>
@@ -125,10 +83,36 @@
         </div>
     </div>
 
+    <div id="profile-window" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header"><span>OPERATOR_DOSSIER</span><button class="close-btn" onclick="closeModal('profile-window')">X</button></div>
+            <div class="profile-body">
+                <div class="p-avatar" id="p-avatar">?</div>
+                <div class="p-data">
+                    <p>NAME: <span id="p-name" class="purple-t"></span></p>
+                    <p>RANK: <span id="p-rank" class="purple-t"></span></p>
+                    <p>ID: <span id="p-id" class="purple-t"></span></p>
+                </div>
+                <button class="g-btn-mini red-t" style="margin-top:20px" onclick="location.reload()">LOGOUT</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="settings-window" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header"><span>SYSTEM_CONFIG</span><button class="close-btn" onclick="closeModal('settings-window')">X</button></div>
+            <div class="settings-body">
+                <p>KERNEL_VERSION: 26.5.9</p>
+                <p>DECRYPTION: ACTIVE</p>
+                <button class="g-btn-mini red-t" onclick="location.reload()">SHUTDOWN_SYSTEM</button>
+            </div>
+        </div>
+    </div>
+
     <div id="side-menu" class="side-menu">
         <div class="side-head">
             <div class="side-avatar" id="side-avatar"></div>
-            <div id="side-username" class="purple-t"></div>
+            <div id="side-username" class="purple-t">USER</div>
         </div>
         <nav class="side-nav">
             <button onclick="openModal('profile-window')">ПРОФИЛЬ</button>
