@@ -3,139 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G.L.O.M.G. CORE v26.3</title>
+    <title>G.L.O.M.G. OS | v26.4</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="fx-layer">
-        <div class="tv-noise"></div>
-        <div class="crt-overlay"></div>
+    <div class="vhs-container">
+        <div class="noise"></div>
+        <div class="scanlines"></div>
     </div>
-
+    <div class="grid-background"></div>
+    
     <div id="fade-overlay"></div>
 
-    <div id="intro-screen" class="full-screen-center">
-        <pre id="big-logo" class="glomg-logo-giant"></pre>
-    </div>
-
-    <div id="login-screen" class="screen hidden">
-        <div class="full-screen-center">
-            <div class="auth-terminal neon-glow-box">
-                <div class="term-header">
-                    <pre class="mini-logo">
-  ██████╗ ██╗      ██████╗ ███╗   ███╗ ██████╗ 
- ██╔════╝ ██║     ██╔════╝ ████╗ ████║██╔════╝ 
- ██║  ███╗██║     ██║  ███╗██╔████╔██║██║  ███╗
- ██║   ██║██║     ██║   ██║██║╚██╔╝██║██║   ██║
- ╚██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║╚██████╔╝</pre>
+    <div id="login-screen" class="screen">
+        <div class="auth-box neon-glow-box">
+            <h1 class="glitch" data-text="G.L.O.M.G.">G.L.O.M.G.</h1>
+            <div class="login-form">
+                <div class="input-group">
+                    <label>OPERATOR_ID</label>
+                    <input type="text" id="auth-id" spellcheck="false" autocomplete="off">
                 </div>
-                <div class="term-body">
-                    <input type="text" id="auth-id" spellcheck="false" placeholder="IDENT_ID">
-                    <input type="password" id="auth-pass" placeholder="CRYPT_KEY">
-                    <div class="term-actions">
-                        <button class="cyber-btn" onclick="handleAuth()">ВХОД</button>
-                        <button class="cyber-btn" onclick="enterGuest()">ГОСТЬ</button>
-                    </div>
+                <div class="input-group">
+                    <label>ACCESS_KEY</label>
+                    <input type="password" id="auth-pass">
+                </div>
+                <div class="auth-buttons">
+                    <button class="cyber-btn" onclick="handleAuth()">INITIALIZE</button>
+                    <button class="cyber-btn secondary" onclick="enterGuest()">GUEST_MODE</button>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="lobby-screen" class="screen hidden">
-        <header class="top-nav">
-            <div class="msk-clock" id="guest-clock">00:00:00</div>
-            <div class="system-status-tag">G.L.O.M.G. STATUS: <span class="green-t">FUNCTIONAL</span></div>
-            <button class="cyber-btn-mini" onclick="transitionTo('login-screen')">LOG_IN</button>
+        <header class="top-nav-modern">
+            <div class="status-indicator">
+                <span class="dot pulse"></span> СТАТУС: ШТАТНЫЙ РЕЖИМ
+            </div>
+            <div class="clock-sync">СИНХРОНИЗАЦИЯ: <span id="guest-clock">00:00:00</span></div>
+            <button class="cyber-btn-small" onclick="transitionTo('login-screen')">ВЕРНУТЬСЯ</button>
         </header>
-        <div class="full-screen-center">
-            <div class="guest-container">
-                <div class="news-section">
-                    <h3 class="section-title">> ПОСЛЕДНИЕ СВОДКИ</h3>
-                    <div class="scroll-area" id="news-box"></div>
+        <div class="guest-content">
+            <div class="stats-row">
+                <div class="stat-card">
+                    <label>ВЕРОЯТНОСТЬ ДЕСТАБИЛИЗАЦИИ</label>
+                    <div class="stat-value">0.0040%</div>
                 </div>
-                <div class="ong-info">
-                    <h3 class="section-title">> СПРАВКА ОБ ОНГ</h3>
-                    <div class="scroll-area">
-                        <p>Объединенная Наземная Группировка. Осуществляет контроль периметра и защиту Ядра.</p>
-                        <p style="margin-top:10px">ВНИМАНИЕ: Несанкционированный доступ к узлам запрещен.</p>
-                    </div>
+                <div class="stat-card">
+                    <label>ИНДЕКС АКТИВНОСТИ РАЗЛОМА</label>
+                    <div class="stat-value">1.0003</div>
                 </div>
+            </div>
+            <div class="terminal-window">
+                <div class="term-head">SYSTEM TERMINAL V2.0.26</div>
+                <div id="guest-logs" class="term-body"></div>
+            </div>
+            <div class="about-section">
+                <h2>ОБЩАЯ ИНФОРМАЦИЯ</h2>
+                <p>Мы — хранители порядка. G.L.O.M.G. является гарантом безопасности вселенной. Наша цель — изучение аномалий и минимизация ущерба.</p>
             </div>
         </div>
     </div>
 
     <div id="main-dashboard" class="screen hidden">
-        <header class="top-nav">
-            <div class="menu-trigger" onclick="toggleSidebar()"><span></span><span></span><span></span></div>
-            <div class="msk-clock" id="op-clock">00:00:00</div>
+        <header class="top-nav-modern">
+            <div class="menu-icon" onclick="toggleSidebar()">
+                <span></span><span></span><span></span>
+            </div>
+            <div id="op-clock">00:00:00</div>
         </header>
-        <div class="full-screen-center">
-            <div class="menu-stack" id="main-menu-btns">
-                </div>
+        <div class="menu-grid">
+            <button class="mega-btn" onclick="openMap()">ТАКТИЧЕСКИЙ РАДАР</button>
+            <button class="mega-btn" onclick="transitionTo('archive-screen')">АРХИВ ДАННЫХ</button>
+            <button class="mega-btn" onclick="transitionTo('status-screen')">ТЕЛЕМЕТРИЯ</button>
         </div>
     </div>
 
-    <div id="map-screen" class="screen hidden map-bg">
-        <header class="top-nav">
-            <div class="brand">G.L.O.M.G. TACTICAL_RADAR</div>
-            <button class="cyber-btn-mini" onclick="closeMap()">НАЗАД</button>
-        </header>
-        <div class="map-layout">
-            <div class="map-viewport">
-                <div class="radar-scanner"></div>
-                <div class="map-container" id="node-map"></div>
+    <div id="map-screen" class="screen hidden">
+        <div class="map-interface">
+            <div class="map-top">
+                <span>[G.L.O.M.G. GLOBAL ASSETS]</span>
+                <button class="cyber-btn-small" onclick="transitionTo('main-dashboard')">ЗАКРЫТЬ КАРТУ</button>
             </div>
-            <div id="node-info-panel" class="node-info-overlay hidden">
-                <h3 id="node-user-name">---</h3>
-                <p>STATUS: <span id="node-user-status">---</span></p>
-                <p>RANK: <span id="node-user-rank">---</span></p>
-                <p>SECTOR: <span id="node-user-loc">---</span></p>
+            <div class="radar-container">
+                <div class="radar-sweep"></div>
+                <div id="node-map"></div>
             </div>
-        </div>
-    </div>
-
-    <div id="profile-screen" class="screen hidden">
-        <header class="top-nav">
-            <button class="cyber-btn-mini" onclick="transitionTo('main-dashboard')">← НАЗАД</button>
-        </header>
-        <div class="full-screen-center">
-            <div class="profile-card neon-glow-box">
-                <div class="avatar-large" id="prof-avatar">?</div>
-                <h2 id="prof-name">USER</h2>
-                <div class="prof-details">
-                    <p>ДОПУСК: <span id="prof-clearance" class="green-t">0</span></p>
-                    <p>РАНГ: <span id="prof-rank">---</span></p>
-                </div>
-                <div class="history-log">
-                    <h4>ЛОГ АВТОРИЗАЦИЙ:</h4>
-                    <div id="login-history-list"></div>
-                </div>
+            <div id="node-info" class="info-overlay hidden">
+                <h2 id="node-name">---</h2>
+                <p>СТАТУС: <span id="node-status">---</span></p>
+                <p>РАНГ: <span id="node-rank">---</span></p>
             </div>
         </div>
     </div>
 
-    <div id="archive-screen" class="screen hidden">
-        <header class="top-nav">
-            <button class="cyber-btn-mini" onclick="transitionTo('main-dashboard')">← НАЗАД</button>
-            <div class="brand">G.L.O.M.G. SECURE_ARCHIVE</div>
-        </header>
-        <div class="full-screen-center">
-            <div class="archive-grid">
-                <div class="doc-card" onclick="alert('Документ зашифрован')">PRISMS_PROTOCOL.TXT</div>
-                <div class="doc-card" onclick="alert('Документ зашифрован')">ONG_REPORTS_2025.LOG</div>
-                <div class="doc-card" onclick="alert('Документ зашифрован')">CORE_SCHEMATICS.IMG</div>
+    <div id="side-menu" class="side-menu">
+        <div class="profile-header">
+            <div class="user-avatar" id="side-avatar">?</div>
+            <div class="user-info">
+                <h3 id="side-name">OPERATOR</h3>
+                <span id="side-rank">LVL 1</span>
             </div>
         </div>
-    </div>
-
-    <div id="side-panel">
-        <div class="user-block">
-            <div class="avatar" id="side-avatar">?</div>
-            <h4 id="side-user">USER</h4>
+        <div class="side-links">
+            <button onclick="transitionTo('profile-screen')">ПРОФИЛЬ</button>
+            <button class="logout-link" onclick="location.reload()">ВЫХОД</button>
         </div>
-        <button class="side-link" onclick="location.reload()">ОТКЛЮЧИТЬСЯ</button>
     </div>
-    <div id="blur-shield" onclick="closeSidebar()"></div>
+    <div id="menu-blur" onclick="toggleSidebar()"></div>
 
     <script src="script.js"></script>
 </body>
