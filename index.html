@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>ONG_CORE_V4_SYSTEM</title>
+    <title>ONG_CORE_V4_FINAL_SYSTEM</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -26,17 +26,73 @@
     <div id="lobby-screen" class="screen hidden">
         <nav class="vhs-nav">
             <div class="nav-links-top">
-                <span class="nav-item active">ГЛАВНАЯ</span>
+                <span class="nav-item active" onclick="scrollToSection('lobby-main')">ГЛАВНАЯ</span>
                 <span class="nav-item" onclick="openWindow('login-screen')">ВХОД В СИСТЕМУ</span>
             </div>
         </nav>
-        <div class="dashboard-content">
-            <div class="wide-button-container">
-                <button class="mega-row-btn" onclick="openWindow('login-screen')">ЛОГИН</button>
-                <button class="mega-row-btn">НОВОСТИ</button>
-                <button class="mega-row-btn">О НАС</button>
-            </div>
-            <div class="separator-line"></div>
+
+        <div class="lobby-viewport" id="lobby-scroll-container">
+            <section id="lobby-main" class="lobby-section">
+                <div class="wide-button-container">
+                    <button class="mega-row-btn" onclick="openWindow('login-screen')">ЛОГИН</button>
+                    <button class="mega-row-btn" onclick="scrollToSection('lobby-news')">НОВОСТИ</button>
+                    <button class="mega-row-btn" onclick="scrollToSection('lobby-about')">О НАС</button>
+                </div>
+                <div class="separator-line"></div>
+            </section>
+
+            <section id="lobby-news" class="lobby-section">
+                <div class="document-frame">
+                    <h2 class="section-title">СИСТЕМНЫЕ УВЕДОМЛЕНИЯ</h2>
+                    <div class="news-list">
+                        <div class="news-entry">
+                            <span class="news-timestamp">[2026.01.25]</span> 
+                            <span class="news-msg">Обновление системы авторизации</span>
+                        </div>
+                        <div class="news-entry">
+                            <span class="news-timestamp">[2026.01.25]</span> 
+                            <span class="news-msg">Обновление базы данных</span>
+                        </div>
+                        <div class="news-entry">
+                            <span class="news-timestamp">[2026.01.25]</span> 
+                            <span class="news-msg">Обновление пользовательских наработок</span>
+                        </div>
+                    </div>
+                    <button class="back-to-top" onclick="scrollToSection('lobby-main')">ВЕРНУТЬСЯ В МЕНЮ</button>
+                </div>
+            </section>
+
+            <section id="lobby-about" class="lobby-section">
+                <div class="document-frame">
+                    <h2 class="section-title">ОБ ОРГАНИЗАЦИИ</h2>
+                    <div class="about-content">
+                        <p class="brand-line">МЫ — <span class="highlight">ОНГ</span> (ОСНОВНАЯ НАУЧНАЯ ГРУППА)</p>
+                        <p class="mission-statement">Наша задача — изучать и использовать наши технологии во благо. Мы не несем угрозы, но соблюдаем строгий внутренний регламент:</p>
+                        
+                        <div class="rules-list">
+                            <div class="rule-item">
+                                <span class="rule-num">01.</span>
+                                <p>Организация настроена мирно по отношению к другим группам игроков. При атаке на ОНГ нападающая группа берет всю ответственность на себя.</p>
+                            </div>
+                            <div class="rule-item">
+                                <span class="rule-num">02.</span>
+                                <p>Организация запрещает вход на территорию любыми способами. При игнорировании мы вправе ликвидировать нарушителя, как угрозу.</p>
+                            </div>
+                            <div class="rule-item">
+                                <span class="rule-num">03.</span>
+                                <p>Мы вправе использовать любые наработки в любых целях, но не во благо злых намерений.</p>
+                            </div>
+                        </div>
+
+                        <div class="signature">
+                            <p>Спасибо за прочтение.</p>
+                            <p>С уважением, Генеральный Директор ОНГ</p>
+                            <p class="boss-name">MorisReal</p>
+                        </div>
+                    </div>
+                    <button class="back-to-top" onclick="scrollToSection('lobby-main')">ВЕРНУТЬСЯ В МЕНЮ</button>
+                </div>
+            </section>
         </div>
     </div>
 
@@ -45,7 +101,7 @@
             <div class="menu-trigger-btn" id="menu-trigger">
                 <span></span><span></span><span></span>
             </div>
-            <div class="nav-title">ONG_CORE // TERMINAL_INDEX</div>
+            <div class="nav-title">ONG_CORE // SYSTEM_INDEX</div>
         </nav>
         <div class="dashboard-content">
             <div class="wide-button-container">
@@ -76,7 +132,7 @@
                 <div class="s-line">STATUS: <span class="neon">ONLINE</span></div>
                 <div class="s-line">KERNEL: <span class="neon">STABLE</span></div>
                 <div class="s-line">SECURE: <span class="neon">ACTIVE</span></div>
-                <div id="status-lvl-display" class="s-line" style="font-size: 0.9rem; opacity: 0.5;"></div>
+                <div id="status-lvl-info" class="s-line-small"></div>
             </div>
         </div>
     </div>
@@ -84,14 +140,13 @@
     <div id="side-panel" class="side-panel side-hidden">
         <div class="profile-header">
             <div class="circle">ID</div>
-            <div class="user-info">
+            <div class="user-meta">
                 <h3 id="user-display">---</h3>
                 <span id="user-lvl-tag" class="lvl-tag"></span>
             </div>
         </div>
         <div class="side-links">
             <button class="s-btn">ПРОФИЛЬ</button>
-            <button class="s-btn">НАСТРОЙКИ</button>
             <button class="s-btn exit" onclick="location.reload()">ВЫХОД</button>
         </div>
     </div>
