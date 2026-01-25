@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GLOMG_CORE_V11_CENTERED</title>
+    <title>GLOMG_CORE_V13_FINAL</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -30,7 +30,7 @@
                 <div class="auth-body">
                     <div class="input-wrapper">
                         <label>USER_ID</label>
-                        <input type="text" id="auth-id" spellcheck="false" autocomplete="off">
+                        <input type="text" id="auth-id" autocomplete="off">
                     </div>
                     <div class="input-wrapper">
                         <label>PASSWORD</label>
@@ -64,18 +64,15 @@
             <section id="lobby-news" class="lobby-section">
                 <div class="doc-container text-center">
                     <h2 class="doc-title">НОВОСТИ ГРУППЫ</h2>
-                    <div class="news-scroll">
-                        <div class="news-item"><span>[2026.01.25]</span> Интерфейс полностью центрирован.</div>
-                        <div class="news-item"><span>[2026.01.25]</span> Позиции кнопок Dashboard исправлены.</div>
-                        <div class="news-item"><span>[2026.01.25]</span> Система GLOMG готова к работе.</div>
-                    </div>
+                    <div class="news-item"><span>[2026.01.25]</span> Интерфейс V13 стабилизирован.</div>
+                    <div class="news-item"><span>[2026.01.25]</span> Все кнопки активны.</div>
                 </div>
             </section>
 
             <section id="lobby-about" class="lobby-section">
                 <div class="doc-container text-center">
                     <h2 class="doc-title">О НАС</h2>
-                    <p class="centered-p">GLOMG — это инновации и стабильность. Мы создаем будущее, опираясь на порядок и высокие технологии. Наша цель — полный контроль над данными.</p>
+                    <p class="centered-p">Система GLOMG — центральный узел управления данными.</p>
                 </div>
             </section>
         </div>
@@ -88,7 +85,6 @@
             </div>
             <div class="header-clock" id="clock">00:00:00</div>
         </header>
-        
         <div class="full-screen-center">
             <div class="action-rows">
                 <button class="mega-btn anim-btn-fly" style="--d: 1">СТАТУС СИСТЕМЫ</button>
@@ -100,15 +96,14 @@
 
     <div id="side-panel" class="side-panel">
         <div class="profile-card-sidebar">
-            <div class="avatar-frame"><img src="https://img.icons8.com/ios-filled/100/a855f7/user-male-circle.png" alt="user"></div>
+            <div class="avatar-frame"><img src="https://img.icons8.com/ios-filled/100/a855f7/user-male-circle.png"></div>
             <div class="profile-meta">
                 <h3 id="side-username">GUEST</h3>
-                <div class="lvl-badge" id="side-lvl">LVL: 0</div>
-                <div class="id-badge" id="side-id">ID: UNKNOWN</div>
+                <div id="side-lvl">LVL: 0</div>
             </div>
         </div>
         <div class="sidebar-nav">
-            <button class="side-link exit-btn" onclick="location.reload()">ВЫХОД ИЗ СИСТЕМЫ</button>
+            <button class="side-link exit-btn" onclick="location.reload()">ВЫХОД</button>
         </div>
     </div>
     <div id="overlay-blur" onclick="toggleSidebar()"></div>
