@@ -2,55 +2,42 @@
 
 body, html { margin: 0; background: #000; color: var(--p); font-family: 'Courier New', monospace; height: 100vh; overflow: hidden; }
 
-/* Плавность появления */
-.screen { position: fixed; inset: 0; z-index: 100; background: var(--bg); animation: fadeIn 0.4s ease-out; }
+/* Анимация появления */
+.screen { position: fixed; inset: 0; z-index: 100; background: var(--bg); animation: fadeIn 0.4s ease-in-out forwards; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-/* Фуллскрин терминал */
-.fullscreen-terminal {
-    width: 100%; height: 100%; padding: 50px; display: flex; flex-direction: column;
-    box-sizing: border-box; background: #000;
-}
-#auth-output { flex: 1; overflow-y: auto; font-size: 1.2rem; line-height: 1.6; text-shadow: 0 0 5px var(--p); }
-.input-row { display: flex; align-items: center; gap: 10px; margin-top: 20px; }
-input { background: transparent; border: none; color: #fff; font: inherit; font-size: 1.2rem; outline: none; width: 100%; }
+/* Консоль: Фиолетовый ввод */
+.fullscreen-terminal { width: 100%; height: 100%; padding: 60px; box-sizing: border-box; display: flex; flex-direction: column; background: #000; }
+#auth-output { flex: 1; overflow-y: auto; font-size: 1.1rem; line-height: 1.6; text-shadow: 0 0 5px var(--p); }
+.input-row { display: flex; align-items: center; gap: 15px; margin-top: 20px; border-top: 1px solid rgba(168,85,247,0.1); padding-top: 20px; }
+input#cmd { background: transparent; border: none; color: var(--p); font: inherit; font-size: 1.2rem; outline: none; width: 100%; text-shadow: 0 0 8px var(--p); }
 
-/* Навигация */
-.vhs-nav { display: flex; align-items: center; padding: 30px 50px; border-bottom: 1px solid rgba(168, 85, 247, 0.2); }
-.menu-trigger-btn { cursor: pointer; display: flex; flex-direction: column; gap: 7px; z-index: 10001; }
-.menu-trigger-btn span { width: 35px; height: 2px; background: var(--p); box-shadow: 0 0 10px var(--p); }
-.nav-title { margin-left: 60px; letter-spacing: 4px; font-weight: bold; }
+/* Подсказка в углу */
+.hint-popup { position: fixed; bottom: 40px; right: 40px; font-size: 0.85rem; color: var(--p); opacity: 0; transition: 1s; letter-spacing: 1px; }
 
-/* Dashboard кнопки */
-.dashboard-content { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh; }
-.wide-button-container { width: 80%; max-width: 1000px; display: flex; flex-direction: column; gap: 15px; }
-.mega-row-btn {
-    padding: 25px; background: rgba(168, 85, 247, 0.05); border: 1px solid var(--p);
-    color: var(--p); cursor: pointer; transition: 0.3s; font-size: 1.1rem; letter-spacing: 5px;
-}
-.mega-row-btn:hover { background: var(--p); color: #000; box-shadow: 0 0 30px var(--p); }
-.separator-line { width: 80%; max-width: 1000px; height: 1px; background: var(--p); margin-top: 40px; opacity: 0.3; }
+/* Навигация Лобби */
+.nav-links-top { display: flex; gap: 40px; margin-left: auto; margin-right: 20px; }
+.nav-item { cursor: pointer; font-size: 0.75rem; letter-spacing: 2px; opacity: 0.5; transition: 0.3s; text-transform: uppercase; }
+.nav-item:hover, .nav-item.active { opacity: 1; color: #fff; text-shadow: 0 0 10px var(--p); }
 
-/* Статус и Логи */
-.status-center, .glow-container { height: 100vh; display: flex; align-items: center; justify-content: center; }
-.status-box { border: 1px solid var(--p); padding: 50px; background: rgba(10,5,20,0.8); }
-.s-line { font-size: 1.5rem; margin-bottom: 20px; }
-.neon { color: #fff; text-shadow: 0 0 10px var(--p); }
-.logs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 80%; }
-.log-item { background: transparent; border: 1px solid var(--p); color: var(--p); padding: 40px; cursor: pointer; transition: 0.3s; }
-.log-item:hover { background: var(--p); color: #000; }
-
-/* Плашка управления */
-.side-panel { 
-    position: fixed; left: -400px; top: 0; width: 350px; height: 100%; 
-    background: #08040c; border-right: 1px solid var(--p); z-index: 10000; 
-    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 100px 40px;
-}
+/* Плашка и живые кнопки */
+.side-panel { position: fixed; left: -420px; top: 0; width: 380px; height: 100%; background: #050208; border-right: 1px solid var(--p); z-index: 10000; transition: 0.5s cubic-bezier(0.8, 0, 0.2, 1); padding: 140px 40px; }
 .side-panel.active { left: 0; }
-.side-hidden { display: none; } /* Полное скрытие до логина */
+.side-hidden { display: none; }
+.s-btn { width: 100%; padding: 20px; background: rgba(168, 85, 247, 0.02); border: 1px solid rgba(168, 85, 247, 0.2); color: var(--p); margin-bottom: 20px; cursor: pointer; transition: 0.3s; text-align: left; font-family: inherit; }
+.s-btn:hover { background: var(--p); color: #000; box-shadow: 0 0 25px var(--p); transform: translateX(10px); }
+.lvl-tag { display: block; font-size: 0.7rem; color: #fff; opacity: 0.5; margin-top: 5px; }
 
-.panel-blur { position: fixed; inset: 0; backdrop-filter: blur(15px); z-index: 9999; display: none; background: rgba(0,0,0,0.6); }
-.back-link { position: absolute; top: 40px; left: 40px; z-index: 1000; background: #000; border: 1px solid var(--p); color: var(--p); padding: 10px 20px; cursor: pointer; }
+/* Остальное */
+.vhs-nav { display: flex; align-items: center; padding: 30px 60px; border-bottom: 1px solid rgba(168, 85, 247, 0.1); }
+.menu-trigger-btn { cursor: pointer; display: flex; flex-direction: column; gap: 7px; z-index: 99999; position: relative; }
+.menu-trigger-btn span { width: 35px; height: 2px; background: var(--p); box-shadow: 0 0 10px var(--p); }
+.dashboard-content { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 75vh; }
+.wide-button-container { width: 85%; max-width: 1000px; display: flex; flex-direction: column; gap: 15px; }
+.mega-row-btn { width: 100%; padding: 25px; background: rgba(168, 85, 247, 0.03); border: 1px solid var(--p); color: var(--p); cursor: pointer; transition: 0.3s; font-size: 1rem; letter-spacing: 5px; }
+.mega-row-btn:hover { background: var(--p); color: #000; box-shadow: 0 0 30px var(--p); }
+.separator-line { width: 85%; height: 1px; background: linear-gradient(90deg, transparent, var(--p), transparent); margin-top: 40px; opacity: 0.3; }
+.panel-blur { position: fixed; inset: 0; backdrop-filter: blur(20px); z-index: 9998; display: none; background: rgba(0,0,0,0.7); }
 .hidden { display: none !important; }
-.full-screen-center { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 5000; background: #000; }
 .volta-logo-big { font-size: 10px; line-height: 11px; white-space: pre; text-shadow: 0 0 30px var(--p); }
+.full-screen-center { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 5000; background: #000; }
