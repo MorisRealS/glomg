@@ -5,96 +5,92 @@ const PROFILES = {
     "msk4ne_": { pass: "4444", name: "MSK4NE" }
 };
 
-// Логотип в стиле VOLTA (Buckshot Roulette)
-const voltaLogo = [
-    " ██████╗ ██╗      ██████╗ ███╗   ███╗ ██████╗ ",
-    "██╔════╝ ██║     ██╔════╝ ████╗ ████║██╔════╝ ",
-    "██║  ███╗██║     ██║  ███╗██╔████╔██║██║  ███╗",
-    "██║   ██║██║     ██║   ██║██║╚██╔╝██║██║   ██║",
-    "╚██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║╚██████╔╝",
-    " ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ ",
-    "      ++ SYSTEM TYPE: VOLTA_OS_v4 ++          "
-];
+const voltaLogo = `
+ ██████╗ ██╗      ██████╗ ███╗   ███╗ ██████╗ 
+██╔════╝ ██║     ██╔════╝ ████╗ ████║██╔════╝ 
+██║  ███╗██║     ██║  ███╗██╔████╔██║██║  ███╗
+██║   ██║██║     ██║   ██║██║╚██╔╝██║██║   ██║
+╚██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║╚██████╔╝
+ ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ 
+      ++ SYSTEM TYPE: VOLTA_OS_v4 ++          `;
 
-const logoContainer = document.getElementById('logo-container');
 const output = document.getElementById('output');
 const cmdInput = document.getElementById('cmd');
-const glitch = document.getElementById('glitch-layer');
 
-// Посимвольный вывод текста
-async function typeText(text, target, speed = 30) {
+// 3. ЛОГО НА ВЕСЬ ЭКРАН СНАЧАЛА
+async function runIntro() {
+    const logoContainer = document.getElementById('big-logo');
+    // Посимвольная печать лого
+    for (let char of voltaLogo) {
+        logoContainer.textContent += char;
+        await new Promise(r => setTimeout(r, 2));
+    }
+    await new Promise(r => setTimeout(r, 2000));
+    
+    // Гасим лого и открываем консоль
+    document.getElementById('intro-screen').style.opacity = '0';
+    setTimeout(() => {
+        document.getElementById('intro-screen').classList.add('hidden');
+        document.getElementById('login-screen').classList.remove('hidden');
+        startConsole();
+    }, 1000);
+}
+
+async function typeOutput(text, speed = 30) {
     const line = document.createElement('div');
-    line.className = "line";
-    target.appendChild(line);
+    output.appendChild(line);
     for (let char of text) {
         line.textContent += char;
         await new Promise(r => setTimeout(r, speed));
     }
 }
 
-async function bootSequence() {
-    // Печать логотипа VOLTA
-    for (let line of voltaLogo) {
-        logoContainer.textContent += line + "\n";
-        await new Promise(r => setTimeout(r, 60));
-    }
-    
-    await new Promise(r => setTimeout(r, 800));
-    await typeText("> INITIALIZING MEMORY CHECK...", output, 20);
-    await typeText("> LOADING ONG_CORE SEGMENTS...", output, 40);
-    await typeText("> IDENTIFICATION REQUIRED:", output, 20);
-    
+async function startConsole() {
+    await typeOutput("> VOLTA KERNEL BOOT SUCCESS...", 20);
+    await typeOutput("> CONNECTING TO ONG_CORE...", 40);
+    await typeOutput("> PLEASE IDENTIFY YOURSELF:", 20);
     document.getElementById('input-line').classList.remove('hidden');
     cmdInput.focus();
 }
 
-// Глитч эффект (тонкая полоса)
-setInterval(() => {
-    glitch.classList.add('glitch-active');
-    setTimeout(() => glitch.classList.remove('glitch-active'), 250);
-}, 7000);
-
 let stage = "ID";
-let activeUser = null;
+let user = null;
 
 cmdInput.addEventListener("keydown", async (e) => {
     if (e.key === "Enter") {
         let val = cmdInput.value.trim().toLowerCase();
         cmdInput.value = "";
-
         if (stage === "ID") {
             if (PROFILES[val]) {
-                activeUser = PROFILES[val];
-                await typeText(`> ID [${val.toUpperCase()}] ACCEPTED.`, output, 20);
-                await typeText("> ENTER SECURE PASSCODE:", output, 20);
+                user = PROFILES[val];
+                await typeOutput(`> ID [${val.toUpperCase()}] ACCEPTED.`, 20);
+                await typeOutput("> ENTER PASSCODE:", 20);
                 cmdInput.type = "password";
                 stage = "PASS";
-            } else {
-                await typeText("> ACCESS ERROR: ID NOT RECOGNIZED.", output, 20);
-            }
+            } else { await typeOutput("> ERROR: ACCESS DENIED.", 20); }
         } else if (stage === "PASS") {
-            if (val === activeUser.pass) {
-                await typeText("> ACCESS GRANTED. SYNCHRONIZING...", output, 20);
-                setTimeout(enterSystem, 1000);
-            } else {
-                await typeText("> CRITICAL: INCORRECT PASSCODE.", output, 10);
-                setTimeout(() => location.reload(), 1200);
-            }
+            if (val === user.pass) {
+                await typeOutput("> AUTHORIZED. LOADING CORE INTERFACE...", 20);
+                setTimeout(showDashboard, 1000);
+            } else { location.reload(); }
         }
     }
 });
 
-function enterSystem() {
+function showDashboard() {
     document.getElementById('login-screen').classList.add('hidden');
     document.getElementById('main-dashboard').classList.remove('hidden');
-    document.getElementById('user-display').textContent = activeUser.name;
-    // На второй странице глитч можно сделать реже или мягче
+    document.getElementById('user-display').textContent = user.name;
+    // Глитч при переходе
+    const g = document.getElementById('glitch-layer');
+    g.classList.add('glitch-active');
+    setTimeout(() => g.classList.remove('glitch-active'), 400);
 }
 
-// Запуск при загрузке
-setTimeout(bootSequence, 1000);
+// Запуск
+window.onload = runIntro;
 
-// Меню профиля
+// Сайдбар
 const trigger = document.getElementById('menu-trigger');
 const panel = document.getElementById('side-panel');
 const blur = document.getElementById('panel-blur');
@@ -103,7 +99,6 @@ trigger.onclick = () => {
     panel.classList.toggle('active');
     blur.style.display = panel.classList.contains('active') ? 'block' : 'none';
 };
-
 blur.onclick = () => {
     panel.classList.remove('active');
     blur.style.display = 'none';
