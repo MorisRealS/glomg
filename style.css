@@ -1,92 +1,51 @@
 :root {
-  --purple: #a855f7;
-  --dark-purple: #3b0764;
+    --p: #a855f7;
+    --bg: #050208;
 }
 
-body, html {
-  margin: 0; padding: 0;
-  background: #000;
-  color: var(--purple);
-  font-family: 'Courier New', monospace;
-  overflow: hidden; height: 100vh;
+body, html { 
+    margin: 0; padding: 0; background: #000; color: var(--p); 
+    font-family: 'Courier New', monospace; overflow: hidden; height: 100vh; 
 }
 
-/* Эффект точек */
-.halftone {
-  position: fixed; inset: 0; z-index: 99; pointer-events: none;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.1) 1px, transparent 1px);
-  background-size: 4px 4px;
-}
+/* Эффект появления */
+#blackout { position: fixed; inset: 0; background: #000; z-index: 2000; animation: fadeOut 3s forwards; pointer-events: none; }
+@keyframes fadeOut { 100% { opacity: 0; } }
 
-/* 1. Глитч (агрессивное искажение) */
-.glitch-layer {
-  position: fixed; inset: 0; z-index: 100; pointer-events: none; opacity: 0;
-}
-.glitch-active {
-  animation: glitch-anim 0.3s steps(2) infinite;
-  opacity: 1;
-  background: rgba(168, 85, 247, 0.05);
-  box-shadow: inset 0 0 100px rgba(168, 85, 247, 0.2);
-}
-@keyframes glitch-anim {
-  0% { transform: translate(5px, -5px); clip-path: inset(20% 0 50% 0); filter: hue-rotate(90deg); }
-  50% { transform: translate(-5px, 5px); clip-path: inset(60% 0 10% 0); }
-  100% { transform: translate(0); }
-}
+.halftone { position: fixed; inset: 0; z-index: 99; pointer-events: none; background: radial-gradient(circle, rgba(168, 85, 247, 0.1) 1px, transparent 1px); background-size: 4px 4px; }
 
-/* 5. Черный экран при загрузке */
-#blackout {
-  position: fixed; inset: 0; background: #000; z-index: 2000;
-  animation: fadeOut 3s forwards ease-in;
-}
-@keyframes fadeOut { 100% { opacity: 0; pointer-events: none; } }
+/* Глитч-полоса */
+.glitch-layer { position: fixed; inset: 0; z-index: 100; pointer-events: none; opacity: 0; border-top: 1px solid var(--p); }
+.glitch-active { animation: glitch-move 0.25s linear; opacity: 0.4; }
+@keyframes glitch-move { 0% { top: -10%; height: 2%; } 100% { top: 110%; height: 1%; } }
 
-/* Консоль с блюром и фиолетовым светом */
-.terminal-frame {
-  position: relative; z-index: 10;
-  width: 85%; height: 75vh; margin: 12vh auto;
-  background: rgba(10, 5, 20, 0.85);
-  backdrop-filter: blur(15px);
-  border: 1px solid var(--purple);
-  padding: 30px;
-  box-shadow: 0 0 50px rgba(168, 85, 247, 0.15), inset 0 0 30px #000;
-}
+/* Терминал */
+.terminal-wrapper { width: 90%; max-width: 950px; height: 80vh; margin: 10vh auto; position: relative; }
+.terminal-glow { position: absolute; inset: -40px; background: var(--p); filter: blur(120px); opacity: 0.12; z-index: -1; }
+#terminal { background: rgba(8, 4, 18, 0.88); backdrop-filter: blur(25px); border: 1px solid rgba(168, 85, 247, 0.3); padding: 40px; height: 100%; box-shadow: inset 0 0 50px #000; display: flex; flex-direction: column; }
 
-/* Кнопки на втором окне */
-.button-grid {
-  display: flex; justify-content: center; gap: 30px; margin-top: 15vh; padding: 0 50px;
-}
-.mega-btn {
-  background: rgba(168, 85, 247, 0.05);
-  border: 1px solid var(--purple);
-  color: var(--purple);
-  padding: 40px 20px;
-  width: 250px;
-  cursor: pointer;
-  font-size: 1.1rem;
-  font-weight: bold;
-  transition: 0.3s;
-  position: relative;
-  overflow: hidden;
-}
-.mega-btn:hover {
-  background: var(--purple);
-  color: #000;
-  box-shadow: 0 0 30px var(--purple);
-}
+.logo-area { display: flex; justify-content: center; margin-bottom: 30px; }
+#logo-container { color: var(--p); font-size: 9px; line-height: 10px; white-space: pre; text-align: center; }
 
-/* Сайдбар (Плашка) */
-.side-panel {
-  position: fixed; left: -350px; top: 0; width: 320px; height: 100%;
-  background: #050505; border-right: 2px solid var(--purple);
-  z-index: 1000; transition: 0.5s cubic-bezier(0.8, 0, 0.2, 1);
-  padding: 50px 30px;
-}
+#output { flex: 1; overflow-y: auto; margin-bottom: 10px; line-height: 1.5; }
+#input-line { display: flex; align-items: center; }
+input { background: transparent; border: none; color: #fff; font: inherit; outline: none; width: 100%; caret-color: var(--p); }
+
+/* VHS Элементы */
+.vhs-line { width: 100%; height: 1px; background: rgba(168, 85, 247, 0.25); position: absolute; animation: vhs-scroll 6s linear infinite; }
+@keyframes vhs-scroll { 0% { top: -5%; } 100% { top: 105%; } }
+
+.button-grid { display: flex; justify-content: center; gap: 30px; margin-top: 20vh; }
+.vhs-btn { background: rgba(168, 85, 247, 0.03); border: 1px solid var(--p); color: var(--p); padding: 45px 25px; width: 230px; cursor: pointer; transition: 0.4s; letter-spacing: 1px; }
+.vhs-btn:hover { background: var(--p); color: #000; box-shadow: 0 0 25px var(--p); }
+
+/* Сайдбар */
+.side-panel { position: fixed; left: -350px; top: 0; width: 320px; height: 100%; background: #070707; border-right: 1px solid var(--p); z-index: 1000; transition: 0.5s ease; padding: 50px 30px; }
 .side-panel.active { left: 0; }
+.panel-blur { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 900; display: none; }
 
-.menu-icon { cursor: pointer; display: flex; flex-direction: column; gap: 6px; }
-.menu-icon span { width: 30px; height: 2px; background: var(--purple); }
+.vhs-nav { padding: 25px 50px; display: flex; align-items: center; border-bottom: 1px solid rgba(168, 85, 247, 0.2); }
+.menu-btn { cursor: pointer; margin-right: 25px; }
+.menu-btn span { display: block; width: 28px; height: 2px; background: var(--p); margin: 6px 0; }
 
-.dark-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 900; display: none;
-}
+.hidden { display: none !important; }
