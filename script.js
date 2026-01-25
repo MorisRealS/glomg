@@ -5,90 +5,92 @@ const PROFILES = {
     "msk4ne_": { pass: "msk4ne_profile_console", name: "MSK4NE", lvl: 4 }
 };
 
-const hints = ["пссс", "ты можешь написать просто lobby", "попробуй"];
+// Эффект "Лютого кода" (Матрица)
+function runMatrixEffect(callback) {
+    const canvas = document.getElementById('matrix-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.classList.remove('hidden');
+    canvas.classList.add('active');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-async function runHints() {
-    const box = document.getElementById('hint-box');
-    for (let text of hints) {
-        await new Promise(r => setTimeout(r, 2500));
-        box.textContent = text;
-        box.style.opacity = "1";
-        await new Promise(r => setTimeout(r, 2000));
-        box.style.opacity = "0";
-    }
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>[]{}/\\|#@$%^&*";
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
+
+    const interval = setInterval(() => {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#a855f7";
+        ctx.font = fontSize + "px monospace";
+
+        for (let i = 0; i < drops.length; i++) {
+            const text = chars[Math.floor(Math.random() * chars.length)];
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i]++;
+        }
+    }, 33);
+
+    setTimeout(() => {
+        clearInterval(interval);
+        canvas.classList.remove('active');
+        setTimeout(() => { canvas.classList.add('hidden'); if(callback) callback(); }, 500);
+    }, 1500); // Длительность эффекта 1.5 сек
+}
+
+function openWindow(id) {
+    document.querySelectorAll('.screen, #intro-screen').forEach(s => s.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+    if (id === 'main-dashboard' || id === 'lobby-screen') document.getElementById('side-panel').classList.remove('side-hidden');
 }
 
 function scrollToSection(id) {
     document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
 }
 
-function openWindow(id) {
-    document.querySelectorAll('.screen, #intro-screen').forEach(s => s.classList.add('hidden'));
-    document.getElementById(id).classList.remove('hidden');
-    
-    const panel = document.getElementById('side-panel');
-    if (id === 'main-dashboard' || id === 'lobby-screen') {
-        panel.classList.remove('side-hidden');
-    }
-    
-    panel.classList.remove('active');
-    document.getElementById('blur-overlay').style.display = "none";
-
-    if (id === 'login-screen') {
-        stage = "ID";
-        document.getElementById('auth-output').innerHTML = "> СИСТЕМА ОНЛАЙН. ВВЕДИТЕ ID:";
-        document.getElementById('cmd').focus();
-        runHints();
+// Логин через графическое окно (Lobby)
+function handleGUILogin() {
+    const u = document.getElementById('gui-user').value.toLowerCase();
+    const p = document.getElementById('gui-pass').value;
+    if (PROFILES[u] && PROFILES[u].pass === p) {
+        runMatrixEffect(() => {
+            const user = PROFILES[u];
+            document.getElementById('user-display').textContent = user.name;
+            document.getElementById('user-lvl-tag').textContent = `ACCESS LVL: ${user.lvl}`;
+            openWindow('main-dashboard');
+        });
+    } else {
+        alert("ОШИБКА ДОСТУПА: НЕВЕРНЫЕ ДАННЫЕ");
     }
 }
 
-let stage = "ID", user = null;
-
+// Консоль
 document.getElementById('cmd').onkeydown = (e) => {
     if (e.key === "Enter") {
         let v = e.target.value.trim().toLowerCase();
         e.target.value = "";
-        const out = document.getElementById('auth-output');
-
         if (v === "lobby") {
-            openWindow('lobby-screen');
-            document.getElementById('lobby-scroll-container').scrollTop = 0;
-            return;
-        }
-
-        if (stage === "ID" && PROFILES[v]) {
-            user = PROFILES[v]; stage = "PASS";
-            out.innerHTML += `<br>> ID [${v.toUpperCase()}] ПРИНЯТ. LVL: ${user.lvl}. ПАРОЛЬ:`;
-        } else if (stage === "PASS" && v === user.pass) {
-            document.getElementById('user-display').textContent = user.name;
-            document.getElementById('user-lvl-tag').textContent = `ACCESS LEVEL: ${user.lvl}`;
-            document.getElementById('status-lvl-info').textContent = `ВАШ ТЕКУЩИЙ УРОВЕНЬ В СИСТЕМЕ: ${user.lvl}`;
-            openWindow('main-dashboard');
-        } else if (v !== "") {
-            out.innerHTML += `<br>> ОШИБКА ДОСТУПА.`;
+            runMatrixEffect(() => openWindow('lobby-screen'));
+        } else {
+            document.getElementById('auth-output').innerHTML += `<br>> [${v}] - КОМАНДА НЕ НАЙДЕНА. ПОПРОБУЙТЕ 'LOBBY'`;
         }
     }
 };
 
-document.getElementById('menu-trigger').onclick = () => {
-    document.getElementById('side-panel').classList.add('active');
-    document.getElementById('blur-overlay').style.display = "block";
-};
-document.getElementById('blur-overlay').onclick = () => {
-    document.getElementById('side-panel').classList.remove('active');
-    document.getElementById('blur-overlay').style.display = "none";
-};
-
-const logoText = `
+window.onload = () => {
+    const logo = document.getElementById('big-logo');
+    const text = `
  ██████╗ ██╗      ██████╗ ███╗   ███╗ ██████╗ 
 ██╔════╝ ██║     ██╔════╝ ████╗ ████║██╔════╝ 
 ██║  ███╗██║     ██║  ███╗██╔████╔██║██║  ███╗
 ██║   ██║██║     ██║   ██║██║╚██╔╝██║██║   ██║
 ╚██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║╚██████╔╝
  ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ `;
-
-window.onload = async () => {
-    const el = document.getElementById('big-logo');
-    for (let c of logoText) { el.textContent += c; await new Promise(r => setTimeout(r, 1)); }
-    setTimeout(() => openWindow('login-screen'), 1500);
+    let i = 0;
+    const type = () => { if(i < text.length) { logo.textContent += text[i++]; setTimeout(type, 1); } else {
+        setTimeout(() => { openWindow('login-screen'); document.getElementById('auth-output').innerHTML = "> СИСТЕМА ГОТОВА. ВВЕДИТЕ КОМАНДУ:"; }, 1000);
+    }};
+    type();
 };
