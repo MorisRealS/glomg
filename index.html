@@ -33,7 +33,6 @@
             </div>
             <div class="nav-title">ONG_CORE // СЕКТОР_УПРАВЛЕНИЯ</div>
         </nav>
-        
         <div class="dashboard-content">
             <div class="button-grid-center">
                 <button class="mega-btn" onclick="openWindow('status-screen')">СТАТУС СИСТЕМЫ</button>
@@ -56,11 +55,11 @@
 
     <div id="status-screen" class="screen hidden">
         <button class="back-link" onclick="openWindow('main-dashboard')">← НАЗАД</button>
-        <div class="content-box"><h2>[ СТАТУС: ONLINE ]</h2></div>
+        <div class="content-box"><h2>[ СИСТЕМА: СТАБИЛЬНА ]</h2></div>
     </div>
     <div id="archive-screen" class="screen hidden">
         <button class="back-link" onclick="openWindow('main-dashboard')">← НАЗАД</button>
-        <div class="content-box"><h2>[ АРХИВ ПУСТ ]</h2></div>
+        <div class="content-box"><h2>[ АРХИВ ЗАБЛОКИРОВАН ]</h2></div>
     </div>
 
     <div id="side-panel" class="side-panel">
@@ -69,9 +68,9 @@
             <h3 id="user-display">---</h3>
         </div>
         <div class="side-nav">
-            <button class="side-link">ЛИЧНЫЙ КАБИНЕТ</button>
-            <button class="side-link">НАСТРОЙКИ</button>
-            <button class="side-link exit" onclick="location.reload()">ВЫХОД</button>
+            <button class="side-btn">ПРОФИЛЬ</button>
+            <button class="side-btn">БЕЗОПАСНОСТЬ</button>
+            <button class="side-btn exit" onclick="location.reload()">ВЫХОД</button>
         </div>
     </div>
     <div id="panel-blur-overlay" class="panel-blur"></div>
