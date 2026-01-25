@@ -1,61 +1,55 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ONG_CORE_ACCESS</title>
+  <meta charset="UTF-8">
+  <title>ONG_CORE | TERMINAL</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="boot-sequence">
+<body>
+  <div id="blackout"></div>
 
-  <div id="halftone-layer" class="halftone-overlay"></div>
-  
-  <div id="glitch-layer" class="glitch-overlay"></div>
+  <div class="halftone"></div>
+  <div id="glitch-layer" class="glitch-layer"></div>
 
-  <div id="login-screen" class="terminal-wrapper">
-    <div class="terminal-glow"></div>
-    <div id="terminal">
+  <div id="login-screen" class="screen">
+    <div class="glow-bg"></div>
+    <div class="terminal-frame">
       <div id="output"></div>
-      <div id="input-line" class="line hidden">
-        <span class="prompt">OPERATOR@SECURE:> </span>
-        <input type="text" id="cmd" autocomplete="off" spellcheck="false"/>
+      <div class="input-area hidden" id="input-container">
+        <span class="prompt">OPERATOR@SECURE:></span>
+        <input type="text" id="cmd" autofocus autocomplete="off" spellcheck="false">
       </div>
     </div>
   </div>
 
-  <div id="main-dashboard" class="dashboard-wrapper hidden">
-    <div class="vhs-scanlines"></div>
+  <div id="main-dashboard" class="screen hidden">
+    <div class="vhs-overlay"></div>
     
-    <nav class="top-bar">
-      <div class="menu-trigger" id="menu-btn">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
+    <nav class="vhs-nav">
+      <div class="menu-icon" id="menu-btn">
+        <span></span><span></span><span></span>
       </div>
-      <div class="logo">ONG_CORE_SYSTEM</div>
+      <div class="system-title">ONG_CORE_DASHBOARD v.4.0</div>
     </nav>
 
-    <div class="content-grid">
-      <button class="dash-btn">СТАТУС СИСТЕМЫ</button>
-      <button class="dash-btn">КОНСОЛЬ</button>
-      <button class="dash-btn">АРХИВНАЯ</button>
+    <div class="button-grid">
+      <button class="mega-btn"><span>СТАТУС СИСТЕМЫ</span></button>
+      <button class="mega-btn"><span>КОНСОЛЬ</span></button>
+      <button class="mega-btn"><span>АРХИВНАЯ</span></button>
     </div>
 
-    <div id="profile-sidebar" class="sidebar">
-      <div class="sidebar-content">
-        <div class="user-profile">
-          <div class="user-avatar">👤</div>
-          <div class="user-info">
-            <span id="user-name-display">AGENT</span>
-            <small>Status: ONLINE</small>
-          </div>
-        </div>
-        <button class="sidebar-action-btn">ЛИЧНЫЙ ПРОФИЛЬ</button>
-        <button class="sidebar-action-btn exit" onclick="location.reload()">ВЫХОД</button>
+    <div id="side-panel" class="side-panel">
+      <div class="profile-card">
+        <div class="avatar">👤</div>
+        <h2 id="user-display">USER_NAME</h2>
+        <p>Status: Authorized</p>
+      </div>
+      <div class="panel-nav">
+        <button class="side-link">ЛИЧНЫЙ ПРОФИЛЬ</button>
+        <button class="side-link exit" onclick="location.reload()">ВЫЙТИ</button>
       </div>
     </div>
-    
-    <div id="overlay-darken" class="overlay-darken"></div>
+    <div id="dark-overlay" class="dark-overlay"></div>
   </div>
 
   <script src="script.js"></script>
