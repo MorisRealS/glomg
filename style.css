@@ -1,12 +1,11 @@
 :root { 
     --p: #a855f7; --bg: #030105; --dark: #0a0510; --red: #ff3344; 
-    --neon: 0 0 15px rgba(168, 85, 247, 0.5); 
 }
 
 * { box-sizing: border-box; outline: none; }
 body, html { margin: 0; padding: 0; background: #000; color: var(--p); font-family: 'Courier New', monospace; height: 100vh; overflow: hidden; }
 
-/* ДИЗАЙН КНОПОК G.L.O.M.G. (СКОШЕННЫЕ УГЛЫ) */
+/* КНОПКИ СО СКОШЕННЫМИ УГЛАМИ */
 .cyber-btn, .mega-cyber-btn, .cyber-btn-mini {
     background: rgba(168, 85, 247, 0.05);
     border: 1px solid var(--p);
@@ -14,72 +13,75 @@ body, html { margin: 0; padding: 0; background: #000; color: var(--p); font-fami
     padding: 15px 30px;
     font-weight: bold;
     text-transform: uppercase;
-    letter-spacing: 2px;
     cursor: pointer;
     clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
     transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-.cyber-btn:hover, .mega-cyber-btn:hover {
-    background: var(--p);
-    color: #000;
-    box-shadow: 0 0 25px var(--p);
-}
-
+.cyber-btn:hover, .mega-cyber-btn:hover { background: var(--p); color: #000; box-shadow: 0 0 20px var(--p); }
 .mega-cyber-btn { width: 400px; padding: 25px; margin: 15px; font-size: 1.2rem; }
 .exit-red { border-color: var(--red); color: var(--red); }
-.exit-red:hover { background: var(--red); box-shadow: 0 0 25px var(--red); color: #000; }
+.exit-red:hover { background: var(--red); color: #000; box-shadow: 0 0 20px var(--red); }
 
-/* ИНПУТЫ: ЧЕРНЫЕ И ЧИСТЫЕ */
+/* ПОЛЯ ВВОДА (ЧЕРНЫЕ) */
 input {
-    background: #000 !important; border: 1px solid rgba(168,85,247,0.3) !important;
-    padding: 18px; color: var(--p) !important; width: 100%; margin-top: 5px;
+    background: #000 !important;
+    border: 1px solid var(--p) !important;
+    padding: 15px;
+    color: var(--p) !important;
+    width: 100%;
+    margin-top: 10px;
+    text-align: center;
     font-family: inherit;
 }
 
-/* МЯГКИЙ ГЛИТЧ / МЕРЦАНИЕ */
+/* ГЛИТЧ / МЕРЦАНИЕ */
 @keyframes neonFlicker {
-    0%, 100% { filter: brightness(1) drop-shadow(0 0 5px var(--p)); }
-    50% { filter: brightness(1.3) drop-shadow(0 0 15px var(--p)); }
+    0%, 100% { filter: brightness(1) drop-shadow(0 0 2px var(--p)); }
+    50% { filter: brightness(1.2) drop-shadow(0 0 10px var(--p)); }
 }
 .neon-glow-box { border: 2px solid var(--p); animation: neonFlicker 3s infinite; }
 
-/* КАРТА И ЭФФЕКТ РАДАРА */
-.map-layout { display: flex; flex-direction: column; width: 100%; height: 100%; padding-top: 80px; }
-.map-viewport { flex: 1; position: relative; background: radial-gradient(circle, #120622 0%, #000 100%); overflow: hidden; border-bottom: 1px solid var(--p); }
+/* ГОСТЕВОЙ ИНТЕРФЕЙС */
+.guest-container { display: flex; gap: 30px; width: 90%; max-width: 1000px; height: 60vh; }
+.news-section, .ong-info { flex: 1; background: rgba(10, 5, 16, 0.8); border: 1px solid var(--p); padding: 30px; display: flex; flex-direction: column; }
+.scroll-area { flex: 1; overflow-y: auto; padding-right: 15px; margin-top: 20px; }
+.scroll-area::-webkit-scrollbar { width: 3px; }
+.scroll-area::-webkit-scrollbar-thumb { background: var(--p); }
+.news-item { border-bottom: 1px solid rgba(168, 85, 247, 0.15); margin-bottom: 20px; padding-bottom: 10px; }
+.date { font-size: 0.8rem; opacity: 0.6; }
+.section-title { margin: 0; font-size: 1.2rem; border-bottom: 1px solid var(--p); padding-bottom: 10px; letter-spacing: 2px; }
 
-.radar-lines {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    width: 500px; height: 500px; border: 1px solid rgba(168, 85, 247, 0.1); border-radius: 50%;
-    box-shadow: 0 0 0 100px rgba(168, 85, 247, 0.02), 0 0 0 200px rgba(168, 85, 247, 0.01);
-}
-
-.radar-scanner {
-    position: absolute; top: 50%; left: 50%; width: 400px; height: 400px;
-    background: conic-gradient(from 0deg, rgba(168, 85, 247, 0.15), transparent 90deg);
-    transform-origin: top left; animation: radarScan 4s linear infinite;
-}
+/* ТАКТИЧЕСКИЙ РАДАР */
+.map-viewport { position: relative; width: 100vw; height: 80vh; background: radial-gradient(circle, #120622 0%, #000 100%); overflow: hidden; }
+.radar-lines { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 500px; border: 1px solid rgba(168, 85, 247, 0.1); border-radius: 50%; box-shadow: 0 0 0 100px rgba(168, 85, 247, 0.02); }
+.radar-scanner { position: absolute; top: 50%; left: 50%; width: 400px; height: 400px; background: conic-gradient(from 0deg, rgba(168, 85, 247, 0.15), transparent 90deg); transform-origin: top left; animation: radarScan 4s linear infinite; }
 @keyframes radarScan { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-.assets-registry { height: 35%; background: var(--dark); padding: 25px 50px; overflow-y: auto; }
-.registry-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 15px; }
-.asset-card { border: 1px solid rgba(168, 85, 247, 0.2); padding: 20px; background: rgba(0,0,0,0.4); }
-.active-card { border-color: var(--p); box-shadow: var(--neon); }
+/* ПЕРЕХОДЫ (ЗАТЕМНЕНИЕ) */
+#fade-overlay { position: fixed; inset: 0; background: #000; z-index: 10000; opacity: 0; transition: 0.6s; pointer-events: none; }
+#fade-overlay.active { opacity: 1; }
 
-/* ПЛАВНЫЕ ДАТЧИКИ (2s) */
-.p-bar { width: 100%; height: 10px; background: #000; border: 1px solid rgba(168, 85, 247, 0.2); margin-top: 15px; overflow: hidden; }
-.p-fill { height: 100%; background: var(--p); transition: width 2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 10px var(--p); }
-.red-glow { background: var(--red); box-shadow: 0 0 10px var(--red); }
-
-/* ОБЩИЙ ИНТЕРФЕЙС */
+/* UI ОСНОВА */
 .screen { position: fixed; inset: 0; background: #000; z-index: 100; display: flex; align-items: center; justify-content: center; }
 .hidden { display: none !important; }
-.top-nav { position: fixed; top: 0; width: 100%; padding: 25px 50px; display: flex; justify-content: space-between; z-index: 1000; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
-.auth-terminal { width: 450px; background: var(--dark); padding: 40px; }
-.fx-layer { position: fixed; inset: 0; pointer-events: none; z-index: 5000; }
-.tv-noise { position: absolute; inset: 0; opacity: 0.04; background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/White-noise-mv255-240x180.png'); }
+.full-screen-center { display: flex; flex-direction: column; align-items: center; width: 100%; }
+.top-nav { position: fixed; top: 0; width: 100%; padding: 25px 50px; display: flex; justify-content: space-between; z-index: 1000; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); }
+.auth-terminal { width: 550px; background: var(--dark); padding: 50px; position: relative; }
+.mini-logo { font-size: 7px; line-height: 7px; color: var(--p); margin-bottom: 30px; text-align: center; }
+.glomg-logo-giant { font-size: 14px; line-height: 14px; white-space: pre; color: var(--p); text-align: center; }
+
+/* ЭФФЕКТЫ ТЕРМИНАЛА */
+.fx-layer { position: fixed; inset: 0; pointer-events: none; z-index: 5000; opacity: 0.6; }
+.tv-noise { position: absolute; inset: 0; background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/White-noise-mv255-240x180.png'); opacity: 0.04; }
+.crt-overlay { position: absolute; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03)); background-size: 100% 3px, 3px 100%; }
+
+/* САЙДБАР */
 #side-panel { position: fixed; left: -320px; width: 300px; height: 100%; background: var(--dark); border-right: 1px solid var(--p); z-index: 6000; transition: 0.4s; padding: 40px; }
+#side-panel.open { left: 0; }
 #blur-shield { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 5500; display: none; }
-.green-t { color: #00ff88; text-shadow: 0 0 5px #00ff88; }
-.red-t { color: #ff3344; }
-.glomg-logo-giant { font-size: 12px; line-height: 12px; white-space: pre; color: var(--p); }
+
+/* ТЕЛЕМЕТРИЯ (БАРЫ) */
+.stat-card { background: rgba(168, 85, 247, 0.02); border: 1px solid rgba(168, 85, 247, 0.1); padding: 30px; width: 500px; margin-bottom: 20px; }
+.p-bar { width: 100%; height: 12px; background: #000; border: 1px solid rgba(168, 85, 247, 0.3); margin-top: 15px; }
+.p-fill { height: 100%; background: var(--p); box-shadow: 0 0 10px var(--p); transition: 1s ease-in-out; }
+.green-t { color: #00ff88; }
