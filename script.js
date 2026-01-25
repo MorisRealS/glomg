@@ -14,107 +14,88 @@ const voltaLogo = `
  ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ `;
 
 async function boot() {
-    const logoEl = document.getElementById('big-logo');
+    const logo = document.getElementById('big-logo');
     for (let char of voltaLogo) {
-        logoEl.textContent += char;
+        logo.textContent += char;
         await new Promise(r => setTimeout(r, 2));
     }
-    await new Promise(r => setTimeout(r, 2000));
+    await new Promise(r => setTimeout(r, 1500));
     openWindow('login-screen');
 }
 
 function openWindow(id) {
     document.getElementById('fade-overlay').classList.add('fade-active');
+    // Скрываем плашку при любом переходе
     document.getElementById('side-panel').classList.remove('active');
     document.getElementById('panel-blur-overlay').style.display = "none";
 
     setTimeout(() => {
-        // Прячем абсолютно все экраны
         document.querySelectorAll('.screen, #intro-screen').forEach(s => s.classList.add('hidden'));
-        
-        // Показываем нужный
-        const nextWindow = document.getElementById(id);
-        nextWindow.classList.remove('hidden');
-        
+        document.getElementById(id).classList.remove('hidden');
         document.getElementById('fade-overlay').classList.remove('fade-active');
 
-        // ПРИНУДИТЕЛЬНЫЙ ФОКУС
-        if (id === 'login-screen') {
-            startLoginAuth();
-        } else if (id === 'full-console-screen') {
-            document.getElementById('main-console-input').focus();
-        }
+        if (id === 'login-screen') startLoginAuth();
+        if (id === 'full-console-screen') document.getElementById('main-console-input').focus();
     }, 600);
 }
 
 // Авторизация
-const cmdInput = document.getElementById('cmd');
-let stage = "ID", activeUser = null;
+const cmdIn = document.getElementById('cmd');
+let stage = "ID", user = null;
 
 async function startLoginAuth() {
     const out = document.getElementById('auth-output');
-    out.innerHTML = "";
-    const lines = ["> ONG_CORE_SYSTEM v.4.0.1", "> ВВЕДИТЕ ВАШ ИДЕНТИФИКАТОР:"];
-    for (let l of lines) {
-        let d = document.createElement('div');
-        out.appendChild(d);
-        for(let c of l) { d.textContent += c; await new Promise(r => setTimeout(r, 20)); }
-    }
+    out.innerHTML = "> ВВЕДИТЕ ИДЕНТИФИКАТОР:";
     document.getElementById('input-line').classList.remove('hidden');
-    cmdInput.focus();
+    cmdIn.focus();
 }
 
-cmdInput.onkeydown = (e) => {
+cmdIn.onkeydown = (e) => {
     if (e.key === "Enter") {
-        let val = cmdInput.value.trim().toLowerCase();
-        cmdInput.value = "";
-        
-        if (stage === "ID") {
-            if (PROFILES[val]) {
-                activeUser = PROFILES[val];
-                stage = "PASS";
-                printLine(`> ИДЕНТИФИЦИРОВАН: ${val.toUpperCase()}. ВВЕДИТЕ ПАРОЛЬ:`);
-            }
-        } else if (stage === "PASS") {
-            if (val === activeUser.pass) {
-                document.getElementById('user-display').textContent = activeUser.name;
-                openWindow('main-dashboard');
-            } else {
-                location.reload();
-            }
+        let val = cmdIn.value.trim().toLowerCase();
+        cmdIn.value = "";
+        if (stage === "ID" && PROFILES[val]) {
+            user = PROFILES[val];
+            stage = "PASS";
+            document.getElementById('auth-output').innerHTML += `<br>> ID [${val.toUpperCase()}] ПРИНЯТ. ПАРОЛЬ:`;
+        } else if (stage === "PASS" && val === user.pass) {
+            document.getElementById('user-display').textContent = user.name;
+            openWindow('main-dashboard');
         }
     }
-}
+};
 
-function printLine(t) {
-    const d = document.createElement('div');
-    d.textContent = t;
-    document.getElementById('auth-output').appendChild(d);
-}
-
-// Полноэкранная консоль
+// Большая консоль
 const mainIn = document.getElementById('main-console-input');
-const mainOut = document.getElementById('main-console-output');
-
 mainIn.onkeydown = (e) => {
     if (e.key === "Enter") {
         let val = mainIn.value.trim().toLowerCase();
         mainIn.value = "";
-        if (val === "exit") {
-            openWindow('main-dashboard');
-        } else {
+        if (val === "exit") openWindow('main-dashboard');
+        else {
             const d = document.createElement('div');
-            d.textContent = `SYSTEM@ONG:~$ ${val} - КОМАНДА В ОБРАБОТКЕ.`;
-            mainOut.appendChild(d);
+            d.textContent = `> ${val}: команда не найдена.`;
+            document.getElementById('main-console-output').appendChild(d);
         }
     }
-}
-
-// Сайдбар
-document.getElementById('menu-trigger').onclick = () => {
-    const p = document.getElementById('side-panel');
-    p.classList.toggle('active');
-    document.getElementById('panel-blur-overlay').style.display = p.classList.contains('active') ? "block" : "none";
 };
+
+// Плашка и Блюр
+document.getElementById('menu-trigger').onclick = (e) => {
+    e.stopPropagation();
+    document.getElementById('side-panel').classList.add('active');
+    document.getElementById('panel-blur-overlay').style.display = "block";
+};
+
+document.getElementById('panel-blur-overlay').onclick = () => {
+    document.getElementById('side-panel').classList.remove('active');
+    document.getElementById('panel-blur-overlay').style.display = "none";
+};
+
+// Время для логов
+setInterval(() => {
+    const now = new Date().toLocaleTimeString();
+    document.querySelectorAll('.time-now').forEach(el => el.textContent = now);
+}, 1000);
 
 window.onload = boot;
