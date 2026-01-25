@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>ONG_CORE_V4</title>
+    <title>ONG_CORE_V4_SYSTEM</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -16,9 +16,27 @@
         <div class="fullscreen-terminal">
             <div id="auth-output"></div>
             <div class="input-row">
-                <span class="prompt">SYSTEM@ONG_CORE:></span>
+                <span class="prompt">></span>
                 <input type="text" id="cmd" autocomplete="off" spellcheck="false" autofocus>
             </div>
+        </div>
+        <div id="hint-box" class="hint-popup"></div>
+    </div>
+
+    <div id="lobby-screen" class="screen hidden">
+        <nav class="vhs-nav">
+            <div class="nav-links-top">
+                <span class="nav-item active">ГЛАВНАЯ</span>
+                <span class="nav-item" onclick="openWindow('login-screen')">ВХОД В СИСТЕМУ</span>
+            </div>
+        </nav>
+        <div class="dashboard-content">
+            <div class="wide-button-container">
+                <button class="mega-row-btn" onclick="openWindow('login-screen')">ЛОГИН</button>
+                <button class="mega-row-btn">НОВОСТИ</button>
+                <button class="mega-row-btn">О НАС</button>
+            </div>
+            <div class="separator-line"></div>
         </div>
     </div>
 
@@ -27,9 +45,8 @@
             <div class="menu-trigger-btn" id="menu-trigger">
                 <span></span><span></span><span></span>
             </div>
-            <div class="nav-title">ONG_CORE // SYSTEM_INDEX</div>
+            <div class="nav-title">ONG_CORE // TERMINAL_INDEX</div>
         </nav>
-        
         <div class="dashboard-content">
             <div class="wide-button-container">
                 <button class="mega-row-btn" onclick="openWindow('status-screen')">СТАТУС СИСТЕМЫ</button>
@@ -59,6 +76,7 @@
                 <div class="s-line">STATUS: <span class="neon">ONLINE</span></div>
                 <div class="s-line">KERNEL: <span class="neon">STABLE</span></div>
                 <div class="s-line">SECURE: <span class="neon">ACTIVE</span></div>
+                <div id="status-lvl-display" class="s-line" style="font-size: 0.9rem; opacity: 0.5;"></div>
             </div>
         </div>
     </div>
@@ -66,10 +84,14 @@
     <div id="side-panel" class="side-panel side-hidden">
         <div class="profile-header">
             <div class="circle">ID</div>
-            <h3 id="user-display">---</h3>
+            <div class="user-info">
+                <h3 id="user-display">---</h3>
+                <span id="user-lvl-tag" class="lvl-tag"></span>
+            </div>
         </div>
         <div class="side-links">
             <button class="s-btn">ПРОФИЛЬ</button>
+            <button class="s-btn">НАСТРОЙКИ</button>
             <button class="s-btn exit" onclick="location.reload()">ВЫХОД</button>
         </div>
     </div>
