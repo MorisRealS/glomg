@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GLOMG_CORE_V15</title>
+    <title>GLOMG_CORE_V17</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="fx-layer">
+        <div class="tv-noise"></div>
+        <div class="crt-overlay"></div>
+        <div class="scanline"></div>
+    </div>
+
     <div id="fade-overlay"></div>
-    <div class="tv-noise"></div>
-    <div class="vignette"></div>
-    <div class="crt-overlay"></div>
-    <div class="scanline"></div>
 
     <div id="intro-screen" class="full-screen-center">
         <pre id="big-logo" class="volta-logo-big flicker-text"></pre>
@@ -19,108 +21,113 @@
 
     <div id="login-screen" class="screen hidden">
         <div class="full-screen-center">
-            <div class="auth-card anim-login-fly">
-                <div class="auth-header"><span>SYST_AUTH_V15</span><div class="status-dot-blink"></div></div>
+            <div class="auth-card">
+                <div class="auth-header">
+                    <span>SECURITY_CHECK</span>
+                    <div class="status-dot-blink"></div>
+                </div>
                 <div class="auth-body">
-                    <div class="input-wrapper"><label>USER_ID</label><input type="text" id="auth-id" autocomplete="off"></div>
-                    <div class="input-wrapper"><label>PASSWORD</label><input type="password" id="auth-pass"></div>
-                    <div class="auth-actions">
-                        <button class="btn-primary" onclick="handleAuth()">LOGIN</button>
-                        <button class="btn-outline" onclick="transitionTo('lobby-screen')">GUEST_MODE</button>
+                    <div class="input-group">
+                        <label>USER_ID</label>
+                        <input type="text" id="auth-id" spellcheck="false" autocomplete="off">
                     </div>
+                    <div class="input-group">
+                        <label>PASSWORD</label>
+                        <input type="password" id="auth-pass">
+                    </div>
+                    <button class="btn-main" onclick="handleAuth()">ВХОД</button>
+                    <button class="btn-sub" onclick="transitionTo('lobby-screen')">GUEST_ACCESS</button>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="lobby-screen" class="screen hidden">
-        <header class="system-header">
-            <div class="menu-btn" onclick="toggleSidebar(event)"><span></span><span></span><span></span></div>
-            <div class="clock-msk">MSK: <span class="time-val">00:00:00</span></div>
+        <header class="top-nav">
+            <div class="menu-trigger" onclick="toggleSidebar(event)"><span></span><span></span><span></span></div>
+            <div class="msk-clock">MSK: <span class="time-val">00:00:00</span></div>
         </header>
-        <div class="lobby-scroll-container">
-            <section class="lobby-section">
-                <div class="action-rows">
-                    <button class="mega-btn anim-btn-fly" style="--d:1" onclick="transitionTo('login-screen')">АВТОРИЗАЦИЯ</button>
-                    <button class="mega-btn anim-btn-fly" style="--d:2" onclick="scrollToSection('lobby-news')">НОВОСТИ</button>
-                    <button class="mega-btn anim-btn-fly" style="--d:3" onclick="scrollToSection('lobby-about')">О НАС</button>
+        <div class="scroll-container">
+            <section class="hero-section">
+                <div class="menu-stack">
+                    <button class="mega-btn" onclick="transitionTo('login-screen')">АВТОРИЗАЦИЯ</button>
+                    <button class="mega-btn" onclick="scrollToSection('news-sec')">НОВОСТИ</button>
+                    <button class="mega-btn" onclick="scrollToSection('about-sec')">ИНФОРМАЦИЯ</button>
                 </div>
             </section>
-            <section id="lobby-news" class="lobby-section compact">
-                <div class="doc-container text-center">
-                    <h2 class="doc-title">LATEST_LOGS</h2>
-                    <p>[2026] Core updated to V15.</p>
-                    <p>[2026] Visual bars telemetry enabled.</p>
+            <section id="news-sec" class="content-section">
+                <div class="doc-box">
+                    <h3>[ SYSTEM_NEWS ]</h3>
+                    <p>> Ядро V17.0 стабильно.<br>> Коллизии слоев устранены.<br>> Модуль телеметрии обновлен.</p>
                 </div>
             </section>
-            <section id="lobby-about" class="lobby-section compact">
-                <div class="doc-container text-center">
-                    <h2 class="doc-title">IDENTITY</h2>
-                    <p>GLOMG: Global Logic & Monitoring Group.</p>
+            <section id="about-sec" class="content-section">
+                <div class="doc-box">
+                    <h3>[ ABOUT_US ]</h3>
+                    <p>GLOMG — закрытый узел обработки данных. Доступ по протоколу V-Secure.</p>
                 </div>
             </section>
         </div>
     </div>
 
     <div id="main-dashboard" class="screen hidden">
-        <header class="system-header">
-            <div class="menu-btn" onclick="toggleSidebar(event)"><span></span><span></span><span></span></div>
-            <div class="clock-msk">MSK: <span class="time-val">00:00:00</span></div>
+        <header class="top-nav">
+            <div class="menu-trigger" onclick="toggleSidebar(event)"><span></span><span></span><span></span></div>
+            <div class="msk-clock">MSK: <span class="time-val">00:00:00</span></div>
         </header>
         <div class="full-screen-center">
-            <div class="action-rows">
-                <button class="mega-btn anim-btn-fly" style="--d:1" onclick="transitionTo('status-screen')">СОСТОЯНИЕ СИСТЕМЫ</button>
-                <button class="mega-btn anim-btn-fly" style="--d:2">ЛОГИ ЯДРА</button>
-                <button class="mega-btn anim-btn-fly" style="--d:3">АРХИВ ДАННЫХ</button>
+            <div class="menu-stack">
+                <button class="mega-btn" onclick="transitionTo('status-screen')">СОСТОЯНИЕ СИСТЕМЫ</button>
+                <button class="mega-btn">ЛОГИ ЯДРА</button>
+                <button class="mega-btn">ПОЧТА (0)</button>
             </div>
         </div>
     </div>
 
     <div id="status-screen" class="screen hidden">
-        <header class="system-header">
-            <button class="btn-outline back-btn" onclick="transitionTo('main-dashboard')">← BACK</button>
-            <div class="clock-msk">MSK: <span class="time-val">00:00:00</span></div>
+        <header class="top-nav">
+            <button class="back-btn" onclick="transitionTo('main-dashboard')">← НАЗАД</button>
+            <div class="msk-clock">MSK: <span class="time-val">00:00:00</span></div>
         </header>
         <div class="full-screen-center">
-            <div class="telemetry-grid anim-btn-fly">
-                <div class="t-card">
-                    <div class="t-head"><span>CPU_USAGE</span><span id="cpu-num">0%</span></div>
-                    <div class="t-bar"><div id="cpu-bar" class="t-fill"></div></div>
+            <div class="telemetry-grid">
+                <div class="stat-card">
+                    <div class="stat-label">CPU_LOAD</div>
+                    <div class="stat-value" id="cpu-num">0%</div>
+                    <div class="progress-bg"><div id="cpu-bar" class="progress-fill"></div></div>
                 </div>
-                <div class="t-card">
-                    <div class="t-head"><span>TEMPERATURE</span><span id="temp-num">0°C</span></div>
-                    <div class="t-bar"><div id="temp-bar" class="t-fill" style="background:var(--red)"></div></div>
+                <div class="stat-card">
+                    <div class="stat-label">CORE_TEMP</div>
+                    <div class="stat-value" id="temp-num">0°C</div>
+                    <div class="progress-bg"><div id="temp-bar" class="progress-fill red-bar"></div></div>
                 </div>
-                <div class="t-card">
-                    <div class="t-head"><span>NET_TRAFFIC</span><span id="net-num">0 KB/s</span></div>
-                    <div class="t-bar"><div id="net-bar" class="t-fill" style="background:#00f2ff"></div></div>
+                <div class="stat-card">
+                    <div class="stat-label">NETWORK_TRAFFIC</div>
+                    <div class="stat-value" id="net-num">0 KB/s</div>
+                    <div class="progress-bg"><div id="net-bar" class="progress-fill blue-bar"></div></div>
                 </div>
-                <div class="t-card">
-                    <div class="t-head"><span>UPTIME</span></div>
-                    <div class="stat-val green-t" id="uptime-val">00:00:00</div>
+                <div class="stat-card">
+                    <div class="stat-label">STATUS</div>
+                    <div class="stat-value green-t">ONLINE</div>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="side-panel" class="side-panel">
-        <div class="side-profile-header">
-            <div class="user-avatar-box">
-                <div class="avatar-glow"></div>
-                <span class="user-glyph">Ω</span>
-            </div>
-            <div class="user-info">
-                <h3 id="side-username">GUEST_USER</h3>
-                <span id="side-status" class="green-t">● ONLINE</span>
+        <div class="user-block">
+            <div class="user-icon">Ω</div>
+            <div class="user-meta">
+                <h4 id="side-user">GUEST</h4>
+                <span class="green-t">● ACTIVE</span>
             </div>
         </div>
-        <div class="sidebar-nav">
-            <div class="nav-label">CONTROL_PANEL</div>
-            <button class="side-link" onclick="transitionTo('login-screen')">RE-LOGIN</button>
-            <button class="side-link exit-btn" onclick="location.reload()">TERMINATE_SESSION</button>
-        </div>
+        <nav class="side-nav">
+            <button onclick="transitionTo('login-screen')">СМЕНИТЬ ПРОФИЛЬ</button>
+            <button class="exit-btn" onclick="location.reload()">ВЫХОД</button>
+        </nav>
     </div>
-    <div id="overlay-blur" onclick="closeSidebar()"></div>
+    <div id="blur-shield" onclick="closeSidebar()"></div>
 
     <script src="script.js"></script>
 </body>
