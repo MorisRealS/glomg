@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GLOMG_CORE_V20</title>
+    <title>GLOMG_CORE_V22</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -23,24 +23,24 @@
         <div class="full-screen-center">
             <div class="auth-terminal anim-glitch-in">
                 <div class="term-header">
-                    <span>SECURITY_GATE_V20</span>
+                    <span>SECURE_LOGIN_V22</span>
                     <div class="status-dot-blink"></div>
                 </div>
                 <div class="term-body">
                     <div class="term-input-group">
-                        <label>OPERATOR_ID</label>
-                        <input type="text" id="auth-id" spellcheck="false" autocomplete="off" placeholder="IDENTIFY...">
+                        <label>USER_IDENTIFIER</label>
+                        <input type="text" id="auth-id" spellcheck="false" autocomplete="off" placeholder="NAME...">
                     </div>
                     <div class="term-input-group">
-                        <label>ACCESS_CRYPT</label>
-                        <input type="password" id="auth-pass" placeholder="PASSWORD...">
+                        <label>ENCRYPTED_KEY</label>
+                        <input type="password" id="auth-pass" placeholder="KEY...">
                     </div>
                     <div class="term-actions">
-                        <button class="glow-btn main-action" onclick="handleAuth()">INITIALIZE_SYSTEM</button>
-                        <button class="glow-btn" onclick="transitionTo('lobby-screen')">GUEST_OVERRIDE</button>
+                        <button class="glow-btn main-action" onclick="handleAuth()">LOGIN</button>
+                        <button class="glow-btn" onclick="transitionTo('lobby-screen')">GUEST_LINK</button>
                     </div>
                 </div>
-                <div class="term-footer">ENCRYPTION: AES-512 ACTIVE</div>
+                <div class="term-footer">STATUS: <span class="green-t pulse-text">READY_FOR_INPUT</span></div>
             </div>
         </div>
     </div>
@@ -50,26 +50,17 @@
             <div class="menu-trigger" onclick="toggleSidebar(event)"><span></span><span></span><span></span></div>
             <div class="msk-clock">MSK: <span class="time-val">00:00:00</span></div>
         </header>
-        <div class="scroll-container">
-            <section class="full-screen-center">
+        <div class="full-screen-center">
+            <div class="lobby-container anim-appear">
                 <div class="menu-stack">
-                    <button class="mega-glow-btn anim-slide-up" style="--d:1" onclick="transitionTo('login-screen')">АВТОРИЗАЦИЯ</button>
-                    <button class="mega-glow-btn anim-slide-up" style="--d:2" onclick="scrollToSection('news-sec')">АРХИВ НОВОСТЕЙ</button>
-                    <button class="mega-glow-btn anim-slide-up" style="--d:3" onclick="scrollToSection('about-sec')">О СИСТЕМЕ</button>
+                    <button class="mega-glow-btn" onclick="transitionTo('login-screen')">АВТОРИЗАЦИЯ</button>
+                    <button class="mega-glow-btn" onclick="scrollToSection('news-block')">НОВОСТИ</button>
                 </div>
-            </section>
-            <section id="news-sec" class="full-screen-center">
-                <div class="doc-box anim-glow-pulse">
-                    <h3 class="green-t">[ LOG_DATA_2026 ]</h3>
-                    <p>> Обновление ядра до версии 20.0 завершено.<br>> Оптимизированы визуальные модули для ПК.<br>> Исправлены баги телеметрии.</p>
+                <div id="news-block" class="doc-box-mini">
+                    <h3 class="green-t">[ TERMINAL_INFO ]</h3>
+                    <p>> Версия 22.0.4 развернута.<br>> Поля ввода очищены от артефактов.<br>> Синхронизация с узлом завершена.</p>
                 </div>
-            </section>
-            <section id="about-sec" class="full-screen-center">
-                <div class="doc-box anim-glow-pulse">
-                    <h3>[ SYSTEM_INFO ]</h3>
-                    <p>GLOMG CORE — Центральный узел управления.<br>Все действия протоколируются.</p>
-                </div>
-            </section>
+            </div>
         </div>
     </div>
 
@@ -79,32 +70,35 @@
             <div class="msk-clock">MSK: <span class="time-val">00:00:00</span></div>
         </header>
         <div class="full-screen-center">
-            <div class="menu-stack">
-                <button class="mega-glow-btn" onclick="transitionTo('status-screen')">СОСТОЯНИЕ СИСТЕМЫ</button>
-                <button class="mega-glow-btn">ЛОГИ ТЕРМИНАЛА</button>
-                <button class="mega-glow-btn">БАЗА ОБЪЕКТОВ</button>
+            <div class="dashboard-grid">
+                <div class="menu-stack">
+                    <button class="mega-glow-btn" onclick="transitionTo('status-screen')">ТЕЛЕМЕТРИЯ</button>
+                    <button class="mega-glow-btn" onclick="runMatrixLog()">ЛОГИ ЯДРА</button>
+                    <button class="mega-glow-btn">СЕТЕВАЯ КАРТА</button>
+                </div>
+                <div id="matrix-console" class="side-console hidden"></div>
             </div>
         </div>
     </div>
 
     <div id="status-screen" class="screen hidden">
         <header class="top-nav">
-            <button class="back-btn-glow" onclick="transitionTo('main-dashboard')">← НАЗАД</button>
+            <button class="back-btn-glow" onclick="transitionTo('main-dashboard')">← RETURN</button>
             <div class="msk-clock">MSK: <span class="time-val">00:00:00</span></div>
         </header>
         <div class="full-screen-center">
-            <div class="telemetry-grid anim-glitch-in">
+            <div class="telemetry-grid">
                 <div class="stat-card">
-                    <div class="stat-head"><span>ЗАГРУЗКА ЦП</span><span id="cpu-num">0%</span></div>
+                    <div class="stat-head"><span>CPU_USAGE</span><span id="cpu-num">0%</span></div>
                     <div class="p-bar"><div id="cpu-bar" class="p-fill"></div></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-head"><span>ТЕМП. ЯДРА</span><span id="temp-num">0°C</span></div>
+                    <div class="stat-head"><span>CORE_TEMP</span><span id="temp-num">0°C</span></div>
                     <div class="p-bar"><div id="temp-bar" class="p-fill red-glow"></div></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-head"><span>СЕТЕВОЙ ТРАФИК</span><span id="net-num">0 KB/s</span></div>
-                    <div class="p-bar"><div id="net-bar" class="p-fill blue-glow"></div></div>
+                    <div class="stat-head"><span>NETWORK_ACTIVITY</span></div>
+                    <div id="net-graph" class="graph-text">||||||||||||||||||||</div>
                 </div>
             </div>
         </div>
@@ -115,12 +109,12 @@
             <div class="user-avatar-glow">Ω</div>
             <div class="user-meta">
                 <h4 id="side-user">GUEST</h4>
-                <small class="green-t">CONNECTION: OK</small>
+                <small class="green-t">CONNECTION: STABLE</small>
             </div>
         </div>
         <div class="side-nav">
-            <button class="side-btn-glow" onclick="transitionTo('login-screen')">СМЕНИТЬ АККАУНТ</button>
-            <button class="side-btn-glow exit-btn" onclick="location.reload()">ЗАВЕРШИТЬ СЕАНС</button>
+            <button class="side-btn-glow" onclick="transitionTo('login-screen')">RELAY_LOGIN</button>
+            <button class="side-btn-glow exit-btn" onclick="location.reload()">TERMINATE</button>
         </div>
     </div>
     <div id="blur-shield" onclick="closeSidebar()"></div>
