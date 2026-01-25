@@ -1,25 +1,78 @@
-/** * ONG_CORE_V4_OFFICIAL_SCRIPT
- * Глобальные данные пользователей и уровни доступа
+/**
+ * ONG_CORE_V4_LEGACY
+ * База данных сотрудников
  */
-const PROFILES = {
-    "morisreal": { pass: "morisreal_profile_console", name: "MORIS REAL", lvl: 6 },
-    "kiddy":     { pass: "kiddy_profile_console",     name: "KIDDY",      lvl: 4 },
-    "dykzxz":    { pass: "dykzxz_profile_console",    name: "DYKZXZ",     lvl: 4 },
-    "msk4ne_":   { pass: "msk4ne_profile_console",    name: "MSK4NE",     lvl: 4 }
+const DATABASE = {
+    "morisreal": { pass: "morisreal_profile_console", name: "MORIS REAL", lvl: 6, date: "2026.01.20" },
+    "kiddy":     { pass: "kiddy_profile_console",     name: "KIDDY",      lvl: 4, date: "2026.01.22" },
+    "dykzxz":    { pass: "dykzxz_profile_console",    name: "DYKZXZ",     lvl: 4, date: "2026.01.24" },
+    "msk4ne_":   { pass: "msk4ne_profile_console",    name: "MSK4NE",     lvl: 4, date: "2026.01.25" }
 };
 
-// Конфиг подсказок
-const hintPhrases = ["пссс", "ты можешь написать просто lobby", "попробуй"];
-
-/** * ЭФФЕКТ: ЗАВАЛ КОДА (МАТРИЦА) 
+/**
+ * ГЛОБАЛЬНАЯ НАВИГАЦИЯ С ЭФФЕКТАМИ
  */
-function startMatrixEffect() {
+function transitionTo(targetWindowId) {
+    const overlay = document.getElementById('fade-overlay');
+    overlay.classList.add('active'); // Затухание
+    
+    setTimeout(() => {
+        openWindow(targetWindowId);
+        // Проявление
+        setTimeout(() => overlay.classList.remove('active'), 200);
+    }, 800);
+}
+
+function openWindow(id) {
+    document.querySelectorAll('.screen, #intro-screen').forEach(s => s.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+    
+    // Автоматический фокус для авторизации
+    if (id === 'login-screen') {
+        document.getElementById('auth-id').focus();
+    }
+}
+
+function scrollToSection(id) {
+    document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+}
+
+/**
+ * СИСТЕМА АВТОРИЗАЦИИ
+ */
+function handleAuth() {
+    const inputId = document.getElementById('auth-id').value.trim().toLowerCase();
+    const inputPass = document.getElementById('auth-pass').value.trim();
+
+    if (DATABASE[inputId] && DATABASE[inputId].pass === inputPass) {
+        // ЭФФЕКТ "ЗАВАЛА КОДА" ПЕРЕД ВХОДОМ
+        runMatrixSequence(() => {
+            const user = DATABASE[inputId];
+            // Заполнение данных профиля
+            document.getElementById('display-name').textContent = user.name;
+            document.getElementById('display-id').textContent = `ID: ${inputId.toUpperCase()}`;
+            document.getElementById('display-lvl').textContent = user.lvl;
+            document.getElementById('display-date').textContent = user.date;
+            
+            transitionTo('main-dashboard');
+        });
+    } else {
+        alert("ACCESS DENIED: INVALID CREDENTIALS");
+        document.getElementById('auth-pass').value = "";
+    }
+}
+
+/**
+ * ЭФФЕКТ МАТРИЦЫ (ЗАВАЛ КОДА)
+ */
+function runMatrixSequence(callback) {
     const canvas = document.getElementById('matrix-canvas');
     const ctx = canvas.getContext('2d');
+    canvas.classList.remove('hidden');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    const symbols = "0123456789ABCDEF<>[]{}/\\|#";
+    const chars = "0123456789ABCDEF";
     const fontSize = 16;
     const columns = canvas.width / fontSize;
     const drops = Array(Math.floor(columns)).fill(1);
@@ -31,122 +84,50 @@ function startMatrixEffect() {
         ctx.font = fontSize + "px monospace";
 
         for (let i = 0; i < drops.length; i++) {
-            const text = symbols[Math.floor(Math.random() * symbols.length)];
+            const text = chars[Math.floor(Math.random() * chars.length)];
             ctx.fillText(text, i * fontSize, drops[i] * fontSize);
             if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
             drops[i]++;
         }
     };
-    const matrixInterval = setInterval(draw, 33);
-    return matrixInterval;
-}
 
-/** * ЛОГИКА ПЕРЕХОДА (Завал -> Затухание -> Окно)
- */
-function transitionTo(targetWindowId) {
-    const canvas = document.getElementById('matrix-canvas');
-    const overlay = document.getElementById('fade-overlay');
+    const interval = setInterval(draw, 30);
     
-    // 1. Активируем завал кода
-    canvas.classList.remove('hidden');
-    canvas.classList.add('active');
-    const interval = startMatrixEffect();
-
-    // 2. Через 0.6с накладываем черное затухание поверх завала
+    // Через 1.5 сек останавливаем и переходим
     setTimeout(() => {
-        overlay.classList.add('active');
-        
-        // 3. Когда экран полностью черный, меняем окно
-        setTimeout(() => {
-            clearInterval(interval);
-            canvas.classList.add('hidden');
-            canvas.classList.remove('active');
-            
-            openWindow(targetWindowId);
-
-            // 4. Убираем затухание
-            setTimeout(() => {
-                overlay.classList.remove('active');
-            }, 500);
-        }, 800);
-    }, 600);
+        clearInterval(interval);
+        canvas.classList.add('hidden');
+        callback();
+    }, 1500);
 }
 
-/** * УПРАВЛЕНИЕ ОКНАМИ
+/**
+ * ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
  */
-function openWindow(id) {
-    document.querySelectorAll('.screen, #intro-screen').forEach(s => s.classList.add('hidden'));
-    document.getElementById(id).classList.remove('hidden');
-    
-    const panel = document.getElementById('side-panel');
-    if (id === 'main-dashboard' || id === 'lobby-screen') {
-        panel.classList.remove('side-hidden');
-    }
-    panel.classList.remove('active');
-    document.getElementById('blur-overlay').style.display = "none";
-
-    if (id === 'login-screen') {
-        appStage = "ID";
-        document.getElementById('auth-output').innerHTML = "> ONG_CORE В ОЖИДАНИИ... ВВЕДИТЕ ID:";
-        document.getElementById('cmd').focus();
-    }
+function updateClock() {
+    const now = new Date();
+    const time = now.toTimeString().split(' ')[0];
+    const el = document.getElementById('sys-clock');
+    if (el) el.textContent = time;
 }
+setInterval(updateClock, 1000);
 
-function scrollToSection(id) {
-    document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-}
-
-// Пасхалки
-async function runHintSystem() {
-    const box = document.getElementById('hint-box');
-    for (let msg of hintPhrases) {
-        await new Promise(r => setTimeout(r, 4000));
-        box.textContent = msg; box.style.opacity = "1";
-        await new Promise(r => setTimeout(r, 2000));
-        box.style.opacity = "0";
-    }
-}
-
-/** * ОБРАБОТКА КОНСОЛИ
- */
-let appStage = "ID", currentUser = null;
-
-document.getElementById('cmd').onkeydown = (e) => {
+// Обработка Enter в полях ввода
+document.addEventListener('keydown', (e) => {
     if (e.key === "Enter") {
-        let val = e.target.value.trim().toLowerCase();
-        e.target.value = "";
-        const history = document.getElementById('auth-output');
-
-        if (val === "lobby") {
-            transitionTo('lobby-screen');
-            return;
-        }
-
-        if (appStage === "ID") {
-            if (PROFILES[val]) {
-                currentUser = PROFILES[val];
-                appStage = "PASS";
-                history.innerHTML += `<br>> ID [${val.toUpperCase()}] ПРИНЯТ. УРОВЕНЬ: ${currentUser.lvl}. ВВЕДИТЕ ПАРОЛЬ:`;
-            } else {
-                history.innerHTML += `<br>> ОШИБКА: ID НЕ НАЙДЕН.`;
-            }
-        } else if (appStage === "PASS") {
-            if (val === currentUser.pass) {
-                transitionTo('main-dashboard');
-                document.getElementById('user-display').textContent = currentUser.name;
-                document.getElementById('user-lvl-tag').textContent = `ACCESS LVL: ${currentUser.lvl}`;
-            } else {
-                history.innerHTML += `<br>> ОШИБКА: НЕВЕРНЫЙ ПАРОЛЬ.`;
-            }
+        const loginScreen = document.getElementById('login-screen');
+        if (!loginScreen.classList.contains('hidden')) {
+            handleAuth();
         }
     }
-};
+});
 
-/** * ИНИЦИАЛИЗАЦИЯ (ЛОГОТИП)
+/**
+ * ЗАПУСК ЛОГОТИПА (ИНТРО)
  */
 window.onload = () => {
     const logoEl = document.getElementById('big-logo');
-    const ascii = `
+    const asciiLogo = `
  ██████╗ ██╗      ██████╗ ███╗   ███╗ ██████╗ 
 ██╔════╝ ██║     ██╔════╝ ████╗ ████║██╔════╝ 
 ██║  ███╗██║     ██║  ███╗██╔████╔██║██║  ███╗
@@ -155,26 +136,13 @@ window.onload = () => {
  ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ `;
 
     let charIdx = 0;
-    const typeLogo = () => {
-        if (charIdx < ascii.length) {
-            logoEl.textContent += ascii[charIdx++];
-            setTimeout(typeLogo, 1);
+    const type = () => {
+        if (charIdx < asciiLogo.length) {
+            logoEl.textContent += asciiLogo[charIdx++];
+            setTimeout(type, 1);
         } else {
-            setTimeout(() => {
-                openWindow('login-screen');
-                runHintSystem();
-            }, 1200);
+            setTimeout(() => transitionTo('login-screen'), 1000);
         }
     };
-    typeLogo();
-};
-
-// Меню
-document.getElementById('menu-trigger').onclick = () => {
-    document.getElementById('side-panel').classList.add('active');
-    document.getElementById('blur-overlay').style.display = "block";
-};
-document.getElementById('blur-overlay').onclick = () => {
-    document.getElementById('side-panel').classList.remove('active');
-    document.getElementById('blur-overlay').style.display = "none";
+    type();
 };
