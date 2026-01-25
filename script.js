@@ -1,109 +1,120 @@
-const USERS = {
-    "morisreal": { pass: "morisreal_profile_console", rank: "CHIEF_OPERATOR", avatar: "M", x: 50, y: 50, type: "owner", label: "МОЯ ЛАБОРАТОРИЯ" },
-    "sumber": { pass: "SumberTheAdminPRISMS", rank: "PRISMA_CHIEF", avatar: "P", x: 35, y: 35, type: "online", label: "ЛАБА ПРИЗМЫ" },
-    "dykxzx": { pass: "DykProfileConsoleONG", rank: "FAILED_CORE", avatar: "D", x: 65, y: 45, type: "broken", label: "РЕАКТОР ДУКА" }
+const DB = {
+    "morisreal": { pass: "morisreal_profile_console", rank: "CHIEF_OPERATOR", ava: "M", x: 50, y: 50, type: "owner", title: "МОЯ ЛАБОРАТОРИЯ" },
+    "sumber": { pass: "SumberTheAdminPRISMS", rank: "PRISMA_LAB_CHIEF", ava: "P", x: 32, y: 38, type: "online", title: "ЛАБА ПРИЗМЫ" },
+    "dykxzx": { pass: "DykProfileConsoleONG", rank: "FAILED_REACTOR", ava: "D", x: 68, y: 42, type: "broken", title: "РЕАКТОР ДУКА" }
 };
 
-let currentUser = null;
+let activeUser = null;
 
-// ИНТРО
-function runIntro() {
-    const el = document.getElementById('intro-logo');
-    const txt = "G.L.O.M.G. v26.5\nSYSTEM_BOOT...";
-    let i = 0;
-    const t = setInterval(() => {
-        el.textContent += txt[i];
-        i++;
-        if(i >= txt.length) { clearInterval(t); setTimeout(() => transitionTo('login-screen'), 1000); }
-    }, 50);
-}
+// ЗАГРУЗКА
+window.onload = () => {
+    const ascii = document.getElementById('intro-ascii');
+    const text = "G.L.O.M.G. v26.5\nCRYSTAL_OS INITIALIZING...\nLOADING SECTORS...\nSYSTEM READY.";
+    let charIdx = 0;
+    const interval = setInterval(() => {
+        ascii.textContent += text[charIdx];
+        charIdx++;
+        if (charIdx >= text.length) {
+            clearInterval(interval);
+            setTimeout(() => transition('scr-login'), 1200);
+        }
+    }, 30);
+};
 
-// ПЕРЕХОДЫ (ВАЖНО: Худ скрывается тут)
-function transitionTo(id) {
-    const fade = document.getElementById('fade-overlay');
+// ПЕРЕХОДЫ МЕЖДУ ЭКРАНАМИ
+function transition(screenId) {
+    const fade = document.getElementById('fade');
     fade.classList.add('active');
     
-    // Прячем Худ везде, кроме Дашборда и Карты
-    const hud = document.getElementById('main-header');
-    if (id === 'main-dashboard' || id === 'map-screen') {
-        hud.classList.remove('hidden');
-    } else {
-        hud.classList.add('hidden');
-    }
-
     setTimeout(() => {
+        // Скрываем все секции
         document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-        document.getElementById(id).classList.remove('hidden');
-        if(id === 'lobby-screen') startLogs();
+        // Показываем нужную
+        document.getElementById(screenId).classList.remove('hidden');
+        
+        if(screenId === 'scr-guest') startGuestLogs();
+        
         fade.classList.remove('active');
     }, 400);
 }
 
-// ЛОГИН
-function handleAuth() {
-    const u = document.getElementById('auth-id').value.toLowerCase();
-    const p = document.getElementById('auth-pass').value;
-    if(USERS[u] && USERS[u].pass === p) {
-        currentUser = { id: u, ...USERS[u] };
-        document.getElementById('side-username').textContent = u.toUpperCase();
-        document.getElementById('side-avatar').textContent = USERS[u].avatar;
-        document.getElementById('p-name').textContent = u.toUpperCase();
-        document.getElementById('p-rank').textContent = USERS[u].rank;
-        document.getElementById('p-avatar').textContent = USERS[u].avatar;
-        document.getElementById('p-id').textContent = "GL-" + Math.floor(Math.random()*9999);
-        transitionTo('main-dashboard');
-    } else { alert("ACCESS DENIED"); }
+// АВТОРИЗАЦИЯ
+function auth() {
+    const idInput = document.getElementById('inp-id').value.toLowerCase();
+    const passInput = document.getElementById('inp-pass').value;
+    
+    if (DB[idInput] && DB[idInput].pass === passInput) {
+        activeUser = { id: idInput, ...DB[idInput] };
+        
+        // Заполняем интерфейс данными юзера
+        document.getElementById('u-name').textContent = idInput.toUpperCase();
+        document.getElementById('u-rank').textContent = activeUser.rank;
+        document.getElementById('u-ava').textContent = activeUser.ava;
+        
+        transition('scr-dash');
+    } else {
+        alert("ACCESS DENIED: INVALID ID OR KEY");
+    }
 }
 
-function enterGuest() { transitionTo('lobby-screen'); }
+function goGuest() {
+    transition('scr-guest');
+}
 
-// РАДАР
-function openMap() {
-    transitionTo('map-screen');
-    const container = document.getElementById('node-map');
-    container.innerHTML = "";
-    Object.keys(USERS).forEach(key => {
-        const u = USERS[key];
-        const node = document.createElement('div');
-        node.className = `node ${u.type}`;
-        node.style.left = u.x + "%";
-        node.style.top = u.y + "%";
-        node.onclick = () => {
-            document.getElementById('node-info').classList.remove('hidden');
-            document.getElementById('n-name').textContent = u.label;
-            document.getElementById('n-status').textContent = u.type.toUpperCase();
-            document.getElementById('n-rank').textContent = u.rank;
+// РАДАР И ТОЧКИ
+function goMap() {
+    transition('scr-map');
+    const nodeContainer = document.getElementById('radar-nodes');
+    nodeContainer.innerHTML = ""; // Чистим перед рендером
+    
+    Object.keys(DB).forEach(key => {
+        const item = DB[key];
+        const dot = document.createElement('div');
+        dot.className = `node ${item.type}`;
+        dot.style.left = item.x + "%";
+        dot.style.top = item.y + "%";
+        
+        dot.onclick = () => {
+            const popup = document.getElementById('node-info');
+            popup.classList.remove('hidden');
+            document.getElementById('n-name').textContent = item.title;
+            document.getElementById('n-desc').textContent = `OFFICER: ${key.toUpperCase()} | STATUS: ${item.type.toUpperCase()}`;
         };
-        container.appendChild(node);
+        
+        nodeContainer.appendChild(dot);
     });
 }
 
-// САЙДБАР И МОДАЛКИ
-function toggleSidebar() {
-    const s = document.getElementById('side-menu');
-    const o = document.getElementById('side-overlay');
-    const act = s.classList.toggle('active');
-    o.style.display = act ? 'block' : 'none';
+// СИСТЕМНЫЕ ФУНКЦИИ
+function modal(id, state) {
+    document.getElementById(id).classList.toggle('hidden', !state);
 }
 
-function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+function side(state) {
+    document.getElementById('sidebar').classList.toggle('open', state);
+    document.getElementById('side-overlay').style.display = state ? 'block' : 'none';
+}
 
-// ЛОГИ ГОСТЯ
-function startLogs() {
-    const box = document.getElementById('guest-logs');
-    setInterval(() => {
-        if(document.getElementById('lobby-screen').classList.contains('hidden')) return;
-        const d = document.createElement('div');
-        d.textContent = `[${new Date().toLocaleTimeString()}] Monitoring sector ${Math.floor(Math.random()*99)}... OK`;
-        box.prepend(d);
-        if(box.childNodes.length > 20) box.lastChild.remove();
-    }, 2000);
+function startGuestLogs() {
+    const logBox = document.getElementById('guest-logs');
+    if(window.logTimer) clearInterval(window.logTimer);
+    
+    const messages = [
+        "Scanning sub-layers...", "Crystal frequency: 440Hz", "No anomalies detected.",
+        "Buffer overflow in Sector 7", "Bypassing firewall...", "Data stream stable.",
+        "External ping from [REDACTED]", "Oxygen levels: 98%", "Ambient temp: -184.2C"
+    ];
+    
+    window.logTimer = setInterval(() => {
+        const line = document.createElement('div');
+        line.textContent = `[${new Date().toLocaleTimeString()}] ${messages[Math.floor(Math.random()*messages.length)]}`;
+        logBox.prepend(line);
+        if(logBox.childNodes.length > 20) logBox.lastChild.remove();
+    }, 1800);
 }
 
 // ЧАСЫ
 setInterval(() => {
-    document.getElementById('op-clock').textContent = new Date().toLocaleTimeString();
+    const clockEl = document.getElementById('clock');
+    if(clockEl) clockEl.textContent = new Date().toLocaleTimeString();
 }, 1000);
-
-window.onload = runIntro;
