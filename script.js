@@ -1,100 +1,101 @@
-const STAFF = { "morisreal": "morisreal_profile_console" };
-let startTime = Date.now();
+const DB = { "morisreal": "morisreal_profile_console" };
 
-// ЧАСЫ И АПТАЙМ
-function updateTime() {
+// ЧАСЫ (MSK UTC+3)
+function clockTick() {
     const now = new Date();
     const msk = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (3 * 3600000));
-    document.querySelectorAll('.time-val').forEach(el => el.textContent = msk.toTimeString().split(' ')[0]);
-    
-    // Uptime calculation
-    let diff = Math.floor((Date.now() - startTime) / 1000);
-    let h = Math.floor(diff / 3600).toString().padStart(2, '0');
-    let m = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
-    let s = (diff % 60).toString().padStart(2, '0');
-    if(document.getElementById('uptime-val')) document.getElementById('uptime-val').textContent = `${h}:${m}:${s}`;
+    const str = msk.toTimeString().split(' ')[0];
+    document.querySelectorAll('.time-val').forEach(el => el.textContent = str);
 }
-setInterval(updateTime, 1000);
+setInterval(clockTick, 1000);
 
-// ДИНАМИЧЕСКАЯ ТЕЛЕМЕТРИЯ
-let cpu = 5, temp = 40, net = 120;
+// ДАТЧИКИ (РВАНЫЙ РИТМ)
+let cpu = 5, temp = 39, net = 100;
 function updateTelemetry() {
-    // CPU: 1-12% рваный ритм
-    cpu += (Math.random() > 0.4 ? 1.5 : -1.2) * Math.random();
+    // Рандомный шаг для ЦП
+    cpu += (Math.random() > 0.45 ? 1.6 : -1.4) * Math.random();
     cpu = Math.min(Math.max(cpu, 1), 12);
     
-    // TEMP: 38-46°C
-    temp += (Math.random() > 0.5 ? 0.3 : -0.2);
-    temp = Math.min(Math.max(temp, 38), 46);
+    // Температура
+    temp += (Math.random() > 0.5 ? 0.3 : -0.25);
+    temp = Math.min(Math.max(temp, 37), 45);
 
-    // NET: 50-800 KB/s
-    net = Math.floor(Math.random() * 750) + 50;
+    // Трафик
+    net = Math.floor(Math.random() * 800) + 40;
 
     if(document.getElementById('cpu-bar')) {
         document.getElementById('cpu-num').textContent = cpu.toFixed(1) + "%";
-        document.getElementById('cpu-bar').style.width = (cpu * 8) + "%"; // Scale for visibility
+        document.getElementById('cpu-bar').style.width = (cpu * 8.3) + "%";
         
         document.getElementById('temp-num').textContent = temp.toFixed(1) + "°C";
-        document.getElementById('temp-bar').style.width = ((temp - 30) * 6) + "%";
+        document.getElementById('temp-bar').style.width = ((temp-35) * 10) + "%";
         
         document.getElementById('net-num').textContent = net + " KB/s";
-        document.getElementById('net-bar').style.width = (net / 8) + "%";
+        document.getElementById('net-bar').style.width = (net / 10) + "%";
     }
 }
-setInterval(updateTelemetry, 700);
+setInterval(updateTelemetry, 800);
 
-function transitionTo(targetId) {
+// ЛОГИКА ПЕРЕХОДОВ
+function transitionTo(id) {
     const fade = document.getElementById('fade-overlay');
     fade.classList.add('active');
     setTimeout(() => {
-        document.querySelectorAll('.screen, #intro-screen').forEach(s => s.classList.add('hidden'));
-        document.getElementById(targetId).classList.remove('hidden');
+        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
         closeSidebar();
         
-        const anims = document.getElementById(targetId).querySelectorAll('.anim-btn-fly, .anim-login-fly');
-        anims.forEach(a => { a.style.animation = 'none'; a.offsetHeight; a.style.animation = ''; });
+        // Перезапуск анимаций внутри экрана
+        const btns = document.getElementById(id).querySelectorAll('.mega-btn, .auth-card');
+        btns.forEach(b => { b.style.animation = 'none'; b.offsetHeight; b.style.animation = ''; });
         
         setTimeout(() => fade.classList.remove('active'), 150);
-    }, 500);
+    }, 450);
 }
 
 function handleAuth() {
-    const id = document.getElementById('auth-id').value.trim().toLowerCase();
-    const pass = document.getElementById('auth-pass').value.trim();
-    if (STAFF[id] === pass) {
-        document.getElementById('side-username').textContent = id.toUpperCase();
-        startTime = Date.now(); // Reset uptime on login
+    const u = document.getElementById('auth-id').value.trim().toLowerCase();
+    const p = document.getElementById('auth-pass').value.trim();
+    if (DB[u] === p) {
+        document.getElementById('side-user').textContent = u.toUpperCase();
         transitionTo('main-dashboard');
-    } else { alert("ACCESS DENIED"); }
+    } else {
+        alert("ACCESS_DENIED: INVALID_CREDENTIALS");
+    }
 }
 
 function toggleSidebar(e) {
     e.stopPropagation();
-    document.getElementById('side-panel').classList.toggle('active');
-    document.getElementById('overlay-blur').style.display = 
-        document.getElementById('side-panel').classList.contains('active') ? "block" : "none";
+    const p = document.getElementById('side-panel');
+    const s = document.getElementById('blur-shield');
+    p.classList.toggle('active');
+    s.style.display = p.classList.contains('active') ? "block" : "none";
 }
 
 function closeSidebar() {
     document.getElementById('side-panel').classList.remove('active');
-    document.getElementById('overlay-blur').style.display = "none";
+    document.getElementById('blur-shield').style.display = "none";
 }
 
-function scrollToSection(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
+function scrollToSection(id) {
+    document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+}
 
+// ПЕЧАТЬ ЛОГОТИПА
 window.onload = () => {
     const l = document.getElementById('big-logo');
-    const a = `
+    const txt = `
  ██████╗ ██╗      ██████╗ ███╗   ███╗ ██████╗ 
 ██╔════╝ ██║     ██╔════╝ ████╗ ████║██╔════╝ 
 ██║  ███╗██║     ██║  ███╗██╔████╔██║██║  ███╗
 ██║   ██║██║     ██║   ██║██║╚██╔╝██║██║   ██║
 ╚██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║╚██████╔╝
  ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ `;
-    let p = 0;
-    const t = () => {
-        if(p < a.length) { l.textContent += a[p++]; setTimeout(t, 1); }
-        else { setTimeout(() => transitionTo('login-screen'), 800); }
+    let i = 0;
+    const type = () => {
+        if(i < txt.length) { l.textContent += txt[i++]; setTimeout(type, 1); }
+        else { setTimeout(() => transitionTo('login-screen'), 1000); }
     };
-    t();
+    type();
+    clockTick();
 };
