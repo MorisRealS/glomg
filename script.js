@@ -1,103 +1,100 @@
 const PROFILES = {
     "kiddy": { pass: "1111", name: "KIDDY" },
     "dykzxz": { pass: "2222", name: "DYKZXZ" },
-    "msk4ne_": { pass: "3333", name: "MSK4NE" }
+    "msk4ne_": { pass: "3333", name: "MSK4NE" },
+    "sumber": { pass: "4444", name: "SUMBER" },
+    "krimpi": { pass: "5555", name: "KRIMPI" }
 };
 
 const output = document.getElementById('output');
 const cmdInput = document.getElementById('cmd');
-const glitchLayer = document.getElementById('glitch-layer');
+const glitch = document.getElementById('glitch-layer');
 
-// 1. Плавное появление (Пафосный вход)
-window.onload = () => {
-    setTimeout(() => {
-        document.querySelector('.terminal-wrapper').style.opacity = "1";
-        runBootSequence();
-    }, 1000);
-};
-
-// 2. Эффект глитча каждые 5-7 секунд
-setInterval(() => {
-    glitchLayer.classList.add('glitch-active');
-    setTimeout(() => glitchLayer.classList.remove('glitch-active'), 300);
-}, 6000);
-
-// 3. Бегущие строки (Buckshot Roulette Style)
-async function runBootSequence() {
+// 4. Пафосная загрузка текста
+async function startBoot() {
     const lines = [
-        "ONG_CORE V.3.1.24 INITIALIZING...",
-        "CHECKING VOLTA_DRIVE... OK",
-        "ESTABLISHING SECURE CONNECTION...",
-        "DECRYPTING SEGMENTS...",
-        "READY. ENTER IDENTIFIER."
+        "BOOTING ONG_OS...",
+        "KERNEL_VOLTA_REV_04 LOADED",
+        "CONNECTING TO THE GRID................ DONE",
+        "WARNING: SECURE CONNECTION ONLY",
+        "PLEASE AUTHORIZE:"
     ];
-    
+
     for (let line of lines) {
-        let div = document.createElement('div');
-        div.className = "line";
-        div.textContent = "> " + line;
-        output.appendChild(div);
-        await new Promise(r => setTimeout(r, 400)); // Задержка строк
+        let p = document.createElement('div');
+        p.textContent = "> " + line;
+        p.style.marginBottom = "10px";
+        output.appendChild(p);
+        await new Promise(r => setTimeout(r, 600)); // Задержка между строками
     }
-    document.getElementById('input-line').classList.remove('hidden');
+    document.getElementById('input-container').classList.remove('hidden');
     cmdInput.focus();
 }
 
-// 4. Логика входа
-let authStep = "ID";
+setTimeout(startBoot, 1500); // Запуск после blackout
+
+// Глитч эффект
+setInterval(() => {
+    glitch.classList.add('glitch-active');
+    setTimeout(() => glitch.classList.remove('glitch-active'), 350);
+}, 6000);
+
+// Логика консоли
+let state = "ID";
 let currentUser = null;
 
 cmdInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
-        const val = cmdInput.value.trim().toLowerCase();
+        let val = cmdInput.value.trim().toLowerCase();
         cmdInput.value = "";
 
-        if (authStep === "ID") {
+        if (state === "ID") {
             if (PROFILES[val]) {
                 currentUser = PROFILES[val];
-                print(`> ID ACCEPTED: ${val.toUpperCase()}`);
-                print("> ENTER PASSCODE:");
+                print("ID ACCEPTED. ENTER PASSCODE:");
                 cmdInput.type = "password";
-                authStep = "PASS";
+                state = "PASS";
+            } else {
+                print("ACCESS DENIED: UNKNOWN ID");
             }
-        } else if (authStep === "PASS") {
+        } else if (state === "PASS") {
             if (val === currentUser.pass) {
-                print("> ACCESS GRANTED.");
-                transitionToDashboard();
+                print("SUCCESS. INITIALIZING DASHBOARD...");
+                setTimeout(showMain, 1000);
+            } else {
+                print("CRITICAL ERROR: WRONG PASSWORD");
+                setTimeout(() => location.reload(), 1000);
             }
         }
     }
 });
 
-function print(text) {
-    const d = document.createElement('div');
-    d.className = "line";
-    d.textContent = text;
-    output.appendChild(d);
+function print(t) {
+    let p = document.createElement('div');
+    p.textContent = ">> " + t;
+    output.appendChild(p);
 }
 
-// 5. Переход (Глюк полосами)
-function transitionToDashboard() {
-    glitchLayer.style.background = "white"; // Вспышка
-    setTimeout(() => {
-        document.getElementById('login-screen').classList.add('hidden');
-        document.getElementById('halftone-layer').classList.add('hidden');
-        document.getElementById('main-dashboard').classList.remove('hidden');
-        document.getElementById('user-name-display').textContent = currentUser.name;
-    }, 200);
+// Переход на второе окно
+function showMain() {
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('main-dashboard').classList.remove('hidden');
+    document.getElementById('user-display').textContent = currentUser.name;
+    // Убираем точки на второй странице
+    document.querySelector('.halftone').style.display = 'none';
 }
 
-// 6. Управление плашкой
+// 3. Плашка профиля
 const menuBtn = document.getElementById('menu-btn');
-const sidebar = document.getElementById('profile-sidebar');
-const darken = document.getElementById('overlay-darken');
+const sidePanel = document.getElementById('side-panel');
+const dark = document.getElementById('dark-overlay');
 
 menuBtn.onclick = () => {
-    sidebar.classList.add('open');
-    darken.style.display = 'block';
+    sidePanel.classList.toggle('active');
+    dark.style.display = sidePanel.classList.contains('active') ? 'block' : 'none';
 };
 
-darken.onclick = () => {
-    sidebar.classList.remove('open');
-    darken.style.display = 'none';
+dark.onclick = () => {
+    sidePanel.classList.remove('active');
+    dark.style.display = 'none';
 };
