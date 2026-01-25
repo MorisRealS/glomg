@@ -1,79 +1,88 @@
 :root { 
-    --p: #a855f7; --bg: #030105; --red: #ff3333; --dark: #07020a; 
+    --p: #a855f7; --bg: #030105; --dark: #07020a; --red: #ff3333;
     --glow: 0 0 15px rgba(168, 85, 247, 0.6); 
 }
 
 * { box-sizing: border-box; outline: none; }
 body, html { margin: 0; padding: 0; background: #000; color: var(--p); font-family: 'Courier New', monospace; height: 100vh; overflow: hidden; }
 
-/* КИЛЛЕР БЕЛЫХ ИНПУТОВ */
+/* ПОБЕДА НАД БЕЛЫМИ ИНПУТАМИ */
 input, input:-webkit-autofill {
-    background: #000 !important;
-    color: var(--p) !important;
+    background: #000 !important; color: var(--p) !important;
     -webkit-text-fill-color: var(--p) !important;
     box-shadow: inset 0 0 0 1000px #000 !important;
-    border: 1px solid var(--p) !important;
-    padding: 15px;
-    font-family: inherit;
+    border: 1px solid var(--p) !important; padding: 18px; font-family: inherit;
     text-shadow: 0 0 5px var(--p);
 }
 
-/* ЭФФЕКТЫ ФОНА */
-.fx-layer { position: fixed; inset: 0; z-index: 5; pointer-events: none; }
+/* ЭФФЕКТЫ */
+.fx-layer { position: fixed; inset: 0; z-index: 1000; pointer-events: none; }
 .tv-noise { position: absolute; inset: 0; opacity: 0.05; background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/White-noise-mv255-240x180.png'); }
 .crt-overlay { position: absolute; inset: 0; background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.1) 50%), radial-gradient(rgba(168,85,247,0.05), transparent); background-size: 100% 3px, 100% 100%; }
 
-/* ГЛИТЧ-АНИМАЦИЯ */
+/* ГЛИТЧ ОКНА ЛОГИНА */
 @keyframes cyberGlitch {
     0% { transform: translate(0); }
-    20% { transform: translate(-2px, 1px); filter: hue-rotate(90deg); }
-    40% { transform: translate(2px, -1px); }
-    60% { transform: translate(-1px, -2px); }
+    10% { transform: translate(-3px, 1px); filter: hue-rotate(45deg); }
+    20% { transform: translate(3px, -1px); }
     100% { transform: translate(0); }
 }
-.cyber-glitch { animation: cyberGlitch 0.3s infinite; animation-play-state: paused; }
+.cyber-glitch { animation: cyberGlitch 0.2s infinite; animation-play-state: paused; }
 .cyber-glitch:hover { animation-play-state: running; }
 
-/* AUTH TERMINAL */
-.auth-terminal { width: 420px; background: var(--dark); border: 2px solid var(--p); box-shadow: var(--glow); position: relative; z-index: 100; transition: 0.3s; }
-.term-header { background: var(--p); color: #000; padding: 12px; font-weight: bold; position: relative; overflow: hidden; display: flex; justify-content: space-between; }
+/* ДИЗАЙН АВТОРИЗАЦИИ */
+.auth-terminal { width: 460px; background: var(--dark); border: 2px solid var(--p); box-shadow: var(--glow); position: relative; z-index: 100; }
+.term-header { background: var(--p); color: #000; padding: 12px; font-weight: bold; position: relative; overflow: hidden; }
 .scan-line-mini { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: #fff; opacity: 0.5; animation: scan 2s linear infinite; }
 @keyframes scan { from { top: 0; } to { top: 100%; } }
-.term-body { padding: 30px; }
-.term-input-group { margin-bottom: 20px; }
-.term-input-group label { display: block; font-size: 0.8rem; margin-bottom: 8px; font-weight: bold; }
-.term-footer { padding: 10px; font-size: 0.7rem; border-top: 1px solid rgba(168,85,247,0.1); text-align: center; }
+.term-body { padding: 40px; }
+.term-input-group { margin-bottom: 25px; }
+.term-input-group label { display: block; font-size: 0.9rem; margin-bottom: 10px; font-weight: bold; }
+.term-actions { display: flex; flex-direction: column; gap: 15px; }
+.big-btn { padding: 22px !important; font-size: 1.1rem !important; border-width: 2px !important; }
+.term-footer { padding: 10px; font-size: 0.7rem; text-align: center; border-top: 1px solid rgba(168,85,247,0.1); }
 
-/* КНОПКИ */
+/* ГОСТЕВОЙ СТЕК */
+.lobby-stack { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.mini-doc-box { border: 1px solid rgba(168,85,247,0.3); padding: 15px; width: 400px; text-align: center; background: rgba(168,85,247,0.05); margin-top: 10px; }
+
+/* КАРТА ОСТРОВА */
+.map-bg { background: #000; }
+.map-wrapper { position: relative; width: 1000px; height: 600px; display: flex; align-items: center; justify-content: center; }
+.map-container { position: absolute; inset: 0; }
+.node { 
+    position: absolute; width: 6px; height: 6px; background: var(--p); 
+    border-radius: 50%; box-shadow: 0 0 10px var(--p); opacity: 0; 
+    animation: nodeIn 0.3s forwards; z-index: 10; cursor: pointer;
+}
+@keyframes nodeIn { to { opacity: 0.8; } }
+.node:hover { transform: scale(2.5); background: #fff; box-shadow: 0 0 20px #fff; z-index: 100; opacity: 1; }
+.map-lines { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+.map-line { stroke: var(--p); stroke-width: 1; opacity: 0.15; transition: 0.3s; }
+
+/* КНОПКИ ГЛОБАЛЬНО */
 .glow-btn, .mega-glow-btn, .side-btn-glow, .back-btn-glow {
     background: transparent; border: 1px solid var(--p); color: var(--p); 
     cursor: pointer; transition: 0.2s; font-family: inherit; font-weight: bold;
     text-shadow: 0 0 5px var(--p);
 }
-.glow-btn:hover, .mega-glow-btn:hover { background: var(--p); color: #000; box-shadow: 0 0 20px var(--p); }
-.mega-glow-btn { width: 320px; padding: 18px; margin: 10px; font-size: 1rem; letter-spacing: 2px; }
+.glow-btn:hover, .mega-glow-btn:hover { background: var(--p); color: #000; box-shadow: 0 0 30px var(--p); }
+.mega-glow-btn { width: 360px; padding: 22px; margin: 8px; font-size: 1.1rem; letter-spacing: 2px; }
 .main-action { background: var(--p); color: #000; }
 
-/* КАРТА */
-.map-bg { background: radial-gradient(circle, #1a0b2e 0%, #000 100%); }
-.map-container { position: relative; width: 100vw; height: 100vh; }
-.node { position: absolute; width: 8px; height: 8px; background: var(--p); border-radius: 50%; box-shadow: 0 0 10px var(--p); opacity: 0; animation: nodeAppear 0.5s forwards; }
-@keyframes nodeAppear { to { opacity: 0.8; } }
-.node:hover { transform: scale(2); background: #fff; box-shadow: 0 0 20px #fff; opacity: 1; z-index: 10; }
-
 /* ТЕЛЕМЕТРИЯ */
-.telemetry-grid { width: 420px; }
-.stat-card { background: rgba(168, 85, 247, 0.05); border: 1px solid rgba(168, 85, 247, 0.1); padding: 25px; margin-bottom: 20px; }
-.p-bar { width: 100%; height: 10px; background: #000; border: 1px solid rgba(168, 85, 247, 0.2); overflow: hidden; margin-top: 12px; }
-.p-fill { height: 100%; width: 0%; background: var(--p); box-shadow: 0 0 15px var(--p); transition: 0.5s cubic-bezier(0.1, 1, 0.1, 1); }
+.telemetry-grid { width: 450px; }
+.stat-card { background: rgba(168,85,247,0.05); border: 1px solid rgba(168,85,247,0.1); padding: 25px; margin-bottom: 20px; }
+.p-bar { width: 100%; height: 10px; background: #000; border: 1px solid rgba(168,85,247,0.2); overflow: hidden; margin-top: 12px; }
+.p-fill { height: 100%; width: 0%; background: var(--p); box-shadow: 0 0 15px var(--p); transition: 0.5s; }
 .red-glow { background: var(--red); box-shadow: 0 0 15px var(--red); }
 
 /* ИНТЕРФЕЙС */
-.screen { position: fixed; inset: 0; z-index: 100; background: var(--bg); }
-.top-nav { position: fixed; top: 0; width: 100%; padding: 30px 50px; display: flex; justify-content: space-between; z-index: 500; }
-.msk-clock { border: 1px solid var(--p); padding: 8px 18px; background: rgba(0,0,0,0.9); box-shadow: var(--glow); }
+.screen { position: fixed; inset: 0; z-index: 100; background: #000; display: flex; align-items: center; justify-content: center; }
+.top-nav { position: fixed; top: 0; width: 100%; padding: 30px 60px; display: flex; justify-content: space-between; z-index: 500; }
+.msk-clock { border: 1px solid var(--p); padding: 10px 20px; background: rgba(0,0,0,0.9); font-weight: bold; }
 .menu-trigger { cursor: pointer; }
-.menu-trigger span { display: block; width: 25px; height: 2px; background: var(--p); margin: 6px 0; }
+.menu-trigger span { display: block; width: 28px; height: 2px; background: var(--p); margin: 6px 0; }
 #side-panel { position: fixed; left: -350px; top: 0; width: 320px; height: 100%; background: var(--dark); border-right: 2px solid var(--p); z-index: 10000; transition: 0.4s; padding: 60px 30px; }
 #side-panel.active { left: 0; }
 #blur-shield { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 9000; display: none; }
@@ -82,4 +91,4 @@ input, input:-webkit-autofill {
 .volta-logo-giant { font-size: 11px; line-height: 11px; white-space: pre; text-shadow: 0 0 20px var(--p); }
 #fade-overlay { position: fixed; inset: 0; background: #000; z-index: 20000; opacity: 0; transition: 0.4s; pointer-events: none; }
 #fade-overlay.active { opacity: 1; }
-.full-screen-center { height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; }
+.full-screen-center { display: flex; align-items: center; justify-content: center; flex-direction: column; }
