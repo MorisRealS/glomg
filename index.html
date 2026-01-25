@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GLOMG_CORE_V25.2_TOTAL</title>
+    <title>G.L.O.M.G. CORE V26.1</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -16,15 +16,14 @@
     <div id="fade-overlay"></div>
 
     <div id="intro-screen" class="full-screen-center">
-        <pre id="big-logo" class="volta-logo-giant flicker-text"></pre>
+        <pre id="big-logo" class="glomg-logo-giant flicker-text"></pre>
     </div>
 
     <div id="login-screen" class="screen hidden">
         <div class="full-screen-center">
-            <div class="auth-terminal cyber-glitch">
+            <div class="auth-terminal neon-glow-box">
                 <div class="term-header">
-                    <span>SECURITY_GATE_V25.2</span>
-                    <span class="scan-line-mini"></span>
+                    <span class="glomg-brand">G.L.O.M.G. SECURITY_GATE</span>
                 </div>
                 <div class="term-body">
                     <div class="term-input-group">
@@ -32,30 +31,30 @@
                         <input type="text" id="auth-id" spellcheck="false" autocomplete="off" placeholder="IDENTIFY...">
                     </div>
                     <div class="term-input-group">
-                        <label>ACCESS_CRYPT</label>
+                        <label>SECURE_KEY</label>
                         <input type="password" id="auth-pass" placeholder="PASSWORD...">
                     </div>
                     <div class="term-actions">
-                        <button class="glow-btn main-action big-btn" onclick="handleAuth()">INITIALIZE_SYSTEM</button>
-                        <button class="glow-btn big-btn" onclick="enterGuest()">GUEST_OVERRIDE</button>
+                        <button class="cyber-btn main-action" onclick="handleAuth()">INITIALIZE_SYSTEM</button>
+                        <button class="cyber-btn guest-action" onclick="enterGuest()">GUEST_OVERRIDE</button>
                     </div>
                 </div>
-                <div class="term-footer">ENCRYPTION: AES-512 ACTIVE // STABLE_MODE</div>
+                <div class="term-footer">SYSTEM_STATUS: STABLE // ENCRYPTION_ACTIVE</div>
             </div>
         </div>
     </div>
 
     <div id="lobby-screen" class="screen hidden">
         <header class="top-nav">
-            <div class="msk-clock">GUEST_SESSION</div>
-            <button class="glow-btn" onclick="transitionTo('login-screen')">LOG_IN</button>
+            <div class="msk-clock">MODE: GUEST_ACCESS</div>
+            <button class="cyber-btn-mini" onclick="transitionTo('login-screen')">LOG_IN</button>
         </header>
         <div class="full-screen-center">
             <div class="lobby-stack">
-                <button class="mega-glow-btn" onclick="openMap()">ОБЗОР ТЕРРИТОРИИ</button>
-                <div class="mini-doc-box">
-                    <h4 class="green-t">> PUBLIC_INFO:</h4>
-                    <p>Доступ к телеметрии заблокирован. <br> Авторизуйтесь для получения полных прав.</p>
+                <button class="mega-cyber-btn" onclick="openMap()">ОБЗОР ОБЪЕКТА</button>
+                <div class="info-terminal">
+                    <h4 class="green-t">> G.L.O.M.G. PUBLIC_INFO:</h4>
+                    <p>Доступ к телеметрии заблокирован. <br> Авторизуйтесь для полного управления ядром.</p>
                 </div>
             </div>
         </div>
@@ -64,46 +63,42 @@
     <div id="main-dashboard" class="screen hidden">
         <header class="top-nav">
             <div class="menu-trigger" onclick="toggleSidebar(event)"><span></span><span></span><span></span></div>
-            <div class="msk-clock">OPERATOR: <span id="op-name">UNDEFINED</span></div>
+            <div class="msk-clock">OPERATOR: <span id="op-name" class="green-t">UNDEFINED</span></div>
         </header>
         <div class="full-screen-center">
             <div class="menu-stack">
-                <button class="mega-glow-btn" onclick="openMap()">СЕТЕВАЯ КАРТА</button>
-                <button class="mega-glow-btn" onclick="transitionTo('status-screen')">ТЕЛЕМЕТРИЯ ЯДРА</button>
-                <button class="mega-glow-btn exit-btn" onclick="location.reload()">ЗАВЕРШИТЬ СЕССИЮ</button>
+                <button class="mega-cyber-btn" onclick="openMap()">ТАКТИЧЕСКАЯ КАРТА</button>
+                <button class="mega-cyber-btn" onclick="transitionTo('status-screen')">ТЕЛЕМЕТРИЯ ЯДРА</button>
+                <button class="mega-cyber-btn exit-red" onclick="location.reload()">ОТКЛЮЧИТЬСЯ</button>
             </div>
         </div>
     </div>
 
     <div id="map-screen" class="screen hidden map-bg">
         <header class="top-nav map-header">
-            <div class="brand">[ P.R.I.S.M. GLOBAL ASSETS ]</div>
-            <button class="back-btn-glow" onclick="closeMap()">ВЕРНУТЬСЯ В ТЕРМИНАЛ</button>
+            <div class="brand">G.L.O.M.G. RADAR_SYSTEM</div>
+            <button class="cyber-btn-mini" onclick="closeMap()">ВЕРНУТЬСЯ</button>
         </header>
-        
         <div class="map-layout">
             <div class="map-viewport">
-                <svg class="map-grid-svg" id="map-svg"></svg>
+                <div class="radar-lines"></div>
+                <div class="radar-scanner"></div>
                 <div class="map-container" id="node-map"></div>
             </div>
-
             <div class="assets-registry">
-                <h3 class="registry-title">РЕЕСТР ОБЪЕКТОВ ОСТРОВА</h3>
+                <h3 class="registry-title">АКТИВНЫЕ УЗЛЫ</h3>
                 <div class="registry-grid">
-                    <div class="asset-card">
-                        <h5>Alpha-M V1</h5>
-                        <p>Локация: Сектор-А (Юг)</p>
-                        <span class="status red-t">СВЯЗЬ ПОТЕРЯНА</span>
-                    </div>
-                    <div class="asset-card active-asset">
-                        <h5>Alpha-M V2</h5>
-                        <p>Локация: Сектор-B (Центр)</p>
-                        <span class="status green-t">ONLINE</span>
+                    <div class="asset-card active-card">
+                        <h5>CORE_CENTER</h5>
+                        <p>Status: <span class="green-t">ACTIVE</span></p>
                     </div>
                     <div class="asset-card">
-                        <h5>Alpha-M V3</h5>
-                        <p>Локация: Сектор-C (Север)</p>
-                        <span class="status">ОЖИДАНИЕ</span>
+                        <h5>NORTH_WATCH</h5>
+                        <p>Status: <span class="green-t">STANDBY</span></p>
+                    </div>
+                    <div class="asset-card">
+                        <h5>SOUTH_GATE</h5>
+                        <p>Status: <span class="red-t">LOST</span></p>
                     </div>
                 </div>
             </div>
@@ -112,30 +107,30 @@
 
     <div id="status-screen" class="screen hidden">
         <header class="top-nav">
-            <button class="back-btn-glow" onclick="transitionTo('main-dashboard')">← НАЗАД</button>
-            <div class="msk-clock">CORE_MONITORING</div>
+            <button class="cyber-btn-mini" onclick="transitionTo('main-dashboard')">← НАЗАД</button>
+            <div class="msk-clock">G.L.O.M.G. CORE_STATS</div>
         </header>
         <div class="full-screen-center">
             <div class="telemetry-grid">
                 <div class="stat-card">
-                    <div class="stat-head"><span>ЗАГРУЗКА ЦП</span><span id="cpu-num">0%</span></div>
+                    <div class="stat-head"><span>CPU_LOAD</span><span id="cpu-num">0%</span></div>
                     <div class="p-bar"><div id="cpu-bar" class="p-fill"></div></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-head"><span>ТЕМПЕРАТУРА ЯДРА</span><span id="temp-num">0°C</span></div>
+                    <div class="stat-head"><span>THERMAL</span><span id="temp-num">0°C</span></div>
                     <div class="p-bar"><div id="temp-bar" class="p-fill red-glow"></div></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="side-panel" class="side-panel">
+    <div id="side-panel">
         <div class="user-block">
-            <div class="user-avatar-glow">Ω</div>
+            <div class="avatar">G</div>
             <h4 id="side-user">GUEST</h4>
         </div>
         <div class="side-nav">
-            <button class="side-btn-glow" onclick="location.reload()">ВЫХОД</button>
+            <button class="side-link" onclick="location.reload()">LOGOUT</button>
         </div>
     </div>
     <div id="blur-shield" onclick="closeSidebar()"></div>
