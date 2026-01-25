@@ -1,34 +1,26 @@
 const DB = { "morisreal": "morisreal_profile_console" };
 
-// 1. ЧАСЫ
+// ЧАСЫ
 function updateClock() {
     const msk = new Date(new Date().getTime() + (new Date().getTimezoneOffset() * 60000) + (3 * 3600000));
     document.querySelectorAll('.time-val').forEach(el => el.textContent = msk.toTimeString().split(' ')[0]);
 }
 setInterval(updateClock, 1000);
 
-// 2. ДАТЧИКИ И ГРАФИК
-let cpu = 25, temp = 58;
+// ДАТЧИКИ (РЕАЛИСТИЧНЫЕ ПАРАМЕТРЫ)
 function updateSensors() {
-    cpu = 15 + Math.random() * 45;
-    temp = 54 + Math.random() * 24;
-    
+    let cpu = 22 + Math.random() * 35;
+    let temp = 56 + Math.random() * 22;
     if(document.getElementById('cpu-bar')) {
         document.getElementById('cpu-num').textContent = Math.floor(cpu) + "%";
         document.getElementById('cpu-bar').style.width = cpu + "%";
         document.getElementById('temp-num').textContent = Math.floor(temp) + "°C";
         document.getElementById('temp-bar').style.width = temp + "%";
-        
-        // Живой "текстовый" график
-        const graph = document.getElementById('net-graph');
-        let bars = "";
-        for(let i=0; i < Math.floor(Math.random()*15 + 5); i++) bars += "|";
-        graph.textContent = bars;
     }
 }
 setInterval(updateSensors, 800);
 
-// 3. ПЕРЕХОДЫ
+// ПЕРЕХОДЫ
 function transitionTo(id) {
     const fade = document.getElementById('fade-overlay');
     fade.classList.add('active');
@@ -36,39 +28,45 @@ function transitionTo(id) {
         document.querySelectorAll('.screen, #intro-screen').forEach(s => s.classList.add('hidden'));
         document.getElementById(id).classList.remove('hidden');
         closeSidebar();
-        setTimeout(() => fade.classList.remove('active'), 150);
-    }, 400);
+        setTimeout(() => fade.classList.remove('active'), 200);
+    }, 450);
 }
 
-// 4. АВТОРИЗАЦИЯ
+// КАРТА ОСТРОВА (ПО ТВОЕМУ СКРИНУ)
+function openMap() {
+    transitionTo('map-screen');
+    const container = document.getElementById('node-map');
+    container.innerHTML = "";
+    
+    // Форма острова (координаты X, Y в процентах)
+    const islandPoints = [
+        {x: 35, y: 40}, {x: 40, y: 38}, {x: 50, y: 35}, {x: 60, y: 37}, {x: 65, y: 42},
+        {x: 75, y: 40}, {x: 82, y: 45}, {x: 85, y: 55}, {x: 80, y: 65}, {x: 70, y: 68},
+        {x: 60, y: 65}, {x: 50, y: 62}, {x: 42, y: 65}, {x: 35, y: 60}, {x: 32, y: 50},
+        // Внутренние узлы (рельеф)
+        {x: 45, y: 48}, {x: 55, y: 52}, {x: 70, y: 50}, {x: 62, y: 58}
+    ];
+
+    islandPoints.forEach((p, i) => {
+        setTimeout(() => {
+            const node = document.createElement('div');
+            node.className = 'node';
+            node.style.left = p.x + "%";
+            node.style.top = p.y + "%";
+            container.appendChild(node);
+        }, i * 40);
+    });
+}
+
 function handleAuth() {
     const u = document.getElementById('auth-id').value.trim().toLowerCase();
     const p = document.getElementById('auth-pass').value.trim();
     if (DB[u] === p) {
         document.getElementById('side-user').textContent = u.toUpperCase();
         transitionTo('main-dashboard');
-    } else {
-        alert("ACCESS_DENIED: UNAUTHORIZED_OPERATOR");
-    }
+    } else { alert("ACCESS_DENIED"); }
 }
 
-// 5. КОНСОЛЬНЫЙ МОДУЛЬ
-function runMatrixLog() {
-    const consoleEl = document.getElementById('matrix-console');
-    consoleEl.classList.toggle('hidden');
-    if(!consoleEl.classList.contains('hidden')) {
-        consoleEl.innerHTML = "INITIALIZING_LOG_STREAM...<br>";
-        let lines = 0;
-        const interval = setInterval(() => {
-            if(lines < 10) {
-                consoleEl.innerHTML += `> DATA_PACKET_${Math.floor(Math.random()*9000+1000)}_LOADED<br>`;
-                lines++;
-            } else { clearInterval(interval); }
-        }, 200);
-    }
-}
-
-// 6. САЙДБАР
 function toggleSidebar(e) {
     e.stopPropagation();
     document.getElementById('side-panel').classList.add('active');
@@ -84,7 +82,7 @@ function scrollToSection(id) {
     document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
 }
 
-// 7. СТАРТ
+// СТАРТ
 window.onload = () => {
     const l = document.getElementById('big-logo');
     const art = `
