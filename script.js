@@ -1,6 +1,6 @@
 /**
- * ONG_CORE_V5_FINAL
- * Полномасштабная логика без сокращений
+ * ONG_CORE_V6_STABLE
+ * ПОЛНАЯ ВЕРСИЯ БЕЗ СОКРАЩЕНИЙ
  */
 
 const STAFF_DATABASE = {
@@ -11,74 +11,65 @@ const STAFF_DATABASE = {
 };
 
 /**
- * ФУНКЦИЯ ПЕРЕХОДА ЧЕРЕЗ ЗАТЕМНЕНИЕ
+ * ГЛОБАЛЬНАЯ ФУНКЦИЯ ПЕРЕХОДА С ЗАТЕМНЕНИЕМ
  */
-function transitionTo(targetWindowId) {
-    const fadeOverlay = document.getElementById('fade-overlay');
+function transitionTo(targetId) {
+    const fade = document.getElementById('fade-overlay');
     
-    // 1. Начинаем затемнение
-    fadeOverlay.classList.add('active');
+    // Включаем слой затемнения
+    fade.classList.add('active');
     
-    // 2. Ждем, пока экран станет полностью черным (0.6 сек из CSS)
     setTimeout(() => {
-        // Скрываем все окна и открываем нужное
-        executeWindowSwitch(targetWindowId);
+        // Скрываем все окна
+        const allScreens = document.querySelectorAll('.screen, #intro-screen');
+        allScreens.forEach(screen => screen.classList.add('hidden'));
         
-        // 3. Убираем затемнение
+        // Показываем целевое окно
+        const target = document.getElementById(targetId);
+        if (target) target.classList.remove('hidden');
+        
+        // Закрываем плашку
+        closeSidebar();
+        
+        // Убираем затемнение
         setTimeout(() => {
-            fadeOverlay.classList.remove('active');
-        }, 100); 
-    }, 600);
-}
-
-function executeWindowSwitch(id) {
-    // Прячем абсолютно все активные экраны
-    document.querySelectorAll('.screen, #intro-screen').forEach(screen => {
-        screen.classList.add('hidden');
-    });
-    
-    // Показываем целевое окно
-    const target = document.getElementById(id);
-    if (target) {
-        target.classList.remove('hidden');
-    }
-    
-    // Сбрасываем состояние боковой панели при переходе
-    closeSidebar();
+            fade.classList.remove('active');
+        }, 150);
+    }, 600); // 600ms соответствует CSS transition
 }
 
 /**
- * СИСТЕМА АВТОРИЗАЦИИ
+ * ОБРАБОТКА ВХОДА
  */
 function handleAuth() {
-    const idField = document.getElementById('auth-id');
-    const passField = document.getElementById('auth-pass');
+    const idInput = document.getElementById('auth-id');
+    const passInput = document.getElementById('auth-pass');
     
-    const id = idField.value.trim().toLowerCase();
-    const pass = passField.value.trim();
+    const id = idInput.value.trim().toLowerCase();
+    const pass = passInput.value.trim();
 
     if (STAFF_DATABASE[id] && STAFF_DATABASE[id].pass === pass) {
-        // Эффект завала кода перед финальным входом
-        triggerMatrixSequence(() => {
-            const userData = STAFF_DATABASE[id];
+        // Эффект "завала кода"
+        triggerCodeRain(() => {
+            const user = STAFF_DATABASE[id];
             
-            // Заполнение профиля в плашке
-            document.getElementById('side-username').textContent = userData.name;
-            document.getElementById('side-lvl').textContent = `ACCESS LEVEL: ${userData.lvl}`;
+            // Настройка профиля в сайдбаре
+            document.getElementById('side-username').textContent = user.name;
+            document.getElementById('side-lvl').textContent = `LVL: ${user.lvl}`;
             document.getElementById('side-id').textContent = `ID: ${id.toUpperCase()}`;
             
             transitionTo('main-dashboard');
         });
     } else {
-        alert("КРИТИЧЕСКАЯ ОШИБКА: ДОСТУП ЗАБЛОКИРОВАН. ПРОВЕРЬТЕ ШИФР-КОД.");
-        passField.value = "";
+        alert("ОШИБКА: ИДЕНТИФИКАТОР ИЛИ ПАРОЛЬ НЕВЕРНЫ");
+        passInput.value = "";
     }
 }
 
 /**
- * ЭФФЕКТ "ЗАВАЛ КОДА"
+ * ЭФФЕКТ МАТРИЦЫ (ЗАВАЛ КОДА)
  */
-function triggerMatrixSequence(onDone) {
+function triggerCodeRain(callback) {
     const canvas = document.getElementById('matrix-canvas');
     canvas.classList.remove('hidden');
     const ctx = canvas.getContext('2d');
@@ -86,31 +77,31 @@ function triggerMatrixSequence(onDone) {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    const alphabet = "0123456789ABCDEF@#$%^&*()_+";
+    const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ#$@%";
     const fontSize = 16;
     const columns = Math.floor(canvas.width / fontSize);
     const drops = new Array(columns).fill(1);
 
-    const render = () => {
+    const draw = () => {
         ctx.fillStyle = "rgba(0, 0, 0, 0.15)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "#a855f7";
         ctx.font = fontSize + "px monospace";
 
         for (let i = 0; i < drops.length; i++) {
-            const char = alphabet[Math.floor(Math.random() * alphabet.length)];
-            ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+            const text = chars[Math.floor(Math.random() * chars.length)];
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
             if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
             drops[i]++;
         }
     };
 
-    const matrixLoop = setInterval(render, 35);
+    const matrixInterval = setInterval(draw, 35);
 
     setTimeout(() => {
-        clearInterval(matrixLoop);
+        clearInterval(matrixInterval);
         canvas.classList.add('hidden');
-        onDone();
+        callback();
     }, 1500);
 }
 
@@ -130,29 +121,28 @@ function closeSidebar() {
 }
 
 function scrollToSection(id) {
-    const target = document.getElementById(id);
-    if (target) {
-        target.scrollIntoView({ behavior: 'smooth' });
-    }
+    const section = document.getElementById(id);
+    if (section) section.scrollIntoView({ behavior: 'smooth' });
 }
 
 /**
- * СИСТЕМНЫЕ ЧАСЫ И ИНИЦИАЛИЗАЦИЯ
+ * ИНИЦИАЛИЗАЦИЯ
  */
-function initSystemClock() {
+function initClock() {
     setInterval(() => {
-        const now = new Date();
-        const time = now.toTimeString().split(' ')[0];
-        const clockDisplay = document.getElementById('clock');
-        if (clockDisplay) clockDisplay.textContent = time;
+        const el = document.getElementById('clock');
+        if (el) {
+            const now = new Date();
+            el.textContent = now.toTimeString().split(' ')[0];
+        }
     }, 1000);
 }
 
 window.onload = () => {
-    initSystemClock();
+    initClock();
     
-    const logoContainer = document.getElementById('big-logo');
-    const logoAscii = `
+    const logoEl = document.getElementById('big-logo');
+    const asciiLogo = `
  ██████╗ ██╗      ██████╗ ███╗   ███╗ ██████╗ 
 ██╔════╝ ██║     ██╔════╝ ████╗ ████║██╔════╝ 
 ██║  ███╗██║     ██║  ███╗██╔████╔██║██║  ███╗
@@ -160,27 +150,24 @@ window.onload = () => {
 ╚██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║╚██████╔╝
  ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ `;
 
-    let charPosition = 0;
+    let pos = 0;
     const typeWriter = () => {
-        if (charPosition < logoAscii.length) {
-            logoContainer.textContent += logoAscii[charPosition++];
+        if (pos < asciiLogo.length) {
+            logoEl.textContent += asciiLogo[pos++];
             setTimeout(typeWriter, 1);
         } else {
-            // После завершения отрисовки логотипа - переход к авторизации через затемнение
             setTimeout(() => {
                 transitionTo('login-screen');
-            }, 1000);
+            }, 1200);
         }
     };
     typeWriter();
 };
 
-// Глобальный слушатель Enter
-document.addEventListener('keydown', (event) => {
-    if (event.key === "Enter") {
-        const isLoginVisible = !document.getElementById('login-screen').classList.contains('hidden');
-        if (isLoginVisible) {
-            handleAuth();
-        }
+// Слушатель Enter
+document.addEventListener('keydown', (e) => {
+    if (e.key === "Enter") {
+        const loginVisible = !document.getElementById('login-screen').classList.contains('hidden');
+        if (loginVisible) handleAuth();
     }
 });
