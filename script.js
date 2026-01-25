@@ -5,10 +5,7 @@ const PROFILES = {
     "msk4ne_": { pass: "4444", name: "MSK4NE" }
 };
 
-// Инициализация
-async function startSystem() {
-    const logoEl = document.getElementById('big-logo');
-    const logoTxt = `
+const logoText = `
  ██████╗ ██╗      ██████╗ ███╗   ███╗ ██████╗ 
 ██╔════╝ ██║     ██╔════╝ ████╗ ████║██╔════╝ 
 ██║  ███╗██║     ██║  ███╗██╔████╔██║██║  ███╗
@@ -16,63 +13,55 @@ async function startSystem() {
 ╚██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║╚██████╔╝
  ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ `;
 
-    for (let char of logoTxt) {
-        logoEl.textContent += char;
-        await new Promise(r => setTimeout(r, 1));
-    }
-    setTimeout(() => openWindow('login-screen'), 1500);
+async function init() {
+    const el = document.getElementById('big-logo');
+    for (let c of logoText) { el.textContent += c; await new Promise(r => setTimeout(r, 1)); }
+    setTimeout(() => openWindow('login-screen'), 1800);
 }
 
 function openWindow(id) {
-    document.getElementById('fade-overlay').classList.add('fade-active');
+    document.querySelectorAll('.screen, #intro-screen').forEach(s => s.classList.add('hidden'));
+    const target = document.getElementById(id);
+    target.classList.remove('hidden');
     
-    // Закрываем меню если открыто
+    // Закрываем меню
     document.getElementById('side-panel').classList.remove('active');
-    document.getElementById('panel-blur-overlay').style.display = "none";
+    document.getElementById('blur-overlay').style.display = "none";
 
-    setTimeout(() => {
-        document.querySelectorAll('.screen, #intro-screen').forEach(s => s.classList.add('hidden'));
-        document.getElementById(id).classList.remove('hidden');
-        document.getElementById('fade-overlay').classList.remove('fade-active');
-
-        if (id === 'login-screen') startLogin();
-    }, 500);
-}
-
-// Логика логина
-const cmdInput = document.getElementById('cmd');
-let stage = "ID", user = null;
-
-function startLogin() {
-    document.getElementById('auth-output').innerHTML = "> ВВЕДИТЕ ID:";
-    document.getElementById('input-line').classList.remove('hidden');
-    cmdInput.focus();
-}
-
-cmdInput.onkeydown = (e) => {
-    if (e.key === "Enter") {
-        let v = cmdInput.value.trim().toLowerCase();
-        cmdInput.value = "";
-        if (stage === "ID" && PROFILES[v]) {
-            user = PROFILES[v]; stage = "PASS";
-            document.getElementById('auth-output').innerHTML += `<br>> ID ПРИНЯТ. ПАРОЛЬ:`;
-        } else if (stage === "PASS" && v === user.pass) {
-            document.getElementById("user-display").textContent = user.name;
-            openWindow('main-dashboard');
-        }
+    if (id === 'login-screen') {
+        document.getElementById('auth-output').innerHTML = "> ИНИЦИАЛИЗАЦИЯ ПОДКЛЮЧЕНИЯ...<br>> СИСТЕМА ГОТОВА.<br>> ВВЕДИТЕ ID ПОЛЬЗОВАТЕЛЯ:";
+        document.getElementById('cmd').focus();
     }
 }
 
-// Сайдбар
-document.getElementById('menu-trigger').onclick = (e) => {
-    e.stopPropagation();
+let stage = "ID", user = null;
+document.getElementById('cmd').onkeydown = (e) => {
+    if (e.key === "Enter") {
+        let v = e.target.value.trim().toLowerCase();
+        e.target.value = "";
+        const out = document.getElementById('auth-output');
+        
+        if (stage === "ID" && PROFILES[v]) {
+            user = PROFILES[v]; 
+            stage = "PASS";
+            out.innerHTML += `<br>> ID: ${v.toUpperCase()} ПРИНЯТ. ВВЕДИТЕ ПАРОЛЬ:`;
+        } else if (stage === "PASS" && v === user.pass) {
+            document.getElementById('user-display').textContent = user.name;
+            openWindow('main-dashboard');
+        } else if (stage === "ID" && !PROFILES[v]) {
+            out.innerHTML += `<br>> ОШИБКА: ID НЕ НАЙДЕН.`;
+        }
+    }
+};
+
+document.getElementById('menu-trigger').onclick = () => {
     document.getElementById('side-panel').classList.add('active');
-    document.getElementById('panel-blur-overlay').style.display = "block";
+    document.getElementById('blur-overlay').style.display = "block";
 };
 
-document.getElementById('panel-blur-overlay').onclick = () => {
+document.getElementById('blur-overlay').onclick = () => {
     document.getElementById('side-panel').classList.remove('active');
-    document.getElementById('panel-blur-overlay').style.display = "none";
+    document.getElementById('blur-overlay').style.display = "none";
 };
 
-window.onload = startSystem;
+window.onload = init;
