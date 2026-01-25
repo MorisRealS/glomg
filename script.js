@@ -9,48 +9,45 @@ function clockTick() {
 }
 setInterval(clockTick, 1000);
 
-// ДАТЧИКИ (РВАНЫЙ РИТМ)
+// ДАТЧИКИ
 let cpu = 5, temp = 39, net = 100;
 function updateTelemetry() {
-    // Рандомный шаг для ЦП
-    cpu += (Math.random() > 0.45 ? 1.6 : -1.4) * Math.random();
+    cpu += (Math.random() > 0.4 ? 1.5 : -1.2) * Math.random();
     cpu = Math.min(Math.max(cpu, 1), 12);
-    
-    // Температура
-    temp += (Math.random() > 0.5 ? 0.3 : -0.25);
-    temp = Math.min(Math.max(temp, 37), 45);
-
-    // Трафик
+    temp += (Math.random() > 0.5 ? 0.3 : -0.2);
     net = Math.floor(Math.random() * 800) + 40;
 
     if(document.getElementById('cpu-bar')) {
         document.getElementById('cpu-num').textContent = cpu.toFixed(1) + "%";
         document.getElementById('cpu-bar').style.width = (cpu * 8.3) + "%";
-        
         document.getElementById('temp-num').textContent = temp.toFixed(1) + "°C";
         document.getElementById('temp-bar').style.width = ((temp-35) * 10) + "%";
-        
         document.getElementById('net-num').textContent = net + " KB/s";
         document.getElementById('net-bar').style.width = (net / 10) + "%";
     }
 }
 setInterval(updateTelemetry, 800);
 
-// ЛОГИКА ПЕРЕХОДОВ
+// ПЕРЕХОДЫ С ОБНОВЛЕНИЕМ АНИМАЦИИ
 function transitionTo(id) {
     const fade = document.getElementById('fade-overlay');
     fade.classList.add('active');
     setTimeout(() => {
         document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-        document.getElementById(id).classList.remove('hidden');
+        const target = document.getElementById(id);
+        target.classList.remove('hidden');
         closeSidebar();
         
-        // Перезапуск анимаций внутри экрана
-        const btns = document.getElementById(id).querySelectorAll('.mega-btn, .auth-card');
-        btns.forEach(b => { b.style.animation = 'none'; b.offsetHeight; b.style.animation = ''; });
+        // Перезапуск анимации появления (Glitch)
+        const animBox = target.querySelector('.auth-terminal, .telemetry-grid, .menu-stack');
+        if(animBox) {
+            animBox.style.animation = 'none';
+            animBox.offsetHeight; 
+            animBox.style.animation = '';
+        }
         
         setTimeout(() => fade.classList.remove('active'), 150);
-    }, 450);
+    }, 400);
 }
 
 function handleAuth() {
@@ -60,7 +57,7 @@ function handleAuth() {
         document.getElementById('side-user').textContent = u.toUpperCase();
         transitionTo('main-dashboard');
     } else {
-        alert("ACCESS_DENIED: INVALID_CREDENTIALS");
+        alert("ACCESS_DENIED: UNAUTHORIZED");
     }
 }
 
@@ -74,14 +71,15 @@ function toggleSidebar(e) {
 
 function closeSidebar() {
     document.getElementById('side-panel').classList.remove('active');
-    document.getElementById('blur-shield').style.display = "none";
+    const s = document.getElementById('blur-shield');
+    if(s) s.style.display = "none";
 }
 
 function scrollToSection(id) {
     document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
 }
 
-// ПЕЧАТЬ ЛОГОТИПА
+// ПЕЧАТЬ ЛОГО
 window.onload = () => {
     const l = document.getElementById('big-logo');
     const txt = `
