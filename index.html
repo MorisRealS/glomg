@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GLOMG_CORE_V17</title>
+    <title>GLOMG_CORE_V18</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -21,23 +21,30 @@
 
     <div id="login-screen" class="screen hidden">
         <div class="full-screen-center">
-            <div class="auth-card">
-                <div class="auth-header">
-                    <span>SECURITY_CHECK</span>
-                    <div class="status-dot-blink"></div>
+            <div class="auth-terminal anim-glitch-appear">
+                <div class="term-header">
+                    <span class="term-title">CORE_ACCESS_V18</span>
+                    <span class="term-status">SECURE</span>
                 </div>
-                <div class="auth-body">
-                    <div class="input-group">
-                        <label>USER_ID</label>
-                        <input type="text" id="auth-id" spellcheck="false" autocomplete="off">
+                <div class="term-body">
+                    <div class="term-input-group">
+                        <div class="input-label">USER_IDENTIFIER:</div>
+                        <input type="text" id="auth-id" spellcheck="false" autocomplete="off" placeholder="_">
                     </div>
-                    <div class="input-group">
-                        <label>PASSWORD</label>
-                        <input type="password" id="auth-pass">
+                    <div class="term-input-group">
+                        <div class="input-label">ACCESS_KEY:</div>
+                        <input type="password" id="auth-pass" placeholder="_">
                     </div>
-                    <button class="btn-main" onclick="handleAuth()">ВХОД</button>
-                    <button class="btn-sub" onclick="transitionTo('lobby-screen')">GUEST_ACCESS</button>
+                    <div class="term-actions">
+                        <button class="term-btn main-action" onclick="handleAuth()">
+                            <span>INITIALIZE_LOGIN</span>
+                        </button>
+                        <button class="term-btn guest-action" onclick="transitionTo('lobby-screen')">
+                            <span>BYPASS_GUEST</span>
+                        </button>
+                    </div>
                 </div>
+                <div class="term-footer">SYSTEM_ID: GLOMG-99-X</div>
             </div>
         </div>
     </div>
@@ -50,21 +57,15 @@
         <div class="scroll-container">
             <section class="hero-section">
                 <div class="menu-stack">
-                    <button class="mega-btn" onclick="transitionTo('login-screen')">АВТОРИЗАЦИЯ</button>
-                    <button class="mega-btn" onclick="scrollToSection('news-sec')">НОВОСТИ</button>
+                    <button class="mega-btn" onclick="transitionTo('login-screen')">ВХОД</button>
+                    <button class="mega-btn" onclick="scrollToSection('news-sec')">АРХИВ НОВОСТЕЙ</button>
                     <button class="mega-btn" onclick="scrollToSection('about-sec')">ИНФОРМАЦИЯ</button>
                 </div>
             </section>
             <section id="news-sec" class="content-section">
                 <div class="doc-box">
-                    <h3>[ SYSTEM_NEWS ]</h3>
-                    <p>> Ядро V17.0 стабильно.<br>> Коллизии слоев устранены.<br>> Модуль телеметрии обновлен.</p>
-                </div>
-            </section>
-            <section id="about-sec" class="content-section">
-                <div class="doc-box">
-                    <h3>[ ABOUT_US ]</h3>
-                    <p>GLOMG — закрытый узел обработки данных. Доступ по протоколу V-Secure.</p>
+                    <h3>DATABASE_LOG</h3>
+                    <p>> 25.01.2026: Терминал обновлен до V18.<br>> Протоколы авторизации стабилизированы.</p>
                 </div>
             </section>
         </div>
@@ -77,16 +78,16 @@
         </header>
         <div class="full-screen-center">
             <div class="menu-stack">
-                <button class="mega-btn" onclick="transitionTo('status-screen')">СОСТОЯНИЕ СИСТЕМЫ</button>
+                <button class="mega-btn" onclick="transitionTo('status-screen')">ТЕЛЕМЕТРИЯ</button>
                 <button class="mega-btn">ЛОГИ ЯДРА</button>
-                <button class="mega-btn">ПОЧТА (0)</button>
+                <button class="mega-btn">УДАЛЕННЫЙ ДОСТУП</button>
             </div>
         </div>
     </div>
 
     <div id="status-screen" class="screen hidden">
         <header class="top-nav">
-            <button class="back-btn" onclick="transitionTo('main-dashboard')">← НАЗАД</button>
+            <button class="back-btn" onclick="transitionTo('main-dashboard')">← RETURN</button>
             <div class="msk-clock">MSK: <span class="time-val">00:00:00</span></div>
         </header>
         <div class="full-screen-center">
@@ -97,18 +98,14 @@
                     <div class="progress-bg"><div id="cpu-bar" class="progress-fill"></div></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">CORE_TEMP</div>
+                    <div class="stat-label">TEMP_CORE</div>
                     <div class="stat-value" id="temp-num">0°C</div>
                     <div class="progress-bg"><div id="temp-bar" class="progress-fill red-bar"></div></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">NETWORK_TRAFFIC</div>
+                    <div class="stat-label">TRAFFIC</div>
                     <div class="stat-value" id="net-num">0 KB/s</div>
                     <div class="progress-bg"><div id="net-bar" class="progress-fill blue-bar"></div></div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">STATUS</div>
-                    <div class="stat-value green-t">ONLINE</div>
                 </div>
             </div>
         </div>
@@ -119,12 +116,12 @@
             <div class="user-icon">Ω</div>
             <div class="user-meta">
                 <h4 id="side-user">GUEST</h4>
-                <span class="green-t">● ACTIVE</span>
+                <span class="green-t">CONNECTION: STABLE</span>
             </div>
         </div>
         <nav class="side-nav">
-            <button onclick="transitionTo('login-screen')">СМЕНИТЬ ПРОФИЛЬ</button>
-            <button class="exit-btn" onclick="location.reload()">ВЫХОД</button>
+            <button onclick="transitionTo('login-screen')">RELAY_LOGIN</button>
+            <button class="exit-btn" onclick="location.reload()">TERMINATE</button>
         </nav>
     </div>
     <div id="blur-shield" onclick="closeSidebar()"></div>
