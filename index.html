@@ -2,25 +2,22 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>ONG_CORE_v4</title>
+    <title>ONG_CORE_V4</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="fade-overlay"></div>
-    <div class="halftone"></div>
 
     <div id="intro-screen" class="full-screen-center">
         <pre id="big-logo" class="volta-logo-big"></pre>
     </div>
 
     <div id="login-screen" class="screen hidden">
-        <div class="terminal-wrapper">
-            <div id="terminal-auth">
-                <div id="auth-output"></div>
-                <div id="input-line" class="line hidden">
-                    <span class="prompt">></span>
-                    <input type="text" id="cmd" autocomplete="off" spellcheck="false">
-                </div>
+        <div class="fullscreen-terminal">
+            <div id="auth-output"></div>
+            <div class="input-row">
+                <span class="prompt">SYSTEM@ONG_CORE:></span>
+                <input type="text" id="cmd" autocomplete="off" spellcheck="false">
             </div>
         </div>
     </div>
@@ -30,7 +27,7 @@
             <div class="menu-trigger-btn" id="menu-trigger">
                 <span></span><span></span><span></span>
             </div>
-            <div class="nav-title">ONG_CORE // MAIN_DASHBOARD</div>
+            <div class="nav-title">ONG_CORE // SYSTEM_INDEX</div>
         </nav>
         
         <div class="dashboard-content">
@@ -39,74 +36,44 @@
                 <button class="mega-row-btn" onclick="openWindow('logs-screen')">ЛОГИ СИСТЕМЫ</button>
                 <button class="mega-row-btn" onclick="openWindow('archive-screen')">АРХИВНАЯ</button>
             </div>
-
             <div class="separator-line"></div>
-
-            <div class="info-grid">
-                <div class="info-box">
-                    <span class="info-label">СЕКТОР_01</span>
-                    <div class="placeholder-content">ОЖИДАНИЕ ДАННЫХ...</div>
-                </div>
-                <div class="info-box">
-                    <span class="info-label">СЕКТОР_02</span>
-                    <div class="placeholder-content">ПОДКЛЮЧЕНИЕ...</div>
-                </div>
-                <div class="info-box full-width">
-                    <span class="info-label">СИСТЕМНЫЙ ЖУРНАЛ (V.2.0.26)</span>
-                    <div class="info-logs">
-                        > SESSION_START: SUCCESS<br>
-                        > CORE_SYNC: COMPLETED
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
     <div id="logs-screen" class="screen hidden">
         <button class="back-link" onclick="openWindow('main-dashboard')">← НАЗАД</button>
-        <div class="logs-container">
-            <h2>ВЫБЕРИТЕ КАТЕГОРИЮ ЛОГОВ</h2>
+        <div class="logs-wrapper">
             <div class="logs-grid">
-                <button class="log-item-btn">ЛОГ СОБЫТИЙ 01</button>
-                <button class="log-item-btn">ЛОГ ОШИБОК 02</button>
-                <button class="log-item-btn">ЛОГ ДОСТУПА 03</button>
-                <button class="log-item-btn">ЛОГ ЯДРА 04</button>
+                <button class="log-item">ЛОГ_СОБЫТИЙ_01</button>
+                <button class="log-item">ЛОГ_ОШИБОК_02</button>
+                <button class="log-item">ЛОГ_СЕТИ_03</button>
+                <button class="log-item">ЛОГ_ЯДРА_04</button>
             </div>
         </div>
-        <div class="bg-glow"></div>
     </div>
 
     <div id="status-screen" class="screen hidden">
         <button class="back-link" onclick="openWindow('main-dashboard')">← НАЗАД</button>
         <div class="status-layout">
-            <div class="status-card">
-                <div class="card-header">СИСТЕМНЫЙ МОНИТОРИНГ</div>
-                <div class="card-body">
-                    <div class="status-row"><span>ЯДРО</span><span class="val">ONLINE</span></div>
-                    <div class="status-row"><span>БЕЗОПАСНОСТЬ</span><span class="val">MAX</span></div>
-                    <div class="status-row"><span>ШИФРОВАНИЕ</span><span class="val">VOLTA_V4</span></div>
-                </div>
+            <div class="status-info">
+                <div class="s-line">STATUS: <span class="neon">ONLINE</span></div>
+                <div class="s-line">KERNEL: <span class="neon">STABLE</span></div>
+                <div class="s-line">SECURE: <span class="neon">ACTIVE</span></div>
             </div>
         </div>
     </div>
 
-    <div id="archive-screen" class="screen hidden">
-        <button class="back-link" onclick="openWindow('main-dashboard')">← НАЗАД</button>
-        <div class="status-layout"><div class="status-card">АРХИВ ПУСТ</div></div>
-    </div>
-
     <div id="side-panel" class="side-panel">
-        <div class="profile-section">
-            <div class="avatar-circle">ID</div>
+        <div class="profile-header">
+            <div class="circle">ID</div>
             <h3 id="user-display">---</h3>
         </div>
-        <div class="side-nav">
-            <button class="side-link">ЛИЧНЫЙ КАБИНЕТ</button>
-            <button class="side-link">ТЕРМИНАЛ СОТРУДНИКА</button>
-            <button class="side-link exit" onclick="location.reload()">ВЫХОД</button>
+        <div class="side-links">
+            <button class="s-btn">ПРОФИЛЬ</button>
+            <button class="s-btn exit" onclick="location.reload()">ВЫХОД</button>
         </div>
     </div>
-    <div id="panel-blur-overlay" class="panel-blur"></div>
+    <div id="blur-overlay" class="panel-blur"></div>
 
     <script src="script.js"></script>
 </body>
