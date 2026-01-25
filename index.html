@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ONG_CORE_V6_STABLE_LEGACY</title>
+    <title>GLOMG_CORE_V9_PHYSICS</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,7 +12,6 @@
     <div class="vignette"></div>
     <div class="crt-overlay"></div>
     <div class="scanline"></div>
-    
     <canvas id="matrix-canvas" class="hidden"></canvas>
 
     <div id="intro-screen" class="full-screen-center">
@@ -23,7 +22,7 @@
 
     <div id="login-screen" class="screen hidden">
         <div class="full-screen-center">
-            <div class="auth-card">
+            <div class="auth-card anim-login-fly">
                 <div class="auth-header">
                     <span class="auth-title">СИСТЕМА ДОСТУПА</span>
                     <div class="status-dot-blink"></div>
@@ -56,38 +55,12 @@
         <div class="lobby-scroll-container">
             <section class="lobby-section-full">
                 <div class="action-rows">
-                    <button class="mega-btn" onclick="transitionTo('login-screen')">АВТОРИЗАЦИЯ</button>
-                    <button class="mega-btn" onclick="scrollToSection('lobby-news')">НОВОСТИ</button>
-                    <button class="mega-btn" onclick="scrollToSection('lobby-about')">О НАС</button>
+                    <button class="mega-btn anim-btn-fly" style="--d: 1" onclick="transitionTo('login-screen')">АВТОРИЗАЦИЯ</button>
+                    <button class="mega-btn anim-btn-fly" style="--d: 2" onclick="scrollToSection('lobby-news')">НОВОСТИ</button>
+                    <button class="mega-btn anim-btn-fly" style="--d: 3" onclick="scrollToSection('lobby-about')">О НАС</button>
                 </div>
             </section>
-
-            <section id="lobby-news" class="lobby-section-compact">
-                <div class="doc-container">
-                    <h2 class="doc-title">НОВОСТИ ГРУППЫ</h2>
-                    <div class="news-scroll">
-                        <div class="news-item"><span>[2026.01.25]</span> Терминал переведен на протокол V6.</div>
-                        <div class="news-item"><span>[2026.01.25]</span> Обновление визуальных фильтров шума.</div>
-                        <div class="news-item"><span>[2026.01.25]</span> Мониторинг секторов в штатном режиме.</div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="lobby-about" class="lobby-section-compact">
-                <div class="doc-container">
-                    <h2 class="doc-title">ОСНОВНАЯ НАУЧНАЯ ГРУППА</h2>
-                    <div class="ong-text-block">
-                        <p><strong>Мы ОНГ.</strong> Исследуем технологии во благо человечества.</p>
-                        <div class="rules-box">
-                            <p>1. Мы не нападаем первыми.</p>
-                            <p>2. Территория ОНГ охраняется автономными системами.</p>
-                            <p>3. Каждое открытие служит прогрессу.</p>
-                        </div>
-                        <div class="signature">Director: <span>MorisReal</span></div>
-                    </div>
-                </div>
-            </section>
-        </div>
+            </div>
     </div>
 
     <div id="main-dashboard" class="screen hidden">
@@ -99,26 +72,23 @@
         </header>
         <div class="dashboard-center">
             <div class="action-rows">
-                <button class="mega-btn">СТАТУС СИСТЕМЫ</button>
-                <button class="mega-btn">ЛОГИ ЯДРА</button>
-                <button class="mega-btn">АРХИВ ДАННЫХ</button>
+                <button class="mega-btn anim-btn-fly" style="--d: 1" onclick="openModal('modal-status')">СТАТУС СИСТЕМЫ</button>
+                <button class="mega-btn anim-btn-fly" style="--d: 2" onclick="openModal('modal-logs')">ЛОГИ ЯДРА</button>
+                <button class="mega-btn anim-btn-fly" style="--d: 3" onclick="openModal('modal-archive')">АРХИВ ДАННЫХ</button>
             </div>
         </div>
     </div>
 
     <div id="side-panel" class="side-panel">
         <div class="profile-card-sidebar">
-            <div class="avatar-frame">
-                <img src="https://img.icons8.com/ios-filled/100/a855f7/user-male-circle.png" alt="user">
-            </div>
+            <div class="avatar-frame"><img src="https://img.icons8.com/ios-filled/100/a855f7/user-male-circle.png" alt="user"></div>
             <div class="profile-meta">
-                <h3 id="side-username" class="flicker-text">GUEST</h3>
+                <h3 id="side-username">GUEST</h3>
                 <div class="lvl-badge" id="side-lvl">LVL: 0</div>
                 <div class="id-badge" id="side-id">ID: UNKNOWN</div>
             </div>
         </div>
         <div class="sidebar-nav">
-            <button class="side-link" onclick="transitionTo('login-screen')">СМЕНИТЬ АККАУНТ</button>
             <button class="side-link exit-btn" onclick="location.reload()">ВЫХОД ИЗ СИСТЕМЫ</button>
         </div>
     </div>
