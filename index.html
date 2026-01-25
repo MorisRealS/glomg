@@ -3,36 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ONG - Secure Access</title>
+  <title>ONG_CORE_ACCESS</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <div class="halftone-overlay"></div>
-  <div class="glitch-overlay"></div>
+<body class="boot-sequence">
 
-  <div class="backdrop-blur"></div>
+  <div id="halftone-layer" class="halftone-overlay"></div>
+  
+  <div id="glitch-layer" class="glitch-overlay"></div>
 
   <div id="login-screen" class="terminal-wrapper">
+    <div class="terminal-glow"></div>
     <div id="terminal">
-      <div id="output">
-        <div class="line">ONG OS v.3.1.24 - Restricted Access System</div>
-        <div class="line">Enter unique identifier to proceed...</div>
-      </div>
-      <div id="input-line" class="line">
-        <span class="prompt">ID:> </span>
-        <input type="text" id="cmd" autocomplete="off" autofocus spellcheck="false"/>
+      <div id="output"></div>
+      <div id="input-line" class="line hidden">
+        <span class="prompt">OPERATOR@SECURE:> </span>
+        <input type="text" id="cmd" autocomplete="off" spellcheck="false"/>
       </div>
     </div>
   </div>
 
   <div id="main-dashboard" class="dashboard-wrapper hidden">
-    <div class="vhs-lines"></div>
+    <div class="vhs-scanlines"></div>
     
     <nav class="top-bar">
-      <div class="logo">ONG_CORE</div>
       <div class="menu-trigger" id="menu-btn">
-        <span></span><span></span><span></span>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
       </div>
+      <div class="logo">ONG_CORE_SYSTEM</div>
     </nav>
 
     <div class="content-grid">
@@ -42,13 +42,19 @@
     </div>
 
     <div id="profile-sidebar" class="sidebar">
-      <div class="sidebar-header">
-        <div class="user-icon">👤</div>
-        <span id="user-name-display">User</span>
+      <div class="sidebar-content">
+        <div class="user-profile">
+          <div class="user-avatar">👤</div>
+          <div class="user-info">
+            <span id="user-name-display">AGENT</span>
+            <small>Status: ONLINE</small>
+          </div>
+        </div>
+        <button class="sidebar-action-btn">ЛИЧНЫЙ ПРОФИЛЬ</button>
+        <button class="sidebar-action-btn exit" onclick="location.reload()">ВЫХОД</button>
       </div>
-      <button class="sidebar-btn">Настройки</button>
-      <button class="sidebar-btn" onclick="location.reload()">Выход</button>
     </div>
+    
     <div id="overlay-darken" class="overlay-darken"></div>
   </div>
 
