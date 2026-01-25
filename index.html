@@ -6,7 +6,8 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="blackout"></div>
+    <div id="fade-overlay"></div>
+    
     <div class="halftone"></div>
     <div id="glitch-layer" class="glitch-layer"></div>
 
@@ -16,7 +17,6 @@
 
     <div id="login-screen" class="screen hidden">
         <div class="terminal-wrapper">
-            <div class="terminal-glow"></div>
             <div id="terminal">
                 <div id="output"></div>
                 <div id="input-line" class="line hidden">
@@ -24,6 +24,7 @@
                     <input type="text" id="cmd" autocomplete="off" spellcheck="false">
                 </div>
             </div>
+            <div class="terminal-bottom-glow"></div>
         </div>
     </div>
 
@@ -36,30 +37,34 @@
             <div class="menu-btn" id="menu-trigger">
                 <span></span><span></span><span></span>
             </div>
-            <div class="nav-title">ONG_CORE // SYSTEM_READY</div>
+            <div class="nav-title">ONG_ARCHIVE_SYSTEM // v.4.0.1</div>
         </nav>
 
-        <div class="dashboard-main-content">
-            <div class="button-center-grid">
+        <div class="dashboard-container">
+            <div class="button-grid-center">
                 <button class="mega-btn">СТАТУС СИСТЕМЫ</button>
                 <button class="mega-btn">КОНСОЛЬ</button>
                 <button class="mega-btn">АРХИВНАЯ</button>
             </div>
             
-            <div class="content-scroll-area">
-                <div class="content-overlay-text">
-                    [ СИСТЕМА ОЖИДАЕТ ВЫБОРА ДИРЕКТОРИИ... ]
+            <div class="archive-area">
+                <div class="archive-header">DATABASE_FILES:</div>
+                <div class="archive-content">
+                    <p>[ ПУСТО ]</p>
+                    <p>Ожидание запроса к ядру...</p>
                 </div>
             </div>
         </div>
 
         <div id="side-panel" class="side-panel">
-            <div class="user-info-box">
+            <div class="user-profile">
                 <div class="avatar">ID</div>
                 <h3 id="user-display">---</h3>
             </div>
-            <button class="panel-btn">ЛИЧНЫЙ ПРОФИЛЬ</button>
-            <button class="panel-btn exit" onclick="location.reload()">LOGOUT</button>
+            <div class="side-actions">
+                <button class="side-btn">НАСТРОЙКИ</button>
+                <button class="side-btn exit" id="logout-btn">ВЫХОД</button>
+            </div>
         </div>
         <div id="panel-blur" class="panel-blur"></div>
     </div>
