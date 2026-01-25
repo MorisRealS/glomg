@@ -1,87 +1,57 @@
-:root { 
-    --p: #a855f7; --bg: #030105; --dark: #0a0510; --red: #ff3344; 
-}
-
+:root { --p: #a855f7; --bg: #030105; --dark: #0a0510; --red: #ff3344; }
 * { box-sizing: border-box; outline: none; }
 body, html { margin: 0; padding: 0; background: #000; color: var(--p); font-family: 'Courier New', monospace; height: 100vh; overflow: hidden; }
 
-/* КНОПКИ СО СКОШЕННЫМИ УГЛАМИ */
+/* КНОПКИ */
 .cyber-btn, .mega-cyber-btn, .cyber-btn-mini {
-    background: rgba(168, 85, 247, 0.05);
-    border: 1px solid var(--p);
-    color: var(--p);
-    padding: 15px 30px;
-    font-weight: bold;
-    text-transform: uppercase;
-    cursor: pointer;
-    clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
-    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(168, 85, 247, 0.05); border: 1px solid var(--p); color: var(--p);
+    padding: 15px 30px; font-weight: bold; cursor: pointer; text-transform: uppercase;
+    clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%); transition: 0.3s;
 }
-.cyber-btn:hover, .mega-cyber-btn:hover { background: var(--p); color: #000; box-shadow: 0 0 20px var(--p); }
-.mega-cyber-btn { width: 400px; padding: 25px; margin: 15px; font-size: 1.2rem; }
+.cyber-btn:hover, .mega-cyber-btn:hover { background: var(--p); color: #000; box-shadow: 0 0 15px var(--p); }
+.mega-cyber-btn { width: 420px; padding: 25px; margin: 10px; font-size: 1.1rem; }
 .exit-red { border-color: var(--red); color: var(--red); }
-.exit-red:hover { background: var(--red); color: #000; box-shadow: 0 0 20px var(--red); }
+.exit-red:hover { background: var(--red); color: #000; box-shadow: 0 0 15px var(--red); }
 
-/* ПОЛЯ ВВОДА (ЧЕРНЫЕ) */
-input {
-    background: #000 !important;
-    border: 1px solid var(--p) !important;
-    padding: 15px;
-    color: var(--p) !important;
-    width: 100%;
-    margin-top: 10px;
-    text-align: center;
-    font-family: inherit;
-}
+/* ПОЛЯ ВВОДА */
+input { background: #000 !important; border: 1px solid var(--p) !important; padding: 15px; color: var(--p) !important; width: 100%; margin-bottom: 15px; text-align: center; }
 
-/* ГЛИТЧ / МЕРЦАНИЕ */
-@keyframes neonFlicker {
-    0%, 100% { filter: brightness(1) drop-shadow(0 0 2px var(--p)); }
-    50% { filter: brightness(1.2) drop-shadow(0 0 10px var(--p)); }
-}
-.neon-glow-box { border: 2px solid var(--p); animation: neonFlicker 3s infinite; }
-
-/* ГОСТЕВОЙ ИНТЕРФЕЙС */
-.guest-container { display: flex; gap: 30px; width: 90%; max-width: 1000px; height: 60vh; }
-.news-section, .ong-info { flex: 1; background: rgba(10, 5, 16, 0.8); border: 1px solid var(--p); padding: 30px; display: flex; flex-direction: column; }
-.scroll-area { flex: 1; overflow-y: auto; padding-right: 15px; margin-top: 20px; }
+/* ГОСТЬ */
+.guest-container { display: flex; gap: 25px; width: 85%; height: 60vh; }
+.news-section, .ong-info { flex: 1; border: 1px solid var(--p); padding: 25px; background: var(--dark); }
+.scroll-area { height: 85%; overflow-y: auto; margin-top: 15px; }
 .scroll-area::-webkit-scrollbar { width: 3px; }
 .scroll-area::-webkit-scrollbar-thumb { background: var(--p); }
-.news-item { border-bottom: 1px solid rgba(168, 85, 247, 0.15); margin-bottom: 20px; padding-bottom: 10px; }
-.date { font-size: 0.8rem; opacity: 0.6; }
-.section-title { margin: 0; font-size: 1.2rem; border-bottom: 1px solid var(--p); padding-bottom: 10px; letter-spacing: 2px; }
 
-/* ТАКТИЧЕСКИЙ РАДАР */
-.map-viewport { position: relative; width: 100vw; height: 80vh; background: radial-gradient(circle, #120622 0%, #000 100%); overflow: hidden; }
-.radar-lines { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 500px; border: 1px solid rgba(168, 85, 247, 0.1); border-radius: 50%; box-shadow: 0 0 0 100px rgba(168, 85, 247, 0.02); }
-.radar-scanner { position: absolute; top: 50%; left: 50%; width: 400px; height: 400px; background: conic-gradient(from 0deg, rgba(168, 85, 247, 0.15), transparent 90deg); transform-origin: top left; animation: radarScan 4s linear infinite; }
+/* РАДАР */
+.map-viewport { position: relative; width: 100vw; height: 75vh; background: radial-gradient(circle, #120622, #000); }
+.radar-scanner { position: absolute; top: 50%; left: 50%; width: 400px; height: 400px; background: conic-gradient(from 0deg, rgba(168, 85, 247, 0.1), transparent 90deg); transform-origin: top left; animation: radarScan 4s linear infinite; }
 @keyframes radarScan { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-/* ПЕРЕХОДЫ (ЗАТЕМНЕНИЕ) */
-#fade-overlay { position: fixed; inset: 0; background: #000; z-index: 10000; opacity: 0; transition: 0.6s; pointer-events: none; }
-#fade-overlay.active { opacity: 1; }
+.node { position: absolute; width: 14px; height: 14px; background: var(--p); border-radius: 50%; cursor: pointer; transform: translate(-50%, -50%); box-shadow: 0 0 15px var(--p); transition: 0.3s; }
+.node:hover { transform: translate(-50%, -50%) scale(1.5); }
+.node.online { background: #00ff88; box-shadow: 0 0 15px #00ff88; }
+.node-info-overlay { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 450px; background: var(--dark); border: 1px solid var(--p); padding: 20px; z-index: 2000; box-shadow: 0 0 30px #000; }
 
-/* UI ОСНОВА */
-.screen { position: fixed; inset: 0; background: #000; z-index: 100; display: flex; align-items: center; justify-content: center; }
+/* ПРОФИЛЬ */
+.profile-card { width: 500px; padding: 30px; background: var(--dark); }
+.avatar-large { width: 80px; height: 80px; border: 1px solid var(--p); margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+.history-log { margin-top: 25px; border-top: 1px solid rgba(168, 85, 247, 0.2); padding-top: 15px; max-height: 150px; overflow-y: auto; }
+.log-entry { font-size: 0.8rem; margin-bottom: 5px; opacity: 0.7; }
+
+/* АРХИВ */
+.archive-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; width: 80%; }
+.doc-card { border: 1px solid var(--p); padding: 30px; text-align: center; cursor: pointer; background: rgba(168,85,247,0.05); }
+.doc-card:hover { background: var(--p); color: #000; }
+
+/* UI */
+.screen { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: #000; }
 .hidden { display: none !important; }
-.full-screen-center { display: flex; flex-direction: column; align-items: center; width: 100%; }
-.top-nav { position: fixed; top: 0; width: 100%; padding: 25px 50px; display: flex; justify-content: space-between; z-index: 1000; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); }
-.auth-terminal { width: 550px; background: var(--dark); padding: 50px; position: relative; }
-.mini-logo { font-size: 7px; line-height: 7px; color: var(--p); margin-bottom: 30px; text-align: center; }
-.glomg-logo-giant { font-size: 14px; line-height: 14px; white-space: pre; color: var(--p); text-align: center; }
-
-/* ЭФФЕКТЫ ТЕРМИНАЛА */
-.fx-layer { position: fixed; inset: 0; pointer-events: none; z-index: 5000; opacity: 0.6; }
-.tv-noise { position: absolute; inset: 0; background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/White-noise-mv255-240x180.png'); opacity: 0.04; }
-.crt-overlay { position: absolute; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03)); background-size: 100% 3px, 3px 100%; }
-
-/* САЙДБАР */
+.top-nav { position: fixed; top: 0; width: 100%; padding: 20px 50px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
+#fade-overlay { position: fixed; inset: 0; background: #000; z-index: 10000; opacity: 0; transition: 0.5s; pointer-events: none; }
+#fade-overlay.active { opacity: 1; }
+.neon-glow-box { border: 1px solid var(--p); box-shadow: 0 0 20px rgba(168, 85, 247, 0.2); }
 #side-panel { position: fixed; left: -320px; width: 300px; height: 100%; background: var(--dark); border-right: 1px solid var(--p); z-index: 6000; transition: 0.4s; padding: 40px; }
 #side-panel.open { left: 0; }
-#blur-shield { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 5500; display: none; }
-
-/* ТЕЛЕМЕТРИЯ (БАРЫ) */
-.stat-card { background: rgba(168, 85, 247, 0.02); border: 1px solid rgba(168, 85, 247, 0.1); padding: 30px; width: 500px; margin-bottom: 20px; }
-.p-bar { width: 100%; height: 12px; background: #000; border: 1px solid rgba(168, 85, 247, 0.3); margin-top: 15px; }
-.p-fill { height: 100%; background: var(--p); box-shadow: 0 0 10px var(--p); transition: 1s ease-in-out; }
 .green-t { color: #00ff88; }
+.glomg-logo-giant { font-size: 10px; line-height: 10px; white-space: pre; color: var(--p); text-align: center; }
