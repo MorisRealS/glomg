@@ -16,24 +16,25 @@ const voltaLogo = `
 
 const output = document.getElementById('output');
 const cmdInput = document.getElementById('cmd');
+const fadeOverlay = document.getElementById('fade-overlay');
 
-// 3. ЛОГО НА ВЕСЬ ЭКРАН СНАЧАЛА
+// 1. ПЕРВЫЙ ЭТАП: ЛОГО
 async function runIntro() {
     const logoContainer = document.getElementById('big-logo');
-    // Посимвольная печать лого
     for (let char of voltaLogo) {
         logoContainer.textContent += char;
         await new Promise(r => setTimeout(r, 2));
     }
-    await new Promise(r => setTimeout(r, 2000));
+    await new Promise(r => setTimeout(r, 1500));
     
-    // Гасим лого и открываем консоль
-    document.getElementById('intro-screen').style.opacity = '0';
+    // Мягкий уход в черное перед консолью
+    fadeOverlay.classList.add('fade-active');
     setTimeout(() => {
         document.getElementById('intro-screen').classList.add('hidden');
         document.getElementById('login-screen').classList.remove('hidden');
+        fadeOverlay.classList.remove('fade-active');
         startConsole();
-    }, 1000);
+    }, 800);
 }
 
 async function typeOutput(text, speed = 30) {
@@ -43,12 +44,12 @@ async function typeOutput(text, speed = 30) {
         line.textContent += char;
         await new Promise(r => setTimeout(r, speed));
     }
+    output.scrollTop = output.scrollHeight;
 }
 
 async function startConsole() {
-    await typeOutput("> VOLTA KERNEL BOOT SUCCESS...", 20);
-    await typeOutput("> CONNECTING TO ONG_CORE...", 40);
-    await typeOutput("> PLEASE IDENTIFY YOURSELF:", 20);
+    await typeOutput("> VOLTA_OS SYSTEM ONLINE...", 20);
+    await typeOutput("> IDENTIFICATION REQUIRED:", 30);
     document.getElementById('input-line').classList.remove('hidden');
     cmdInput.focus();
 }
@@ -60,37 +61,42 @@ cmdInput.addEventListener("keydown", async (e) => {
     if (e.key === "Enter") {
         let val = cmdInput.value.trim().toLowerCase();
         cmdInput.value = "";
+
         if (stage === "ID") {
             if (PROFILES[val]) {
                 user = PROFILES[val];
-                await typeOutput(`> ID [${val.toUpperCase()}] ACCEPTED.`, 20);
+                await typeOutput(`> ID: ${val.toUpperCase()} ACCEPTED.`, 20);
                 await typeOutput("> ENTER PASSCODE:", 20);
-                cmdInput.type = "password";
+                // 2. НЕ используем type="password", чтобы не было окна сохранения пароля
                 stage = "PASS";
             } else { await typeOutput("> ERROR: ACCESS DENIED.", 20); }
         } else if (stage === "PASS") {
             if (val === user.pass) {
-                await typeOutput("> AUTHORIZED. LOADING CORE INTERFACE...", 20);
-                setTimeout(showDashboard, 1000);
-            } else { location.reload(); }
+                await typeOutput("> SUCCESS. LOADING CORE...", 20);
+                // 4. Мягкий переход через затемнение
+                transitionToDashboard();
+            } else { 
+                await typeOutput("> FATAL ERROR. REBOOTING...", 10);
+                setTimeout(() => location.reload(), 1000); 
+            }
         }
     }
 });
 
-function showDashboard() {
-    document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('main-dashboard').classList.remove('hidden');
-    document.getElementById('user-display').textContent = user.name;
-    // Глитч при переходе
-    const g = document.getElementById('glitch-layer');
-    g.classList.add('glitch-active');
-    setTimeout(() => g.classList.remove('glitch-active'), 400);
+function transitionToDashboard() {
+    fadeOverlay.classList.add('fade-active');
+    setTimeout(() => {
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('main-dashboard').classList.remove('hidden');
+        document.getElementById('user-display').textContent = user.name;
+        fadeOverlay.classList.remove('fade-active');
+    }, 800);
 }
 
 // Запуск
 window.onload = runIntro;
 
-// Сайдбар
+// Сайдбар и Выход
 const trigger = document.getElementById('menu-trigger');
 const panel = document.getElementById('side-panel');
 const blur = document.getElementById('panel-blur');
@@ -103,3 +109,4 @@ blur.onclick = () => {
     panel.classList.remove('active');
     blur.style.display = 'none';
 };
+document.getElementById('logout-btn').onclick = () => location.reload();
