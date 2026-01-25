@@ -3,124 +3,55 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Система доступа</title>
+  <title>ONG - Secure Access</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="halftone-overlay"></div>
+  <div class="glitch-overlay"></div>
 
   <div class="backdrop-blur"></div>
 
-  <div class="terminal-wrapper">
+  <div id="login-screen" class="terminal-wrapper">
     <div id="terminal">
-      <div id="output"></div>
-
+      <div id="output">
+        <div class="line">ONG OS v.3.1.24 - Restricted Access System</div>
+        <div class="line">Enter unique identifier to proceed...</div>
+      </div>
       <div id="input-line" class="line">
-        <span class="prompt">OPERATOR@SECURE:> </span>
+        <span class="prompt">ID:> </span>
         <input type="text" id="cmd" autocomplete="off" autofocus spellcheck="false"/>
-        <span class="cursor"></span>
       </div>
     </div>
   </div>
 
-  <script>
-    const output = document.getElementById('output');
-    const inputLine = document.getElementById('input-line');
-    const cmdInput = document.getElementById('cmd');
+  <div id="main-dashboard" class="dashboard-wrapper hidden">
+    <div class="vhs-lines"></div>
+    
+    <nav class="top-bar">
+      <div class="logo">ONG_CORE</div>
+      <div class="menu-trigger" id="menu-btn">
+        <span></span><span></span><span></span>
+      </div>
+    </nav>
 
-    const PROFILES = {
-      "morisreal":   { name: "Moris Real",   level: "ALPHA-7",   access: "Высокий" },
-      "ghost":       { name: "Призрак",      level: "OMEGA-3",   access: "Средний" },
-      "shadow":      { name: "Тень",         level: "DELTA-9",   access: "Ограниченный" },
-      "admin":       { name: "Администратор",level: "GODMODE",   access: "Полный" }
-    };
+    <div class="content-grid">
+      <button class="dash-btn">СТАТУС СИСТЕМЫ</button>
+      <button class="dash-btn">КОНСОЛЬ</button>
+      <button class="dash-btn">АРХИВНАЯ</button>
+    </div>
 
-    let authorized = false;
-    let currentProfile = null;
+    <div id="profile-sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <div class="user-icon">👤</div>
+        <span id="user-name-display">User</span>
+      </div>
+      <button class="sidebar-btn">Настройки</button>
+      <button class="sidebar-btn" onclick="location.reload()">Выход</button>
+    </div>
+    <div id="overlay-darken" class="overlay-darken"></div>
+  </div>
 
-    function print(text, className = "") {
-      const line = document.createElement("div");
-      line.className = "line " + className;
-      line.textContent = text;
-      output.appendChild(line);
-      output.scrollTop = output.scrollHeight;
-    }
-
-    function processCommand(cmd) {
-      cmd = cmd.trim().toLowerCase();
-
-      if (!authorized) {
-        if (PROFILES[cmd]) {
-          currentProfile = PROFILES[cmd];
-          authorized = true;
-
-          print(`Идентификатор принят: ${cmd}`);
-          inputLine.classList.add("hidden");
-
-          setTimeout(() => {
-            print("Инициализация системы...");
-            setTimeout(() => print("Проверка целостности..."), 900);
-            setTimeout(() => print("Загрузка крипто-модулей..."), 1800);
-            setTimeout(() => print("Синхронизация с сегментом..."), 2600);
-            setTimeout(() => {
-              print(`Профиль загружен: ${currentProfile.name} [${currentProfile.level}]`, "highlight");
-              print("Запуск ядра ONG...");
-              setTimeout(() => {
-                print("Система активна.");
-                print("Добро пожаловать, агент.");
-                print("Команды: help, whoami, status, clear, exit");
-              }, 1400);
-            }, 1200);
-          }, 600);
-        } else {
-          print(`Ошибка. Идентификатор не найден.`);
-        }
-        cmdInput.value = "";
-        return;
-      }
-
-      // После авторизации
-      print(`agent@${currentProfile.name.toLowerCase()}:~$ ${cmd}`);
-
-      if (cmd === "help") {
-        print("  help       — этот список");
-        print("  whoami     — текущий агент");
-        print("  status     — статус системы");
-        print("  clear      — очистить терминал");
-        print("  exit       — завершить сессию");
-      }
-      else if (cmd === "whoami") {
-        print(`Агент: ${currentProfile.name} | Уровень: ${currentProfile.level} | Доступ: ${currentProfile.access}`);
-      }
-      else if (cmd === "status") {
-        print("Система: онлайн | Протокол: ONG v3.1 | Уровень доступа: " + currentProfile.level);
-      }
-      else if (cmd === "clear") {
-        output.innerHTML = "";
-      }
-      else if (cmd === "exit") {
-        print("Сессия завершена...");
-        setTimeout(() => location.reload(), 1800);
-      }
-      else {
-        print(`Неизвестная команда: ${cmd}`);
-      }
-
-      cmdInput.value = "";
-    }
-
-    cmdInput.addEventListener("keydown", e => {
-      if (e.key === "Enter") {
-        const cmd = cmdInput.value;
-        if (cmd.trim() !== "") {
-          if (!authorized) print(`> ${cmd}`);
-          processCommand(cmd);
-        }
-      }
-    });
-
-    document.addEventListener("click", () => cmdInput.focus());
-    cmdInput.focus();
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
-
