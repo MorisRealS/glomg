@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>ONG_CORE_SYSTEM</title>
+    <title>ONG_CORE_v4</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -10,13 +10,14 @@
     <div class="halftone"></div>
     <div id="glitch-layer" class="glitch-layer"></div>
 
-    <div id="login-screen" class="screen">
+    <div id="intro-screen" class="full-screen-center">
+        <pre id="big-logo" class="volta-logo-big"></pre>
+    </div>
+
+    <div id="login-screen" class="screen hidden">
         <div class="terminal-wrapper">
             <div class="terminal-glow"></div>
             <div id="terminal">
-                <div class="logo-area">
-                    <pre id="logo-container"></pre>
-                </div>
                 <div id="output"></div>
                 <div id="input-line" class="line hidden">
                     <span class="prompt">></span>
@@ -28,33 +29,37 @@
 
     <div id="main-dashboard" class="screen hidden">
         <div class="vhs-container">
-            <div class="vhs-line"></div>
-            <div class="vhs-line"></div>
-            <div class="vhs-line"></div>
+            <div class="vhs-slow-line"></div>
         </div>
         
         <nav class="vhs-nav">
             <div class="menu-btn" id="menu-trigger">
                 <span></span><span></span><span></span>
             </div>
-            <div class="nav-title">ONG_ARCHIVE_STORAGE_v4</div>
+            <div class="nav-title">ONG_CORE // SYSTEM_READY</div>
         </nav>
 
-        <div class="button-grid">
-            <button class="vhs-btn">СТАТУС СИСТЕМЫ</button>
-            <button class="vhs-btn">КОНСОЛЬ</button>
-            <button class="vhs-btn">АРХИВНАЯ</button>
+        <div class="dashboard-main-content">
+            <div class="button-center-grid">
+                <button class="mega-btn">СТАТУС СИСТЕМЫ</button>
+                <button class="mega-btn">КОНСОЛЬ</button>
+                <button class="mega-btn">АРХИВНАЯ</button>
+            </div>
+            
+            <div class="content-scroll-area">
+                <div class="content-overlay-text">
+                    [ СИСТЕМА ОЖИДАЕТ ВЫБОРА ДИРЕКТОРИИ... ]
+                </div>
+            </div>
         </div>
 
         <div id="side-panel" class="side-panel">
-            <div class="profile-header">
-                <div class="user-icon">👤</div>
-                <h3 id="user-display">AGENT</h3>
+            <div class="user-info-box">
+                <div class="avatar">ID</div>
+                <h3 id="user-display">---</h3>
             </div>
-            <div class="panel-content">
-                <button class="panel-item">ПРОФИЛЬ</button>
-                <button class="panel-item exit" onclick="location.reload()">ВЫХОД</button>
-            </div>
+            <button class="panel-btn">ЛИЧНЫЙ ПРОФИЛЬ</button>
+            <button class="panel-btn exit" onclick="location.reload()">LOGOUT</button>
         </div>
         <div id="panel-blur" class="panel-blur"></div>
     </div>
