@@ -1,57 +1,64 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>ONG_CORE | TERMINAL</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>ONG_CORE_SYSTEM</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="blackout"></div>
+    <div id="blackout"></div>
+    <div class="halftone"></div>
+    <div id="glitch-layer" class="glitch-layer"></div>
 
-  <div class="halftone"></div>
-  <div id="glitch-layer" class="glitch-layer"></div>
-
-  <div id="login-screen" class="screen">
-    <div class="glow-bg"></div>
-    <div class="terminal-frame">
-      <div id="output"></div>
-      <div class="input-area hidden" id="input-container">
-        <span class="prompt">OPERATOR@SECURE:></span>
-        <input type="text" id="cmd" autofocus autocomplete="off" spellcheck="false">
-      </div>
-    </div>
-  </div>
-
-  <div id="main-dashboard" class="screen hidden">
-    <div class="vhs-overlay"></div>
-    
-    <nav class="vhs-nav">
-      <div class="menu-icon" id="menu-btn">
-        <span></span><span></span><span></span>
-      </div>
-      <div class="system-title">ONG_CORE_DASHBOARD v.4.0</div>
-    </nav>
-
-    <div class="button-grid">
-      <button class="mega-btn"><span>СТАТУС СИСТЕМЫ</span></button>
-      <button class="mega-btn"><span>КОНСОЛЬ</span></button>
-      <button class="mega-btn"><span>АРХИВНАЯ</span></button>
+    <div id="login-screen" class="screen">
+        <div class="terminal-wrapper">
+            <div class="terminal-glow"></div>
+            <div id="terminal">
+                <div class="logo-area">
+                    <pre id="logo-container"></pre>
+                </div>
+                <div id="output"></div>
+                <div id="input-line" class="line hidden">
+                    <span class="prompt">></span>
+                    <input type="text" id="cmd" autocomplete="off" spellcheck="false">
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div id="side-panel" class="side-panel">
-      <div class="profile-card">
-        <div class="avatar">👤</div>
-        <h2 id="user-display">USER_NAME</h2>
-        <p>Status: Authorized</p>
-      </div>
-      <div class="panel-nav">
-        <button class="side-link">ЛИЧНЫЙ ПРОФИЛЬ</button>
-        <button class="side-link exit" onclick="location.reload()">ВЫЙТИ</button>
-      </div>
-    </div>
-    <div id="dark-overlay" class="dark-overlay"></div>
-  </div>
+    <div id="main-dashboard" class="screen hidden">
+        <div class="vhs-container">
+            <div class="vhs-line"></div>
+            <div class="vhs-line"></div>
+            <div class="vhs-line"></div>
+        </div>
+        
+        <nav class="vhs-nav">
+            <div class="menu-btn" id="menu-trigger">
+                <span></span><span></span><span></span>
+            </div>
+            <div class="nav-title">ONG_ARCHIVE_STORAGE_v4</div>
+        </nav>
 
-  <script src="script.js"></script>
+        <div class="button-grid">
+            <button class="vhs-btn">СТАТУС СИСТЕМЫ</button>
+            <button class="vhs-btn">КОНСОЛЬ</button>
+            <button class="vhs-btn">АРХИВНАЯ</button>
+        </div>
+
+        <div id="side-panel" class="side-panel">
+            <div class="profile-header">
+                <div class="user-icon">👤</div>
+                <h3 id="user-display">AGENT</h3>
+            </div>
+            <div class="panel-content">
+                <button class="panel-item">ПРОФИЛЬ</button>
+                <button class="panel-item exit" onclick="location.reload()">ВЫХОД</button>
+            </div>
+        </div>
+        <div id="panel-blur" class="panel-blur"></div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
