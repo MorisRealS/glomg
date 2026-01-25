@@ -3,62 +3,123 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>P.R.I.S.M — Главная</title>
-  <link rel="stylesheet" href="styles.css"/>
+  <title>Система доступа</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="site-header">
-  <div class="container">
-    <a class="logo" href="index.html">P.R.I.S.M</a>
-    <nav class="nav">
-      <a class="active" href="index.html">Главная</a>
-      <a href="history.html">История</a>
-      <a href="branches.html">Филлиалы</a>
-      <a class="cta" href="apply.html">Вступить</a>
-    </nav>
-  </div>
-</header>
 
-  <main class="container">
-    <section class="hero">
-      <h1>P.R.I.S.M — проекты и инициативы на Minecraft-серверах</h1>
-      <p>Мы объединяем игроков, строителей и исследователей для реализации масштабных и творческих проектов в различных мирах Minecraft.</p>
-      <div class="hero-actions">
-        <a class="btn" href="apply.html">Подать заявку</a>
-        <a class="btn secondary" href="branches.html">Посмотреть филлиалы</a>
+  <div class="backdrop-blur"></div>
+
+  <div class="terminal-wrapper">
+    <div id="terminal">
+      <div id="output"></div>
+
+      <div id="input-line" class="line">
+        <span class="prompt">OPERATOR@SECURE:> </span>
+        <input type="text" id="cmd" autocomplete="off" autofocus spellcheck="false"/>
+        <span class="cursor"></span>
       </div>
-    </section>
+    </div>
+  </div>
 
-    <section class="features">
-      <article class="card">
-        <h3>Команда</h3>
-        <p>Опытные участники, готовые помогать, обучать и вдохновлять.</p>
-      </article>
-      <article class="card">
-        <h3>Проекты</h3>
-        <p>Мегастройки, инфраструктура, экспедиции и документирование.</p>
-      </article>
-      <article class="card">
-        <h3>Свобода</h3>
-        <p>Разные направления: от анархичных серверов до кооперативных миров.</p>
-      </article>
-    </section>
+  <script>
+    const output = document.getElementById('output');
+    const inputLine = document.getElementById('input-line');
+    const cmdInput = document.getElementById('cmd');
 
-    <section class="highlight">
-      <h2>Наши филлиалы</h2>
-      <ul class="branch-list">
-        <li>
-          <h4>Филлиал Курампы</h4>
-          <p>Творчество и кооперация: комфортная среда для планирования и строительства.</p>
-        </li>
-        <li>
-          <h4>Филлиал 2b2t</h4>
-          <p>Экстремальные условия анархии: выживание, тайные базы, логистика и архивирование.</p>
-        </li>
-      </ul>
-      <a class="btn" href="branches.html">Подробнее о филлиалах</a>
-    </section>
-  </main>
-<script src="script.js"></script>
+    const PROFILES = {
+      "morisreal":   { name: "Moris Real",   level: "ALPHA-7",   access: "Высокий" },
+      "ghost":       { name: "Призрак",      level: "OMEGA-3",   access: "Средний" },
+      "shadow":      { name: "Тень",         level: "DELTA-9",   access: "Ограниченный" },
+      "admin":       { name: "Администратор",level: "GODMODE",   access: "Полный" }
+    };
+
+    let authorized = false;
+    let currentProfile = null;
+
+    function print(text, className = "") {
+      const line = document.createElement("div");
+      line.className = "line " + className;
+      line.textContent = text;
+      output.appendChild(line);
+      output.scrollTop = output.scrollHeight;
+    }
+
+    function processCommand(cmd) {
+      cmd = cmd.trim().toLowerCase();
+
+      if (!authorized) {
+        if (PROFILES[cmd]) {
+          currentProfile = PROFILES[cmd];
+          authorized = true;
+
+          print(`Идентификатор принят: ${cmd}`);
+          inputLine.classList.add("hidden");
+
+          setTimeout(() => {
+            print("Инициализация системы...");
+            setTimeout(() => print("Проверка целостности..."), 900);
+            setTimeout(() => print("Загрузка крипто-модулей..."), 1800);
+            setTimeout(() => print("Синхронизация с сегментом..."), 2600);
+            setTimeout(() => {
+              print(`Профиль загружен: ${currentProfile.name} [${currentProfile.level}]`, "highlight");
+              print("Запуск ядра ONG...");
+              setTimeout(() => {
+                print("Система активна.");
+                print("Добро пожаловать, агент.");
+                print("Команды: help, whoami, status, clear, exit");
+              }, 1400);
+            }, 1200);
+          }, 600);
+        } else {
+          print(`Ошибка. Идентификатор не найден.`);
+        }
+        cmdInput.value = "";
+        return;
+      }
+
+      // После авторизации
+      print(`agent@${currentProfile.name.toLowerCase()}:~$ ${cmd}`);
+
+      if (cmd === "help") {
+        print("  help       — этот список");
+        print("  whoami     — текущий агент");
+        print("  status     — статус системы");
+        print("  clear      — очистить терминал");
+        print("  exit       — завершить сессию");
+      }
+      else if (cmd === "whoami") {
+        print(`Агент: ${currentProfile.name} | Уровень: ${currentProfile.level} | Доступ: ${currentProfile.access}`);
+      }
+      else if (cmd === "status") {
+        print("Система: онлайн | Протокол: ONG v3.1 | Уровень доступа: " + currentProfile.level);
+      }
+      else if (cmd === "clear") {
+        output.innerHTML = "";
+      }
+      else if (cmd === "exit") {
+        print("Сессия завершена...");
+        setTimeout(() => location.reload(), 1800);
+      }
+      else {
+        print(`Неизвестная команда: ${cmd}`);
+      }
+
+      cmdInput.value = "";
+    }
+
+    cmdInput.addEventListener("keydown", e => {
+      if (e.key === "Enter") {
+        const cmd = cmdInput.value;
+        if (cmd.trim() !== "") {
+          if (!authorized) print(`> ${cmd}`);
+          processCommand(cmd);
+        }
+      }
+    });
+
+    document.addEventListener("click", () => cmdInput.focus());
+    cmdInput.focus();
+  </script>
 </body>
 </html>
