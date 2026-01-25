@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>ONG_CORE_v4</title>
+    <title>ONG_CORE_v4_FINAL</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -33,21 +33,42 @@
             </div>
             <div class="nav-title">ONG_CORE // СЕКТОР_УПРАВЛЕНИЯ</div>
         </nav>
+        
         <div class="dashboard-content">
-            <div class="button-grid-center">
-                <button class="mega-btn" onclick="openWindow('status-screen')">СТАТУС СИСТЕМЫ</button>
-                <button class="mega-btn" onclick="openWindow('full-console-screen')">КОНСОЛЬ</button>
-                <button class="mega-btn" onclick="openWindow('archive-screen')">АРХИВНАЯ</button>
+            <div class="wide-button-container">
+                <button class="mega-row-btn" onclick="openWindow('status-screen')">СТАТУС СИСТЕМЫ</button>
+                <button class="mega-row-btn" onclick="openWindow('full-console-screen')">ТЕРМИНАЛ ЯДРА</button>
+                <button class="mega-row-btn" onclick="openWindow('archive-screen')">АРХИВ ДАННЫХ</button>
+            </div>
+
+            <div class="separator-line"></div>
+
+            <div class="info-grid">
+                <div class="info-box">
+                    <span class="info-label">ВЕРОЯТНОСТЬ ДЕСТАБИЛИЗАЦИИ</span>
+                    <span class="info-value" id="val-error">0.0037%</span>
+                </div>
+                <div class="info-box">
+                    <span class="info-label">ИНДЕКС АКТИВНОСТИ РАЗЛОМА</span>
+                    <span class="info-value" id="val-index">0.9998</span>
+                </div>
+                <div class="info-box full-width">
+                    <span class="info-label">СИСТЕМНЫЙ ЖУРНАЛ (V.2.0.26)</span>
+                    <div class="info-logs">
+                        [<span class="time-now"></span>] > Синхронизация локальных баз данных завершена.<br>
+                        [<span class="time-now"></span>] > ПРОТОКОЛ: Инициализация бэкапа нейросети ядра.
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <div id="full-console-screen" class="screen hidden">
-        <button class="back-link" onclick="openWindow('main-dashboard')">← НАЗАД</button>
-        <div class="full-terminal">
+        <button class="back-link" onclick="openWindow('main-dashboard')">← ВЕРНУТЬСЯ В МЕНЮ</button>
+        <div class="full-terminal-wrapper">
             <div id="main-console-output"></div>
             <div class="line">
-                <span class="prompt">USER@ONG:></span>
+                <span class="prompt">USER@ONG_CORE:></span>
                 <input type="text" id="main-console-input" autocomplete="off" spellcheck="false">
             </div>
         </div>
@@ -55,11 +76,21 @@
 
     <div id="status-screen" class="screen hidden">
         <button class="back-link" onclick="openWindow('main-dashboard')">← НАЗАД</button>
-        <div class="content-box"><h2>[ СИСТЕМА: СТАБИЛЬНА ]</h2></div>
+        <div class="content-box">
+            <h2>[ МОНИТОРИНГ СОСТОЯНИЯ ]</h2>
+            <p>ЯДРО: <span class="neon-green">СТАБИЛЬНО</span></p>
+            <p>СЕТЕВОЙ МОСТ: <span class="neon-green">АКТИВЕН</span></p>
+            <p>УРОВЕНЬ УГРОЗЫ: <span class="neon-purple">МИНИМАЛЬНЫЙ</span></p>
+        </div>
     </div>
+
     <div id="archive-screen" class="screen hidden">
         <button class="back-link" onclick="openWindow('main-dashboard')">← НАЗАД</button>
-        <div class="content-box"><h2>[ АРХИВ ЗАБЛОКИРОВАН ]</h2></div>
+        <div class="content-box">
+            <h2>[ ЦЕНТРАЛЬНЫЙ АРХИВ ]</h2>
+            <p>Доступные пакеты данных: <span class="neon-purple">0</span></p>
+            <p>ОШИБКА: Потеря пакетов данных в архиве [ДАННЫЕ УДАЛЕНЫ].</p>
+        </div>
     </div>
 
     <div id="side-panel" class="side-panel">
@@ -68,9 +99,9 @@
             <h3 id="user-display">---</h3>
         </div>
         <div class="side-nav">
-            <button class="side-btn">ПРОФИЛЬ</button>
-            <button class="side-btn">БЕЗОПАСНОСТЬ</button>
-            <button class="side-btn exit" onclick="location.reload()">ВЫХОД</button>
+            <button class="side-btn">ЛИЧНЫЕ ДЕЛА</button>
+            <button class="side-btn">ТЕРМИНАЛ СОТРУДНИКА</button>
+            <button class="side-btn exit" onclick="location.reload()">ВЫЙТИ</button>
         </div>
     </div>
     <div id="panel-blur-overlay" class="panel-blur"></div>
