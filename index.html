@@ -3,40 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ONG_CORE_V5_FINAL_COMMERCIAL</title>
+    <title>ONG_CORE_V6_STABLE_LEGACY</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="fade-overlay"></div>
-    
+    <div class="tv-noise"></div>
+    <div class="vignette"></div>
     <div class="crt-overlay"></div>
     <div class="scanline"></div>
+    
     <canvas id="matrix-canvas" class="hidden"></canvas>
 
     <div id="intro-screen" class="full-screen-center">
         <div class="logo-container">
-            <pre id="big-logo" class="volta-logo-big"></pre>
+            <pre id="big-logo" class="volta-logo-big flicker-text"></pre>
         </div>
     </div>
 
     <div id="login-screen" class="screen hidden">
-        <div class="login-wrapper">
+        <div class="full-screen-center">
             <div class="auth-card">
                 <div class="auth-header">
-                    <span class="auth-title">TERMINAL_PROTECTION_V5</span>
+                    <span class="auth-title">СИСТЕМА ДОСТУПА</span>
                     <div class="status-dot-blink"></div>
                 </div>
                 <div class="auth-body">
                     <div class="input-wrapper">
-                        <label>ИДЕНТИФИКАТОР</label>
+                        <label>USER_ID</label>
                         <input type="text" id="auth-id" spellcheck="false" autocomplete="off">
                     </div>
                     <div class="input-wrapper">
-                        <label>ШИФР-КОД</label>
+                        <label>PASSWORD</label>
                         <input type="password" id="auth-pass">
                     </div>
                     <div class="auth-actions">
-                        <button class="btn-primary" onclick="handleAuth()">ПОДТВЕРДИТЬ</button>
+                        <button class="btn-primary" onclick="handleAuth()">ВОЙТИ</button>
                         <button class="btn-outline" onclick="transitionTo('lobby-screen')">ГОСТЕВОЙ РЕЖИМ</button>
                     </div>
                 </div>
@@ -51,44 +53,41 @@
             </div>
         </header>
 
-        <main class="lobby-content" id="lobby-scroll">
-            <section class="lobby-section">
+        <div class="lobby-scroll-container">
+            <section class="lobby-section-full">
                 <div class="action-rows">
-                    <button class="mega-btn" onclick="transitionTo('login-screen')">АВТОРИЗАЦИЯ СИСТЕМЫ</button>
-                    <button class="mega-btn" onclick="scrollToSection('lobby-news')">АРХИВ НОВОСТЕЙ</button>
-                    <button class="mega-btn" onclick="scrollToSection('lobby-about')">ИНФОРМАЦИЯ О ГРУППЕ</button>
+                    <button class="mega-btn" onclick="transitionTo('login-screen')">АВТОРИЗАЦИЯ</button>
+                    <button class="mega-btn" onclick="scrollToSection('lobby-news')">НОВОСТИ</button>
+                    <button class="mega-btn" onclick="scrollToSection('lobby-about')">О НАС</button>
                 </div>
             </section>
 
             <section id="lobby-news" class="lobby-section-compact">
                 <div class="doc-container">
-                    <h2 class="doc-title">НОВОСТИ</h2>
+                    <h2 class="doc-title">НОВОСТИ ГРУППЫ</h2>
                     <div class="news-scroll">
-                        <div class="news-item"><span>[2026.01.25]</span> Обновление системы авторизации: введены уровни доступа.</div>
-                        <div class="news-item"><span>[2026.01.25]</span> Синхронизация базы данных с узлом VOLTA-01 завершена.</div>
-                        <div class="news-item"><span>[2026.01.25]</span> Обнаружена активность в секторе 7. Наблюдение.</div>
+                        <div class="news-item"><span>[2026.01.25]</span> Терминал переведен на протокол V6.</div>
+                        <div class="news-item"><span>[2026.01.25]</span> Обновление визуальных фильтров шума.</div>
+                        <div class="news-item"><span>[2026.01.25]</span> Мониторинг секторов в штатном режиме.</div>
                     </div>
                 </div>
             </section>
 
             <section id="lobby-about" class="lobby-section-compact">
                 <div class="doc-container">
-                    <h2 class="doc-title">О НАС</h2>
+                    <h2 class="doc-title">ОСНОВНАЯ НАУЧНАЯ ГРУППА</h2>
                     <div class="ong-text-block">
-                        <p><strong>Мы ОНГ. ОНГ — Основная Научная Группа.</strong></p>
-                        <p>Наша задача изучать и использовать наши технологии во благо, мы не несем угрозы но у нас есть и свои правила:</p>
+                        <p><strong>Мы ОНГ.</strong> Исследуем технологии во благо человечества.</p>
                         <div class="rules-box">
-                            <p>1. ОНГ настроена мирно по отношению к другим группам. При атаке агрессор берет ответственность на себя.</p>
-                            <p>2. Организация запрещает вход на территорию. Мы в праве ликвидировать вас при игнорировании.</p>
-                            <p>3. Наработки используются в любых целях, но не во благо злых намерений.</p>
+                            <p>1. Мы не нападаем первыми.</p>
+                            <p>2. Территория ОНГ охраняется автономными системами.</p>
+                            <p>3. Каждое открытие служит прогрессу.</p>
                         </div>
-                        <div class="signature">
-                            С уважением, Генеральный Директор ОНГ <span>MorisReal</span>
-                        </div>
+                        <div class="signature">Director: <span>MorisReal</span></div>
                     </div>
                 </div>
             </section>
-        </main>
+        </div>
     </div>
 
     <div id="main-dashboard" class="screen hidden">
@@ -113,14 +112,14 @@
                 <img src="https://img.icons8.com/ios-filled/100/a855f7/user-male-circle.png" alt="user">
             </div>
             <div class="profile-meta">
-                <h3 id="side-username">GUEST_USER</h3>
+                <h3 id="side-username" class="flicker-text">GUEST</h3>
                 <div class="lvl-badge" id="side-lvl">LVL: 0</div>
                 <div class="id-badge" id="side-id">ID: UNKNOWN</div>
             </div>
         </div>
         <div class="sidebar-nav">
             <button class="side-link" onclick="transitionTo('login-screen')">СМЕНИТЬ АККАУНТ</button>
-            <button class="side-link exit" onclick="location.reload()">ВЫХОД ИЗ СИСТЕМЫ</button>
+            <button class="side-link exit-btn" onclick="location.reload()">ВЫХОД ИЗ СИСТЕМЫ</button>
         </div>
     </div>
     <div id="overlay-blur" onclick="toggleSidebar()"></div>
