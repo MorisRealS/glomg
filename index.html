@@ -3,58 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G.L.O.M.G. CORE V26.1</title>
+    <title>G.L.O.M.G. CORE SYSTEM</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="fx-layer">
         <div class="tv-noise"></div>
         <div class="crt-overlay"></div>
-        <div class="scanline"></div>
+        <div class="vignette"></div>
     </div>
 
     <div id="fade-overlay"></div>
 
     <div id="intro-screen" class="full-screen-center">
-        <pre id="big-logo" class="glomg-logo-giant flicker-text"></pre>
+        <pre id="big-logo" class="glomg-logo-giant"></pre>
     </div>
 
     <div id="login-screen" class="screen hidden">
         <div class="full-screen-center">
             <div class="auth-terminal neon-glow-box">
                 <div class="term-header">
-                    <span class="glomg-brand">G.L.O.M.G. SECURITY_GATE</span>
+                    <pre class="mini-logo">
+  ██████╗ ██╗      ██████╗ ███╗   ███╗ ██████╗ 
+ ██╔════╝ ██║     ██╔════╝ ████╗ ████║██╔════╝ 
+ ██║  ███╗██║     ██║  ███╗██╔████╔██║██║  ███╗
+ ██║   ██║██║     ██║   ██║██║╚██╔╝██║██║   ██║
+ ╚██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║╚██████╔╝
+  ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝</pre>
                 </div>
                 <div class="term-body">
                     <div class="term-input-group">
-                        <label>OPERATOR_ID</label>
+                        <label>ID_OPERATOR</label>
                         <input type="text" id="auth-id" spellcheck="false" autocomplete="off" placeholder="IDENTIFY...">
                     </div>
                     <div class="term-input-group">
-                        <label>SECURE_KEY</label>
+                        <label>CRYPT_KEY</label>
                         <input type="password" id="auth-pass" placeholder="PASSWORD...">
                     </div>
                     <div class="term-actions">
-                        <button class="cyber-btn main-action" onclick="handleAuth()">INITIALIZE_SYSTEM</button>
-                        <button class="cyber-btn guest-action" onclick="enterGuest()">GUEST_OVERRIDE</button>
+                        <button class="cyber-btn" onclick="handleAuth()">ИНИЦИАЛИЗАЦИЯ</button>
+                        <button class="cyber-btn" onclick="enterGuest()">ГОСТЕВОЙ ВХОД</button>
                     </div>
                 </div>
-                <div class="term-footer">SYSTEM_STATUS: STABLE // ENCRYPTION_ACTIVE</div>
+                <div class="term-footer">PROTECTED BY G.L.O.M.G. ENCRYPTION</div>
             </div>
         </div>
     </div>
 
     <div id="lobby-screen" class="screen hidden">
         <header class="top-nav">
-            <div class="msk-clock">MODE: GUEST_ACCESS</div>
-            <button class="cyber-btn-mini" onclick="transitionTo('login-screen')">LOG_IN</button>
+            <div class="brand-name">G.L.O.M.G. // PUBLIC_TERMINAL</div>
+            <button class="cyber-btn-mini" onclick="transitionTo('login-screen')">АВТОРИЗАЦИЯ</button>
         </header>
         <div class="full-screen-center">
-            <div class="lobby-stack">
-                <button class="mega-cyber-btn" onclick="openMap()">ОБЗОР ОБЪЕКТА</button>
-                <div class="info-terminal">
-                    <h4 class="green-t">> G.L.O.M.G. PUBLIC_INFO:</h4>
-                    <p>Доступ к телеметрии заблокирован. <br> Авторизуйтесь для полного управления ядром.</p>
+            <div class="guest-container">
+                <div class="news-section">
+                    <h3 class="section-title">> АКТУАЛЬНЫЕ СВОДКИ</h3>
+                    <div class="scroll-area">
+                        <div class="news-item">
+                            <span class="date">[24.01.26]</span>
+                            <p>Запуск протокола V26. Все подсистемы переведены в штатный режим.</p>
+                        </div>
+                        <div class="news-item">
+                            <span class="date">[23.01.26]</span>
+                            <p>Подавлен несанкционированный сигнал в Секторе-7.</p>
+                        </div>
+                        <div class="news-item">
+                            <span class="date">[21.01.26]</span>
+                            <p>Обновление базы данных ОНГ. Добавлены новые идентификаторы.</p>
+                        </div>
+                        <div class="news-item">
+                            <span class="date">[18.01.26]</span>
+                            <p>Стабилизация энергоблока Ядра завершена на 100%.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="ong-info">
+                    <h3 class="section-title">> СПРАВКА ОБ ОНГ</h3>
+                    <div class="scroll-area">
+                        <p>ОНГ (Объединенная Наземная Группировка) — военизированная структура, созданная для защиты активов G.L.O.M.G.</p>
+                        <p style="margin-top:20px;">Задачи: Патрулирование периметра, мониторинг аномальной активности, защита Ядра от внешнего вмешательства.</p>
+                        <p style="margin-top:20px;">Взаимодействие: Любое несанкционированное приближение к объектам карается согласно протоколу безопасности.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -63,20 +93,20 @@
     <div id="main-dashboard" class="screen hidden">
         <header class="top-nav">
             <div class="menu-trigger" onclick="toggleSidebar(event)"><span></span><span></span><span></span></div>
-            <div class="msk-clock">OPERATOR: <span id="op-name" class="green-t">UNDEFINED</span></div>
+            <div class="msk-clock">ОПЕРАТОР: <span id="op-name" class="green-t"></span></div>
         </header>
         <div class="full-screen-center">
             <div class="menu-stack">
-                <button class="mega-cyber-btn" onclick="openMap()">ТАКТИЧЕСКАЯ КАРТА</button>
+                <button class="mega-cyber-btn" onclick="openMap()">ТАКТИЧЕСКИЙ РАДАР</button>
                 <button class="mega-cyber-btn" onclick="transitionTo('status-screen')">ТЕЛЕМЕТРИЯ ЯДРА</button>
-                <button class="mega-cyber-btn exit-red" onclick="location.reload()">ОТКЛЮЧИТЬСЯ</button>
+                <button class="mega-cyber-btn exit-red" onclick="location.reload()">ЗАВЕРШИТЬ СМЕНУ</button>
             </div>
         </div>
     </div>
 
     <div id="map-screen" class="screen hidden map-bg">
         <header class="top-nav map-header">
-            <div class="brand">G.L.O.M.G. RADAR_SYSTEM</div>
+            <div class="brand">G.L.O.M.G. RADAR_SCANNER</div>
             <button class="cyber-btn-mini" onclick="closeMap()">ВЕРНУТЬСЯ</button>
         </header>
         <div class="map-layout">
@@ -85,40 +115,23 @@
                 <div class="radar-scanner"></div>
                 <div class="map-container" id="node-map"></div>
             </div>
-            <div class="assets-registry">
-                <h3 class="registry-title">АКТИВНЫЕ УЗЛЫ</h3>
-                <div class="registry-grid">
-                    <div class="asset-card active-card">
-                        <h5>CORE_CENTER</h5>
-                        <p>Status: <span class="green-t">ACTIVE</span></p>
-                    </div>
-                    <div class="asset-card">
-                        <h5>NORTH_WATCH</h5>
-                        <p>Status: <span class="green-t">STANDBY</span></p>
-                    </div>
-                    <div class="asset-card">
-                        <h5>SOUTH_GATE</h5>
-                        <p>Status: <span class="red-t">LOST</span></p>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
     <div id="status-screen" class="screen hidden">
         <header class="top-nav">
             <button class="cyber-btn-mini" onclick="transitionTo('main-dashboard')">← НАЗАД</button>
-            <div class="msk-clock">G.L.O.M.G. CORE_STATS</div>
+            <div class="msk-clock">G.L.O.M.G. CORE_MONITOR</div>
         </header>
         <div class="full-screen-center">
             <div class="telemetry-grid">
                 <div class="stat-card">
-                    <div class="stat-head"><span>CPU_LOAD</span><span id="cpu-num">0%</span></div>
+                    <div class="stat-head"><span>ЗАГРУЗКА ПРОЦЕССОРА</span><span id="cpu-num">0%</span></div>
                     <div class="p-bar"><div id="cpu-bar" class="p-fill"></div></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-head"><span>THERMAL</span><span id="temp-num">0°C</span></div>
-                    <div class="p-bar"><div id="temp-bar" class="p-fill red-glow"></div></div>
+                    <div class="stat-head"><span>ТЕМПЕРАТУРА ЯДРА</span><span id="temp-num">0°C</span></div>
+                    <div class="p-bar"><div id="temp-bar" class="p-fill"></div></div>
                 </div>
             </div>
         </div>
@@ -127,10 +140,10 @@
     <div id="side-panel">
         <div class="user-block">
             <div class="avatar">G</div>
-            <h4 id="side-user">GUEST</h4>
+            <h4 id="side-user">USER</h4>
         </div>
         <div class="side-nav">
-            <button class="side-link" onclick="location.reload()">LOGOUT</button>
+            <button class="side-link" onclick="location.reload()">ОТКЛЮЧИТЬСЯ</button>
         </div>
     </div>
     <div id="blur-shield" onclick="closeSidebar()"></div>
