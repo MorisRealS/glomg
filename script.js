@@ -1,35 +1,47 @@
 const STAFF = { "morisreal": "morisreal_profile_console" };
+let startTime = Date.now();
 
-// ЧАСЫ МСК (UTC+3)
-function updateClock() {
+// ЧАСЫ И АПТАЙМ
+function updateTime() {
     const now = new Date();
     const msk = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (3 * 3600000));
-    const timeStr = msk.toTimeString().split(' ')[0];
-    document.querySelectorAll('.time-val').forEach(el => el.textContent = timeStr);
-}
-setInterval(updateClock, 1000);
-
-// ДАТЧИКИ (РВАНЫЙ АЛГОРИТМ)
-let cpu = 4.2, temp = 39.5, load = 15;
-function updateSensors() {
-    // ЦП 1-10% с рваным шагом
-    let cpuStep = (Math.random() > 0.4 ? 1.2 : -0.9) * Math.random();
-    cpu = Math.min(Math.max(cpu + cpuStep, 1), 10);
+    document.querySelectorAll('.time-val').forEach(el => el.textContent = msk.toTimeString().split(' ')[0]);
     
-    // Температура 37-44
-    temp += (Math.random() > 0.5 ? 0.4 : -0.3);
-    temp = Math.min(Math.max(temp, 37), 44);
+    // Uptime calculation
+    let diff = Math.floor((Date.now() - startTime) / 1000);
+    let h = Math.floor(diff / 3600).toString().padStart(2, '0');
+    let m = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
+    let s = (diff % 60).toString().padStart(2, '0');
+    if(document.getElementById('uptime-val')) document.getElementById('uptime-val').textContent = `${h}:${m}:${s}`;
+}
+setInterval(updateTime, 1000);
 
-    // Нагрузка
-    load += (Math.random() > 0.5 ? 1 : -1);
+// ДИНАМИЧЕСКАЯ ТЕЛЕМЕТРИЯ
+let cpu = 5, temp = 40, net = 120;
+function updateTelemetry() {
+    // CPU: 1-12% рваный ритм
+    cpu += (Math.random() > 0.4 ? 1.5 : -1.2) * Math.random();
+    cpu = Math.min(Math.max(cpu, 1), 12);
+    
+    // TEMP: 38-46°C
+    temp += (Math.random() > 0.5 ? 0.3 : -0.2);
+    temp = Math.min(Math.max(temp, 38), 46);
 
-    if(document.getElementById('cpu-val')) {
-        document.getElementById('cpu-val').textContent = cpu.toFixed(1) + "%";
-        document.getElementById('temp-val').textContent = temp.toFixed(1) + "°C";
-        document.getElementById('load-val').textContent = Math.floor(load) + "%";
+    // NET: 50-800 KB/s
+    net = Math.floor(Math.random() * 750) + 50;
+
+    if(document.getElementById('cpu-bar')) {
+        document.getElementById('cpu-num').textContent = cpu.toFixed(1) + "%";
+        document.getElementById('cpu-bar').style.width = (cpu * 8) + "%"; // Scale for visibility
+        
+        document.getElementById('temp-num').textContent = temp.toFixed(1) + "°C";
+        document.getElementById('temp-bar').style.width = ((temp - 30) * 6) + "%";
+        
+        document.getElementById('net-num').textContent = net + " KB/s";
+        document.getElementById('net-bar').style.width = (net / 8) + "%";
     }
 }
-setInterval(updateSensors, 800);
+setInterval(updateTelemetry, 700);
 
 function transitionTo(targetId) {
     const fade = document.getElementById('fade-overlay');
@@ -39,7 +51,6 @@ function transitionTo(targetId) {
         document.getElementById(targetId).classList.remove('hidden');
         closeSidebar();
         
-        // Перезапуск анимаций вылета
         const anims = document.getElementById(targetId).querySelectorAll('.anim-btn-fly, .anim-login-fly');
         anims.forEach(a => { a.style.animation = 'none'; a.offsetHeight; a.style.animation = ''; });
         
@@ -52,6 +63,7 @@ function handleAuth() {
     const pass = document.getElementById('auth-pass').value.trim();
     if (STAFF[id] === pass) {
         document.getElementById('side-username').textContent = id.toUpperCase();
+        startTime = Date.now(); // Reset uptime on login
         transitionTo('main-dashboard');
     } else { alert("ACCESS DENIED"); }
 }
@@ -82,8 +94,7 @@ window.onload = () => {
     let p = 0;
     const t = () => {
         if(p < a.length) { l.textContent += a[p++]; setTimeout(t, 1); }
-        else { setTimeout(() => transitionTo('login-screen'), 1000); }
+        else { setTimeout(() => transitionTo('login-screen'), 800); }
     };
     t();
-    updateClock();
 };
