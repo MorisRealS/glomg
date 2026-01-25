@@ -1,20 +1,26 @@
-// Конфигурация системы G.L.O.M.G.
+// Конфиг безопасности G.L.O.M.G.
 const DB = { "morisreal": "morisreal_profile_console" };
 let isAuthorized = false;
 
-// 1. УПРАВЛЕНИЕ ПЕРЕХОДАМИ
+// 1. СИСТЕМА ПЕРЕХОДОВ (ЗАТЕМНЕНИЕ)
 function transitionTo(id) {
     const fade = document.getElementById('fade-overlay');
-    fade.classList.add('active');
+    fade.classList.add('active'); // Начало затемнения
+    
     setTimeout(() => {
+        // Скрываем всё
         document.querySelectorAll('.screen, #intro-screen').forEach(s => s.classList.add('hidden'));
+        // Показываем целевой экран
         document.getElementById(id).classList.remove('hidden');
         closeSidebar();
-        setTimeout(() => fade.classList.remove('active'), 250);
-    }, 450);
+        
+        setTimeout(() => {
+            fade.classList.remove('active'); // Конец затемнения
+        }, 150);
+    }, 600);
 }
 
-// 2. АВТОРИЗАЦИЯ И ГОСТЬ
+// 2. ЛОГИКА АВТОРИЗАЦИИ
 function enterGuest() {
     isAuthorized = false;
     transitionTo('lobby-screen');
@@ -23,92 +29,89 @@ function enterGuest() {
 function handleAuth() {
     const user = document.getElementById('auth-id').value.trim();
     const pass = document.getElementById('auth-pass').value.trim();
+    
     if (DB[user] === pass) {
         isAuthorized = true;
         document.getElementById('op-name').textContent = user.toUpperCase();
         document.getElementById('side-user').textContent = user.toUpperCase();
         transitionTo('main-dashboard');
     } else {
-        alert("ACCESS_DENIED: INVALID OPERATOR CREDENTIALS");
+        alert("ОШИБКА: НЕДОПУСТИМЫЙ ИДЕНТИФИКАТОР");
     }
 }
 
-// 3. ТАКТИЧЕСКАЯ КАРТА
+// 3. РАДАР (ГЕНЕРАЦИЯ ТОЧЕК)
 function openMap() {
     transitionTo('map-screen');
     const container = document.getElementById('node-map');
     container.innerHTML = "";
     
-    // Точки на радаре
+    // Генерируем "активные" объекты на радаре
     const points = [
-        {x: 50, y: 50, label: "CORE"},
-        {x: 35, y: 40, label: "N-01"},
-        {x: 65, y: 45, label: "E-04"},
-        {x: 45, y: 70, label: "S-02"}
+        {x: 50, y: 50}, // Ядро
+        {x: 30, y: 25}, 
+        {x: 70, y: 60},
+        {x: 45, y: 80}
     ];
 
     points.forEach((p, i) => {
         setTimeout(() => {
-            const node = document.createElement('div');
-            node.style.cssText = `
-                position: absolute; width: 12px; height: 12px; 
-                background: #a855f7; border-radius: 50%;
+            const d = document.createElement('div');
+            d.style.cssText = `
+                position: absolute; width: 10px; height: 10px; 
+                background: var(--p); border-radius: 50%;
                 left: ${p.x}%; top: ${p.y}%;
-                box-shadow: 0 0 15px #a855f7;
-                z-index: 50; transform: translate(-50%, -50%);
+                box-shadow: 0 0 15px var(--p);
+                transform: translate(-50%, -50%);
             `;
-            container.appendChild(node);
-        }, i * 150);
+            container.appendChild(d);
+        }, i * 200);
     });
 }
 
 function closeMap() {
-    // Исправление бага безопасности
-    if (isAuthorized) {
-        transitionTo('main-dashboard');
-    } else {
-        transitionTo('lobby-screen');
-    }
+    isAuthorized ? transitionTo('main-dashboard') : transitionTo('lobby-screen');
 }
 
-// 4. ТЕЛЕМЕТРИЯ (ПЛАВНЫЕ ДАТЧИКИ)
-function updateStats() {
-    if (!document.getElementById('status-screen').classList.contains('hidden')) {
-        let cpu = 22 + Math.random() * 8;
-        let temp = 58 + Math.random() * 4;
-
-        document.getElementById('cpu-num').textContent = Math.floor(cpu) + "%";
-        document.getElementById('cpu-bar').style.width = cpu + "%";
+// 4. ТЕЛЕМЕТРИЯ (ДИНАМИКА)
+setInterval(() => {
+    if(!document.getElementById('status-screen').classList.contains('hidden')) {
+        let cpuVal = 10 + Math.random() * 15;
+        let tempVal = 38 + Math.random() * 7;
         
-        document.getElementById('temp-num').textContent = Math.floor(temp) + "°C";
-        document.getElementById('temp-bar').style.width = temp + "%";
+        document.getElementById('cpu-num').textContent = Math.floor(cpuVal) + "%";
+        document.getElementById('cpu-bar').style.width = cpuVal + "%";
+        
+        document.getElementById('temp-num').textContent = Math.floor(tempVal) + "°C";
+        document.getElementById('temp-bar').style.width = tempVal + "%";
     }
-}
-setInterval(updateStats, 2000);
+}, 2000);
 
-// 5. САЙДБАР
+// 5. САЙДБАР УПРАВЛЕНИЕ
 function toggleSidebar(e) {
     e.stopPropagation();
-    document.getElementById('side-panel').style.left = "0";
+    document.getElementById('side-panel').classList.add('open');
     document.getElementById('blur-shield').style.display = "block";
 }
+
 function closeSidebar() {
-    document.getElementById('side-panel').style.left = "-320px";
+    document.getElementById('side-panel').classList.remove('open');
     document.getElementById('blur-shield').style.display = "none";
 }
 
-// 6. СТАРТОВАЯ АНИМАЦИЯ
+// 6. ИНИЦИАЛИЗАЦИЯ (ПЕЧАТЬ ЛОГО)
 window.onload = () => {
     const l = document.getElementById('big-logo');
-    const art = "G.L.O.M.G. CORE V26.1\n--------------------\nBOOTING...\nLINKING_NODES...\nSYSTEM_READY.";
+    const art = "G.L.O.M.G. CORE\nSYSTEM VERSION 26.2\nSTATUS: ONLINE\nBOOT_SEQUENCE COMPLETE_";
     let i = 0;
-    function type() {
+    
+    function typeEffect() {
         if(i < art.length) {
             l.textContent += art[i++];
-            setTimeout(type, 30);
+            setTimeout(typeEffect, 40);
         } else {
             setTimeout(() => transitionTo('login-screen'), 1200);
         }
     }
-    type();
+    typeEffect();
 };
