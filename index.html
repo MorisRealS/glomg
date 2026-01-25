@@ -2,139 +2,136 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G.L.O.M.G. | CRYSTAL LAB</title>
+    <title>G.L.O.M.G. | CRYSTAL CORE SYSTEM</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="vhs-static">
-    <div class="vignette"></div>
-    <div class="scanlines"></div>
+<body>
+    <div class="vhs-container">
+        <div class="vhs-line"></div>
+        <div class="vhs-grain"></div>
+    </div>
+    <div class="bg-gradient"></div>
     <div id="fade-overlay"></div>
 
-    <div id="login-screen" class="screen">
-        <div class="login-card">
-            <h1 class="glomg-title">G.L.O.M.G.</h1>
-            <p class="sub-text">CENTRAL CRYSTAL LABORATORY</p>
+    <div id="intro-screen" class="screen">
+        <pre id="intro-logo" class="ascii-art"></pre>
+    </div>
+
+    <div id="login-screen" class="screen hidden">
+        <div class="login-window">
+            <h1 class="glitch" data-text="G.L.O.M.G.">G.L.O.M.G.</h1>
             <div class="auth-inputs">
-                <input type="text" id="auth-id" placeholder="OPERATOR_ID" spellcheck="false">
-                <input type="password" id="auth-pass" placeholder="CRYPTO_KEY">
+                <input type="text" id="auth-id" placeholder="OPERATOR_ID" spellcheck="false" autocomplete="off">
+                <input type="password" id="auth-pass" placeholder="ACCESS_KEY">
             </div>
-            <div class="auth-btns">
+            <div class="auth-buttons">
                 <button class="g-btn" onclick="handleAuth()">INITIALIZE</button>
-                <button class="g-btn secondary" onclick="enterGuest()">GUEST_ACCESS</button>
+                <button class="g-btn secondary" onclick="enterGuest()">GUEST_LOG</button>
             </div>
         </div>
     </div>
 
     <div id="lobby-screen" class="screen hidden">
-        <header class="sys-header">
-            <div class="sys-info">CRYSTAL: <span class="p-color">STABLE</span> | SYNC: <span id="guest-clock">00:00:00</span></div>
-            <button class="g-btn-mini" onclick="transitionTo('login-screen')">BACK</button>
+        <header class="hotbar">
+            <div class="hotbar-info">CRYSTAL: <span>STABLE</span> | SYNC: <span id="guest-clock"></span></div>
+            <button class="g-btn-mini" onclick="transitionTo('login-screen')">EXIT_SYSTEM</button>
         </header>
-        <div class="guest-container">
-            <div class="status-grid">
-                <div class="status-item">
-                    <label>СТАБИЛЬНОСТЬ СИСТЕМЫ</label>
-                    <div class="val">99.98%</div>
-                </div>
-                <div class="status-item">
-                    <label>ЗАРЯД КРИСТАЛЛА</label>
-                    <div class="val">1.42 TW</div>
-                </div>
-                <div class="status-item">
-                    <label>СТАБИЛЬНОСТЬ СЕРВЕРОВ</label>
-                    <div class="val">OPERATIONAL</div>
-                </div>
+        <div class="guest-layout">
+            <div class="crystal-meta">
+                <div class="m-card">СТАБИЛЬНОСТЬ: 99.98%</div>
+                <div class="m-card">ЗАРЯД ЯДРА: 1.42 TW</div>
             </div>
-            <div class="lab-terminal">
-                <div class="term-head">CRYSTAL_MONITOR_V4</div>
-                <div id="guest-logs" class="term-body"></div>
-            </div>
-            <div class="lab-info">
-                <h3>ОБЪЕКТ G.L.O.M.G.</h3>
-                <p>Центральный узел управления сосредоточен вокруг высокоэнергетического Кристалла. Все серверные мощности запитаны от его резонанса. Любое вмешательство без допуска карается блокировкой нейросети.</p>
+            <div class="terminal-container">
+                <div class="t-head">CRYSTAL_MONITOR_OS_V26</div>
+                <div id="guest-logs" class="t-body"></div>
             </div>
         </div>
     </div>
 
     <div id="main-dashboard" class="screen hidden">
-        <header class="sys-header">
-            <div class="burger-menu" onclick="toggleSidebar()">
+        <header class="hotbar">
+            <div class="menu-icon" onclick="toggleSidebar()">
                 <span></span><span></span><span></span>
             </div>
             <div id="op-clock">00:00:00</div>
+            <button class="g-btn-mini red-t" onclick="location.reload()">LOGOUT</button>
         </header>
-        <div class="hub-menu">
-            <button class="hub-btn" onclick="openMap()">ТАКТИЧЕСКИЙ РАДАР</button>
-            <button class="hub-btn" onclick="transitionTo('archive-screen')">АРХИВ ДАННЫХ</button>
-            <button class="hub-btn" onclick="transitionTo('status-screen')">ТЕЛЕМЕТРИЯ КРИСТАЛЛА</button>
+        <div class="hub-nav">
+            <button class="mega-btn" onclick="openMap()">ОГРОМНЫЙ РАДАР</button>
+            <button class="mega-btn" onclick="openModal('settings-window')">НАСТРОЙКИ</button>
+            <button class="mega-btn" onclick="openModal('profile-window')">ПРОФИЛЬ</button>
         </div>
     </div>
 
-    <div id="map-screen" class="screen hidden">
-        <div class="radar-layout">
-            <button class="g-btn-mini back-btn" onclick="transitionTo('main-dashboard')">CLOSE_RADAR</button>
-            <div class="radar-circle">
-                <div class="radar-sweep"></div>
-                <div class="radar-grid"></div>
-                <div id="node-map"></div>
+    <div id="profile-window" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>ЛИЧНОЕ ДЕЛО ОПЕРАТОРА</span>
+                <button class="close-btn" onclick="closeModal('profile-window')">X</button>
             </div>
-            <div id="node-info" class="node-card hidden">
-                <h2 id="node-name">---</h2>
-                <div class="node-details">
-                    <p>STATUS: <span id="node-status">---</span></p>
-                    <p>RANK: <span id="node-rank">---</span></p>
+            <div class="profile-body">
+                <div class="p-avatar" id="p-avatar">?</div>
+                <div class="p-data">
+                    <p>ИМЯ: <span id="p-name" class="purple-t">---</span></p>
+                    <p>ДОЛЖНОСТЬ: <span id="p-rank" class="purple-t">---</span></p>
+                    <p>УРОВЕНЬ ДОСТУПА: <span class="purple-t">LEVEL_4</span></p>
+                    <p>ID КОД: <span id="p-id" class="purple-t">---</span></p>
+                </div>
+                <div class="modal-actions">
+                    <button class="g-btn-mini red-t" onclick="location.reload()">ВЫХОД</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="archive-screen" class="screen hidden">
-        <div class="content-box">
-            <div class="box-header">
-                <h2>SECURE ARCHIVE</h2>
-                <button class="g-btn-mini" onclick="transitionTo('main-dashboard')">CLOSE</button>
+    <div id="settings-window" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>СИСТЕМНЫЕ НАСТРОЙКИ</span>
+                <button class="close-btn" onclick="closeModal('settings-window')">X</button>
             </div>
-            <div class="scroll-list">
-                <div class="list-item"><span>[FILE]</span> PROTOCOL_RESONANCE_V1.PDF</div>
-                <div class="list-item"><span>[LOGS]</span> SECTOR_4_ANOMALY.TXT</div>
-                <div class="list-item"><span>[IMG]</span> CRYSTAL_SPECTRUM_ANALYSIS.RAW</div>
-                <div class="list-item locked"><span>[ERR]</span> CLASSIFIED_ONG_REPORT.ENC</div>
-                <div class="list-item"><span>[FILE]</span> SERVER_COOLING_LOGS.LOG</div>
-            </div>
-        </div>
-    </div>
-
-    <div id="status-screen" class="screen hidden">
-        <div class="content-box">
-            <div class="box-header">
-                <h2>CRYSTAL TELEMETRY</h2>
-                <button class="g-btn-mini" onclick="transitionTo('main-dashboard')">CLOSE</button>
-            </div>
-            <div class="tele-grid">
-                <div class="tele-box">CPU_LOAD: <span class="p-color">12%</span></div>
-                <div class="tele-box">TEMP: <span class="p-color">-184.2°C</span></div>
-                <div class="tele-box">CRYSTAL_FREQ: <span class="p-color">842.1 THz</span></div>
-                <div class="tele-box">ENERGY_OUTPUT: <span class="p-color">STABLE</span></div>
-                <div class="tele-box">COOLING_PUMPS: <span class="p-color">ACTIVE</span></div>
-                <div class="tele-box">RESONANCE_SYNC: <span class="p-color">99.9%</span></div>
+            <div class="settings-body">
+                <div class="s-section">
+                    <h3>О ПРОГРАММЕ</h3>
+                    <p>G.L.O.M.G. Core OS v26.5. Контроль Кристалла и мониторинг ОНГ.</p>
+                </div>
+                <div class="s-section">
+                    <h3>УРОВЕНЬ ДОСТУПА</h3>
+                    <p>Текущий протокол: <span class="purple-t">ENCRYPTED_ALPHA</span></p>
+                </div>
+                <div class="modal-actions">
+                    <button class="g-btn-mini red-t" onclick="location.reload()">ВЫХОД</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="side-slider" class="side-slider">
-        <div class="side-profile">
-            <div class="side-avatar" id="side-avatar">?</div>
-            <div class="side-meta">
-                <h3 id="side-name">USER</h3>
-                <p id="side-rank">OPERATOR</p>
+    <div id="map-screen" class="screen hidden">
+        <div class="radar-full-wrap">
+            <button class="g-btn-mini back-absolute" onclick="transitionTo('main-dashboard')">ЗАКРЫТЬ РАДАР</button>
+            <div class="huge-radar">
+                <div class="radar-scanner"></div>
+                <div class="radar-grid"></div>
+                <div id="node-map"></div>
+            </div>
+            <div id="node-info" class="node-panel hidden">
+                <h2 id="n-name">---</h2>
+                <p>STATUS: <span id="n-status">---</span></p>
+                <p>RANK: <span id="n-rank">---</span></p>
             </div>
         </div>
-        <div class="side-links">
-            <button onclick="alert('Opening profile...')">ПРОФИЛЬ</button>
-            <button onclick="alert('Settings...')">НАСТРОЙКИ</button>
-            <button class="logout-link" onclick="location.reload()">ВЫХОД</button>
+    </div>
+
+    <div id="side-menu" class="side-menu">
+        <div class="side-head">
+            <div class="side-avatar" id="side-avatar"></div>
+            <div id="side-username">USER</div>
         </div>
+        <nav class="side-nav">
+            <button onclick="openModal('profile-window')">МОЙ ПРОФИЛЬ</button>
+            <button onclick="openModal('settings-window')">НАСТРОЙКИ</button>
+            <button class="red-t" onclick="location.reload()">ВЫХОД</button>
+        </nav>
     </div>
     <div id="side-overlay" onclick="toggleSidebar()"></div>
 
