@@ -1,0 +1,135 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  height: 100vh;
+  font-family: 'Courier New', Courier, monospace;
+  color: #d0b0ff;
+  background: radial-gradient(
+    circle at center,
+    #4b0082 0%,
+    #2a004f 35%,
+    #0f001a 70%,
+    #000000 100%
+  );
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.backdrop-blur {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 5, 30, 0.38);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+  z-index: 1;
+}
+
+.terminal-wrapper {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 960px;
+  height: 82vh;
+  max-height: 820px;
+  padding: 20px 16px;
+}
+
+#terminal {
+  width: 100%;
+  height: 100%;
+  background: rgba(8, 4, 22, 0.86);
+  border: 1px solid #5a3d8a;
+  border-radius: 8px;
+  box-shadow: 
+    0 0 40px rgba(90, 60, 140, 0.5),
+    inset 0 0 20px rgba(90, 60, 140, 0.15);
+  padding: 24px 28px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+#output {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 10px;
+  line-height: 1.48;
+  font-size: 1.06rem;
+  white-space: pre-wrap;
+}
+
+.line {
+  margin: 5px 0;
+}
+
+.prompt {
+  color: #b090ff;
+  user-select: none;
+  margin-right: 6px;
+}
+
+input {
+  background: transparent;
+  border: none;
+  color: #d0b0ff;
+  font: inherit;
+  outline: none;
+  flex: 1;
+  caret-color: #d0b0ff;
+}
+
+.cursor {
+  display: inline-block;
+  width: 9px;
+  height: 1.2em;
+  background: #d0b0ff;
+  vertical-align: middle;
+  animation: blink 1.25s step-end infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.hidden {
+  display: none !important;
+}
+
+#output::-webkit-scrollbar {
+  width: 8px;
+}
+#output::-webkit-scrollbar-track {
+  background: transparent;
+}
+#output::-webkit-scrollbar-thumb {
+  background: #6a4ca8;
+  border-radius: 4px;
+}
+
+.highlight {
+  color: #e0c0ff;
+  font-weight: bold;
+}
+
+/* Адаптивность для маленьких экранов */
+@media (max-width: 600px) {
+  .terminal-wrapper {
+    padding: 12px 8px;
+    height: 92vh;
+    max-height: none;
+  }
+  
+  #terminal {
+    padding: 16px 20px;
+  }
+  
+  #output {
+    font-size: 1rem;
+  }
+}
