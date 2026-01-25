@@ -2,18 +2,15 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>ONG_CORE_v4_FINAL</title>
+    <title>ONG_CORE_v4</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="fade-overlay"></div>
     <div class="halftone"></div>
-    <div id="glitch-layer" class="glitch-layer"></div>
 
     <div id="intro-screen" class="full-screen-center">
-        <div class="logo-glow-container">
-            <pre id="big-logo" class="volta-logo-big"></pre>
-        </div>
+        <pre id="big-logo" class="volta-logo-big"></pre>
     </div>
 
     <div id="login-screen" class="screen hidden">
@@ -22,7 +19,7 @@
                 <div id="auth-output"></div>
                 <div id="input-line" class="line hidden">
                     <span class="prompt">></span>
-                    <input type="text" id="cmd" autocomplete="off" spellcheck="false" autofocus>
+                    <input type="text" id="cmd" autocomplete="off" spellcheck="false">
                 </div>
             </div>
             <div class="terminal-bottom-glow"></div>
@@ -47,11 +44,11 @@
     </div>
 
     <div id="full-console-screen" class="screen hidden">
-        <button class="back-link" onclick="openWindow('main-dashboard')">← ВЕРНУТЬСЯ В МЕНЮ</button>
+        <button class="back-link" onclick="openWindow('main-dashboard')">← НАЗАД</button>
         <div class="full-terminal">
             <div id="main-console-output"></div>
             <div class="line">
-                <span class="prompt">USER@ONG_CORE:></span>
+                <span class="prompt">USER@ONG:></span>
                 <input type="text" id="main-console-input" autocomplete="off" spellcheck="false">
             </div>
         </div>
@@ -59,31 +56,22 @@
 
     <div id="status-screen" class="screen hidden">
         <button class="back-link" onclick="openWindow('main-dashboard')">← НАЗАД</button>
-        <div class="content-box">
-            <h2>СИСТЕМНЫЙ МОНИТОРИНГ</h2>
-            <hr>
-            <p>ЯДРО: <span class="neon-green">ONLINE</span></p>
-            <p>ЛОКАЛИЗАЦИЯ: <span class="neon-green">ACTIVE</span></p>
-            <p>ШИФРОВАНИЕ: <span class="neon-purple">VOLTA_4</span></p>
-        </div>
+        <div class="content-box"><h2>[ СТАТУС: ONLINE ]</h2></div>
     </div>
-
     <div id="archive-screen" class="screen hidden">
         <button class="back-link" onclick="openWindow('main-dashboard')">← НАЗАД</button>
-        <div class="content-box">
-            <h2>АРХИВНЫЕ ДАННЫЕ</h2>
-            <p>Список файлов пуст. Доступ ограничен.</p>
-        </div>
+        <div class="content-box"><h2>[ АРХИВ ПУСТ ]</h2></div>
     </div>
 
     <div id="side-panel" class="side-panel">
         <div class="profile-section">
             <div class="avatar-circle">ID</div>
-            <h3 id="user-display">OFFLINE</h3>
+            <h3 id="user-display">---</h3>
         </div>
         <div class="side-nav">
             <button class="side-link">ЛИЧНЫЙ КАБИНЕТ</button>
-            <button class="side-link exit" onclick="location.reload()">ВЫЙТИ ИЗ СИСТЕМЫ</button>
+            <button class="side-link">НАСТРОЙКИ</button>
+            <button class="side-link exit" onclick="location.reload()">ВЫХОД</button>
         </div>
     </div>
     <div id="panel-blur-overlay" class="panel-blur"></div>
