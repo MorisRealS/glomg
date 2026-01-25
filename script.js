@@ -12,8 +12,10 @@ function transitionTo(targetId) {
         document.querySelectorAll('.screen, #intro-screen').forEach(s => s.classList.add('hidden'));
         const target = document.getElementById(targetId);
         target.classList.remove('hidden');
+        
         const anims = target.querySelectorAll('.anim-login-fly, .anim-btn-fly');
         anims.forEach(el => { el.style.animation = 'none'; el.offsetHeight; el.style.animation = ''; });
+        
         closeSidebar();
         setTimeout(() => fade.classList.remove('active'), 150);
     }, 600);
@@ -24,13 +26,11 @@ function handleAuth() {
     const pass = document.getElementById('auth-pass').value.trim();
     if (STAFF_DATABASE[id] && STAFF_DATABASE[id].pass === pass) {
         triggerMatrix(() => {
-            const u = STAFF_DATABASE[id];
-            document.getElementById('side-username').textContent = u.name;
-            document.getElementById('side-lvl').textContent = `LVL: ${u.lvl}`;
-            document.getElementById('side-id').textContent = `ID: ${id.toUpperCase()}`;
+            document.getElementById('side-username').textContent = STAFF_DATABASE[id].name;
+            document.getElementById('side-lvl').textContent = "LVL: " + STAFF_DATABASE[id].lvl;
             transitionTo('main-dashboard');
         });
-    } else { alert("ОШИБКА ДОСТУПА"); }
+    } else { alert("ACCESS DENIED"); }
 }
 
 function triggerMatrix(cb) {
@@ -51,22 +51,10 @@ function triggerMatrix(cb) {
     setTimeout(() => { clearInterval(i); c.classList.add('hidden'); cb(); }, 1500);
 }
 
-function toggleSidebar() {
-    const p = document.getElementById('side-panel');
-    const b = document.getElementById('overlay-blur');
-    const a = p.classList.toggle('active');
-    b.style.display = a ? "block" : "none";
-}
+function toggleSidebar() { document.getElementById('side-panel').classList.toggle('active'); }
+function closeSidebar() { document.getElementById('side-panel').classList.remove('active'); }
 
-function closeSidebar() {
-    document.getElementById('side-panel').classList.remove('active');
-    document.getElementById('overlay-blur').style.display = "none";
-}
-
-function scrollToSection(id) {
-    const el = document.getElementById(id);
-    if(el) el.scrollIntoView({ behavior: 'smooth' });
-}
+function scrollToSection(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
 
 window.onload = () => {
     const l = document.getElementById('big-logo');
@@ -77,12 +65,12 @@ window.onload = () => {
 ██║   ██║██║     ██║   ██║██║╚██╔╝██║██║   ██║
 ╚██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║╚██████╔╝
  ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ `;
-    let pos = 0;
-    const type = () => {
-        if(pos < a.length) { l.textContent += a[pos++]; setTimeout(type, 1); }
-        else { setTimeout(() => transitionTo('login-screen'), 1200); }
+    let p = 0;
+    const t = () => {
+        if(p < a.length) { l.textContent += a[p++]; setTimeout(t, 1); }
+        else { setTimeout(() => transitionTo('login-screen'), 1000); }
     };
-    type();
+    t();
     setInterval(() => {
         const cl = document.getElementById('clock');
         if(cl) cl.textContent = new Date().toTimeString().split(' ')[0];
