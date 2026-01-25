@@ -11,102 +11,84 @@ const voltaLogo = `
 ██║  ███╗██║     ██║  ███╗██╔████╔██║██║  ███╗
 ██║   ██║██║     ██║   ██║██║╚██╔╝██║██║   ██║
 ╚██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║╚██████╔╝
- ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ 
-      ++ SYSTEM TYPE: VOLTA_OS_v4 ++          `;
+ ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ `;
 
-const output = document.getElementById('output');
+const authOutput = document.getElementById('auth-output');
 const cmdInput = document.getElementById('cmd');
 const fadeOverlay = document.getElementById('fade-overlay');
 
-// 1. ПЕРВЫЙ ЭТАП: ЛОГО
+// 1. Плавный запуск Лого
 async function runIntro() {
-    const logoContainer = document.getElementById('big-logo');
+    const container = document.getElementById('big-logo');
     for (let char of voltaLogo) {
-        logoContainer.textContent += char;
+        container.textContent += char;
         await new Promise(r => setTimeout(r, 2));
     }
-    await new Promise(r => setTimeout(r, 1500));
-    
-    // Мягкий уход в черное перед консолью
+    await new Promise(r => setTimeout(r, 2000));
+    openWindow('login-screen');
+}
+
+// 2. Универсальная функция переключения окон
+function openWindow(windowId) {
     fadeOverlay.classList.add('fade-active');
     setTimeout(() => {
-        document.getElementById('intro-screen').classList.add('hidden');
-        document.getElementById('login-screen').classList.remove('hidden');
+        // Скрываем все окна
+        document.querySelectorAll('.screen, #intro-screen').forEach(s => s.classList.add('hidden'));
+        // Показываем нужное
+        document.getElementById(windowId).classList.remove('hidden');
         fadeOverlay.classList.remove('fade-active');
-        startConsole();
+        
+        if (windowId === 'login-screen') startAuth();
     }, 800);
 }
 
-async function typeOutput(text, speed = 30) {
-    const line = document.createElement('div');
-    output.appendChild(line);
-    for (let char of text) {
-        line.textContent += char;
-        await new Promise(r => setTimeout(r, speed));
+async function startAuth() {
+    authOutput.innerHTML = "";
+    const lines = ["> VOLTA_OS v4.0", "> ПРОВЕРКА ИДЕНТИФИКАТОРА:"];
+    for (let l of lines) {
+        const d = document.createElement('div');
+        authOutput.appendChild(d);
+        for(let c of l) { d.textContent += c; await new Promise(r => setTimeout(r, 20)); }
     }
-    output.scrollTop = output.scrollHeight;
-}
-
-async function startConsole() {
-    await typeOutput("> VOLTA_OS SYSTEM ONLINE...", 20);
-    await typeOutput("> IDENTIFICATION REQUIRED:", 30);
     document.getElementById('input-line').classList.remove('hidden');
     cmdInput.focus();
 }
 
-let stage = "ID";
-let user = null;
+let stage = "ID", user = null;
 
-cmdInput.addEventListener("keydown", async (e) => {
+cmdInput.onkeydown = async (e) => {
     if (e.key === "Enter") {
         let val = cmdInput.value.trim().toLowerCase();
         cmdInput.value = "";
-
         if (stage === "ID") {
             if (PROFILES[val]) {
                 user = PROFILES[val];
-                await typeOutput(`> ID: ${val.toUpperCase()} ACCEPTED.`, 20);
-                await typeOutput("> ENTER PASSCODE:", 20);
-                // 2. НЕ используем type="password", чтобы не было окна сохранения пароля
                 stage = "PASS";
-            } else { await typeOutput("> ERROR: ACCESS DENIED.", 20); }
+                const d = document.createElement('div');
+                authOutput.appendChild(d);
+                d.textContent = `> ID [${val.toUpperCase()}] ACCEPTED. ВВЕДИТЕ ПАРОЛЬ:`;
+            }
         } else if (stage === "PASS") {
             if (val === user.pass) {
-                await typeOutput("> SUCCESS. LOADING CORE...", 20);
-                // 4. Мягкий переход через затемнение
-                transitionToDashboard();
-            } else { 
-                await typeOutput("> FATAL ERROR. REBOOTING...", 10);
-                setTimeout(() => location.reload(), 1000); 
-            }
+                document.getElementById('user-display').textContent = user.name;
+                openWindow('main-dashboard');
+            } else { location.reload(); }
         }
     }
-});
+};
 
-function transitionToDashboard() {
-    fadeOverlay.classList.add('fade-active');
-    setTimeout(() => {
-        document.getElementById('login-screen').classList.add('hidden');
-        document.getElementById('main-dashboard').classList.remove('hidden');
-        document.getElementById('user-display').textContent = user.name;
-        fadeOverlay.classList.remove('fade-active');
-    }, 800);
-}
-
-// Запуск
-window.onload = runIntro;
-
-// Сайдбар и Выход
+// Сайдбар
 const trigger = document.getElementById('menu-trigger');
 const panel = document.getElementById('side-panel');
 const blur = document.getElementById('panel-blur');
 
 trigger.onclick = () => {
-    panel.classList.toggle('active');
-    blur.style.display = panel.classList.contains('active') ? 'block' : 'none';
+    panel.classList.add('active');
+    blur.style.display = "block";
 };
 blur.onclick = () => {
     panel.classList.remove('active');
-    blur.style.display = 'none';
+    blur.style.display = "none";
 };
-document.getElementById('logout-btn').onclick = () => location.reload();
+
+window.onload = runIntro;
