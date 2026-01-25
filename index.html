@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GLOMG_CORE_V23_FULL</title>
+    <title>GLOMG_CORE_V24_TOTAL</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -23,24 +23,24 @@
         <div class="full-screen-center">
             <div class="auth-terminal cyber-glitch">
                 <div class="term-header">
-                    <span>TERMINAL_ACCESS_V23</span>
+                    <span>TERMINAL_ACCESS_V24.1</span>
                     <span class="scan-line-mini"></span>
                 </div>
                 <div class="term-body">
                     <div class="term-input-group">
                         <label>OPERATOR_ID</label>
-                        <input type="text" id="auth-id" spellcheck="false" autocomplete="off" placeholder="IDENTIFY...">
+                        <input type="text" id="auth-id" spellcheck="false" autocomplete="off" placeholder="NAME...">
                     </div>
                     <div class="term-input-group">
                         <label>ACCESS_CRYPT</label>
-                        <input type="password" id="auth-pass" placeholder="PASSWORD...">
+                        <input type="password" id="auth-pass" placeholder="KEY...">
                     </div>
                     <div class="term-actions">
-                        <button class="glow-btn main-action" onclick="handleAuth()">INITIALIZE_SYSTEM</button>
-                        <button class="glow-btn" onclick="transitionTo('lobby-screen')">GUEST_OVERRIDE</button>
+                        <button class="glow-btn main-action big-btn" onclick="handleAuth()">INITIALIZE_SYSTEM</button>
+                        <button class="glow-btn big-btn" onclick="transitionTo('lobby-screen')">GUEST_OVERRIDE</button>
                     </div>
                 </div>
-                <div class="term-footer">ENCRYPTION: AES-512 // GLOMG_SECURE</div>
+                <div class="term-footer">STATUS: ENCRYPTED // READY</div>
             </div>
         </div>
     </div>
@@ -51,12 +51,12 @@
             <div class="msk-clock">MSK: <span class="time-val">00:00:00</span></div>
         </header>
         <div class="full-screen-center">
-            <div class="lobby-stack">
+            <div class="lobby-stack anim-appear">
                 <button class="mega-glow-btn" onclick="transitionTo('login-screen')">АВТОРИЗАЦИЯ</button>
-                <button class="mega-glow-btn" onclick="scrollToSection('news-sec')">НОВОСТИ</button>
-                <div id="news-sec" class="mini-doc">
-                    <h3 class="green-t">> SYSTEM_UPDATE_V23</h3>
-                    <p>Карта узлов интегрирована по координатам острова.</p>
+                <button class="mega-glow-btn" onclick="openMap()">КАРТА ОБЪЕКТА</button>
+                <div class="mini-doc-box">
+                    <h4 class="green-t">> LOG_V24:</h4>
+                    <p>Карта узлов синхронизирована с рельефом острова.</p>
                 </div>
             </div>
         </div>
@@ -69,19 +69,22 @@
         </header>
         <div class="full-screen-center">
             <div class="menu-stack">
-                <button class="mega-glow-btn" onclick="transitionTo('status-screen')">ТЕЛЕМЕТРИЯ</button>
                 <button class="mega-glow-btn" onclick="openMap()">СЕТЕВАЯ КАРТА</button>
-                <button class="mega-glow-btn" onclick="location.reload()">ВЫХОД</button>
+                <button class="mega-glow-btn" onclick="transitionTo('status-screen')">ТЕЛЕМЕТРИЯ</button>
+                <button class="mega-glow-btn" onclick="location.reload()">ВЫЙТИ ИЗ СИСТЕМЫ</button>
             </div>
         </div>
     </div>
 
     <div id="map-screen" class="screen hidden map-bg">
         <header class="top-nav">
-            <button class="back-btn-glow" onclick="transitionTo('main-dashboard')">← ЗАКРЫТЬ КАРТУ</button>
-            <div class="msk-clock">MAP_NODES: ACTIVE</div>
+            <button class="back-btn-glow" onclick="closeMap()">← ЗАКРЫТЬ КАРТУ</button>
+            <div class="msk-clock">NODE_MAP: RENDERING_STABLE</div>
         </header>
-        <div class="map-container" id="node-map"></div>
+        <div class="map-wrapper">
+            <svg class="map-lines" id="map-svg"></svg>
+            <div class="map-container" id="node-map"></div>
+        </div>
     </div>
 
     <div id="status-screen" class="screen hidden">
@@ -92,11 +95,11 @@
         <div class="full-screen-center">
             <div class="telemetry-grid">
                 <div class="stat-card">
-                    <div class="stat-head"><span>ЗАГРУЗКА ЦП</span><span id="cpu-num">0%</span></div>
+                    <div class="stat-head"><span>CORE_LOAD</span><span id="cpu-num">0%</span></div>
                     <div class="p-bar"><div id="cpu-bar" class="p-fill"></div></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-head"><span>ТЕМПЕРАТУРА</span><span id="temp-num">0°C</span></div>
+                    <div class="stat-head"><span>TEMPERATURE</span><span id="temp-num">0°C</span></div>
                     <div class="p-bar"><div id="temp-bar" class="p-fill red-glow"></div></div>
                 </div>
             </div>
@@ -108,12 +111,12 @@
             <div class="user-avatar-glow">Ω</div>
             <div class="user-meta">
                 <h4 id="side-user">GUEST</h4>
-                <small class="green-t">CONNECTION: OK</small>
+                <small class="green-t">CONNECTION: STABLE</small>
             </div>
         </div>
         <div class="side-nav">
-            <button class="side-btn-glow" onclick="transitionTo('login-screen')">СМЕНИТЬ АККАУНТ</button>
-            <button class="side-btn-glow exit-btn" onclick="location.reload()">ВЫХОД</button>
+            <button class="side-btn-glow" onclick="transitionTo('login-screen')">RE-LOGIN</button>
+            <button class="side-btn-glow exit-btn" onclick="location.reload()">TERMINATE</button>
         </div>
     </div>
     <div id="blur-shield" onclick="closeSidebar()"></div>
