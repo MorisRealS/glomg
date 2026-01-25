@@ -13,83 +13,83 @@ const voltaLogo = `
 ╚██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║╚██████╔╝
  ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ `;
 
-const authOutput = document.getElementById('auth-output');
-const cmdInput = document.getElementById('cmd');
 const fadeOverlay = document.getElementById('fade-overlay');
+const sidePanel = document.getElementById('side-panel');
 
-// 1. Плавный запуск (Лого -> Консоль)
-async function bootSystem() {
-    const logoPre = document.getElementById('big-logo');
+// Запуск
+async function init() {
+    const logo = document.getElementById('big-logo');
     for (let char of voltaLogo) {
-        logoPre.textContent += char;
+        logo.textContent += char;
         await new Promise(r => setTimeout(r, 2));
     }
-    await new Promise(r => setTimeout(r, 1800));
+    await new Promise(r => setTimeout(r, 2000));
     openWindow('login-screen');
 }
 
-// 2. Глобальная функция смены окон
 function openWindow(id) {
     fadeOverlay.classList.add('fade-active');
+    // Скрываем плашку при смене окон, чтобы не мешала
+    sidePanel.classList.remove('active');
+    
     setTimeout(() => {
-        // Прячем всё
         document.querySelectorAll('.screen, #intro-screen').forEach(s => s.classList.add('hidden'));
-        // Показываем нужное
         document.getElementById(id).classList.remove('hidden');
         fadeOverlay.classList.remove('fade-active');
         
-        if (id === 'login-screen') runAuthText();
-        if (id === 'full-console-screen') document.getElementById('main-console-input').focus();
-    }, 800);
+        if(id === 'login-screen') startLogin();
+        if(id === 'full-console-screen') document.getElementById('main-console-input').focus();
+    }, 600);
 }
 
-async function runAuthText() {
-    authOutput.innerHTML = "";
-    const lines = ["> ИНИЦИАЛИЗАЦИЯ ЯДРА VOLTA...", "> СТАТУС: СОЕДИНЕНИЕ УСТАНОВЛЕНО", "> ВВЕДИТЕ ИДЕНТИФИКАТОР:"];
-    for (let l of lines) {
-        let div = document.createElement('div');
-        authOutput.appendChild(div);
-        for(let c of l) { div.textContent += c; await new Promise(r => setTimeout(r, 20)); }
-    }
-    document.getElementById('input-line').classList.remove('hidden');
-    cmdInput.focus();
-}
-
+// Логика входа
+const cmdInput = document.getElementById('cmd');
 let stage = "ID", activeUser = null;
 
 cmdInput.onkeydown = async (e) => {
     if (e.key === "Enter") {
         let val = cmdInput.value.trim().toLowerCase();
         cmdInput.value = "";
-        if (stage === "ID") {
-            if (PROFILES[val]) {
-                activeUser = PROFILES[val];
-                stage = "PASS";
-                let d = document.createElement('div');
-                d.textContent = `> ID: ${val.toUpperCase()} ПОДТВЕРЖДЕН. ПАРОЛЬ:`;
-                authOutput.appendChild(d);
-            }
-        } else if (stage === "PASS") {
-            if (val === activeUser.pass) {
-                document.getElementById('user-display').textContent = activeUser.name;
-                openWindow('main-dashboard');
-            } else { location.reload(); }
+        if (stage === "ID" && PROFILES[val]) {
+            activeUser = PROFILES[val];
+            stage = "PASS";
+            printAuth(`> ID [${val.toUpperCase()}] ПОДТВЕРЖДЕН. ПАРОЛЬ:`);
+        } else if (stage === "PASS" && val === activeUser.pass) {
+            document.getElementById('user-display').textContent = activeUser.name;
+            openWindow('main-dashboard');
         }
     }
+}
+
+function printAuth(txt) {
+    const d = document.createElement('div');
+    d.textContent = txt;
+    document.getElementById('auth-output').appendChild(d);
+}
+
+// ЛОГИКА БОЛЬШОЙ КОНСОЛИ (EXIT)
+const mainConsoleInput = document.getElementById('main-console-input');
+const mainConsoleOutput = document.getElementById('main-console-output');
+
+mainConsoleInput.onkeydown = (e) => {
+    if (e.key === "Enter") {
+        let cmd = mainConsoleInput.value.trim().toLowerCase();
+        mainConsoleInput.value = "";
+        
+        if (cmd === "exit") {
+            openWindow('main-dashboard');
+        } else {
+            let d = document.createElement('div');
+            d.textContent = `> ВЫ ВВЕЛИ: ${cmd}. КОМАНДА В РАЗРАБОТКЕ.`;
+            mainConsoleOutput.appendChild(d);
+        }
+    }
+}
+
+// Сайдбар
+document.getElementById('menu-trigger').onclick = () => {
+    sidePanel.classList.toggle('active');
+    document.getElementById('panel-blur-overlay').style.display = sidePanel.classList.contains('active') ? "block" : "none";
 };
 
-// Сайдбар (Плашка)
-const trigger = document.getElementById('menu-trigger');
-const panel = document.getElementById('side-panel');
-const blur = document.getElementById('panel-blur-overlay');
-
-trigger.onclick = () => {
-    panel.classList.add('active');
-    blur.style.display = "block";
-};
-blur.onclick = () => {
-    panel.classList.remove('active');
-    blur.style.display = "none";
-};
-
-window.onload = bootSystem;
+window.onload = init;
