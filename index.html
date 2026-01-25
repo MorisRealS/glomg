@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GLOMG_CORE_V13_FINAL</title>
+    <title>GLOMG_CORE_V14</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,27 +15,16 @@
     <canvas id="matrix-canvas" class="hidden"></canvas>
 
     <div id="intro-screen" class="full-screen-center">
-        <div class="logo-container">
-            <pre id="big-logo" class="volta-logo-big flicker-text"></pre>
-        </div>
+        <pre id="big-logo" class="volta-logo-big flicker-text"></pre>
     </div>
 
     <div id="login-screen" class="screen hidden">
         <div class="full-screen-center">
             <div class="auth-card anim-login-fly">
-                <div class="auth-header">
-                    <span>СИСТЕМА ДОСТУПА</span>
-                    <div class="status-dot-blink"></div>
-                </div>
+                <div class="auth-header"><span>СИСТЕМА ДОСТУПА</span><div class="status-dot-blink"></div></div>
                 <div class="auth-body">
-                    <div class="input-wrapper">
-                        <label>USER_ID</label>
-                        <input type="text" id="auth-id" autocomplete="off">
-                    </div>
-                    <div class="input-wrapper">
-                        <label>PASSWORD</label>
-                        <input type="password" id="auth-pass">
-                    </div>
+                    <div class="input-wrapper"><label>USER_ID</label><input type="text" id="auth-id" autocomplete="off"></div>
+                    <div class="input-wrapper"><label>PASSWORD</label><input type="password" id="auth-pass"></div>
                     <div class="auth-actions">
                         <button class="btn-primary" onclick="handleAuth()">ВОЙТИ</button>
                         <button class="btn-outline" onclick="transitionTo('lobby-screen')">ГОСТЕВОЙ РЕЖИМ</button>
@@ -47,32 +36,28 @@
 
     <div id="lobby-screen" class="screen hidden">
         <header class="system-header">
-            <div class="menu-btn" onclick="toggleSidebar()">
-                <span></span><span></span><span></span>
-            </div>
+            <div class="menu-btn" onclick="toggleSidebar(event)"><span></span><span></span><span></span></div>
+            <div class="clock-msk">MSK: <span class="time-val">00:00:00</span></div>
         </header>
-
         <div class="lobby-scroll-container">
             <section class="lobby-section">
                 <div class="action-rows">
-                    <button class="mega-btn anim-btn-fly" style="--d: 1" onclick="transitionTo('login-screen')">АВТОРИЗАЦИЯ</button>
-                    <button class="mega-btn anim-btn-fly" style="--d: 2" onclick="scrollToSection('lobby-news')">НОВОСТИ</button>
-                    <button class="mega-btn anim-btn-fly" style="--d: 3" onclick="scrollToSection('lobby-about')">О НАС</button>
+                    <button class="mega-btn anim-btn-fly" style="--d:1" onclick="transitionTo('login-screen')">АВТОРИЗАЦИЯ</button>
+                    <button class="mega-btn anim-btn-fly" style="--d:2" onclick="scrollToSection('lobby-news')">НОВОСТИ</button>
+                    <button class="mega-btn anim-btn-fly" style="--d:3" onclick="scrollToSection('lobby-about')">О НАС</button>
                 </div>
             </section>
-
-            <section id="lobby-news" class="lobby-section">
+            <section id="lobby-news" class="lobby-section compact">
                 <div class="doc-container text-center">
-                    <h2 class="doc-title">НОВОСТИ ГРУППЫ</h2>
-                    <div class="news-item"><span>[2026.01.25]</span> Интерфейс V13 стабилизирован.</div>
-                    <div class="news-item"><span>[2026.01.25]</span> Все кнопки активны.</div>
+                    <h2 class="doc-title">НОВОСТИ</h2>
+                    <p>[2026] Система GLOMG перешла на протокол V14.</p>
+                    <p>[2026] Датчики ЦП синхронизированы.</p>
                 </div>
             </section>
-
-            <section id="lobby-about" class="lobby-section">
+            <section id="lobby-about" class="lobby-section compact">
                 <div class="doc-container text-center">
                     <h2 class="doc-title">О НАС</h2>
-                    <p class="centered-p">Система GLOMG — центральный узел управления данными.</p>
+                    <p>Центральный узел мониторинга. Доступ только для персонала.</p>
                 </div>
             </section>
         </div>
@@ -80,33 +65,43 @@
 
     <div id="main-dashboard" class="screen hidden">
         <header class="system-header">
-            <div class="menu-btn" onclick="toggleSidebar()">
-                <span></span><span></span><span></span>
-            </div>
-            <div class="header-clock" id="clock">00:00:00</div>
+            <div class="menu-btn" onclick="toggleSidebar(event)"><span></span><span></span><span></span></div>
+            <div class="clock-msk">MSK: <span class="time-val">00:00:00</span></div>
         </header>
         <div class="full-screen-center">
             <div class="action-rows">
-                <button class="mega-btn anim-btn-fly" style="--d: 1">СТАТУС СИСТЕМЫ</button>
-                <button class="mega-btn anim-btn-fly" style="--d: 2">ЛОГИ ЯДРА</button>
-                <button class="mega-btn anim-btn-fly" style="--d: 3">АРХИВ ДАННЫХ</button>
+                <button class="mega-btn anim-btn-fly" style="--d:1" onclick="transitionTo('status-screen')">СОСТОЯНИЕ СИСТЕМЫ</button>
+                <button class="mega-btn anim-btn-fly" style="--d:2">ЛОГИ ЯДРА</button>
+                <button class="mega-btn anim-btn-fly" style="--d:3">АРХИВ ДАННЫХ</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="status-screen" class="screen hidden">
+        <header class="system-header">
+            <button class="btn-outline back-btn" onclick="transitionTo('main-dashboard')">НАЗАД</button>
+            <div class="clock-msk">MSK: <span class="time-val">00:00:00</span></div>
+        </header>
+        <div class="full-screen-center">
+            <div class="status-grid anim-btn-fly">
+                <div class="status-box"><h3>ЗАГРУЗКА ЦП</h3><div class="stat-val" id="cpu-val">0.0%</div></div>
+                <div class="status-box"><h3>ТЕМПЕРАТУРА</h3><div class="stat-val" id="temp-val">0.0°C</div></div>
+                <div class="status-box"><h3>НАГРУЗКА</h3><div class="stat-val" id="load-val">0%</div></div>
+                <div class="status-box"><h3>СОСТОЯНИЕ</h3><div class="stat-val green-t">В ПОРЯДКЕ</div></div>
             </div>
         </div>
     </div>
 
     <div id="side-panel" class="side-panel">
-        <div class="profile-card-sidebar">
-            <div class="avatar-frame"><img src="https://img.icons8.com/ios-filled/100/a855f7/user-male-circle.png"></div>
-            <div class="profile-meta">
-                <h3 id="side-username">GUEST</h3>
-                <div id="side-lvl">LVL: 0</div>
-            </div>
+        <div class="profile-card">
+            <div class="avatar-frame"></div>
+            <h3 id="side-username">GUEST</h3>
         </div>
         <div class="sidebar-nav">
             <button class="side-link exit-btn" onclick="location.reload()">ВЫХОД</button>
         </div>
     </div>
-    <div id="overlay-blur" onclick="toggleSidebar()"></div>
+    <div id="overlay-blur" onclick="closeSidebar()"></div>
 
     <script src="script.js"></script>
 </body>
