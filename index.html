@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ONG_CORE // VINTAGE_SYSTEM_V4</title>
+    <title>ONG_CORE_V5_FINAL_COMMERCIAL</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="fade-overlay"></div>
+    
     <div class="crt-overlay"></div>
     <div class="scanline"></div>
-    
     <canvas id="matrix-canvas" class="hidden"></canvas>
-    <div id="fade-overlay"></div>
 
     <div id="intro-screen" class="full-screen-center">
         <div class="logo-container">
@@ -21,109 +21,109 @@
 
     <div id="login-screen" class="screen hidden">
         <div class="login-wrapper">
-            <div class="prism-login-box">
-                <h1 class="prism-title">O.N.G. ACCESS</h1>
-                <div class="prism-divider"></div>
-                <div class="prism-form">
-                    <div class="input-group">
-                        <input type="text" id="auth-id" placeholder="ID СОТРУДНИКА" autocomplete="off" spellcheck="false">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <span class="auth-title">TERMINAL_PROTECTION_V5</span>
+                    <div class="status-dot-blink"></div>
+                </div>
+                <div class="auth-body">
+                    <div class="input-wrapper">
+                        <label>ИДЕНТИФИКАТОР</label>
+                        <input type="text" id="auth-id" spellcheck="false" autocomplete="off">
                     </div>
-                    <div class="input-group">
-                        <input type="password" id="auth-pass" placeholder="КЛЮЧ ДОСТУПА">
+                    <div class="input-wrapper">
+                        <label>ШИФР-КОД</label>
+                        <input type="password" id="auth-pass">
                     </div>
-                    <button class="prism-btn-main" onclick="handleAuth()">ВХОД</button>
-                    <button class="prism-btn-guest" onclick="transitionTo('lobby-screen')">ГОСТЕВОЙ ДОСТУП</button>
+                    <div class="auth-actions">
+                        <button class="btn-primary" onclick="handleAuth()">ПОДТВЕРДИТЬ</button>
+                        <button class="btn-outline" onclick="transitionTo('lobby-screen')">ГОСТЕВОЙ РЕЖИМ</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="lobby-screen" class="screen hidden">
-        <nav class="vhs-nav">
-            <div class="nav-brand">ONG_CORE // EXTERNAL_COMMUNICATIONS</div>
-            <div class="nav-links">
-                <span class="nav-link-item" onclick="scrollToSection('lobby-main')">ГЛАВНАЯ</span>
-                <span class="nav-link-item" onclick="transitionTo('login-screen')">АВТОРИЗАЦИЯ</span>
+        <header class="system-header">
+            <div class="menu-btn" onclick="toggleSidebar()">
+                <span></span><span></span><span></span>
             </div>
-        </nav>
+        </header>
 
-        <div class="lobby-viewport" id="lobby-scroll-container">
-            <section id="lobby-main" class="lobby-section">
-                <div class="lobby-hero">
-                    <button class="mega-row-btn" onclick="transitionTo('login-screen')">АВТОРИЗАЦИЯ СИСТЕМЫ</button>
-                    <button class="mega-row-btn" onclick="scrollToSection('lobby-news')">АРХИВ НОВОСТЕЙ</button>
-                    <button class="mega-row-btn" onclick="scrollToSection('lobby-about')">ИНФОРМАЦИЯ О ГРУППЕ</button>
+        <main class="lobby-content" id="lobby-scroll">
+            <section class="lobby-section">
+                <div class="action-rows">
+                    <button class="mega-btn" onclick="transitionTo('login-screen')">АВТОРИЗАЦИЯ СИСТЕМЫ</button>
+                    <button class="mega-btn" onclick="scrollToSection('lobby-news')">АРХИВ НОВОСТЕЙ</button>
+                    <button class="mega-btn" onclick="scrollToSection('lobby-about')">ИНФОРМАЦИЯ О ГРУППЕ</button>
                 </div>
             </section>
 
             <section id="lobby-news" class="lobby-section-compact">
-                <div class="document-frame">
-                    <h2 class="doc-header">ПОСЛЕДНИЕ ОБНОВЛЕНИЯ</h2>
-                    <div class="news-feed">
-                        <div class="news-line"><span class="date">[2026.01.25]</span> Обновление системы авторизации</div>
-                        <div class="news-line"><span class="date">[2026.01.25]</span> Обновление базы данных (Node_04)</div>
-                        <div class="news-line"><span class="date">[2026.01.25]</span> Обновление пользовательских наработок секторе 7</div>
+                <div class="doc-container">
+                    <h2 class="doc-title">НОВОСТИ</h2>
+                    <div class="news-scroll">
+                        <div class="news-item"><span>[2026.01.25]</span> Обновление системы авторизации: введены уровни доступа.</div>
+                        <div class="news-item"><span>[2026.01.25]</span> Синхронизация базы данных с узлом VOLTA-01 завершена.</div>
+                        <div class="news-item"><span>[2026.01.25]</span> Обнаружена активность в секторе 7. Наблюдение.</div>
                     </div>
                 </div>
             </section>
 
             <section id="lobby-about" class="lobby-section-compact">
-                <div class="document-frame">
-                    <h2 class="doc-header">ОСНОВНАЯ НАУЧНАЯ ГРУППА</h2>
-                    <div class="ong-content">
-                        <p class="ong-intro">Мы ОНГ — Основная Научная Группа. Наша задача изучать и использовать наши технологии во благо. Мы не несем угрозы, но соблюдаем правила:</p>
-                        <ul class="rules-list">
-                            <li><span>01.</span> ОНГ настроена мирно. При атаке на нас ответственность несет агрессор.</li>
-                            <li><span>02.</span> Вход на территорию запрещен. Игнорирование ведет к ликвидации угрозы.</li>
-                            <li><span>03.</span> Наработки используются в любых целях, кроме злых намерений.</li>
-                        </ul>
-                        <div class="ong-footer">С уважением, Ген. Директор MorisReal</div>
+                <div class="doc-container">
+                    <h2 class="doc-title">О НАС</h2>
+                    <div class="ong-text-block">
+                        <p><strong>Мы ОНГ. ОНГ — Основная Научная Группа.</strong></p>
+                        <p>Наша задача изучать и использовать наши технологии во благо, мы не несем угрозы но у нас есть и свои правила:</p>
+                        <div class="rules-box">
+                            <p>1. ОНГ настроена мирно по отношению к другим группам. При атаке агрессор берет ответственность на себя.</p>
+                            <p>2. Организация запрещает вход на территорию. Мы в праве ликвидировать вас при игнорировании.</p>
+                            <p>3. Наработки используются в любых целях, но не во благо злых намерений.</p>
+                        </div>
+                        <div class="signature">
+                            С уважением, Генеральный Директор ОНГ <span>MorisReal</span>
+                        </div>
                     </div>
                 </div>
             </section>
-        </div>
+        </main>
     </div>
 
     <div id="main-dashboard" class="screen hidden">
-        <div class="dashboard-header">
-            <div class="menu-icon" id="menu-trigger"><span></span><span></span><span></span></div>
-            <div class="system-time" id="sys-clock">00:00:00</div>
-        </div>
-        <div class="dashboard-body">
-            <div class="status-grid">
-                <div class="status-card">
-                    <div class="status-label">ТЕКУЩИЙ СТАТУС</div>
-                    <div class="status-value neon-text">ШТАТНЫЙ РЕЖИМ</div>
-                </div>
+        <header class="system-header">
+            <div class="menu-btn" onclick="toggleSidebar()">
+                <span></span><span></span><span></span>
             </div>
-            <div class="dashboard-actions">
-                <button class="mega-row-btn" onclick="openWindow('profile-window')">ЛИЧНОЕ ДЕЛО</button>
-                <button class="mega-row-btn">ТЕРМИНАЛ СОТРУДНИКА</button>
+            <div class="header-clock" id="clock">00:00:00</div>
+        </header>
+        <div class="dashboard-center">
+            <div class="action-rows">
+                <button class="mega-btn">СТАТУС СИСТЕМЫ</button>
+                <button class="mega-btn">ЛОГИ ЯДРА</button>
+                <button class="mega-btn">АРХИВ ДАННЫХ</button>
             </div>
         </div>
     </div>
 
-    <div id="profile-window" class="screen hidden">
-        <div class="profile-container">
-            <div class="profile-card">
-                <button class="close-profile" onclick="openWindow('main-dashboard')">×</button>
-                <div class="profile-sidebar">
-                    <div class="profile-avatar">
-                        <svg viewBox="0 0 24 24" fill="var(--p)"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                    </div>
-                    <div class="profile-id-tag" id="display-id">ID: ---</div>
-                </div>
-                <div class="profile-info">
-                    <h2 class="profile-name" id="display-name">USER NAME</h2>
-                    <div class="info-divider"></div>
-                    <div class="info-row"><span>УРОВЕНЬ ДОСТУПА:</span> <span id="display-lvl" class="neon-text">0</span></div>
-                    <div class="info-row"><span>СТАТУС:</span> <span class="neon-text">АКТИВЕН</span></div>
-                    <div class="info-row"><span>ОТДЕЛ:</span> <span>SCIENTIFIC_RESEARCH</span></div>
-                    <div class="info-row"><span>ПОСЛЕДНИЙ ВХОД:</span> <span id="display-date">2026.01.25</span></div>
-                </div>
+    <div id="side-panel" class="side-panel">
+        <div class="profile-card-sidebar">
+            <div class="avatar-frame">
+                <img src="https://img.icons8.com/ios-filled/100/a855f7/user-male-circle.png" alt="user">
+            </div>
+            <div class="profile-meta">
+                <h3 id="side-username">GUEST_USER</h3>
+                <div class="lvl-badge" id="side-lvl">LVL: 0</div>
+                <div class="id-badge" id="side-id">ID: UNKNOWN</div>
             </div>
         </div>
+        <div class="sidebar-nav">
+            <button class="side-link" onclick="transitionTo('login-screen')">СМЕНИТЬ АККАУНТ</button>
+            <button class="side-link exit" onclick="location.reload()">ВЫХОД ИЗ СИСТЕМЫ</button>
+        </div>
     </div>
+    <div id="overlay-blur" onclick="toggleSidebar()"></div>
 
     <script src="script.js"></script>
 </body>
