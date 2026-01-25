@@ -3,147 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ONG_CORE_V4_OFFICIAL</title>
+    <title>ONG_CORE // VINTAGE_SYSTEM_V4</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="crt-overlay"></div>
+    <div class="scanline"></div>
+    
     <canvas id="matrix-canvas" class="hidden"></canvas>
     <div id="fade-overlay"></div>
 
     <div id="intro-screen" class="full-screen-center">
-        <div class="logo-wrapper">
+        <div class="logo-container">
             <pre id="big-logo" class="volta-logo-big"></pre>
         </div>
     </div>
 
-    <div id="login-screen" class="screen hidden" onclick="document.getElementById('cmd').focus()">
-        <div class="fullscreen-terminal">
-            <div id="auth-output" class="terminal-history"></div>
-            <div class="input-row">
-                <span class="prompt">></span>
-                <input type="text" id="cmd" autocomplete="off" spellcheck="false" autofocus>
+    <div id="login-screen" class="screen hidden">
+        <div class="login-wrapper">
+            <div class="prism-login-box">
+                <h1 class="prism-title">O.N.G. ACCESS</h1>
+                <div class="prism-divider"></div>
+                <div class="prism-form">
+                    <div class="input-group">
+                        <input type="text" id="auth-id" placeholder="ID СОТРУДНИКА" autocomplete="off" spellcheck="false">
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="auth-pass" placeholder="КЛЮЧ ДОСТУПА">
+                    </div>
+                    <button class="prism-btn-main" onclick="handleAuth()">ВХОД</button>
+                    <button class="prism-btn-guest" onclick="transitionTo('lobby-screen')">ГОСТЕВОЙ ДОСТУП</button>
+                </div>
             </div>
         </div>
-        <div id="hint-box" class="hint-popup"></div>
     </div>
 
     <div id="lobby-screen" class="screen hidden">
         <nav class="vhs-nav">
-            <div class="nav-brand">ONG_CORE // GUEST_ACCESS</div>
-            <div class="nav-links-top">
-                <span class="nav-item active" onclick="scrollToSection('lobby-main')">ГЛАВНАЯ</span>
-                <span class="nav-item" onclick="openWindow('login-screen')">ВХОД В СИСТЕМУ</span>
+            <div class="nav-brand">ONG_CORE // EXTERNAL_COMMUNICATIONS</div>
+            <div class="nav-links">
+                <span class="nav-link-item" onclick="scrollToSection('lobby-main')">ГЛАВНАЯ</span>
+                <span class="nav-link-item" onclick="transitionTo('login-screen')">АВТОРИЗАЦИЯ</span>
             </div>
         </nav>
 
         <div class="lobby-viewport" id="lobby-scroll-container">
             <section id="lobby-main" class="lobby-section">
-                <div class="wide-button-container">
-                    <button class="mega-row-btn" onclick="openWindow('login-screen')">АВТОРИЗАЦИЯ</button>
-                    <button class="mega-row-btn" onclick="scrollToSection('lobby-news')">НОВОСТИ</button>
-                    <button class="mega-row-btn" onclick="scrollToSection('lobby-about')">О НАС</button>
+                <div class="lobby-hero">
+                    <button class="mega-row-btn" onclick="transitionTo('login-screen')">АВТОРИЗАЦИЯ СИСТЕМЫ</button>
+                    <button class="mega-row-btn" onclick="scrollToSection('lobby-news')">АРХИВ НОВОСТЕЙ</button>
+                    <button class="mega-row-btn" onclick="scrollToSection('lobby-about')">ИНФОРМАЦИЯ О ГРУППЕ</button>
                 </div>
-                <div class="separator-line"></div>
             </section>
 
-            <section id="lobby-news" class="lobby-section">
+            <section id="lobby-news" class="lobby-section-compact">
                 <div class="document-frame">
-                    <h2 class="section-title">СИСТЕМНЫЕ УВЕДОМЛЕНИЯ</h2>
-                    <div class="news-list">
-                        <div class="news-entry">
-                            <span class="news-timestamp">[2026.01.25]</span> 
-                            <span class="news-text">Обновление системы авторизации: введены уровни доступа.</span>
-                        </div>
-                        <div class="news-entry">
-                            <span class="news-timestamp">[2026.01.25]</span> 
-                            <span class="news-text">Обновление базы данных: синхронизация с узлами VOLTA.</span>
-                        </div>
-                        <div class="news-entry">
-                            <span class="news-timestamp">[2026.01.25]</span> 
-                            <span class="news-text">Обновление пользовательских наработок секторе 7.</span>
-                        </div>
+                    <h2 class="doc-header">ПОСЛЕДНИЕ ОБНОВЛЕНИЯ</h2>
+                    <div class="news-feed">
+                        <div class="news-line"><span class="date">[2026.01.25]</span> Обновление системы авторизации</div>
+                        <div class="news-line"><span class="date">[2026.01.25]</span> Обновление базы данных (Node_04)</div>
+                        <div class="news-line"><span class="date">[2026.01.25]</span> Обновление пользовательских наработок секторе 7</div>
                     </div>
-                    <button class="back-to-top" onclick="scrollToSection('lobby-main')">↑ ВЕРНУТЬСЯ К МЕНЮ</button>
                 </div>
             </section>
 
-            <section id="lobby-about" class="lobby-section">
-                <div class="document-frame document-text">
-                    <h2 class="section-title">ОБ ОРГАНИЗАЦИИ</h2>
-                    <div class="ong-about-text">
-                        <p class="accent-text">Мы ОНГ — Основная Научная Группа.</p>
-                        <p>Наша задача изучать и использовать наши технологии во благо. Мы не несем угрозы, но у нас есть свои правила, обязательные к исполнению:</p>
-                        
-                        <div class="rules-block">
-                            <div class="rule-item">
-                                <span class="rule-idx">1.</span>
-                                <p>ОНГ настроена мирно по отношению к другим группам игроков. При атаке на ОНГ нападающая группа берет всю ответственность на себя в результате нападения.</p>
-                            </div>
-                            <div class="rule-item">
-                                <span class="rule-idx">2.</span>
-                                <p>Организация запрещает вход на территорию любыми способами. При игнорировании мы в праве ликвидировать вас, вы становитесь целью для ликвидации.</p>
-                            </div>
-                            <div class="rule-item">
-                                <span class="rule-idx">3.</span>
-                                <p>Мы в праве использовать любые наши наработки в любых целях, но не собираемся использовать их во благо злых намерений.</p>
-                            </div>
-                        </div>
-                        
-                        <div class="signature-block">
-                            <p>Спасибо за прочтение.</p>
-                            <p>С уважением, Генеральный Директор ОНГ <span class="boss-name">MorisReal</span></p>
-                        </div>
+            <section id="lobby-about" class="lobby-section-compact">
+                <div class="document-frame">
+                    <h2 class="doc-header">ОСНОВНАЯ НАУЧНАЯ ГРУППА</h2>
+                    <div class="ong-content">
+                        <p class="ong-intro">Мы ОНГ — Основная Научная Группа. Наша задача изучать и использовать наши технологии во благо. Мы не несем угрозы, но соблюдаем правила:</p>
+                        <ul class="rules-list">
+                            <li><span>01.</span> ОНГ настроена мирно. При атаке на нас ответственность несет агрессор.</li>
+                            <li><span>02.</span> Вход на территорию запрещен. Игнорирование ведет к ликвидации угрозы.</li>
+                            <li><span>03.</span> Наработки используются в любых целях, кроме злых намерений.</li>
+                        </ul>
+                        <div class="ong-footer">С уважением, Ген. Директор MorisReal</div>
                     </div>
-                    <button class="back-to-top" onclick="scrollToSection('lobby-main')">↑ ВЕРНУТЬСЯ К МЕНЮ</button>
                 </div>
             </section>
         </div>
     </div>
 
     <div id="main-dashboard" class="screen hidden">
-        <nav class="vhs-nav">
-            <div class="menu-trigger-btn" id="menu-trigger">
-                <span></span><span></span><span></span>
-            </div>
-            <div class="nav-title">ONG_CORE // INTERNAL_OS</div>
-        </nav>
-        <div class="dashboard-content">
-            <div class="wide-button-container">
-                <button class="mega-row-btn" onclick="openWindow('status-screen')">СТАТУС СИСТЕМЫ</button>
-                <button class="mega-row-btn" onclick="openWindow('logs-screen')">ЛОГИ СИСТЕМЫ</button>
-                <button class="mega-row-btn">АРХИВНАЯ БАЗА</button>
-            </div>
-            <div class="separator-line"></div>
+        <div class="dashboard-header">
+            <div class="menu-icon" id="menu-trigger"><span></span><span></span><span></span></div>
+            <div class="system-time" id="sys-clock">00:00:00</div>
         </div>
-    </div>
-
-    <div id="logs-screen" class="screen hidden">
-        <button class="back-link" onclick="openWindow('main-dashboard')">← НАЗАД</button>
-        <div class="logs-container">
-            <div class="logs-grid">
-                <button class="log-item">ЛОГ_СОБЫТИЙ_01.dat</button>
-                <button class="log-item">ОШИБКИ_ЯДРА_02.log</button>
-                <button class="log-item">ТРАФИК_СЕТИ_03.sys</button>
-                <button class="log-item">ДОСТУП_БАЗЫ_04.enc</button>
+        <div class="dashboard-body">
+            <div class="status-grid">
+                <div class="status-card">
+                    <div class="status-label">ТЕКУЩИЙ СТАТУС</div>
+                    <div class="status-value neon-text">ШТАТНЫЙ РЕЖИМ</div>
+                </div>
+            </div>
+            <div class="dashboard-actions">
+                <button class="mega-row-btn" onclick="openWindow('profile-window')">ЛИЧНОЕ ДЕЛО</button>
+                <button class="mega-row-btn">ТЕРМИНАЛ СОТРУДНИКА</button>
             </div>
         </div>
     </div>
 
-    <div id="side-panel" class="side-panel side-hidden">
-        <div class="profile-header">
-            <div class="user-avatar">ID</div>
-            <div class="user-meta">
-                <h3 id="user-display">---</h3>
-                <span id="user-lvl-tag" class="lvl-tag"></span>
+    <div id="profile-window" class="screen hidden">
+        <div class="profile-container">
+            <div class="profile-card">
+                <button class="close-profile" onclick="openWindow('main-dashboard')">×</button>
+                <div class="profile-sidebar">
+                    <div class="profile-avatar">
+                        <svg viewBox="0 0 24 24" fill="var(--p)"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                    </div>
+                    <div class="profile-id-tag" id="display-id">ID: ---</div>
+                </div>
+                <div class="profile-info">
+                    <h2 class="profile-name" id="display-name">USER NAME</h2>
+                    <div class="info-divider"></div>
+                    <div class="info-row"><span>УРОВЕНЬ ДОСТУПА:</span> <span id="display-lvl" class="neon-text">0</span></div>
+                    <div class="info-row"><span>СТАТУС:</span> <span class="neon-text">АКТИВЕН</span></div>
+                    <div class="info-row"><span>ОТДЕЛ:</span> <span>SCIENTIFIC_RESEARCH</span></div>
+                    <div class="info-row"><span>ПОСЛЕДНИЙ ВХОД:</span> <span id="display-date">2026.01.25</span></div>
+                </div>
             </div>
         </div>
-        <div class="side-links">
-            <button class="s-btn">МОЙ ПРОФИЛЬ</button>
-            <button class="s-btn">ТЕРМИНАЛ УЗЛА</button>
-            <button class="s-btn exit" onclick="location.reload()">ЗАВЕРШИТЬ СЕАНС</button>
-        </div>
     </div>
-    <div id="blur-overlay" class="panel-blur"></div>
 
     <script src="script.js"></script>
 </body>
