@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GLOMG_CORE_V9_PHYSICS</title>
+    <title>GLOMG_CORE_V10_STABLE</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -24,7 +24,7 @@
         <div class="full-screen-center">
             <div class="auth-card anim-login-fly">
                 <div class="auth-header">
-                    <span class="auth-title">СИСТЕМА ДОСТУПА</span>
+                    <span class="auth-title">СИСТЕМА ДОСТУПА GLOMG</span>
                     <div class="status-dot-blink"></div>
                 </div>
                 <div class="auth-body">
@@ -60,7 +60,25 @@
                     <button class="mega-btn anim-btn-fly" style="--d: 3" onclick="scrollToSection('lobby-about')">О НАС</button>
                 </div>
             </section>
-            </div>
+
+            <section id="lobby-news" class="lobby-section-compact">
+                <div class="doc-container">
+                    <h2 class="doc-title">НОВОСТИ ГРУППЫ</h2>
+                    <div class="news-scroll">
+                        <div class="news-item"><span>[2026.01.25]</span> Ядро V10 запущено успешно.</div>
+                        <div class="news-item"><span>[2026.01.25]</span> Физика анимаций синхронизирована.</div>
+                        <div class="news-item"><span>[2026.01.25]</span> Протокол GLOMG активен.</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="lobby-about" class="lobby-section-compact">
+                <div class="doc-container">
+                    <h2 class="doc-title">О НАС</h2>
+                    <p>GLOMG — это инновации и стабильность. Мы создаем будущее.</p>
+                </div>
+            </section>
+        </div>
     </div>
 
     <div id="main-dashboard" class="screen hidden">
@@ -72,16 +90,18 @@
         </header>
         <div class="dashboard-center">
             <div class="action-rows">
-                <button class="mega-btn anim-btn-fly" style="--d: 1" onclick="openModal('modal-status')">СТАТУС СИСТЕМЫ</button>
-                <button class="mega-btn anim-btn-fly" style="--d: 2" onclick="openModal('modal-logs')">ЛОГИ ЯДРА</button>
-                <button class="mega-btn anim-btn-fly" style="--d: 3" onclick="openModal('modal-archive')">АРХИВ ДАННЫХ</button>
+                <button class="mega-btn anim-btn-fly" style="--d: 1">СТАТУС СИСТЕМЫ</button>
+                <button class="mega-btn anim-btn-fly" style="--d: 2">ЛОГИ ЯДРА</button>
+                <button class="mega-btn anim-btn-fly" style="--d: 3">АРХИВ ДАННЫХ</button>
             </div>
         </div>
     </div>
 
     <div id="side-panel" class="side-panel">
         <div class="profile-card-sidebar">
-            <div class="avatar-frame"><img src="https://img.icons8.com/ios-filled/100/a855f7/user-male-circle.png" alt="user"></div>
+            <div class="avatar-frame">
+                <img src="https://img.icons8.com/ios-filled/100/a855f7/user-male-circle.png" alt="user">
+            </div>
             <div class="profile-meta">
                 <h3 id="side-username">GUEST</h3>
                 <div class="lvl-badge" id="side-lvl">LVL: 0</div>
@@ -89,6 +109,7 @@
             </div>
         </div>
         <div class="sidebar-nav">
+            <button class="side-link" onclick="transitionTo('login-screen')">СМЕНИТЬ АККАУНТ</button>
             <button class="side-link exit-btn" onclick="location.reload()">ВЫХОД ИЗ СИСТЕМЫ</button>
         </div>
     </div>
