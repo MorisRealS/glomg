@@ -7,7 +7,6 @@
 </head>
 <body>
     <div id="fade-overlay"></div>
-    
     <div class="halftone"></div>
     <div id="glitch-layer" class="glitch-layer"></div>
 
@@ -17,8 +16,8 @@
 
     <div id="login-screen" class="screen hidden">
         <div class="terminal-wrapper">
-            <div id="terminal">
-                <div id="output"></div>
+            <div id="terminal-login">
+                <div id="auth-output"></div>
                 <div id="input-line" class="line hidden">
                     <span class="prompt">></span>
                     <input type="text" id="cmd" autocomplete="off" spellcheck="false">
@@ -29,45 +28,61 @@
     </div>
 
     <div id="main-dashboard" class="screen hidden">
-        <div class="vhs-container">
-            <div class="vhs-slow-line"></div>
-        </div>
-        
         <nav class="vhs-nav">
             <div class="menu-btn" id="menu-trigger">
                 <span></span><span></span><span></span>
             </div>
-            <div class="nav-title">ONG_ARCHIVE_SYSTEM // v.4.0.1</div>
+            <div class="nav-title">ONG_CORE // SECTOR_MAIN</div>
         </nav>
-
         <div class="dashboard-container">
             <div class="button-grid-center">
-                <button class="mega-btn">СТАТУС СИСТЕМЫ</button>
-                <button class="mega-btn">КОНСОЛЬ</button>
-                <button class="mega-btn">АРХИВНАЯ</button>
-            </div>
-            
-            <div class="archive-area">
-                <div class="archive-header">DATABASE_FILES:</div>
-                <div class="archive-content">
-                    <p>[ ПУСТО ]</p>
-                    <p>Ожидание запроса к ядру...</p>
-                </div>
+                <button class="mega-btn" onclick="openWindow('status-screen')">СТАТУС СИСТЕМЫ</button>
+                <button class="mega-btn" onclick="openWindow('full-console-screen')">КОНСОЛЬ</button>
+                <button class="mega-btn" onclick="openWindow('archive-screen')">АРХИВНАЯ</button>
             </div>
         </div>
-
-        <div id="side-panel" class="side-panel">
-            <div class="user-profile">
-                <div class="avatar">ID</div>
-                <h3 id="user-display">---</h3>
-            </div>
-            <div class="side-actions">
-                <button class="side-btn">НАСТРОЙКИ</button>
-                <button class="side-btn exit" id="logout-btn">ВЫХОД</button>
-            </div>
-        </div>
-        <div id="panel-blur" class="panel-blur"></div>
     </div>
+
+    <div id="full-console-screen" class="screen hidden">
+        <button class="back-btn" onclick="openWindow('main-dashboard')">← НАЗАД</button>
+        <div class="full-terminal-wrapper">
+            <div id="main-console-output"></div>
+            <div class="line">
+                <span class="prompt">SYSTEM@ONG:></span>
+                <input type="text" id="main-console-input" autocomplete="off" spellcheck="false">
+            </div>
+        </div>
+    </div>
+
+    <div id="status-screen" class="screen hidden">
+        <button class="back-btn" onclick="openWindow('main-dashboard')">← НАЗАД</button>
+        <div class="status-content">
+            <h2>[ СТАТУС СИСТЕМЫ ]</h2>
+            <div class="status-list">
+                <p>ЯДРО: <span class="online">СТАБИЛЬНО</span></p>
+                <p>СЕТЬ: <span class="online">АКТИВНА</span></p>
+                <p>БАЗА ДАННЫХ: <span class="warning">ЗАБЛОКИРОВАНО</span></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="archive-screen" class="screen hidden">
+        <button class="back-btn" onclick="openWindow('main-dashboard')">← НАЗАД</button>
+        <div class="archive-content">
+            <h2>[ ЦЕНТРАЛЬНЫЙ АРХИВ ]</h2>
+            <p>Доступ к файлам ограничен протоколом VOLTA.</p>
+        </div>
+    </div>
+
+    <div id="side-panel" class="side-panel">
+        <div class="user-profile">
+            <div class="avatar">ID</div>
+            <h3 id="user-display">---</h3>
+        </div>
+        <button class="side-btn">ЛИЧНЫЙ ПРОФИЛЬ</button>
+        <button class="side-btn exit" onclick="location.reload()">ВЫХОД</button>
+    </div>
+    <div id="panel-blur" class="panel-blur"></div>
 
     <script src="script.js"></script>
 </body>
