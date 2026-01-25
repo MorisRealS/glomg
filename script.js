@@ -1,5 +1,5 @@
 /**
- * ONG_CORE_V6_STABLE
+ * GLOMG_CORE_V10_STABLE
  * ПОЛНАЯ ВЕРСИЯ БЕЗ СОКРАЩЕНИЙ
  */
 
@@ -11,108 +11,86 @@ const STAFF_DATABASE = {
 };
 
 /**
- * ГЛОБАЛЬНАЯ ФУНКЦИЯ ПЕРЕХОДА С ЗАТЕМНЕНИЕМ
+ * ФУНКЦИЯ ПЕРЕХОДА (С ПЕРЕЗАПУСКОМ ФИЗИКИ)
  */
 function transitionTo(targetId) {
     const fade = document.getElementById('fade-overlay');
-    
-    // Включаем слой затемнения
     fade.classList.add('active');
-    
+
     setTimeout(() => {
-        // Скрываем все окна
-        const allScreens = document.querySelectorAll('.screen, #intro-screen');
-        allScreens.forEach(screen => screen.classList.add('hidden'));
+        // Скрываем всё
+        document.querySelectorAll('.screen, #intro-screen').forEach(s => s.classList.add('hidden'));
         
-        // Показываем целевое окно
         const target = document.getElementById(targetId);
-        if (target) target.classList.remove('hidden');
-        
-        // Закрываем плашку
+        target.classList.remove('hidden');
+
+        // СБРОС И ПОВТОР АНИМАЦИЙ ВЫЛЕТА
+        const anims = target.querySelectorAll('.anim-login-fly, .anim-btn-fly');
+        anims.forEach(el => {
+            el.style.animation = 'none';
+            el.offsetHeight; // триггер перерисовки
+            el.style.animation = '';
+        });
+
         closeSidebar();
-        
-        // Убираем затемнение
-        setTimeout(() => {
-            fade.classList.remove('active');
-        }, 150);
-    }, 600); // 600ms соответствует CSS transition
+        setTimeout(() => fade.classList.remove('active'), 150);
+    }, 600);
 }
 
-/**
- * ОБРАБОТКА ВХОДА
- */
 function handleAuth() {
-    const idInput = document.getElementById('auth-id');
-    const passInput = document.getElementById('auth-pass');
+    const id = document.getElementById('auth-id').value.trim().toLowerCase();
+    const pass = document.getElementById('auth-pass').value.trim();
     
-    const id = idInput.value.trim().toLowerCase();
-    const pass = passInput.value.trim();
-
     if (STAFF_DATABASE[id] && STAFF_DATABASE[id].pass === pass) {
-        // Эффект "завала кода"
-        triggerCodeRain(() => {
-            const user = STAFF_DATABASE[id];
-            
-            // Настройка профиля в сайдбаре
-            document.getElementById('side-username').textContent = user.name;
-            document.getElementById('side-lvl').textContent = `LVL: ${user.lvl}`;
+        triggerMatrix(() => {
+            const u = STAFF_DATABASE[id];
+            document.getElementById('side-username').textContent = u.name;
+            document.getElementById('side-lvl').textContent = `LVL: ${u.lvl}`;
             document.getElementById('side-id').textContent = `ID: ${id.toUpperCase()}`;
-            
             transitionTo('main-dashboard');
         });
     } else {
-        alert("ОШИБКА: ИДЕНТИФИКАТОР ИЛИ ПАРОЛЬ НЕВЕРНЫ");
-        passInput.value = "";
+        alert("ОШИБКА ДОСТУПА: НЕВЕРНЫЕ ДАННЫЕ");
     }
 }
 
 /**
- * ЭФФЕКТ МАТРИЦЫ (ЗАВАЛ КОДА)
+ * МАТРИЧНЫЙ ДОЖДЬ (ЗАВАЛ КОДА)
  */
-function triggerCodeRain(callback) {
-    const canvas = document.getElementById('matrix-canvas');
-    canvas.classList.remove('hidden');
-    const ctx = canvas.getContext('2d');
-    
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+function triggerMatrix(cb) {
+    const c = document.getElementById('matrix-canvas');
+    c.classList.remove('hidden');
+    const ctx = c.getContext('2d');
+    c.width = window.innerWidth;
+    c.height = window.innerHeight;
 
-    const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ#$@%";
-    const fontSize = 16;
-    const columns = Math.floor(canvas.width / fontSize);
-    const drops = new Array(columns).fill(1);
-
-    const draw = () => {
-        ctx.fillStyle = "rgba(0, 0, 0, 0.15)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    const drops = new Array(Math.floor(c.width / 16)).fill(1);
+    const intrvl = setInterval(() => {
+        ctx.fillStyle = "rgba(0,0,0,0.15)";
+        ctx.fillRect(0, 0, c.width, c.height);
         ctx.fillStyle = "#a855f7";
-        ctx.font = fontSize + "px monospace";
-
-        for (let i = 0; i < drops.length; i++) {
-            const text = chars[Math.floor(Math.random() * chars.length)];
-            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-            drops[i]++;
-        }
-    };
-
-    const matrixInterval = setInterval(draw, 35);
+        ctx.font = "16px monospace";
+        
+        drops.forEach((y, x) => {
+            const txt = String.fromCharCode(Math.random() * 128);
+            ctx.fillText(txt, x * 16, y * 16);
+            if (y * 16 > c.height && Math.random() > 0.975) drops[x] = 0;
+            drops[x]++;
+        });
+    }, 35);
 
     setTimeout(() => {
-        clearInterval(matrixInterval);
-        canvas.classList.add('hidden');
-        callback();
+        clearInterval(intrvl);
+        c.classList.add('hidden');
+        cb();
     }, 1500);
 }
 
-/**
- * УПРАВЛЕНИЕ САЙДБАРОМ
- */
 function toggleSidebar() {
-    const panel = document.getElementById('side-panel');
-    const blur = document.getElementById('overlay-blur');
-    const isActive = panel.classList.toggle('active');
-    blur.style.display = isActive ? "block" : "none";
+    const p = document.getElementById('side-panel');
+    const b = document.getElementById('overlay-blur');
+    const a = p.classList.toggle('active');
+    b.style.display = a ? "block" : "none";
 }
 
 function closeSidebar() {
@@ -121,53 +99,33 @@ function closeSidebar() {
 }
 
 function scrollToSection(id) {
-    const section = document.getElementById(id);
-    if (section) section.scrollIntoView({ behavior: 'smooth' });
-}
-
-/**
- * ИНИЦИАЛИЗАЦИЯ
- */
-function initClock() {
-    setInterval(() => {
-        const el = document.getElementById('clock');
-        if (el) {
-            const now = new Date();
-            el.textContent = now.toTimeString().split(' ')[0];
-        }
-    }, 1000);
+    const el = document.getElementById(id);
+    if(el) el.scrollIntoView({ behavior: 'smooth' });
 }
 
 window.onload = () => {
-    initClock();
-    
-    const logoEl = document.getElementById('big-logo');
-    const asciiLogo = `
+    const l = document.getElementById('big-logo');
+    const a = `
  ██████╗ ██╗      ██████╗ ███╗   ███╗ ██████╗ 
 ██╔════╝ ██║     ██╔════╝ ████╗ ████║██╔════╝ 
 ██║  ███╗██║     ██║  ███╗██╔████╔██║██║  ███╗
 ██║   ██║██║     ██║   ██║██║╚██╔╝██║██║   ██║
 ╚██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║╚██████╔╝
  ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ `;
-
+    
     let pos = 0;
-    const typeWriter = () => {
-        if (pos < asciiLogo.length) {
-            logoEl.textContent += asciiLogo[pos++];
-            setTimeout(typeWriter, 1);
+    const type = () => {
+        if(pos < a.length) {
+            l.textContent += a[pos++];
+            setTimeout(type, 1);
         } else {
-            setTimeout(() => {
-                transitionTo('login-screen');
-            }, 1200);
+            setTimeout(() => transitionTo('login-screen'), 1200);
         }
     };
-    typeWriter();
-};
+    type();
 
-// Слушатель Enter
-document.addEventListener('keydown', (e) => {
-    if (e.key === "Enter") {
-        const loginVisible = !document.getElementById('login-screen').classList.contains('hidden');
-        if (loginVisible) handleAuth();
-    }
-});
+    setInterval(() => {
+        const cl = document.getElementById('clock');
+        if(cl) cl.textContent = new Date().toTimeString().split(' ')[0];
+    }, 1000);
+};
