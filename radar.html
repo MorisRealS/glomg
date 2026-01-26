@@ -10,10 +10,12 @@
     <div class="vhs-overlay"></div>
 
     <header class="status-bar">
-        <button class="btn-ui-nav" onclick="location.href='index.html'">[ BACK_TO_CORE ]</button>
-        <div class="header-title">TACTICAL_MONITOR_V3</div>
-    </header>
-
+    <button class="btn-ui-nav" onclick="history.length > 1 ? history.back() : location.href='index.html'">
+        [ RETURN_TO_DASHBOARD ]
+    </button>
+    <div class="header-title">TACTICAL_MONITOR_V3</div>
+</header>
+    
     <div class="radar-container">
         <div class="radar-disk">
             <div class="radar-beam"></div> <div class="radar-crosshair"></div>
