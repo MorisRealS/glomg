@@ -1654,6 +1654,55 @@ input {
     padding: 10px; font-family: monospace; overflow: hidden;
 }
 
+/* ЭФФЕКТ VHS ШУМА */
+#noise-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity: 0.05; /* Едва заметный белый шум */
+    pointer-events: none;
+}
+
+.vhs-lines {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 4px, 3px 100%;
+    z-index: 100;
+    pointer-events: none;
+}
+
+/* Эффект дрожания логотипа */
+.glitch-horizontal {
+    animation: vhs-jitter 4s infinite;
+}
+
+@keyframes vhs-jitter {
+    0% { transform: translate(0,0); }
+    1% { transform: translate(2px, -1px); filter: hue-rotate(90deg); }
+    2% { transform: translate(-2px, 1px); filter: hue-rotate(0deg); }
+    3% { transform: translate(0,0); }
+    100% { transform: translate(0,0); }
+}
+
+.vhs-text {
+    text-shadow: 2px 0 1px rgba(255,0,0,0.5), -2px 0 1px rgba(0,0,255,0.5);
+    animation: text-flicker 0.1s infinite;
+}
+
+@keyframes text-flicker {
+    0% { opacity: 0.8; }
+    50% { opacity: 1; }
+    100% { opacity: 0.9; }
+}
+
 /* Дополнение для анимации заставки */
 #intro-logo.hidden { display: none; }
 .blink { animation: blinker 1.5s linear infinite; }
