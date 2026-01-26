@@ -2,7 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>G.L.O.M.G. | CORE V30</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G.L.O.M.G. | CORE V31.8 FINAL</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -26,12 +27,12 @@
         <div class="login-frame">
             <h1 class="glitch" data-text="G.L.O.M.G.">G.L.O.M.G.</h1>
             <div class="inputs">
-                <input type="text" id="inp-id" placeholder="OPERATOR_ID" spellcheck="false">
-                <input type="password" id="inp-pass" placeholder="ACCESS_KEY">
+                <input type="text" id="inp-id" placeholder="OPERATOR_ID" spellcheck="false" autocomplete="off">
+                <input type="password" id="inp-pass" placeholder="ACCESS_KEY" autocomplete="off">
             </div>
             <div class="actions">
-                <button class="btn-main" onclick="processLogin()">INITIALIZE</button>
-                <button class="btn-sec" onclick="transitionToScreen('scr-guest')">GUEST_ACCESS</button>
+                <button class="btn-ui btn-gold" onclick="processLogin()">INITIALIZE</button>
+                <button class="btn-ui btn-gold-sec" onclick="transitionToScreen('scr-guest')">GUEST_ACCESS</button>
             </div>
         </div>
     </section>
@@ -39,21 +40,24 @@
     <section id="scr-guest" class="screen hidden">
         <header class="status-bar">
             <div class="bar-left">GUEST_SESSION | LVL: 0</div>
-            <div class="bar-right"><button class="btn-ui" onclick="transitionToScreen('scr-login')">LOGIN</button></div>
+            <div class="bar-right">
+                <button class="btn-ui-nav" onclick="transitionToScreen('scr-login')">BACK_TO_LOGIN</button>
+            </div>
         </header>
         <div class="guest-layout">
-            <div class="guest-col">
-                <h3 class="label">SYSTEM_NOTIFICATIONS:</h3>
+            <div class="guest-col-logs">
+                <h3 class="label">LIVE_SYSTEM_LOGS:</h3>
                 <div id="guest-console" class="console-box"></div>
             </div>
-            <div class="guest-col">
-                <div class="news-block">
-                    <p class="purple-t">> NEWS:</p>
-                    <p>Core V30 deployed. Interface nodes recalibrated.</p>
-                </div>
-                <div class="about-block">
-                    <p class="purple-t">> ABOUT:</p>
-                    <p>G.L.O.M.G. Monitoring protocols active. Unauthorized access is logged.</p>
+            <div class="guest-col-info">
+                <h3 class="label">DATABASE_INFO:</h3>
+                <div class="info-container">
+                    <p class="purple-t">> CORE_STATUS:</p>
+                    <p>Версия 31.8 активна. Все узлы синхронизированы.</p>
+                    <p class="purple-t">> RESTRICTIONS:</p>
+                    <p>Доступ в режиме просмотра. Командный интерпретатор отключен. Радар работает в режиме пониженной четкости.</p>
+                    <p class="purple-t">> CONTACT:</p>
+                    <p>Для повышения уровня доступа обратитесь к @morisreal.</p>
                 </div>
             </div>
         </div>
@@ -61,65 +65,86 @@
 
     <section id="scr-dash" class="screen hidden">
         <header class="status-bar">
-            <div class="bar-left"><button class="btn-ui" onclick="toggleSidebar(true)">MENU</button></div>
+            <div class="bar-left"><button class="btn-ui-nav" onclick="toggleSidebar(true)">SYSTEM_MENU</button></div>
             <div class="bar-center" id="clock">00:00:00</div>
-            <div class="bar-right">LVL: <span id="u-lvl-display">0</span></div>
+            <div class="bar-right">LVL_ACCESS: <span id="u-lvl-display">0</span></div>
         </header>
         <div class="main-content">
-            <h2 id="welcome-msg" class="glitch-slow">WELCOME</h2>
+            <h2 id="welcome-msg" class="glitch-slow">SECURE_CONNECTION</h2>
             <div class="big-buttons-grid">
                 <button class="mega-btn" onclick="initializeTacticalRadar()">ТАКТИЧЕСКИЙ РАДАР</button>
                 <button class="mega-btn" onclick="transitionToScreen('scr-archive')">АРХИВ ДАННЫХ</button>
                 <button class="mega-btn" onclick="transitionToScreen('scr-sysdata')">СИСТЕМНЫЕ ДАННЫЕ</button>
             </div>
-            <button class="console-btn" onclick="transitionToScreen('scr-full-console')">КОНСОЛЬ УПРАВЛЕНИЯ</button>
+            <button class="console-btn-big" onclick="transitionToScreen('scr-full-console')">ТЕРМИНАЛ УПРАВЛЕНИЯ (ROOT)</button>
         </div>
     </section>
 
     <section id="scr-archive" class="screen hidden">
-        <header class="page-header"><span>FILE_ARCHIVE</span> <button class="btn-ui" onclick="transitionToScreen('scr-dash')">RETURN</button></header>
-        <div class="page-body">
-            <div class="data-row">> [RECORD_001] Ядро запущено оператором morisreal.</div>
-            <div class="data-row">> [RECORD_002] Входящее соединение от Sumber.</div>
+        <header class="status-bar">
+            <div class="bar-left">FILE_ARCHIVE_SECTOR</div>
+            <div class="bar-right"><button class="btn-ui-nav" onclick="transitionToScreen('scr-dash')">RETURN</button></div>
+        </header>
+        <div class="page-body-content">
+            <div class="data-row">> [RECORD_001] Ядро запущено оператором morisreal. Локация: Сектор 7.</div>
+            <div class="data-row">> [RECORD_002] Sumber: Авторизация в узле PRISMA. Протокол "Neon" активен.</div>
+            <div class="data-row">> [RECORD_003] Dykzxz зафиксировал всплеск энергии в секторе 4. Проверка реактора.</div>
+            <div class="data-row">> [RECORD_004] Msk4ne_ подключен к удаленному терминалу. Синхронизация...</div>
+            <div class="data-row">> [RECORD_005] Система переведена на версию v31.8. Ошибок нет.</div>
         </div>
     </section>
 
     <section id="scr-sysdata" class="screen hidden">
-        <header class="page-header"><span>USERS_DATABASE</span> <button class="btn-ui" onclick="transitionToScreen('scr-dash')">RETURN</button></header>
-        <div class="page-body">
-            <div class="user-card">morisreal | LVL 6 | CHIEF OPERATOR</div>
-            <div class="user-card">sumber | LVL 5 | PRISMA OWNER</div>
+        <header class="status-bar">
+            <div class="bar-left">AUTHORIZED_OPERATORS_DB</div>
+            <div class="bar-right"><button class="btn-ui-nav" onclick="transitionToScreen('scr-dash')">RETURN</button></div>
+        </header>
+        <div class="page-body-content">
+            <div class="user-card">
+                <span class="u-name">morisreal</span> | LVL 6 | <span class="u-rank">CHIEF_OPERATOR</span>
+            </div>
+            <div class="user-card">
+                <span class="u-name">sumber</span> | LVL 5 | <span class="u-rank">PRISMA_OWNER</span>
+            </div>
+            <div class="user-card">
+                <span class="u-name">Dykzxz</span> | LVL 4 | <span class="u-rank">REACTOR_ENGINEER</span>
+            </div>
+            <div class="user-card">
+                <span class="u-name">Msk4ne_</span> | LVL 4 | <span class="u-rank">SYSTEM_OPERATOR</span>
+            </div>
         </div>
     </section>
 
     <section id="scr-full-console" class="screen hidden">
-        <header class="page-header"><span>ROOT_TERMINAL</span> <button class="btn-ui" onclick="transitionToScreen('scr-dash')">RETURN</button></header>
+        <header class="status-bar">
+            <div class="bar-left">ROOT_TERMINAL_SESSION</div>
+            <div class="bar-right"><button class="btn-ui-nav" onclick="transitionToScreen('scr-dash')">RETURN</button></div>
+        </header>
         <div id="terminal-out" class="terminal-body"></div>
         <div class="terminal-input-area">
-            <span class="prompt">></span>
-            <input type="text" id="terminal-input" placeholder="Type command..." onkeypress="handleTerminalCommand(event)">
+            <span class="prompt">> root@glomg:~#</span>
+            <input type="text" id="terminal-input" placeholder="..." spellcheck="false" onkeypress="handleTerminalCommand(event)">
         </div>
     </section>
 
     <section id="scr-map" class="screen hidden">
         <header class="status-bar">
-            <div class="bar-left"><button class="btn-ui" onclick="transitionToScreen('scr-dash')">RETURN</button></div>
-            <div class="bar-center">TACTICAL_RADAR</div>
+            <div class="bar-left"><button class="btn-ui-nav" onclick="transitionToScreen('scr-dash')">RETURN</button></div>
+            <div class="bar-center">TACTICAL_RADAR_SCANNER</div>
             <div class="bar-right" id="radar-clock">00:00:00</div>
         </header>
         <div class="radar-scroll-wrapper" id="radar-scroll">
             <div class="radar-view-section">
-                <div class="radar-disk" id="radar-disk">
+                <div class="radar-disk">
                     <div class="scanner-beam"></div>
-                    <div class="radar-grid"></div>
+                    <div class="radar-grid-bg"></div>
                     <div id="radar-nodes"></div>
                 </div>
             </div>
-            <div class="radar-info-section" id="radar-info">
-                <div class="info-details">
-                    <h2 id="p-title">OBJECT_DATA</h2>
-                    <div id="p-text">ВЫБЕРИТЕ ОБЪЕКТ...</div>
-                </div>
+            <div class="radar-info-section">
+                <h2 id="p-title">OBJECT_IDENTIFICATION</h2>
+                <div class="info-divider"></div>
+                <div id="p-text">ВЫБЕРИТЕ ОБЪЕКТ НА РАДАРЕ ДЛЯ ПОЛУЧЕНИЯ ДАННЫХ...</div>
             </div>
         </div>
     </section>
@@ -127,20 +152,23 @@
     <div id="side-overlay" onclick="toggleSidebar(false)"></div>
     <div id="sidebar" class="sidebar">
         <div class="s-head">
-            <span>SYSTEM MENU</span>
-            <button class="btn-close" onclick="toggleSidebar(false)">✕</button>
+            <span>SYSTEM_COMMANDS</span>
+            <button class="btn-close-x" onclick="toggleSidebar(false)">✕</button>
         </div>
-        <div class="user-avatar-gray">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-            </svg>
+        <div class="user-avatar-area">
+            <div class="user-avatar-gray">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </div>
+            <div class="user-label">OPERATOR</div>
         </div>
-        <nav class="side-nav">
-            <button class="side-link" onclick="alert('Profile encrypted')">PROFILE</button>
-            <button class="side-link" onclick="alert('Settings locked')">SETTINGS</button>
+        <nav class="side-nav-links">
+            <button class="side-link-btn" onclick="alert('Encryption Active')">PERSONAL_PROFILE</button>
+            <button class="side-link-btn" onclick="alert('Access Restricted')">CORE_SETTINGS</button>
             <div class="nav-divider"></div>
-            <button class="side-link logout-red" onclick="location.reload()">LOGOUT</button>
+            <button class="side-link-btn logout-red-btn" onclick="location.reload()">LOGOUT_SYSTEM</button>
         </nav>
     </div>
 
