@@ -1558,6 +1558,34 @@ input {
 .news-title { color: var(--purple); font-weight: bold; margin-bottom: 5px; }
 .news-item { font-size: 0.8rem; margin: 3px 0; opacity: 0.8; }
 
+/* Плавный переход */
+#fade-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: black; z-index: 9999; pointer-events: none;
+    opacity: 0; transition: opacity 0.6s ease;
+}
+#fade-overlay.active { opacity: 1; }
+
+/* Сайдбар */
+#side-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7); z-index: 1500; display: none;
+}
+.sidebar {
+    position: fixed; top: 0; left: -280px; width: 280px; height: 100%;
+    background: #0a0510; border-right: 1px solid var(--purple);
+    transition: 0.4s; z-index: 2000; padding: 30px; display: flex; flex-direction: column;
+}
+.sidebar.open { left: 0; }
+.btn-logout { color: var(--error) !important; border-color: var(--error) !important; margin-top: auto; }
+
+/* Архив */
+.archive-layout { width: 100%; max-width: 600px; margin: 40px auto; }
+.archive-item { border: 1px solid var(--purple-dim); margin-bottom: 10px; }
+.archive-header { padding: 15px; cursor: pointer; background: rgba(168, 85, 247, 0.05); }
+.archive-content { max-height: 0; overflow: hidden; padding: 0 15px; transition: 0.4s; background: rgba(0,0,0,0.4); }
+.archive-item.open .archive-content { max-height: 200px; padding: 15px; border-top: 1px solid var(--purple-dim); }
+
 /* Дополнение для анимации заставки */
 #intro-logo.hidden { display: none; }
 .blink { animation: blinker 1.5s linear infinite; }
