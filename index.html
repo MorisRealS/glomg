@@ -8,12 +8,11 @@
 <body oncontextmenu="return false;">
     <canvas id="matrix-canvas"></canvas>
     <div class="vhs-overlay"></div>
-    <div class="scanlines"></div>
     <div id="fade"></div>
 
     <div id="modal-profile" class="modal-profile hidden">
         <div class="profile-card">
-            <button class="btn-ui" onclick="closeProfile()">[ CLOSE ]</button>
+            <button class="btn-ui" onclick="closeProfile()">[ BACK ]</button>
             <div class="profile-header">
                 <div class="profile-avatar"></div>
                 <div>
@@ -45,26 +44,28 @@
     </section>
 
     <section id="scr-guest" class="screen hidden scrollable">
+        <div class="guest-nav">
+            <div class="nav-line"></div>
+            <button class="btn-ui-nav" onclick="location.reload()">[ AUTHORIZATION ]</button>
+        </div>
         <div class="guest-layout">
-<pre class="ascii-logo-main">
- ██████  ███    ██  ██████  
-██    ██ ████   ██ ██       
-██    ██ ██ ██  ██ ██   ███ 
-██    ██ ██  ██ ██ ██    ██ 
- ██████  ██   ████  ██████  </pre>
+            <pre class="ascii-logo-main"> ██████  ███    ██  ██████ </pre>
             <div class="guest-grid">
                 <div class="guest-col">
                     <div class="mini-logo-box">/ CONSOLE_FEED /</div>
                     <div id="guest-console" class="console-box"></div>
+                    
+                    <div class="mini-logo-box" style="margin-top:20px;">/ SECTOR_NEWS /</div>
+                    <div id="news-feed" class="news-block">
+                        </div>
                 </div>
                 <div class="guest-col">
                     <div class="mini-logo-box">/ DATABASE_INFO /</div>
                     <div class="info-container">
-                        <p>О.Н.Г. — Объединенный Надзор Галактики. Публичный узел мониторинга v32.8. Сектор: ПРИЗМА. Доступ к ядру закрыт.</p>
+                        <p>О.Н.Г. — Объединенный Надзор Галактики. Сектор: ПРИЗМА. Доступ ограничен.</p>
                     </div>
                 </div>
             </div>
-            <button class="btn-ui" onclick="startTransition('login-screen')" style="margin-top:20px;">[ BACK ]</button>
         </div>
     </section>
 
@@ -74,22 +75,15 @@
             <div id="clock">00:00:00</div>
         </header>
         <div class="main-content center-layout">
-<pre class="ascii-logo-main">
- ██████  ███    ██  ██████  
-██    ██ ████   ██ ██       
-██    ██ ██ ██  ██ ██   ███ 
-██    ██ ██  ██ ██ ██    ██ 
- ██████  ██   ████  ██████  </pre>
-            <h2>OPERATOR: <span id="user-name-display" style="color:var(--purple)">---</span></h2>
+            <pre class="ascii-logo-main"> ██████  ███    ██  ██████ </pre>
+            <h2>OPERATOR: <span id="user-name-display">---</span></h2>
             <div class="dash-row-horizontal">
                 <button class="mega-btn" onclick="initRadar()">РАДАР</button>
                 <button class="mega-btn" onclick="startTransition('scr-archive')">АРХИВ</button>
-                <button class="mega-btn" onclick="startTransition('scr-sysdata')">ЯДРО</button>
+                <button class="mega-btn" onclick="startTransition('scr-sysdata')">СИСТЕМА</button>
             </div>
-            <div class="staff-info-block">
-                <div class="purple-fading-line"></div>
-                <p class="staff-subtext">KERNEL_STATUS: OPTIMAL // UUID_SYNC: ACTIVE // ACCESS_LEVEL: RESTRICTED</p>
-            </div>
+            <div class="purple-fading-line"></div>
+            <p class="staff-subtext">STATUS: SECURE // ENCRYPTION: AES-256</p>
         </div>
     </section>
 
@@ -103,23 +97,16 @@
             <div class="purple-fading-line"></div>
             <div id="radar-info" class="radar-desc-zone">
                 <h3 id="rad-title">SCANNING...</h3>
-                <p id="rad-text" class="staff-subtext">Выберите объект на карте для получения детальных координат и статуса системы.</p>
+                <p id="rad-text" class="staff-subtext">Выберите точку интереса.</p>
             </div>
         </div>
-    </section>
-
-    <section id="scr-archive" class="screen hidden scrollable">
-        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('main-dashboard')">BACK</button><div>ARCHIVE_DB</div></header>
-        <div id="db-logs-list" class="db-container"></div>
     </section>
 
     <div id="side-overlay" onclick="toggleSidebar(false)"></div>
     <div id="sidebar" class="sidebar">
         <div class="sidebar-header">USER_CONTROLS</div>
-        <div class="side-nav-list">
-            <button class="side-link-btn" onclick="openProfile()">[ VIEW_PROFILE ]</button>
-            <button class="side-link-btn" style="color:red; margin-top: 20px;" onclick="location.reload()">[ LOGOUT ]</button>
-        </div>
+        <button class="side-link-btn" onclick="openProfile()">VIEW_PROFILE</button>
+        <button class="side-link-btn" style="color:red;" onclick="location.reload()">LOGOUT</button>
     </div>
 
     <script src="script.js"></script>
