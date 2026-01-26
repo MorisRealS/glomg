@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>G.L.O.M.G. | CORE V32.8 FINAL</title>
+    <title>G.L.O.M.G. | CORE V32.8</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body oncontextmenu="return false;">
@@ -10,22 +10,24 @@
     <div class="vhs-overlay"></div>
     <div id="fade"></div>
 
-    <div id="modal-profile" class="modal-profile hidden">
-        <div class="profile-card">
-            <button class="btn-ui" onclick="closeProfile()">[ BACK ]</button>
-            <div class="profile-header">
-                <div class="profile-avatar"></div>
-                <div>
-                    <h2 id="p-name-val">---</h2>
-                    <p>UUID: <span id="p-uuid-val">0000</span></p>
-                </div>
+    <section id="scr-intro" class="screen">
+        <div class="center-layout">
+            <pre id="intro-ascii" class="ascii-font">SYSTEM_BOOTING...</pre>
+            <div id="intro-logo" class="hidden">
+                <pre class="ong-logo">
+ ██████  ███    ██  ██████  
+██    ██ ████   ██ ██       
+██    ██ ██ ██  ██ ██   ███ 
+██    ██ ██  ██ ██ ██    ██ 
+ ██████  ██   ████  ██████  </pre>
+                <p class="blink">INITIALIZING O.N.G. CORE...</p>
             </div>
         </div>
-    </div>
+    </section>
 
-    <section id="login-screen" class="screen">
+    <section id="login-screen" class="screen hidden">
         <div class="login-frame">
-<pre class="ascii-logo-main">
+            <pre class="ong-logo-main">
  ██████  ███    ██  ██████  
 ██    ██ ████   ██ ██       
 ██    ██ ██ ██  ██ ██   ███ 
@@ -37,68 +39,32 @@
                 <input type="password" id="user-pass" placeholder="PASSWORD" spellcheck="false">
                 <div class="login-btns">
                     <button class="btn-ui btn-confirm" onclick="attemptLogin()">[ CONFIRM ]</button>
-                    <button class="btn-ui btn-guest" onclick="startTransition('scr-guest')">[ GUEST ]</button>
+                    <button class="btn-ui btn-guest" onclick="location.href='guest.html'">[ GUEST ]</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="scr-guest" class="screen hidden scrollable">
-        <div class="guest-nav">
-            <div class="nav-line"></div>
-            <button class="btn-ui-nav" onclick="location.reload()">[ AUTHORIZATION ]</button>
-        </div>
-        <div class="guest-layout">
-            <pre class="ascii-logo-main"> ██████  ███    ██  ██████ </pre>
-            <div class="guest-grid">
-                <div class="guest-col">
-                    <div class="mini-logo-box">/ CONSOLE_FEED /</div>
-                    <div id="guest-console" class="console-box"></div>
-                    
-                    <div class="mini-logo-box" style="margin-top:20px;">/ SECTOR_NEWS /</div>
-                    <div id="news-feed" class="news-block">
-                        </div>
-                </div>
-                <div class="guest-col">
-                    <div class="mini-logo-box">/ DATABASE_INFO /</div>
-                    <div class="info-container">
-                        <p>О.Н.Г. — Объединенный Надзор Галактики. Сектор: ПРИЗМА. Доступ ограничен.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="main-dashboard" class="screen hidden scrollable">
+    <section id="main-dashboard" class="screen hidden">
         <header class="status-bar">
             <button class="btn-ui-nav" onclick="toggleSidebar(true)">MENU</button>
             <div id="clock">00:00:00</div>
         </header>
         <div class="main-content center-layout">
-            <pre class="ascii-logo-main"> ██████  ███    ██  ██████ </pre>
-            <h2>OPERATOR: <span id="user-name-display">---</span></h2>
+            <pre class="ong-logo-small">
+ ██████  ███    ██  ██████  
+██    ██ ████   ██ ██       
+██    ██ ██ ██  ██ ██   ███ 
+██    ██ ██  ██ ██ ██    ██ 
+ ██████  ██   ████  ██████  </pre>
+            <h2>OPERATOR: <span id="user-name-display" style="color:var(--purple)">---</span></h2>
             <div class="dash-row-horizontal">
-                <button class="mega-btn" onclick="initRadar()">РАДАР</button>
-                <button class="mega-btn" onclick="startTransition('scr-archive')">АРХИВ</button>
-                <button class="mega-btn" onclick="startTransition('scr-sysdata')">СИСТЕМА</button>
+                <button class="mega-btn" onclick="location.href='radar.html'">РАДАР</button>
+                <button class="mega-btn" onclick="location.href='archive.html'">АРХИВ</button>
+                <button class="mega-btn" onclick="location.href='system.html'">СИСТЕМА</button>
             </div>
             <div class="purple-fading-line"></div>
-            <p class="staff-subtext">STATUS: SECURE // ENCRYPTION: AES-256</p>
-        </div>
-    </section>
-
-    <section id="scr-radar" class="screen hidden scrollable">
-        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('main-dashboard')">CLOSE</button><div>TACTICAL_RADAR</div></header>
-        <div class="radar-fullscreen">
-            <div class="radar-disk">
-                <div class="radar-scanner-square"></div>
-                <div id="radar-nodes"></div>
-            </div>
-            <div class="purple-fading-line"></div>
-            <div id="radar-info" class="radar-desc-zone">
-                <h3 id="rad-title">SCANNING...</h3>
-                <p id="rad-text" class="staff-subtext">Выберите точку интереса.</p>
-            </div>
+            <p class="staff-subtext">STATUS: SECURE // ENCRYPTION: ACTIVE</p>
         </div>
     </section>
 
@@ -106,7 +72,17 @@
     <div id="sidebar" class="sidebar">
         <div class="sidebar-header">USER_CONTROLS</div>
         <button class="side-link-btn" onclick="openProfile()">VIEW_PROFILE</button>
-        <button class="side-link-btn" style="color:red;" onclick="location.reload()">LOGOUT</button>
+        <button class="side-link-btn" style="color:red; margin-top:20px;" onclick="location.reload()">LOGOUT</button>
+    </div>
+
+    <div id="modal-profile" class="modal-profile hidden">
+        <div class="profile-card">
+            <button class="btn-ui" onclick="closeProfile()">[ CLOSE ]</button>
+            <div class="profile-header">
+                <div class="profile-avatar"></div>
+                <div><h2 id="p-name-val">---</h2><p id="p-uuid-val">UUID: 0000</p></div>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
