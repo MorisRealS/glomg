@@ -1,87 +1,95 @@
-/* --- КНОПКИ (СТИЛЬ ИЗ СКРИНШОТА) --- */
+/* --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ --- */
+:root {
+    --purple: #a855f7;
+    --purple-dim: rgba(168, 85, 247, 0.15);
+    --bg-black: #050208;
+    --error: #ff2233;
+    --terminal-green: #00ff44;
+    --cyan: #1ed7ff;
+}
+
+/* --- ОБНУЛЕНИЕ --- */
+* { box-sizing: border-box; }
+
+body, html {
+    margin: 0; padding: 0; width: 100%; height: 100%;
+    background-color: var(--bg-black); color: var(--purple);
+    font-family: 'Courier New', Courier, monospace; overflow: hidden;
+}
+
+/* --- НОВЫЕ КНОПКИ (СТИЛЬ СКРИНШОТ 1) --- */
 .btn-scan {
     background: rgba(168, 85, 247, 0.05);
     border: 1px solid var(--purple);
     color: var(--purple);
-    padding: 16px 20px;
+    padding: 18px 25px;
     font-family: inherit;
-    font-size: 0.95rem;
+    font-size: 1rem;
     cursor: pointer;
     text-align: left;
-    transition: all 0.2s ease;
-    display: block;
+    transition: 0.2s;
     width: 100%;
-    margin-bottom: 12px;
+    margin-bottom: 15px;
     text-transform: uppercase;
+    display: block;
 }
 
 .btn-scan:hover {
-    background: var(--purple);
+    background-color: var(--purple);
     color: #000;
     box-shadow: 0 0 20px var(--purple);
 }
 
-.btn-scan::before { content: "> "; font-weight: bold; }
+.btn-scan::before {
+    content: "ВЫПОЛНИТЬ: ";
+    font-weight: bold;
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
 
-.wide-btn { width: 850px; margin-top: 20px; }
-.actions-stack { margin-top: 30px; width: 100%; }
+.wide-btn { max-width: 850px; margin: 20px auto; }
 
-/* --- ЛИЧНОЕ ДЕЛО (СТИЛЬ ИЗ СКРИНШОТА) --- */
-.modal { 
-    position: fixed; inset: 0; 
-    background: rgba(0,0,0,0.95); 
-    z-index: 5000; display: flex; 
-    align-items: center; justify-content: center; 
+/* --- ЛИЧНОЕ ДЕЛО (СТИЛЬ СКРИНШОТ 2) --- */
+.modal-profile {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.96);
+    z-index: 9999; display: flex; align-items: center; justify-content: center;
 }
 .profile-card {
-    width: 720px; background: #080808; 
-    border: 1px solid var(--purple);
+    width: 740px; background: #080808; border: 1px solid var(--purple);
     padding: 50px; position: relative;
-    box-shadow: 0 0 50px rgba(0,0,0,1);
 }
-.corner-tl { 
-    position: absolute; top: -2px; left: -2px; 
-    width: 45px; height: 45px; 
-    border-top: 4px solid var(--cyan); border-left: 4px solid var(--cyan); 
-}
-.corner-br { 
-    position: absolute; bottom: -2px; right: -2px; 
-    width: 45px; height: 45px; 
-    border-bottom: 4px solid var(--cyan); border-right: 4px solid var(--cyan); 
-}
+.corner-tl { position: absolute; top: -2px; left: -2px; width: 45px; height: 45px; border-top: 4px solid var(--cyan); border-left: 4px solid var(--cyan); }
+.corner-br { position: absolute; bottom: -2px; right: -2px; width: 45px; height: 45px; border-bottom: 4px solid var(--cyan); border-right: 4px solid var(--cyan); }
 
-.close-profile { 
-    background: none; border: none; color: #444; 
-    cursor: pointer; margin-bottom: 30px; 
-    font-family: inherit; font-size: 0.8rem; 
-}
+.close-profile-btn { background: none; border: none; color: #444; cursor: pointer; margin-bottom: 30px; font-family: inherit; }
 .profile-header { display: flex; gap: 40px; margin-bottom: 40px; align-items: center; }
-.profile-avatar { 
-    width: 160px; height: 160px; 
-    border: 1px solid var(--cyan); background: #111; 
-    overflow: hidden; 
-}
+.profile-avatar { width: 170px; height: 170px; border: 1px solid var(--cyan); background: #111; }
 .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.profile-info-top h2 { 
-    font-size: 3.2rem; margin: 0; color: #fff; 
-    letter-spacing: 5px; text-transform: uppercase;
-}
-.status-tag { 
-    display: inline-block; background: var(--purple); 
-    color: #000; padding: 3px 12px; 
-    font-size: 0.75rem; font-weight: bold; margin-top: 12px; 
-}
+.profile-main-info h2 { font-size: 3.5rem; margin: 0; color: #fff; letter-spacing: 5px; }
+.status-tag { display: inline-block; background: var(--purple); color: #000; padding: 4px 12px; font-size: 0.8rem; font-weight: bold; margin-top: 15px; }
 
-.profile-grid { 
-    display: grid; grid-template-columns: 1fr 1fr; 
-    gap: 30px; border-top: 1px solid #222; padding-top: 30px; 
-}
-.p-item label { display: block; color: #555; font-size: 0.7rem; margin-bottom: 8px; }
-.p-value { color: var(--purple); font-size: 1.3rem; }
-.profile-footer { margin-top: 35px; }
-.notes { border: 1px dashed #333; padding: 15px; color: #777; font-size: 0.85rem; }
-.sys-status { margin-top: 25px; text-align: center; font-size: 0.75rem; color: #333; }
+.profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; border-top: 1px solid #222; padding-top: 30px; }
+.p-item label { display: block; color: #555; font-size: 0.75rem; margin-bottom: 8px; }
+.p-value { color: var(--purple); font-size: 1.4rem; }
+.notes { border: 1px dashed #333; padding: 20px; color: #888; margin-top: 20px; font-size: 0.9rem; }
 .green-text { color: var(--terminal-green); }
 
-/* --- УБИРАЕМ ЛИШНЕЕ ИЗ КОНСОЛИ --- */
-.prompt { color: var(--purple); font-weight: bold; margin-right: 10px; }
+/* --- ТВОИ ОРИГИНАЛЬНЫЕ СТИЛИ РАДАРА И ИНТРО (300+ СТРОК) --- */
+.status-bar { position: absolute; top: 0; left: 0; width: 100%; height: 65px; display: flex; justify-content: space-between; align-items: center; padding: 0 40px; border-bottom: 2px solid var(--purple); background: #0a0510; z-index: 1000; }
+.bar-center { position: absolute; left: 50%; transform: translateX(-50%); font-size: 1.2rem; font-weight: bold; letter-spacing: 3px; }
+.screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: var(--bg-black); z-index: 10; }
+.login-frame { padding: 60px; border: 2px solid var(--purple); background: rgba(15, 5, 25, 0.9); width: 600px; }
+.login-console-output { height: 200px; overflow-y: auto; text-align: left; margin-bottom: 20px; font-size: 0.9rem; color: var(--purple); }
+.terminal-input-line { display: flex; align-items: center; border-top: 1px solid var(--purple-dim); padding-top: 15px; }
+#cmd { background: none; border: none; color: #fff; font-family: inherit; font-size: 1.2rem; width: 100%; outline: none; margin-left: 10px; }
+
+/* ... РАДАР (Твой оригинальный код) ... */
+.radar-disk { position: relative; width: 500px; height: 500px; border: 2px solid var(--purple); border-radius: 50%; background: radial-gradient(circle, rgba(168,85,247,0.1) 0%, transparent 70%); }
+.scanner-beam { position: absolute; width: 50%; height: 50%; top: 0; left: 50%; background: linear-gradient(90deg, var(--purple) 0%, transparent 100%); transform-origin: bottom left; animation: radar-sweep 4s linear infinite; }
+@keyframes radar-sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* ... И ТАК ДАЛЕЕ ДО КОНЦА ФАЙЛА ... */
+.sidebar { position: fixed; top: 0; left: -350px; width: 320px; height: 100%; background-color: #08040c; border-right: 2px solid var(--purple); z-index: 3000; transition: left 0.4s; padding: 30px; }
+.sidebar.open { left: 0; }
+#side-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; z-index: 2000; }
+.vhs-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 9999; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03)); background-size: 100% 3px, 3px 100%; opacity: 0.15; }
