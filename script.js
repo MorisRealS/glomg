@@ -1,115 +1,165 @@
-const DB = {
-    "morisreal": { pass: "morisreal_profile_console", lvl: 6, rank: "CHIEF OPERATOR", title: "МОЯ ЛАБОРАТОРИЯ" },
-    "sumber": { pass: "SumberTheAdminPRISMS", lvl: 5, rank: "PRISMA OWNER", title: "БУНКЕР ПРИЗМЫ" },
-    "dykzxz": { pass: "DykProfileConsoleONG", lvl: 4, rank: "REACTOR ENG", title: "МОЙ РЕАКТОР" }
+/* --- СИСТЕМНАЯ БАЗА ДАННЫХ --- */
+const CORE_DATABASE = {
+    "morisreal": {
+        "pass": "morisreal_profile_console",
+        "lvl": 6,
+        "rank": "CHIEF OPERATOR",
+        "title": "ЛИЧНАЯ ЛАБОРАТОРИЯ"
+    },
+    "sumber": {
+        "pass": "SumberTheAdminPRISMS",
+        "lvl": 5,
+        "rank": "PRISMA OWNER",
+        "title": "БУНКЕР ПРИЗМЫ"
+    }
 };
 
-let activeUser = null;
+let activeSession = null;
 
-// ИНТРО
-window.onload = () => {
-    const pre = document.getElementById('intro-ascii');
-    const txt = "G.L.O.M.G. v28.2_STABLE\nLOADING_CORE_SYSTEMS...\nESTABLISHING_ENCRYPTED_TUNNEL...\nSYSTEM_READY.";
-    let i = 0;
-    let t = setInterval(() => {
-        pre.textContent += txt[i]; i++;
-        if(i >= txt.length) { 
-            clearInterval(t); 
-            document.getElementById('intro-logo').classList.remove('hidden');
-            setTimeout(() => transition('scr-login'), 2500);
+/* --- ПЕРЕХОДЫ --- */
+function transitionToScreen(id) {
+    const fade = document.getElementById('fade');
+    fade.classList.add('active');
+    
+    setTimeout(function() {
+        const screens = document.querySelectorAll('.screen');
+        screens.forEach(function(s) {
+            s.classList.add('hidden');
+        });
+        
+        const target = document.getElementById(id);
+        if (target) {
+            target.classList.remove('hidden');
         }
-    }, 45);
-};
-
-// ПЕРЕХОДЫ МЕЖДУ СТРАНИЦАМИ
-function transition(id) {
-    document.getElementById('fade').classList.add('active');
-    setTimeout(() => {
-        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-        document.getElementById(id).classList.remove('hidden');
-        document.getElementById('fade').classList.remove('active');
-        side(false); // Закрываем меню при переходе
-    }, 450);
+        
+        toggleSidebar(false);
+        fade.classList.remove('active');
+    }, 500);
 }
 
-// АВТОРИЗАЦИЯ
-function auth() {
-    const id = document.getElementById('inp-id').value.toLowerCase();
-    const ps = document.getElementById('inp-pass').value;
-    if(DB[id] && DB[id].pass === ps) {
-        activeUser = { id, ...DB[id] };
-        document.getElementById('u-lvl-display').textContent = activeUser.lvl;
-        document.getElementById('welcome-msg').textContent = `WELCOME, ${id.toUpperCase()}`;
-        document.getElementById('prof-info').innerHTML = `ID: ${id.toUpperCase()}<br>LEVEL: ${activeUser.lvl}<br>POSITION: ${activeUser.rank}`;
-        transition('scr-dash');
+/* --- ЛОГИКА ВХОДА --- */
+function processLogin() {
+    const user = document.getElementById('inp-id').value.toLowerCase();
+    const pass = document.getElementById('inp-pass').value;
+    
+    const dbEntry = CORE_DATABASE[user];
+    
+    if (dbEntry && dbEntry.pass === pass) {
+        activeSession = {
+            id: user,
+            lvl: dbEntry.lvl,
+            rank: dbEntry.rank,
+            title: dbEntry.title
+        };
+        
+        document.getElementById('u-lvl-display').textContent = activeSession.lvl;
+        document.getElementById('welcome-msg').textContent = "WELCOME, " + user.toUpperCase();
+        transitionToScreen('scr-dash');
     } else {
-        alert("ACCESS_DENIED: INVALID_CREDENTIALS");
+        alert("ACCESS DENIED: INVALID_KEY");
     }
 }
 
-// ГОСТЬ
-function goGuest() {
-    activeUser = null;
-    transition('scr-guest');
-    const con = document.getElementById('guest-console');
-    const logs = ["> PING node_1... OK", "> DB_SYNC... 100%", "> TEMP_CHECK... NORMAL", "> RADIATION_LEVEL... 0.04mSv", "> CORE_STATUS... IDLE", "> SCANNING... NO_THREATS"];
-    setInterval(() => {
-        const d = document.createElement('div');
-        d.textContent = `[${new Date().toLocaleTimeString()}] ${logs[Math.floor(Math.random()*logs.length)]}`;
-        con.prepend(d);
-        if(con.childNodes.length > 18) con.lastChild.remove(); // Заполнение всей консоли
-    }, 1600);
-}
-
-// РАДАР
-function goMap() {
-    transition('scr-map');
-    const box = document.getElementById('radar-nodes'); box.innerHTML = "";
-    const nodes = [ {x:50,y:50,o:"morisreal",t:"owner"}, {x:35,y:45,o:"sumber",t:"online"}, {x:75,y:65,o:"dykzxz",t:"broken"} ];
-    nodes.forEach(n => {
+/* --- ТАКТИЧЕСКИЙ РАДАР --- */
+function initializeTacticalRadar() {
+    transitionToScreen('scr-map');
+    
+    const nodeContainer = document.getElementById('radar-nodes');
+    nodeContainer.innerHTML = ""; // Очистка перед отрисовкой
+    
+    const points = [
+        { x: 50, y: 50, owner: "morisreal", type: "owner" },
+        { x: 30, y: 45, owner: "sumber", type: "online" }
+    ];
+    
+    points.forEach(function(p) {
         const dot = document.createElement('div');
-        dot.className = `node ${n.t}`;
-        dot.style.left = n.x + "%"; dot.style.top = n.y + "%";
-        dot.onclick = () => {
-            document.getElementById('radar-popup').classList.remove('hidden');
-            document.getElementById('p-title').textContent = n.o.toUpperCase();
-            document.getElementById('p-text').textContent = (n.o === activeUser.id) ? DB[n.o].title : `DATA_ACCESS: RESTRICTED | RANK: ${DB[n.o].rank}`;
+        dot.className = "node " + p.type;
+        dot.style.left = p.x + "%";
+        dot.style.top = p.y + "%";
+        
+        dot.onclick = function() {
+            document.getElementById('p-title').textContent = p.owner.toUpperCase();
+            const text = document.getElementById('p-text');
+            
+            if (p.owner === activeSession.id) {
+                text.innerHTML = "<b>STATUS:</b> ACTIVE<br><b>LOCATION:</b> " + activeSession.title;
+            } else {
+                text.innerHTML = "<b>STATUS:</b> PROTECTED<br><b>DATA:</b> ACCESS_RESTRICTED";
+            }
+            
+            // Скролл вниз к блоку информации
+            const scrollBox = document.getElementById('radar-scroll');
+            scrollBox.scrollTo({
+                top: 600,
+                behavior: 'smooth'
+            });
         };
-        box.appendChild(dot);
+        
+        nodeContainer.appendChild(dot);
     });
 }
 
-// САЙДБАР
-function side(st) {
-    document.getElementById('sidebar').classList.toggle('open', st);
-    document.getElementById('side-overlay').style.display = st ? 'block' : 'none';
+/* --- САЙДБАР --- */
+function toggleSidebar(state) {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('side-overlay');
+    
+    if (state === true) {
+        sidebar.classList.add('open');
+        overlay.style.display = 'block';
+    } else {
+        sidebar.classList.remove('open');
+        overlay.style.display = 'none';
+    }
 }
 
-// МОДАЛКИ
-function modal(id, st) {
-    document.getElementById(id).classList.toggle('hidden', !st);
-}
-
-// КОНСОЛЬ
-function handleCmd(e) {
-    if(e.key === 'Enter') {
+/* --- ТЕРМИНАЛ --- */
+function handleTerminalCommand(e) {
+    if (e.key === 'Enter') {
         const out = document.getElementById('terminal-out');
-        const cmd = e.target.value;
-        const d = document.createElement('div');
-        d.textContent = `> root@glomg:~# ${cmd}`;
-        out.appendChild(d);
+        const inp = document.getElementById('terminal-input');
         
-        const res = document.createElement('div');
-        res.style.color = "#888";
-        res.textContent = `System: command '${cmd}' not found in core modules.`;
-        out.appendChild(res);
+        const userLine = document.createElement('div');
+        userLine.textContent = "> root@glomg:~# " + inp.value;
+        out.appendChild(userLine);
         
-        e.target.value = "";
+        const sysLine = document.createElement('div');
+        sysLine.style.color = "#666";
+        sysLine.textContent = "Processing '" + inp.value + "'... Error: Command not found.";
+        out.appendChild(sysLine);
+        
+        inp.value = "";
         out.scrollTop = out.scrollHeight;
     }
 }
 
-setInterval(() => {
-    const c = document.getElementById('clock');
-    if(c) c.textContent = new Date().toLocaleTimeString();
+/* --- ТАЙМЕРЫ --- */
+setInterval(function() {
+    const time = new Date().toLocaleTimeString();
+    if (document.getElementById('clock')) {
+        document.getElementById('clock').textContent = time;
+    }
+    if (document.getElementById('radar-clock')) {
+        document.getElementById('radar-clock').textContent = time;
+    }
 }, 1000);
+
+/* --- ЗАПУСК ИНТРО --- */
+window.onload = function() {
+    const intro = document.getElementById('intro-ascii');
+    const msg = "G.L.O.M.G. CORE v29.5\nLINKING_TO_DATABASE...\nSECURITY_READY.";
+    let i = 0;
+    
+    const type = setInterval(function() {
+        intro.textContent += msg[i];
+        i++;
+        if (i >= msg.length) {
+            clearInterval(type);
+            document.getElementById('intro-logo').classList.remove('hidden');
+            setTimeout(function() {
+                transitionToScreen('scr-login');
+            }, 2500);
+        }
+    }, 50);
+};
