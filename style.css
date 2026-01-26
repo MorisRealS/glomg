@@ -924,6 +924,45 @@ body {
     transition: all 0.4s ease;
 }
 
+/* ПОЗВОЛЯЕТ ЛИСТАТЬ ЭКРАНЫ */
+.scrollable {
+    overflow-y: auto !important;
+    padding-bottom: 50px;
+}
+
+/* ФИКС ЛУЧА РАДАРА */
+.scanner-beam {
+    position: absolute;
+    width: 200%; height: 200%;
+    top: -50%; left: -50%;
+    background: conic-gradient(from 0deg, var(--purple) 0deg, transparent 60deg);
+    animation: radar-rotate 4s linear infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes radar-rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* КНОПКИ В ЛИЧНОМ КАБИНЕТЕ (ВЕРТИКАЛЬНАЯ ЦЕНТРОВКА В РЯД) */
+.big-buttons-grid {
+    display: flex;
+    flex-direction: column; /* Измени на row, если хочешь горизонтально */
+    align-items: center;
+    gap: 15px;
+    margin: 20px auto;
+}
+
+/* КОНСОЛЬ НЕ РАСТЕТ */
+.console-box p {
+    font-size: 0.9rem;
+    color: var(--purple);
+    margin: 5px 0;
+    line-height: 1.2;
+}
+
 /* Дополнение для анимации заставки */
 #intro-logo.hidden { display: none; }
 .blink { animation: blinker 1.5s linear infinite; }
