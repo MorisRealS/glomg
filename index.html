@@ -41,7 +41,6 @@
  ██████  ███    ██  ██████  
 ██    ██ ████   ██ ██       
 ██    ██ ██ ██  ██ ██   ███ 
-██    ██ ██  ██ ██ ██    ██ 
  ██████  ██   ████  ██████  </pre>
                 <p class="blink">INITIALIZING O.N.G. CORE...</p>
             </div>
@@ -49,11 +48,11 @@
     </section>
 
     <section id="scr-login" class="screen hidden">
-        <div class="login-frame">
+        <canvas id="matrix-bg"></canvas> <div class="login-frame">
             <h1 class="glitch" data-text="G.L.O.M.G.">G.L.O.M.G.</h1>
             <div id="login-output" class="status-msg"></div>
             <div class="inputs">
-                <input type="text" id="inp-id" placeholder="OPERATOR_ID" autocomplete="off" spellcheck="false">
+                <input type="text" id="inp-id" placeholder="OPERATOR_ID" autocomplete="off">
                 <input type="password" id="inp-pass" placeholder="ACCESS_KEY">
             </div>
             <div class="actions">
@@ -63,130 +62,99 @@
         </div>
     </section>
 
-    <section id="scr-guest" class="screen hidden scrollable">
-        <div class="guest-layout">
-            <pre class="ong-logo">
+    <section id="scr-guest" class="screen hidden">
+        <div class="guest-scroll-container">
+            <div class="guest-layout">
+                <pre class="ong-logo">
  ██████  ███    ██  ██████  
 ██    ██ ████   ██ ██       
 ██    ██ ██ ██  ██ ██   ███ 
  ██████  ██   ████  ██████  </pre>
-            
-            <button class="btn-ui btn-gold" style="width: 320px; margin-bottom: 40px;" onclick="startTransition('scr-login')">ПРИСОЕДИНИТЬСЯ</button>
+                
+                <button class="btn-ui btn-gold" style="width: 300px; margin-bottom: 40px;" onclick="startTransition('scr-login')">ПРИСОЕДИНИТЬСЯ</button>
 
-            <div class="guest-grid">
-                <div class="guest-col">
-                    <h3 class="label">SYSTEM_STREAM:</h3>
-                    <div id="guest-console" class="console-box" style="height: 180px; overflow: hidden;"></div>
+                <div class="guest-grid">
+                    <div class="guest-col">
+                        <h3 class="label">SYSTEM_STREAM:</h3>
+                        <div id="guest-console" class="console-box"></div>
+                    </div>
+                    <div class="guest-col">
+                        <h3 class="label">О НАС (MISSION_DATA):</h3>
+                        <div class="info-container">
+                            <p style="color: var(--purple); font-weight: bold;">[ ОНГ — ОСНОВНАЯ НАУЧНАЯ ГРУППА ]</p>
+                            <p>Независимая организация, занимающаяся изучением аномалий UUID и стабилизацией энергетических ядер. Мы не подчиняемся P.R.I.S.M.</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="guest-col">
-                    <h3 class="label">О НАС (MISSION_DATA):</h3>
-                    <div class="info-container" style="height: 180px;">
-                        <p style="color: var(--purple); font-weight: bold;">[ ОНГ — ОСНОВНАЯ НАУЧНАЯ ГРУППА ]</p>
-                        <p>Независимый конгломерат по стабилизации UUID-реакторов. Мы верим в холодную логику и цифровой порядок.</p>
+
+                <div class="news-section">
+                    <h3 class="label">LATEST_SYSTEM_UPDATES:</h3>
+                    <div class="news-block">
+                        <p><b>[26.01.2026]</b> — Исправлена центровка и логика консоли. Внедрена пульсация радара вместо луча. Добавлен Матричный фон на авторизацию.</p>
+                        <p><b>[20.01.2026]</b> — Радар V3 запущен. Улучшена детализация объектов.</p>
                     </div>
                 </div>
             </div>
-
-            <div class="news-section">
-                <h3 class="label">LATEST_SYSTEM_UPDATES:</h3>
-                <div class="news-block">
-                    <p><b>[26.01.2026]</b> — Исправлена центровка и логика консоли. Система стабильна.</p>
-                    <p><b>[20.01.2026]</b> — Радар V3 запущен в тестовом режиме.</p>
-                </div>
-            </div>
         </div>
     </section>
 
-    <section id="scr-dash" class="screen hidden scrollable">
-        <header class="status-bar">
-            <button class="btn-ui-nav" onclick="toggleSidebar(true)">MENU</button>
-            <div id="clock">00:00:00</div>
-            <div>LVL: <span id="u-lvl-display">0</span></div>
-        </header>
-        <div class="main-content center-layout">
-            <pre class="ong-logo-small">
+    <section id="scr-dash" class="screen hidden">
+        <div class="dash-scroll-container">
+            <header class="status-bar">
+                <button class="btn-ui-nav" onclick="toggleSidebar(true)">MENU</button>
+                <div id="clock">00:00:00</div>
+                <div>LVL: <span id="u-lvl-display">0</span></div>
+            </header>
+            <div class="main-content center-layout">
+                <pre class="ong-logo-small">
  ██████  ███    ██  ██████  
 ██    ██ ████   ██ ██       
 ██    ██ ██ ██  ██ ██   ███ 
  ██████  ██   ████  ██████  </pre>
-            <div class="welcome-text-block">
-                <h2>Приветствуем, <span id="welcome-user-name" style="color: var(--purple);">---</span></h2>
-                <p>Доступ к ядру ОНГ подтвержден.</p>
-            </div>
-            
-            <div class="big-buttons-grid">
-                <button class="mega-btn wide" onclick="initializeTacticalRadar()">КАРТА ОБЪЕКТОВ</button>
-                <button class="mega-btn wide" onclick="startTransition('scr-archive')">АРХИВ ДАННЫХ</button>
-                <button class="mega-btn wide" onclick="startTransition('scr-sysdata')">СОСТОЯНИЕ СИСТЕМЫ</button>
-            </div>
+                <div class="welcome-text-block">
+                    <h2>Приветствуем, <span id="welcome-user-name" style="color: var(--purple);">---</span></h2>
+                    <p>Доступ к ядру ОНГ подтвержден. Система готова к работе.</p>
+                </div>
+                
+                <div class="dash-row-buttons">
+                    <button class="mega-btn" onclick="initializeTacticalRadar()">КАРТА ОБЪЕКТОВ</button>
+                    <button class="mega-btn" onclick="startTransition('scr-archive')">АРХИВ ДАННЫХ</button>
+                    <button class="mega-btn" onclick="startTransition('scr-sysdata')">СОСТОЯНИЕ СИСТЕМЫ</button>
+                </div>
 
-            <div class="staff-info-block" style="margin-top: 40px;">
-                <div class="purple-fading-line"></div>
-                <p style="color: #555; font-size: 0.8rem;">С уважением, Генеральный Директор MorisReal.</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="scr-sysdata" class="screen hidden">
-        <header class="status-bar">
-            <button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button>
-            <div>MONITORING</div>
-        </header>
-        <div class="sys-mon-container">
-            <div class="sensor-grid">
-                <div class="sensor-card">
-                    <label>CPU_LOAD</label>
-                    <div class="bar-bg"><div id="bar-cpu" class="bar-fill"></div></div>
-                    <span id="val-cpu">0%</span>
+                <div class="staff-info-block">
+                    <div class="purple-fading-line"></div>
+                    <p style="color: #555; font-size: 0.8rem;">ВНИМАНИЕ: Все действия логируются. Несанкционированный доступ к Архиву карается баном UUID.</p>
+                    <p style="color: var(--purple-dim); margin-top: 10px;">Генеральный Директор: MorisReal</p>
                 </div>
-                <div class="sensor-card">
-                    <label>CORE_TEMP</label>
-                    <div class="bar-bg"><div id="bar-temp" class="bar-fill"></div></div>
-                    <span id="val-temp">0°C</span>
-                </div>
-                <div class="sensor-card">
-                    <label>RAM_USAGE</label>
-                    <div class="bar-bg"><div id="bar-mem" class="bar-fill"></div></div>
-                    <span id="val-mem">0.0 GB</span>
-                </div>
-            </div>
-            <div class="sensor-card total-load">
-                <label>SYSTEM_STABILITY</label>
-                <div class="bar-bg"><div id="bar-total" class="bar-fill"></div></div>
-                <span id="val-total">0%</span>
             </div>
         </div>
     </section>
 
     <section id="scr-map" class="screen hidden">
-        <header class="status-bar">
-            <button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button>
-            <div>RADAR_OS</div>
-        </header>
+        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>RADAR_OS</div></header>
         <div class="radar-scroll-wrapper" id="radar-scroll">
             <div class="radar-view-section">
                 <div class="radar-disk">
-                    <div class="scanner-beam"></div>
+                    <div class="pulse-ring"></div>
                     <div id="radar-nodes"></div>
                 </div>
             </div>
             <div class="radar-info-section" id="radar-info">
                 <div class="purple-fading-line"></div>
-                <h2 id="p-title" class="ong-logo-small">SCANNING...</h2>
-                <p id="p-text">Ожидание выбора цели.</p>
+                <h2 id="p-title" class="ong-logo-small">ID_SCAN</h2>
+                <p id="p-text">Выберите узел на сетке для получения полных спецификаций.</p>
             </div>
         </div>
     </section>
 
-    <section id="scr-archive" class="screen hidden">
-        <header class="status-bar">
-            <button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button>
-            <div>ARCHIVE</div>
-        </header>
-        <div class="archive-container">
-            <div class="archive-item">
-                <button class="archive-header" onclick="toggleArchive(this)">[+] ОТЧЕТ ОНГ #031</button>
-                <div class="archive-content hidden">Объект стабилен.</div>
+    <section id="scr-sysdata" class="screen hidden">
+        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>MONITORING</div></header>
+        <div class="sys-mon-container">
+            <div class="sensor-grid">
+                <div class="sensor-card"><label>CPU</label><div class="bar-bg"><div id="bar-cpu" class="bar-fill"></div></div><span id="val-cpu">0%</span></div>
+                <div class="sensor-card"><label>TEMP</label><div class="bar-bg"><div id="bar-temp" class="bar-fill"></div></div><span id="val-temp">0°C</span></div>
+                <div class="sensor-card"><label>RAM</label><div class="bar-bg"><div id="bar-mem" class="bar-fill"></div></div><span id="val-mem">0 GB</span></div>
             </div>
         </div>
     </section>
@@ -194,7 +162,8 @@
     <div id="side-overlay" onclick="toggleSidebar(false)"></div>
     <div id="sidebar" class="sidebar">
         <button class="side-link-btn" onclick="openProfile()">PERSONAL_PROFILE</button>
-        <button class="side-link-btn logout-red-btn" onclick="location.reload()">LOGOUT</button>
+        <button class="side-link-btn" onclick="startTransition('scr-login')">СМЕНИТЬ АККАУНТ</button>
+        <button class="side-link-btn logout-red-btn" onclick="location.reload()">ВЫХОД</button>
     </div>
 
     <script src="script.js"></script>
