@@ -9,6 +9,7 @@
 <body oncontextmenu="return false;">
     <div id="fade-overlay"></div>
     <div id="side-overlay" onclick="toggleSidebar(false)"></div>
+    
     <canvas id="matrix-canvas"></canvas>
     <div class="vhs-overlay"></div>
 
@@ -27,7 +28,7 @@
         </div>
     </section>
 
-    <section id="login-screen" class="screen hidden">
+    <section id="scr-login" class="screen hidden">
         <div class="login-frame">
             <pre class="ong-logo-main">
  ██████  ███    ██  ██████  
@@ -39,19 +40,20 @@
             <div class="login-form">
                 <div class="input-line">
                     <span class="prompt">ID:> </span>
-                    <input type="text" id="cmd" autofocus spellcheck="false">
+                    <input type="text" id="cmd" autofocus spellcheck="false" autocomplete="off">
                 </div>
+                <div class="guest-access-btn" onclick="enterGuestMode()">[ GUEST_LOG_IN ]</div>
             </div>
             <div id="guest-news" class="guest-news-box hidden">
-                <div class="news-title">> LATEST_UPDATES:</div>
-                <div class="news-item">- Плавные переходы (Black Fade)</div>
-                <div class="news-item">- Кнопка профиля в меню</div>
-                <div class="news-item">- Поддержка TG_MESSENGER</div>
+                <div class="news-title">> LATEST_SYSTEM_UPDATES:</div>
+                <div class="news-item">- Интеграция протокола TG_MESSENGER</div>
+                <div class="news-item">- Оптимизация видеопамяти (VHS_FIX)</div>
+                <div class="news-item">- Добавлен уровень доступа S-Class</div>
             </div>
         </div>
     </section>
 
-    <section id="main-dashboard" class="screen hidden">
+    <section id="scr-dash" class="screen hidden">
         <header class="status-bar">
             <button class="btn-ui-nav" onclick="toggleSidebar(true)">MENU</button>
             <div id="clock">00:00:00</div>
@@ -59,21 +61,53 @@
         <div class="main-content center-layout">
             <h2 class="label">OPERATOR_IDENTIFIED:</h2>
             <h1 id="user-name-display">---</h1>
-            <div class="dash-btns">
-                <button class="mega-btn">РАДАР</button>
-                <button class="mega-btn">АРХИВ</button>
-                <button class="mega-btn">СИСТЕМА</button>
+            <div class="dash-grid">
+                <button class="mega-btn" onclick="startTransition('scr-radar')">РАДАР</button>
+                <button class="mega-btn" onclick="startTransition('scr-archive')">АРХИВ</button>
+                <button class="mega-btn" onclick="startTransition('scr-status')">СТАТУС</button>
             </div>
         </div>
     </section>
 
-    <div id="sidebar" class="sidebar">
-        <div class="sidebar-header">O.N.G. CORE</div>
-        <div class="sidebar-content">
-            <button class="side-link-btn" onclick="openProfile()">[ MY_PROFILE ]</button>
-            <div class="sidebar-spacer"></div>
-            <button class="side-link-btn btn-logout" onclick="logout()">[ LOGOUT ]</button>
+    <section id="scr-radar" class="screen hidden">
+        <header class="status-bar">
+            <button class="btn-ui-nav" onclick="startTransition('scr-dash')">BACK</button>
+            <div>TACTICAL_SCANNER</div>
+        </header>
+        <div class="radar-container">
+            <div class="radar-disk"><div class="radar-beam"></div></div>
         </div>
+    </section>
+
+    <section id="scr-archive" class="screen hidden">
+        <header class="status-bar">
+            <button class="btn-ui-nav" onclick="startTransition('scr-dash')">BACK</button>
+            <div>SYSTEM_DATABASE</div>
+        </header>
+        <div id="archive-list" class="archive-layout">
+            </div>
+    </section>
+
+    <section id="scr-status" class="screen hidden">
+        <header class="status-bar">
+            <button class="btn-ui-nav" onclick="startTransition('scr-dash')">BACK</button>
+            <div>CORE_HARDWARE</div>
+        </header>
+        <div class="center-layout stats-container">
+            <div class="stat-item">CPU_LOAD: <span id="cpu-val">0%</span></div>
+            <div class="stat-item">MEM_USED: <span id="mem-val">0%</span></div>
+            <div class="stat-item">TEMP: <span id="temp-val">42</span>°C</div>
+        </div>
+    </section>
+
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">O.N.G. NAVIGATION</div>
+        <div class="profile-preview">
+            <p id="p-name">NAME: ---</p>
+            <p id="p-lvl">LVL: ---</p>
+        </div>
+        <button class="side-link-btn" onclick="alert('ACCESS_KEY: ' + Math.random().toString(36).substr(2, 9))">[ MY_PROFILE ]</button>
+        <button class="side-link-btn btn-logout" onclick="logout()">[ LOGOUT ]</button>
     </div>
 
     <script src="script.js"></script>
