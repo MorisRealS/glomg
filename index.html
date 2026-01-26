@@ -10,30 +10,30 @@
     <div class="vhs-overlay"></div>
     <div id="fade"></div>
 
-    <div id="modal-profile" class="modal hidden">
+    <div id="modal-profile" class="modal-profile hidden">
         <div class="profile-card">
             <div class="corner-tl"></div>
             <div class="corner-br"></div>
-            <button class="close-profile" onclick="closeProfile()"><-- [ ВЕРНУТЬСЯ_В_ТЕРМИНАЛ ]</button>
+            <button class="close-profile-btn" onclick="closeProfile()"><-- [ ВЕРНУТЬСЯ_В_ТЕРМИНАЛ ]</button>
             <div class="profile-header">
                 <div class="profile-avatar">
-                    <img src="https://i.imgur.com/8N69fS7.png" alt="AVATAR" id="p-avatar-img">
+                    <img src="https://i.imgur.com/8N69fS7.png" alt="AVATAR">
                 </div>
-                <div class="profile-info-top">
-                    <h2 id="p-name">M_USER</h2>
-                    <p class="token">ID_TOKEN: <span id="p-token">---</span></p>
+                <div class="profile-main-info">
+                    <h2 id="p-name-val">МОРИС</h2>
+                    <p class="token">ID_TOKEN: <span id="p-token-val">MRS</span></p>
                     <div class="status-tag">STATUS: ACTIVE</div>
                 </div>
             </div>
             <div class="profile-grid">
                 <div class="p-item"><label>ПОДРАЗДЕЛЕНИЕ</label><span class="p-value">НАУЧНЫЙ ОТДЕЛ</span></div>
-                <div class="p-item"><label>УРОВЕНЬ ДОПУСКА</label><span class="p-value" id="p-lvl-val">L0</span></div>
-                <div class="p-item"><label>СПЕЦИАЛИЗАЦИЯ</label><span class="p-value">ОПЕРАТОР СИСТЕМЫ</span></div>
+                <div class="p-item"><label>УРОВЕНЬ ДОПУСКА</label><span class="p-value" id="p-lvl-val">L4</span></div>
+                <div class="p-item"><label>СПЕЦИАЛИЗАЦИЯ</label><span class="p-value">ГЛАВА ОНГ</span></div>
                 <div class="p-item"><label>ДАТА ЗАЧИСЛЕНИЯ</label><span class="p-value">25.01.2026</span></div>
             </div>
             <div class="profile-footer">
                 <label>ОСОБЫЕ_ОТМЕТКИ:</label>
-                <div class="notes">ОБЪЕКТ ПОД НАБЛЮДЕНИЕМ. КУРАТОР: MORIS</div>
+                <div class="notes">КУРАТОР ОНГ. ОБЪЕКТ ПОД НАБЛЮДЕНИЕМ.</div>
             </div>
             <div class="sys-status">СВЯЗЬ: <span class="green-text">ШТАТНЫЙ РЕЖИМ</span></div>
         </div>
@@ -55,46 +55,22 @@
     <section id="scr-login" class="screen hidden">
         <div class="login-frame">
             <h1 class="glitch" data-text="G.L.O.M.G.">G.L.O.M.G.</h1>
-            <div class="inputs">
-                <input type="text" id="inp-id" placeholder="OPERATOR_ID" autocomplete="off">
-                <input type="password" id="inp-pass" placeholder="ACCESS_KEY" autocomplete="off">
-            </div>
-            <div class="actions-stack">
-                <button class="btn-scan" onclick="processLogin()">ВЫПОЛНИТЬ: АВТОРИЗАЦИЯ</button>
-                <button class="btn-scan" onclick="transitionToScreen('scr-guest')">ВЫПОЛНИТЬ: ГОСТЬ</button>
-            </div>
-        </div>
-    </section>
-
-    <section id="scr-guest" class="screen hidden">
-        <header class="status-bar">
-            <div class="bar-left">GUEST_SESSION | LVL: 0</div>
-            <button class="btn-ui-nav" onclick="transitionToScreen('scr-login')">RETURN_TO_LOGIN</button>
-        </header>
-        <div class="guest-layout">
-            <div class="guest-col-logs">
-                <h3 class="label">LIVE_SYSTEM_LOGS:</h3>
-                <div id="guest-console" class="console-box"></div>
-            </div>
-            <div class="guest-col-info">
-                <h3 class="label">DATABASE_INFO:</h3>
-                <div class="info-container">
-                    <p class="purple-t">> CORE_STATUS: ACTIVE</p>
-                    <p class="purple-t">> RESTRICTIONS: READ_ONLY</p>
-                </div>
+            <div id="output" class="login-console-output"></div>
+            <div class="terminal-input-line">
+                <span class="prompt">></span> <input type="text" id="cmd" autofocus spellcheck="false" autocomplete="off">
             </div>
         </div>
     </section>
 
     <section id="scr-dash" class="screen hidden">
         <header class="status-bar">
-            <div class="bar-left"><button class="btn-ui-nav" onclick="toggleSidebar(true)">MENU</button></div>
+            <div class="bar-left"><button id="menu-btn" onclick="toggleSidebar(true)">MENU</button></div>
             <div class="bar-center" id="clock">00:00:00</div>
-            <div class="bar-right">LVL: <span id="u-lvl-display">0</span></div>
+            <div class="bar-right">LVL: <span id="user-lvl-display">0</span></div>
         </header>
         <div class="main-content">
             <div class="big-buttons-grid">
-                <button class="btn-scan" onclick="initializeTacticalRadar()">ВЫПОЛНИТЬ: КАРТА_ОБЪЕКТА</button>
+                <button class="btn-scan" onclick="transitionToScreen('scr-map')">ВЫПОЛНИТЬ: КАРТА_ОБЪЕКТА</button>
                 <button class="btn-scan" onclick="transitionToScreen('scr-archive')">ВЫПОЛНИТЬ: АРХИВ_АНОМАЛИЙ</button>
                 <button class="btn-scan" onclick="transitionToScreen('scr-sysdata')">ВЫПОЛНИТЬ: БАЗА_ДАННЫХ</button>
             </div>
@@ -102,26 +78,33 @@
         </div>
     </section>
 
+    <section id="scr-archive" class="screen hidden">
+        <header class="status-bar">
+            <div class="bar-left">FILE_ARCHIVE</div>
+            <button onclick="transitionToScreen('scr-dash')">RETURN</button>
+        </header>
+        <div class="page-body-content" id="archive-list"></div>
+    </section>
+
     <section id="scr-full-console" class="screen hidden">
         <header class="status-bar">
-            <div class="bar-left">TERMINAL_CORE</div>
-            <button class="btn-ui-nav" onclick="transitionToScreen('scr-dash')">RETURN</button>
+            <div class="bar-left">ROOT_INTERFACE</div>
+            <button onclick="transitionToScreen('scr-dash')">RETURN</button>
         </header>
         <div id="terminal-out" class="terminal-body"></div>
         <div class="terminal-input-area">
             <span class="prompt">></span>
-            <input type="text" id="terminal-input" placeholder="..." spellcheck="false" onkeypress="handleTerminalCommand(event)">
+            <input type="text" id="terminal-input" onkeypress="handleTerminalCommand(event)">
         </div>
     </section>
 
     <div id="side-overlay" onclick="toggleSidebar(false)"></div>
     <div id="sidebar" class="sidebar">
-        <div class="s-head"><span>SYSTEM_COMMANDS</span><button onclick="toggleSidebar(false)">✕</button></div>
-        <div class="side-nav-links">
-            <button class="side-link-btn" onclick="openProfile()">ЛИЧНОЕ ДОСЬЕ</button>
-            <div class="nav-divider"></div>
-            <button class="side-link-btn logout-red-btn" onclick="location.reload()">РАЗОРВАТЬ СОЕДИНЕНИЕ</button>
-        </div>
+        <div class="s-head"><span>COMMANDS</span><button onclick="toggleSidebar(false)">✕</button></div>
+        <nav class="side-nav">
+            <button class="side-link" onclick="openProfile()">ЛИЧНОЕ ДОСЬЕ</button>
+            <button class="side-link logout" onclick="location.reload()">ВЫХОД</button>
+        </nav>
     </div>
 
     <script src="script.js"></script>
