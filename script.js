@@ -1,52 +1,95 @@
 const PROFILES = {
-    "kiddy": { name: "Kiddy", pass: "1111", uuid: "1101", lvl: 4, rank: "Lead", date: "12.05.2024" },
-    "dykzxz": { name: "Dykzxz", pass: "2222", uuid: "1011", lvl: 3, rank: "Tech", date: "15.06.2024" },
-    "morisreal": { name: "МОРИС", pass: "123", uuid: "1010", lvl: 6, rank: "Director", date: "01.01.2020" }
+    "kiddy": { name: "Kiddy", pass: "1111", uuid: "1101", lvl: "A1", rank: "Lead" },
+    "dykzxz": { name: "Dykzxz", pass: "2222", uuid: "1011", lvl: "B3", rank: "Tech" },
+    "morisreal": { name: "МОРИС", pass: "123", uuid: "1010", lvl: "S1", rank: "Director" }
 };
-const LOG_LINES = ["> SYNCING...", "> UUID_CHECK...", "> CORE_STABLE", "> MEMORY_CLEAN", "> ACCESS_LOGGED"];
-const ARCHIVE = [{t:"EVENT_0x442", d:"24.01.26", txt:"Попытка доступа к сектору Sumber. Zero Trust активен."}];
+const LOGS = ["> SYNC...", "> UUID_CHECK...", "> CORE_STABLE", "> MEM_CLEAN", "> ACCESS_LOGGED"];
+const ARCHIVE_DATA = [
+    { t: "LOG_0x442", d: "24.01.2026", txt: "Зафиксирована попытка взлома порта 8080 в секторе Sumber. Протокол защиты 'Zero' активирован." },
+    { t: "LOG_0x901", d: "26.01.2026", txt: "Аномальный всплеск энергии в зоне Призмы. Рекомендуется ручная калибровка датчиков." }
+];
 
 let gInt = null, sInt = null;
 const snd = new Audio('https://www.soundjay.com/communication/sounds/typewriter-key-1.mp3');
 snd.volume = 0.1;
 
 function startTransition(id) {
-    document.getElementById('fade').classList.add('glitch-active');
+    const fade = document.getElementById('fade');
+    fade.classList.add('glitch-active');
     clearInterval(gInt); clearInterval(sInt);
+    
     setTimeout(() => {
         document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-        const n = document.getElementById(id);
-        if(n) { n.classList.remove('hidden'); n.scrollTop = 0; }
-        if(id === 'scr-guest') startGuest();
-        if(id === 'scr-sysdata') initSensors();
-        if(id === 'scr-database') initDB();
-        document.getElementById('fade').classList.remove('glitch-active');
+        const next = document.getElementById(id);
+        if(next) { next.classList.remove('hidden'); next.scrollTop = 0; }
+        
+        if(id === 'scr-guest') startGuestConsole();
+        if(id === 'scr-sysdata') startSensors();
+        if(id === 'scr-database') startDatabase();
+        
+        fade.classList.remove('glitch-active');
     }, 400);
 }
 
-function startGuest() {
-    const b = document.getElementById('guest-console'); b.innerHTML = ''; let i = 0;
-    gInt = setInterval(() => {
-        const p = document.createElement('p'); p.innerText = LOG_LINES[i];
-        b.insertBefore(p, b.firstChild);
-        if(b.childNodes.length > 5) b.removeChild(box.lastChild); // Удаляем 6-ю строку
-        i = (i + 1) % LOG_LINES.length;
-    }, 1200);
+// РАДАР (ВОССТАНОВЛЕН)
+function initRadar() {
+    startTransition('scr-map');
+    const nodes = [
+        { x: 40, y: 50, name: "CENTRAL_HQ" },
+        { x: 75, y: 30, name: "PRISM_SECTOR" },
+        { x: 20, y: 70, name: "BUNKER_01" }
+    ];
+    const container = document.getElementById('radar-nodes');
+    container.innerHTML = '';
+    nodes.forEach(n => {
+        const div = document.createElement('div');
+        div.className = 'node ong';
+        div.style.left = n.x + '%';
+        div.style.top = n.y + '%';
+        div.onclick = () => {
+            document.getElementById('p-title').innerText = "OBJECT: " + n.name;
+            document.getElementById('p-text').innerText = `Координаты: ${n.x}, ${n.y}. Статус: Активен.`;
+        };
+        container.appendChild(div);
+    });
 }
 
-function initSensors() {
-    sInt = setInterval(() => {
-        let c = Math.floor(Math.random()*20)+10, t = Math.floor(Math.random()*10)+40;
-        document.getElementById('bar-cpu').style.width = c + "%";
-        document.getElementById('val-cpu').innerText = c + "%";
-        document.getElementById('bar-temp').style.width = (t*1.5) + "%";
-        document.getElementById('val-temp').innerText = t + "°C";
+// КОНСОЛЬ (5 СТРОК)
+function startGuestConsole() {
+    const box = document.getElementById('guest-console');
+    box.innerHTML = ''; let i = 0;
+    gInt = setInterval(() => {
+        const p = document.createElement('p');
+        p.innerText = LOGS[i];
+        box.insertBefore(p, box.firstChild);
+        if(box.childNodes.length > 5) box.removeChild(box.lastChild);
+        i = (i + 1) % LOGS.length;
     }, 1500);
 }
 
-function initializeTacticalRadar() {
-    startTransition('scr-map');
-    document.getElementById('radar-nodes').innerHTML = '<div class="node ong" style="left:50%;top:45%" onclick="document.getElementById(\'p-title\').innerText=\'HQ DETECTED\'"></div>';
+// ДАТЧИКИ
+function startSensors() {
+    sInt = setInterval(() => {
+        let cpu = Math.floor(Math.random()*20)+15;
+        let temp = Math.floor(Math.random()*10)+45;
+        document.getElementById('bar-cpu').style.width = cpu + "%";
+        document.getElementById('val-cpu').innerText = cpu + "%";
+        document.getElementById('bar-temp').style.width = (temp*1.2) + "%";
+        document.getElementById('val-temp').innerText = temp + "°C";
+    }, 1500);
+}
+
+// БАЗА ДАННЫХ
+function startDatabase() {
+    document.getElementById('db-logs-list').innerHTML = ARCHIVE_DATA.map((l, i) => `
+        <div class="db-log-item">
+            <div class="db-log-header">
+                <button class="db-expand-btn" onclick="this.parentElement.nextElementSibling.classList.toggle('open')">OPEN</button>
+                <span>${l.t}</span><small style="margin-left:auto">${l.d}</small>
+            </div>
+            <div class="db-log-content">${l.txt}</div>
+        </div>
+    `).join('');
 }
 
 function processLogin() {
@@ -57,23 +100,12 @@ function processLogin() {
         document.getElementById('welcome-user-name').innerText = u.name;
         document.getElementById('p-name-val').innerText = u.name;
         document.getElementById('p-uuid-val').innerText = u.uuid;
-        document.getElementById('p-lvl-val').innerText = u.lvl;
+        document.getElementById('p-lvl-text-val').innerText = u.lvl;
         document.getElementById('p-rank-val').innerText = u.rank;
-        document.getElementById('p-date-val').innerText = u.date;
         startTransition('scr-dash');
-    } else document.getElementById('login-output').innerText = "DENIED";
-}
-
-function initDB() {
-    document.getElementById('db-logs-list').innerHTML = ARCHIVE.map((l, i) => `
-        <div class="db-log-item">
-            <div class="db-log-header">
-                <button class="db-expand-btn" onclick="this.parentElement.nextElementSibling.classList.toggle('open')">OPEN</button>
-                <span>${l.t}</span><small style="margin-left:auto">${l.d}</small>
-            </div>
-            <div class="db-log-content">${l.txt}</div>
-        </div>
-    `).join('');
+    } else {
+        document.getElementById('login-output').innerText = "ACCESS_DENIED";
+    }
 }
 
 function playTypingSound() { snd.currentTime = 0; snd.play().catch(()=>{}); }
@@ -89,5 +121,8 @@ window.onload = () => {
         document.getElementById('intro-logo').classList.remove('hidden');
         setTimeout(() => startTransition('scr-login'), 2500);
     }, 1000);
-    setInterval(() => { if(document.getElementById('clock')) document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+    setInterval(() => {
+        const c = document.getElementById('clock');
+        if(c) c.innerText = new Date().toLocaleTimeString();
+    }, 1000);
 };
