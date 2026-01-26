@@ -1587,6 +1587,40 @@ input {
 /* ФИКС КОНСОЛИ */
 .console-box { height: 180px; overflow: hidden; border: 1px solid var(--purple-dim); padding: 10px; font-size: 0.8rem; }
 
+/* ПОЛОСА ГОСТЯ */
+.guest-nav {
+    position: absolute; top: 0; left: 0; width: 100%; height: 60px;
+    display: flex; align-items: center; padding: 0 40px; z-index: 100;
+}
+.nav-line {
+    position: absolute; bottom: 10px; left: 40px; right: 40px;
+    height: 1px; background: linear-gradient(90deg, var(--purple), transparent);
+    box-shadow: 0 0 10px var(--purple);
+}
+.login-trigger { margin-left: auto; cursor: pointer; }
+
+/* БЛОК НОВОСТЕЙ */
+.news-block {
+    height: 150px; border: 1px solid var(--purple-dim);
+    background: rgba(168, 85, 247, 0.02); padding: 15px; overflow-y: auto;
+}
+.news-item {
+    font-size: 0.85rem; margin-bottom: 8px;
+    border-left: 2px solid var(--purple); padding-left: 10px;
+}
+
+/* РАДАРНЫЙ СКАНЕР */
+.radar-scanner-square {
+    position: absolute; width: 160px; height: 160px;
+    border: 1px solid var(--purple); top: 50%; left: 50%;
+    transform: translate(-50%, -50%); animation: scan-rotate 5s linear infinite;
+    opacity: 0.3; pointer-events: none;
+}
+@keyframes scan-rotate {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
 /* Дополнение для анимации заставки */
 #intro-logo.hidden { display: none; }
 .blink { animation: blinker 1.5s linear infinite; }
