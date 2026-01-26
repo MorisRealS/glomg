@@ -1,4 +1,3 @@
-// База данных пользователей
 const PROFILES = {
     "kiddy":    { name: "Kiddy", pass: "1111", level: 4, token: "KID", uuid: "1101010010" },
     "dykzxz":   { name: "Dykzxz", pass: "2222", level: 4, token: "DYK", uuid: "1011100001" },
@@ -9,193 +8,142 @@ const PROFILES = {
 
 let currentUser = null;
 
-// ПЛАВНЫЙ ПЕРЕХОД ЧЕРЕЗ ЗАТЕМНЕНИЕ
+// ПЕРЕХОДЫ МЕЖДУ ЭКРАНАМИ
 function startTransition(targetId) {
     const fade = document.getElementById('fade');
-    if (!fade) return;
-    
-    fade.classList.add('active'); 
+    fade.classList.add('active');
     
     setTimeout(() => {
         document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-        const target = document.getElementById(targetId);
-        if (target) target.classList.remove('hidden');
-        
+        document.getElementById(targetId).classList.remove('hidden');
         if(targetId === 'scr-guest') startGuestLogs();
-        
         fade.classList.remove('active');
     }, 600);
 }
 
-// ЛОГИКА АВТОРИЗАЦИИ
+// ЛОГИН
 function processLogin() {
-    const idField = document.getElementById('inp-id');
-    const passField = document.getElementById('inp-pass');
-    const output = document.getElementById('login-output');
-
-    const id = idField.value.toLowerCase().trim();
-    const pass = passField.value.trim();
+    const id = document.getElementById('inp-id').value.toLowerCase().trim();
+    const pass = document.getElementById('inp-pass').value.trim();
+    const out = document.getElementById('login-output');
 
     if (PROFILES[id] && PROFILES[id].pass === pass) {
         currentUser = PROFILES[id];
-        output.style.color = "var(--terminal-green)";
-        output.innerText = "AUTHENTICATION SUCCESSFUL...";
-        
-        // Подстановка имени в приветствие
         document.getElementById('welcome-user-name').innerText = currentUser.name;
-        
-        // Данные профиля
         document.getElementById('p-name-val').innerText = currentUser.name;
         document.getElementById('p-token-val').innerText = currentUser.token;
         document.getElementById('p-lvl-text-val').innerText = "LEVEL " + currentUser.level;
         document.getElementById('p-uuid-val').innerText = currentUser.uuid;
         document.getElementById('u-lvl-display').innerText = currentUser.level;
         
-        let status = "USER";
-        if(currentUser.level === 4) status = "MODERATOR";
-        if(currentUser.level >= 5) status = "ADMINISTRATOR";
+        let status = currentUser.level >= 5 ? "ADMINISTRATOR" : "MODERATOR";
         document.getElementById('p-status-val').innerText = status;
 
+        out.style.color = "var(--terminal-green)";
+        out.innerText = "SUCCESS. LOADING...";
         setTimeout(() => startTransition('scr-dash'), 1000);
     } else {
-        output.style.color = "var(--error)";
-        output.innerText = "ACCESS DENIED";
+        out.style.color = "red";
+        out.innerText = "ACCESS DENIED";
     }
 }
 
-// ЛОГИКА ДАТЧИКОВ (Состояние системы)
-function initSensors() {
-    // Начальные значения
-    let data = {
-        cpu: 15,
-        temp: 40,
-        mem: 450, // MB
-        total: 0
-    };
-
-    const steps = [1, -2, 4, -1, 2, -5];
-
-    setInterval(() => {
-        if (document.getElementById('scr-sysdata').classList.contains('hidden')) return;
-
-        // Прыгающие значения
-        data.cpu = Math.max(10, Math.min(20, data.cpu + steps[Math.floor(Math.random() * steps.length)]));
-        data.temp = Math.max(30, Math.min(60, data.temp + steps[Math.floor(Math.random() * steps.length)]));
-        data.mem = Math.max(10, Math.min(1000, data.mem + (steps[Math.floor(Math.random() * steps.length)] * 10)));
-        
-        // Расчет общего процента (базируется на лимитах)
-        data.total = Math.floor(((data.cpu - 10) / 10 * 30) + ((data.temp - 30) / 30 * 40) + ((data.mem / 1000) * 30));
-
-        // Обновление текста
-        document.getElementById('val-cpu').innerText = data.cpu + "%";
-        document.getElementById('val-temp').innerText = data.temp + "°C";
-        document.getElementById('val-mem').innerText = (data.mem / 1024).toFixed(2) + " GB";
-        document.getElementById('val-total').innerText = data.total + "%";
-
-        // Обновление полосок
-        document.getElementById('bar-cpu').style.width = ((data.cpu / 20) * 100) + "%";
-        document.getElementById('bar-temp').style.width = ((data.temp / 120) * 100) + "%"; // макс 120
-        document.getElementById('bar-mem').style.width = ((data.mem / 10000) * 100) + "%"; // макс 10гб
-        document.getElementById('bar-total').style.width = data.total + "%";
-    }, 1000);
-}
-
-// АРХИВ: РАЗВОРАЧИВАНИЕ ТЕМ
-function toggleArchive(btn) {
-    const content = btn.nextElementSibling;
-    const isHidden = content.classList.contains('hidden');
-    
-    // Закрыть другие (опционально, если хочешь аккордеон)
-    // document.querySelectorAll('.archive-content').forEach(c => c.classList.add('hidden'));
-    
-    if (isHidden) {
-        content.classList.remove('hidden');
-        btn.innerText = btn.innerText.replace('[+]', '[-]');
-    } else {
-        content.classList.add('hidden');
-        btn.innerText = btn.innerText.replace('[-]', '[+]');
-    }
-}
-
-// ГОСТЕВОЙ РЕЖИМ (Логи с задержкой)
-async function startGuestLogs() {
-    const box = document.getElementById('guest-console');
-    if (!box) return;
-    box.innerHTML = '';
-    const logs = [
-        "> Establishing uplink...",
-        "> Handshake: SUCCESS",
-        "> Protocol: GUEST_MODE",
-        "> Syncing logs...",
-        "> [OK] Monitoring active."
-    ];
-
-    for (const line of logs) {
-        await new Promise(r => setTimeout(r, 800));
-        const p = document.createElement('p');
-        p.innerText = line;
-        box.appendChild(p);
-        box.scrollTop = box.scrollHeight;
-    }
-}
-
-// РАДАР
+// РАДАР С 3 ТОЧКАМИ
 function initializeTacticalRadar() {
     startTransition('scr-map');
     const nodesContainer = document.getElementById('radar-nodes');
-    if (!nodesContainer) return;
     nodesContainer.innerHTML = '';
     
     const nodes = [
-        {id: "S-07", x: 45, y: 30, info: "Объект ОНГ: СТАБИЛЕН"},
-        {id: "P-01", x: 65, y: 55, info: "Лаборатория PRISM: АКТИВНА"},
-        {id: "M-CORE", x: 50, y: 50, info: "Ядро системы G.L.O.M.G."}
+        {id: "ONG_LAB", x: 45, y: 30, type: "ong", info: "Основная лаборатория ОНГ. Статус: АКТИВНА"},
+        {id: "PRISM_BASE", x: 65, y: 55, type: "prism", info: "База P.R.I.S.M. Статус: НАБЛЮДЕНИЕ"},
+        {id: "DYK_REACTOR", x: 30, y: 70, type: "dyk", info: "Реактор Dykzxz. Статус: ОСТАНОВЛЕН (КРИТИЧЕСКИЙ СБОЙ)"}
     ];
 
     nodes.forEach(n => {
         const div = document.createElement('div');
-        div.className = 'node';
+        div.className = `node ${n.type}`;
         div.style.left = n.x + '%';
         div.style.top = n.y + '%';
         div.onclick = () => {
-            document.getElementById('p-title').innerText = "OBJECT: " + n.id;
+            document.getElementById('p-title').innerText = n.id;
             document.getElementById('p-text').innerText = n.info;
         };
         nodesContainer.appendChild(div);
     });
 }
 
-// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
-function toggleSidebar(state) {
-    document.getElementById('sidebar').classList.toggle('open', state);
-    document.getElementById('side-overlay').style.display = state ? 'block' : 'none';
+// ПРЫГАЮЩИЕ ДАТЧИКИ
+function initSensors() {
+    let cpu = 15, temp = 40, mem = 0.5;
+    setInterval(() => {
+        if (document.getElementById('scr-sysdata').classList.contains('hidden')) return;
+        
+        const jump = () => [1, -2, 4, -1, 2, -5][Math.floor(Math.random()*6)];
+        
+        cpu = Math.max(10, Math.min(20, cpu + jump()));
+        temp = Math.max(30, Math.min(60, temp + jump()));
+        mem = Math.max(0.1, Math.min(1.0, mem + (jump()/100)));
+
+        document.getElementById('val-cpu').innerText = cpu + "%";
+        document.getElementById('bar-cpu').style.width = (cpu/20*100) + "%";
+        
+        document.getElementById('val-temp').innerText = temp + "°C";
+        document.getElementById('bar-temp').style.width = (temp/120*100) + "%";
+        
+        document.getElementById('val-mem').innerText = mem.toFixed(2) + " GB";
+        document.getElementById('bar-mem').style.width = (mem/10*100) + "%";
+
+        let total = Math.floor((cpu/20*40) + (temp/60*60));
+        document.getElementById('val-total').innerText = total + "%";
+        document.getElementById('bar-total').style.width = total + "%";
+    }, 1000);
 }
 
-function openProfile() {
-    document.getElementById('modal-profile').classList.remove('hidden');
-    toggleSidebar(false);
+// ГОСТЕВАЯ КОНСОЛЬ (5 строк)
+async function startGuestLogs() {
+    const box = document.getElementById('guest-console');
+    box.innerHTML = '';
+    const logs = [
+        "> Establishing uplink...",
+        "> Handshake: SUCCESS",
+        "> Запрос UUID от внешнего узла: ОТКЛОНЕНО.",
+        "> ВНИМАНИЕ: Гостевой вход в секторе 0.",
+        "> [OK] Система мониторинга активна."
+    ];
+    for (let line of logs) {
+        await new Promise(r => setTimeout(r, 700));
+        const p = document.createElement('p');
+        p.innerText = line;
+        box.appendChild(p);
+    }
 }
 
-function closeProfile() {
-    document.getElementById('modal-profile').classList.add('hidden');
+// ВСПОМОГАТЕЛЬНОЕ
+function toggleArchive(btn) {
+    const content = btn.nextElementSibling;
+    content.classList.toggle('hidden');
+    btn.innerText = content.classList.contains('hidden') ? btn.innerText.replace('[-]', '[+]') : btn.innerText.replace('[+]', '[-]');
 }
 
-// ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ
+function toggleSidebar(s) {
+    document.getElementById('sidebar').classList.toggle('open', s);
+    document.getElementById('side-overlay').style.display = s ? 'block' : 'none';
+}
+
+function openProfile() { document.getElementById('modal-profile').classList.remove('hidden'); toggleSidebar(false); }
+function closeProfile() { document.getElementById('modal-profile').classList.add('hidden'); }
+
 window.onload = () => {
     initSensors();
-    const introTxt = document.getElementById('intro-ascii');
-    if(introTxt) introTxt.innerText = "BOOTING G.L.O.M.G. OS...";
-    
+    const intro = document.getElementById('intro-ascii');
+    intro.innerText = "INITIALIZING O.N.G. CORE...";
     setTimeout(() => {
-        const logo = document.getElementById('intro-logo');
-        if(logo) logo.classList.remove('hidden');
+        document.getElementById('intro-logo').classList.remove('hidden');
         setTimeout(() => startTransition('scr-login'), 2500);
     }, 1200);
 };
 
-// ЧАСЫ
 setInterval(() => {
-    const time = new Date().toLocaleTimeString();
-    const clock = document.getElementById('clock');
-    if(clock) clock.innerText = time;
+    document.getElementById('clock').innerText = new Date().toLocaleTimeString();
 }, 1000);
