@@ -1,4 +1,4 @@
-// --- DATABASE ---
+// --- КОНФИГУРАЦИЯ СИСТЕМЫ ---
 const PROFILES = {
     "kiddy":    { name: "Kiddy", pass: "1111", level: 4, uuid: "1101", rank: "Lead Operator", date: "12.05.2024" },
     "dykzxz":   { name: "Dykzxz", pass: "2222", level: 4, uuid: "1011", rank: "Security Tech", date: "15.06.2024" },
@@ -6,8 +6,13 @@ const PROFILES = {
     "morisreal": { name: "МОРИС", pass: "123", level: 6, uuid: "1010", rank: "Director", date: "01.01.2020" }
 };
 
-const STAFF_QUOTES = ["Защищайте свои UUID.", "Сектор Призма активен.", "Ядро стабильно.", "Обновление завершено."];
-const LOG_LINES = ["> SYNCING...", "> UUID_FOUND", "> NO_ANOMALIES", "> CONNECTION_SECURE", "> STANDBY"];
+const STAFF_QUOTES = [
+    "Чистота кода — залог стабильности ядра.",
+    "Сектор 'Призма' проявляет активность. Будьте бдительны.",
+    "Обновление V32.8 стабильно. Проверьте свои UUID."
+];
+
+const LOG_LINES = ["> SYNC_UUID...", "> ALERT: SCAN_DETECTED", "> REACTOR_STABLE", "> SUMBER_BUNKER: CONNECTED", "> DATA_CLEAN: 100%"];
 
 let currentUser = null;
 let currentUserID = "";
@@ -15,43 +20,76 @@ let matrixInterval = null;
 const sound_type = new Audio('https://www.soundjay.com/communication/sounds/typewriter-key-1.mp3');
 sound_type.volume = 0.05;
 
-// --- ПЕРЕХОДЫ (С ФИКСОМ СКРОЛЛА) ---
+// --- ФУНКЦИЯ ПЕРЕХОДА (ИСПРАВЛЕНА) ---
 function startTransition(targetId) {
+    console.log("Switching to: " + targetId); // Лог для отладки
     const fade = document.getElementById('fade');
+    
+    // Эффект помех при переходе
     fade.classList.add('glitch-active');
     
     setTimeout(() => {
-        document.querySelectorAll('.screen').forEach(s => {
-            s.classList.add('hidden');
-            s.scrollTop = 0; // Сбрасываем скролл при переходе
-        });
+        // Скрываем ВСЕ экраны
+        const screens = document.querySelectorAll('.screen');
+        screens.forEach(s => s.classList.add('hidden'));
         
+        // Показываем нужный
         const next = document.getElementById(targetId);
-        if(next) next.classList.remove('hidden');
-
-        // Модули экранов
+        if(next) {
+            next.classList.remove('hidden');
+        } else {
+            console.error("Screen not found: " + targetId);
+        }
+        
+        // Запуск специфических функций экрана
         if(targetId === 'scr-dash' || targetId === 'scr-messages') checkMessages();
         if(targetId === 'scr-guest') startGuestConsole();
+        if(targetId === 'scr-sysdata') initSensors();
         if(targetId === 'scr-login') initMatrix(currentUser?.name === 'МОРИС' ? "#FFD700" : "#A855F7");
-        if(targetId === 'scr-sysdata') {
-            setInterval(() => {
-                let v = Math.floor(Math.random()*30) + 10;
-                document.getElementById('bar-cpu').style.width = v + "%";
-                document.getElementById('val-cpu').innerText = v + "%";
-            }, 2000);
-        }
-
+        
         fade.classList.remove('glitch-active');
     }, 400);
 }
 
-// --- ЛОГИН ---
+// --- ЛОГИКА ЗАГРУЗКИ (BOOT SEQUENCE) ---
+window.onload = () => {
+    console.log("OS G.L.O.M.G. Booting...");
+    
+    const introText = document.getElementById('intro-ascii');
+    const introLogo = document.getElementById('intro-logo');
+
+    // 1. Показываем текст загрузки
+    setTimeout(() => {
+        if(introText) introText.innerText = "SYSTEM_V32.8_STARTING...";
+        
+        // 2. Через 1 сек показываем Лого №1
+        setTimeout(() => {
+            if(introLogo) introLogo.classList.remove('hidden');
+            
+            // 3. Через 2.5 сек ПРИНУДИТЕЛЬНО переходим к логину
+            setTimeout(() => {
+                startTransition('scr-login');
+            }, 2500);
+            
+        }, 1000);
+    }, 500);
+
+    // Инициализация часов
+    setInterval(() => {
+        const c = document.getElementById('clock');
+        if(c) c.innerText = new Date().toLocaleTimeString();
+    }, 1000);
+};
+
+// --- АВТОРИЗАЦИЯ ---
 function processLogin() {
     const id = document.getElementById('inp-id').value.toLowerCase().trim();
     const pass = document.getElementById('inp-pass').value.trim();
-    const out = document.getElementById('login-output');
+    const output = document.getElementById('login-output');
 
-    const sc = document.createElement('div'); sc.className = 'login-scanner';
+    // Визуальный сканер
+    const sc = document.createElement('div'); 
+    sc.className = 'login-scanner';
     document.querySelector('.login-frame').appendChild(sc);
 
     setTimeout(() => {
@@ -60,7 +98,7 @@ function processLogin() {
             currentUser = PROFILES[id];
             currentUserID = id;
             
-            // Заполнение профиля (UUID ВЕРНУЛ)
+            // Настройка интерфейса под юзера
             document.getElementById('p-name-val').innerText = currentUser.name;
             document.getElementById('p-uuid-val').innerText = currentUser.uuid;
             document.getElementById('p-lvl-text-val').innerText = currentUser.level;
@@ -71,52 +109,94 @@ function processLogin() {
 
             startTransition('scr-dash');
         } else {
-            out.innerText = "ACCESS_DENIED";
-            out.style.color = "red";
+            output.innerText = "ACCESS_DENIED";
+            output.style.color = "red";
+            playTypingSound();
         }
     }, 1200);
 }
 
-// --- СООБЩЕНИЯ ---
+// --- МАТРИЦА (ФОН) ---
+function initMatrix(color = "#A855F7") {
+    const canvas = document.getElementById('matrix-bg');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth; 
+    canvas.height = window.innerHeight;
+    
+    const drops = Array(Math.floor(canvas.width / 15)).fill(1);
+    if(matrixInterval) clearInterval(matrixInterval);
+    
+    matrixInterval = setInterval(() => {
+        ctx.fillStyle = "rgba(0,0,0,0.05)"; 
+        ctx.fillRect(0,0,canvas.width, canvas.height);
+        ctx.fillStyle = color; 
+        ctx.font = "15px monospace";
+        
+        drops.forEach((y, i) => {
+            const text = Math.floor(Math.random()*2);
+            ctx.fillText(text, i*15, y*15);
+            if(y*15 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i]++;
+        });
+    }, 35);
+}
+
+// --- СИСТЕМА СООБЩЕНИЙ ---
 function sendMessage() {
     const to = document.getElementById('msg-recipient').value;
     const text = document.getElementById('msg-text').value;
     if(!text) return;
+
     let msgs = JSON.parse(localStorage.getItem('ong_msgs') || "[]");
-    msgs.push({ from: currentUser.name, to: to, text: text, time: new Date().toLocaleTimeString(), read: false });
+    msgs.push({
+        from: currentUser.name,
+        to: to,
+        text: text,
+        time: new Date().toLocaleTimeString(),
+        read: false
+    });
     localStorage.setItem('ong_msgs', JSON.stringify(msgs));
     document.getElementById('msg-text').value = "";
-    alert("ПАКЕТ ОТПРАВЛЕН");
+    alert("UUID ПАКЕТ ПЕРЕДАН В СЕТЬ");
 }
 
 function checkMessages() {
     let msgs = JSON.parse(localStorage.getItem('ong_msgs') || "[]");
     let mine = msgs.filter(m => m.to === currentUserID);
+    
     const alertBox = document.getElementById('msg-alert');
-    if(mine.some(m => !m.read)) alertBox.classList.remove('hidden');
-    else alertBox.classList.add('hidden');
+    if(alertBox) {
+        if(mine.some(m => !m.read)) alertBox.classList.remove('hidden');
+        else alertBox.classList.add('hidden');
+    }
 
     const list = document.getElementById('messages-list');
     if(list) {
-        list.innerHTML = mine.map(m => `
-            <div class="msg-item ${m.read?'':'unread'}">
-                <small>[${m.time}] ОТ: ${m.from}</small>
+        list.innerHTML = mine.length ? mine.map(m => `
+            <div class="msg-item ${m.read ? '' : 'unread'}">
+                <small>[${m.time}] FROM_ID: ${m.from}</small>
                 <p>${m.text}</p>
             </div>
-        `).reverse().join('') || "Нет данных.";
+        `).reverse().join('') : "НЕТ НОВЫХ СООБЩЕНИЙ.";
+        
+        // Помечаем как прочитанные
         msgs.forEach(m => { if(m.to === currentUserID) m.read = true; });
         localStorage.setItem('ong_msgs', JSON.stringify(msgs));
     }
 }
 
-// --- РАДАР ---
+// --- ТАКТИЧЕСКИЙ РАДАР ---
 function initializeTacticalRadar() {
     startTransition('scr-map');
     const nodes = [
-        {id: "ONG_HQ", x: 50, y: 40, info: "ШТАБ ОНГ."},
-        {id: "PRISM_SECTOR", x: 70, y: 20, info: "АКТИВНОСТЬ ПРИЗМЫ."}
+        {id: "ONG_HQ", x: 48, y: 35, info: "ЦЕНТРАЛЬНЫЙ ХАБ. Статус: Online."},
+        {id: "SUMBER_BUNKER", x: 25, y: 25, info: "ХРАНИЛИЩЕ. Обнаружена попытка взлома."},
+        {id: "PRISM_EYE", x: 75, y: 65, info: "ЗОНА ПРИЗМЫ. Обнаружен дрон-шпион."},
+        {id: "DYK_REACTOR", x: 40, y: 80, info: "ЭНЕРГОБЛОК. Мощность 100%."}
     ];
     const cont = document.getElementById('radar-nodes');
+    if(!cont) return;
     cont.innerHTML = '';
     nodes.forEach(n => {
         const d = document.createElement('div');
@@ -125,55 +205,44 @@ function initializeTacticalRadar() {
         d.onclick = () => {
             document.getElementById('p-title').innerText = n.id;
             document.getElementById('p-text').innerText = n.info;
-            document.getElementById('radar-scroll').scrollTo({ top: 600, behavior: 'smooth' });
+            document.getElementById('radar-scroll').scrollTo({ top: 500, behavior: 'smooth' });
         };
         cont.appendChild(d);
     });
 }
 
-// --- СИСТЕМНЫЕ ---
-function initMatrix(color = "#A855F7") {
-    const canvas = document.getElementById('matrix-bg');
-    if(!canvas) return;
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-    const drops = Array(Math.floor(canvas.width / 15)).fill(1);
-    if(matrixInterval) clearInterval(matrixInterval);
-    matrixInterval = setInterval(() => {
-        ctx.fillStyle = "rgba(0,0,0,0.05)"; ctx.fillRect(0,0,canvas.width, canvas.height);
-        ctx.fillStyle = color; ctx.font = "15px monospace";
-        drops.forEach((y, i) => {
-            ctx.fillText(Math.floor(Math.random()*2), i*15, y*15);
-            if(y*15 > canvas.height && Math.random() > 0.975) drops[i] = 0;
-            drops[i]++;
-        });
-    }, 35);
-}
-
+// --- ДОПОЛНИТЕЛЬНЫЕ МОДУЛИ ---
 function startGuestConsole() {
     const box = document.getElementById('guest-console');
-    if(!box || box.innerHTML !== "") return;
+    if(!box) return;
+    box.innerHTML = '';
     let i = 0;
-    setInterval(() => {
-        if(document.getElementById('scr-guest').classList.contains('hidden')) return;
-        const p = document.createElement('p'); p.innerText = LOG_LINES[i];
+    const inter = setInterval(() => {
+        if(document.getElementById('scr-guest').classList.contains('hidden')) { clearInterval(inter); return; }
+        const p = document.createElement('p');
+        p.innerText = LOG_LINES[i];
         box.insertBefore(p, box.firstChild);
         i = (i + 1) % LOG_LINES.length;
     }, 1500);
 }
 
+function initSensors() {
+    setInterval(() => {
+        if (document.getElementById('scr-sysdata').classList.contains('hidden')) return;
+        let cpu = Math.floor(Math.random()*20)+10;
+        let temp = Math.floor(Math.random()*5)+42;
+        document.getElementById('val-cpu').innerText = cpu + "%";
+        document.getElementById('bar-cpu').style.width = cpu + "%";
+        document.getElementById('val-temp').innerText = temp + "°C";
+        document.getElementById('bar-temp').style.width = (temp/100)*100 + "%";
+    }, 2000);
+}
+
+// Вспомогательные функции
 function playTypingSound() { sound_type.currentTime = 0; sound_type.play().catch(()=>{}); }
-function toggleSidebar(s) { document.getElementById('sidebar').classList.toggle('open', s); document.getElementById('side-overlay').style.display = s?'block':'none'; }
+function toggleSidebar(s) { 
+    document.getElementById('sidebar').classList.toggle('open', s); 
+    document.getElementById('side-overlay').style.display = s ? 'block' : 'none'; 
+}
 function openProfile() { document.getElementById('modal-profile').classList.remove('hidden'); toggleSidebar(false); }
 function closeProfile() { document.getElementById('modal-profile').classList.add('hidden'); }
-
-window.onload = () => {
-    setTimeout(() => {
-        document.getElementById('intro-logo').classList.remove('hidden');
-        setTimeout(() => startTransition('scr-login'), 2500);
-    }, 1000);
-    setInterval(() => {
-        const c = document.getElementById('clock');
-        if(c) c.innerText = new Date().toLocaleTimeString();
-    }, 1000);
-};
