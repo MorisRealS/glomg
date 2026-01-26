@@ -1,27 +1,66 @@
+const DB = {
+    "morisreal": { pass: "123", lvl: 6, name: "МОРИС", token: "MRS" },
+    "sumber": { pass: "prisma", lvl: 5, name: "SUMBER", token: "SBR" }
+};
+
+function transitionToScreen(id) {
+    const fade = document.getElementById('fade');
+    fade.style.opacity = 1;
+    setTimeout(() => {
+        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+        toggleSidebar(false);
+        fade.style.opacity = 0;
+    }, 400);
+}
+
+function processLogin() {
+    const u = document.getElementById('inp-id').value.toLowerCase();
+    const p = document.getElementById('inp-pass').value;
+    if (DB[u] && DB[u].pass === p) {
+        document.getElementById('u-lvl-display').innerText = DB[u].lvl;
+        document.getElementById('p-name').innerText = DB[u].name;
+        document.getElementById('p-token').innerText = DB[u].token;
+        document.getElementById('p-lvl').innerText = "L" + DB[u].lvl;
+        transitionToScreen('scr-dash');
+    } else {
+        alert("ОШИБКА: ДОСТУП ЗАПРЕЩЕН");
+    }
+}
+
 function handleTerminalCommand(e) {
     if (e.key === 'Enter') {
         const out = document.getElementById('terminal-out');
-        const inp = e.target;
-        const cmd = inp.value;
+        const val = e.target.value;
+        if (!val) return;
 
-        // Создаем строку вывода БЕЗ лишнего мусора, только символ >
         const line = document.createElement('div');
-        line.innerHTML = `<span style="color:#a855f7">></span> ${cmd}`;
+        line.innerHTML = `<span style="color:#a855f7">></span> ${val}`;
         out.appendChild(line);
-
-        // Логика ответов
-        const response = document.createElement('div');
-        response.style.color = "#888";
-        if(cmd === "help") {
-            response.innerHTML = "Available modules: SYSTEM, ARCHIVE, RADAR";
+        
+        const res = document.createElement('div');
+        res.style.color = "#666";
+        res.style.marginBottom = "15px";
+        
+        if(val.toLowerCase() === 'help') {
+            res.innerText = "Available: STATUS, CLEAR, EXIT, WHOAMI";
+        } else if(val.toLowerCase() === 'clear') {
+            out.innerHTML = "";
+            e.target.value = "";
+            return;
         } else {
-            response.innerHTML = `System: command '${cmd}' not found in core modules.`;
+            res.innerText = `System: command '${val}' not found in core modules.`;
         }
-        out.appendChild(response);
-
-        inp.value = "";
+        
+        out.appendChild(res);
+        e.target.value = "";
         out.scrollTop = out.scrollHeight;
     }
+}
+
+function toggleSidebar(state) {
+    document.getElementById('sidebar').classList.toggle('open', state);
+    document.getElementById('side-overlay').style.display = state ? 'block' : 'none';
 }
 
 function openProfile() {
@@ -33,14 +72,20 @@ function closeProfile() {
     document.getElementById('modal-profile').classList.add('hidden');
 }
 
-// При логине можно обновлять данные профиля
-function processLogin() {
-    const u = document.getElementById('inp-id').value.toLowerCase();
-    // ... твоя логика проверки пароля ...
-    if (u === "morisreal") {
-        document.getElementById('p-name').innerText = "МОРИС";
-        document.getElementById('p-token').innerText = "MRS";
-        document.getElementById('p-lvl').innerText = "L6";
-        transitionToScreen('scr-dash');
+// РЕЖИМ ГОСТЯ: ЖИВЫЕ ЛОГИ
+setInterval(() => {
+    const con = document.getElementById('guest-console');
+    if (con && !document.getElementById('scr-guest').classList.contains('hidden')) {
+        const d = document.createElement('div');
+        d.innerText = `[${new Date().toLocaleTimeString()}] PING_NODE_${Math.floor(Math.random()*999)} ... OK`;
+        con.prepend(d);
+        if (con.childNodes.length > 20) con.lastChild.remove();
     }
-}
+}, 1500);
+
+// ЧАСЫ
+setInterval(() => {
+    const t = new Date().toLocaleTimeString();
+    if(document.getElementById('clock')) document.getElementById('clock').innerText = t;
+    if(document.getElementById('radar-clock')) document.getElementById('radar-clock').innerText = t;
+}, 1000);
