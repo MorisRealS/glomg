@@ -1512,6 +1512,23 @@ body::after {
 .db-log-content { padding: 0 15px; max-height: 0; overflow: hidden; transition: all 0.3s ease; background: rgba(0, 0, 0, 0.3); font-size: 0.85rem; }
 .db-log-content.open { max-height: 200px; padding: 15px; border-top: 1px solid var(--purple-dim); }
 
+/* --- ФИКСЫ ИНТЕРФЕЙСА --- */
+#scr-guest { overflow-y: auto !important; height: 100vh; }
+.guest-layout { min-height: 180vh; display: flex; flex-direction: column; align-items: center; } /* Глубокий скролл */
+
+/* Сайдбар */
+.sidebar { position: fixed; right: -300px; top: 0; width: 280px; height: 100%; background: var(--bg-black); border-left: 2px solid var(--purple); transition: 0.3s; z-index: 1000; padding: 20px; }
+.sidebar.open { right: 0; }
+#side-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; z-index: 999; }
+
+/* Полоса и инфо в кабинете */
+.staff-info-block { margin-top: 30px; width: 100%; max-width: 600px; text-align: left; }
+.purple-fading-line { height: 2px; width: 100%; background: linear-gradient(90deg, var(--purple), transparent); margin-bottom: 15px; }
+
+/* Радар */
+.radar-disk { width: 300px; height: 300px; border: 2px solid var(--purple); border-radius: 50%; position: relative; margin: 20px auto; background: radial-gradient(circle, var(--purple-dim) 0%, transparent 70%); }
+.node.ong { width: 10px; height: 10px; background: var(--purple); position: absolute; border-radius: 50%; box-shadow: 0 0 10px var(--purple); cursor: pointer; }
+
 /* Дополнение для анимации заставки */
 #intro-logo.hidden { display: none; }
 .blink { animation: blinker 1.5s linear infinite; }
