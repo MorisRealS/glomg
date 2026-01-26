@@ -1,165 +1,93 @@
-/* --- СИСТЕМНАЯ БАЗА ДАННЫХ --- */
-const CORE_DATABASE = {
-    "morisreal": {
-        "pass": "morisreal_profile_console",
-        "lvl": 6,
-        "rank": "CHIEF OPERATOR",
-        "title": "ЛИЧНАЯ ЛАБОРАТОРИЯ"
-    },
-    "sumber": {
-        "pass": "SumberTheAdminPRISMS",
-        "lvl": 5,
-        "rank": "PRISMA OWNER",
-        "title": "БУНКЕР ПРИЗМЫ"
-    }
+const DB = {
+    "morisreal": { pass: "morisreal_profile_console", lvl: 6, rank: "CHIEF OPERATOR", title: "ЛАБОРАТОРИЯ" },
+    "sumber": { pass: "SumberTheAdminPRISMS", lvl: 5, rank: "PRISMA OWNER", title: "ПРИЗМА" }
 };
 
-let activeSession = null;
+let session = null;
 
-/* --- ПЕРЕХОДЫ --- */
 function transitionToScreen(id) {
-    const fade = document.getElementById('fade');
-    fade.classList.add('active');
-    
-    setTimeout(function() {
-        const screens = document.querySelectorAll('.screen');
-        screens.forEach(function(s) {
-            s.classList.add('hidden');
-        });
-        
-        const target = document.getElementById(id);
-        if (target) {
-            target.classList.remove('hidden');
-        }
-        
+    const f = document.getElementById('fade');
+    f.classList.add('active');
+    setTimeout(() => {
+        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
         toggleSidebar(false);
-        fade.classList.remove('active');
+        f.classList.remove('active');
     }, 500);
 }
 
-/* --- ЛОГИКА ВХОДА --- */
 function processLogin() {
-    const user = document.getElementById('inp-id').value.toLowerCase();
-    const pass = document.getElementById('inp-pass').value;
-    
-    const dbEntry = CORE_DATABASE[user];
-    
-    if (dbEntry && dbEntry.pass === pass) {
-        activeSession = {
-            id: user,
-            lvl: dbEntry.lvl,
-            rank: dbEntry.rank,
-            title: dbEntry.title
-        };
-        
-        document.getElementById('u-lvl-display').textContent = activeSession.lvl;
-        document.getElementById('welcome-msg').textContent = "WELCOME, " + user.toUpperCase();
+    const u = document.getElementById('inp-id').value.toLowerCase();
+    const p = document.getElementById('inp-pass').value;
+    if (DB[u] && DB[u].pass === p) {
+        session = { id: u, ...DB[u] };
+        document.getElementById('u-lvl-display').textContent = session.lvl;
+        document.getElementById('welcome-msg').textContent = "WELCOME, " + u.toUpperCase();
         transitionToScreen('scr-dash');
-    } else {
-        alert("ACCESS DENIED: INVALID_KEY");
-    }
+    } else { alert("DENIED"); }
 }
 
-/* --- ТАКТИЧЕСКИЙ РАДАР --- */
 function initializeTacticalRadar() {
     transitionToScreen('scr-map');
-    
-    const nodeContainer = document.getElementById('radar-nodes');
-    nodeContainer.innerHTML = ""; // Очистка перед отрисовкой
-    
-    const points = [
-        { x: 50, y: 50, owner: "morisreal", type: "owner" },
-        { x: 30, y: 45, owner: "sumber", type: "online" }
-    ];
-    
-    points.forEach(function(p) {
-        const dot = document.createElement('div');
-        dot.className = "node " + p.type;
-        dot.style.left = p.x + "%";
-        dot.style.top = p.y + "%";
-        
-        dot.onclick = function() {
-            document.getElementById('p-title').textContent = p.owner.toUpperCase();
-            const text = document.getElementById('p-text');
-            
-            if (p.owner === activeSession.id) {
-                text.innerHTML = "<b>STATUS:</b> ACTIVE<br><b>LOCATION:</b> " + activeSession.title;
-            } else {
-                text.innerHTML = "<b>STATUS:</b> PROTECTED<br><b>DATA:</b> ACCESS_RESTRICTED";
-            }
-            
-            // Скролл вниз к блоку информации
-            const scrollBox = document.getElementById('radar-scroll');
-            scrollBox.scrollTo({
-                top: 600,
-                behavior: 'smooth'
-            });
+    const nodes = document.getElementById('radar-nodes');
+    nodes.innerHTML = "";
+    const pts = [{x:50,y:50,o:"morisreal",t:"owner"}, {x:30,y:40,o:"sumber",t:"online"}];
+    pts.forEach(p => {
+        const d = document.createElement('div');
+        d.className = "node " + p.t;
+        d.style.left = p.x + "%"; d.style.top = p.y + "%";
+        d.onclick = () => {
+            document.getElementById('p-title').textContent = p.o.toUpperCase();
+            document.getElementById('p-text').textContent = "COORDINATES: " + p.x + "," + p.y;
+            document.getElementById('radar-scroll').scrollTo({ top: 500, behavior: 'smooth' });
         };
-        
-        nodeContainer.appendChild(dot);
+        nodes.appendChild(d);
     });
 }
 
-/* --- САЙДБАР --- */
-function toggleSidebar(state) {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('side-overlay');
-    
-    if (state === true) {
-        sidebar.classList.add('open');
-        overlay.style.display = 'block';
-    } else {
-        sidebar.classList.remove('open');
-        overlay.style.display = 'none';
-    }
+function toggleSidebar(st) {
+    document.getElementById('sidebar').classList.toggle('open', st);
+    document.getElementById('side-overlay').style.display = st ? 'block' : 'none';
 }
 
-/* --- ТЕРМИНАЛ --- */
 function handleTerminalCommand(e) {
     if (e.key === 'Enter') {
         const out = document.getElementById('terminal-out');
-        const inp = document.getElementById('terminal-input');
-        
-        const userLine = document.createElement('div');
-        userLine.textContent = "> root@glomg:~# " + inp.value;
-        out.appendChild(userLine);
-        
-        const sysLine = document.createElement('div');
-        sysLine.style.color = "#666";
-        sysLine.textContent = "Processing '" + inp.value + "'... Error: Command not found.";
-        out.appendChild(sysLine);
-        
-        inp.value = "";
+        const l = document.createElement('div');
+        l.textContent = "> " + e.target.value;
+        out.appendChild(l);
+        e.target.value = "";
         out.scrollTop = out.scrollHeight;
     }
 }
 
-/* --- ТАЙМЕРЫ --- */
-setInterval(function() {
-    const time = new Date().toLocaleTimeString();
-    if (document.getElementById('clock')) {
-        document.getElementById('clock').textContent = time;
+// РАБОТА ГОСТЕВОЙ КОНСОЛИ
+setInterval(() => {
+    const con = document.getElementById('guest-console');
+    if (con && !document.getElementById('scr-guest').classList.contains('hidden')) {
+        const d = document.createElement('div');
+        d.textContent = "[" + new Date().toLocaleTimeString() + "] SYNCING_NODE_" + Math.floor(Math.random()*999);
+        con.prepend(d);
+        if (con.childNodes.length > 15) con.lastChild.remove();
     }
-    if (document.getElementById('radar-clock')) {
-        document.getElementById('radar-clock').textContent = time;
-    }
+}, 2000);
+
+setInterval(() => {
+    const t = new Date().toLocaleTimeString();
+    if (document.getElementById('clock')) document.getElementById('clock').textContent = t;
+    if (document.getElementById('radar-clock')) document.getElementById('radar-clock').textContent = t;
 }, 1000);
 
-/* --- ЗАПУСК ИНТРО --- */
-window.onload = function() {
-    const intro = document.getElementById('intro-ascii');
-    const msg = "G.L.O.M.G. CORE v29.5\nLINKING_TO_DATABASE...\nSECURITY_READY.";
+window.onload = () => {
+    const pre = document.getElementById('intro-ascii');
+    const msg = "G.L.O.M.G. v30.0\nINITIALIZING...\nREADY.";
     let i = 0;
-    
-    const type = setInterval(function() {
-        intro.textContent += msg[i];
-        i++;
+    const t = setInterval(() => {
+        pre.textContent += msg[i]; i++;
         if (i >= msg.length) {
-            clearInterval(type);
+            clearInterval(t);
             document.getElementById('intro-logo').classList.remove('hidden');
-            setTimeout(function() {
-                transitionToScreen('scr-login');
-            }, 2500);
+            setTimeout(() => transitionToScreen('scr-login'), 2000);
         }
     }, 50);
 };
