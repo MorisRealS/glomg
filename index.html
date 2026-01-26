@@ -2,53 +2,28 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>G.L.O.M.G. | CORE V32.8</title>
     <link rel="stylesheet" href="style.css">
+    <script src="/socket.io/socket.io.js"></script>
 </head>
 <body oncontextmenu="return false;">
     <div id="fade-overlay"></div>
     <div id="side-overlay" onclick="toggleSidebar(false)"></div>
-    
     <canvas id="matrix-canvas"></canvas>
-    <div class="vhs-overlay"></div>
 
-    <section id="scr-intro" class="screen">
-        <div class="center-layout">
-            <pre id="intro-ascii" class="ascii-font">SYSTEM_BOOTING...</pre>
-            <div id="intro-logo" class="hidden">
-                <pre class="ong-logo">
- ██████  ███    ██  ██████  
-██    ██ ████   ██ ██       
-██    ██ ██ ██  ██ ██   ███ 
-██    ██ ██  ██ ██ ██    ██ 
- ██████  ██   ████  ██████  </pre>
-                <p class="blink">INITIALIZING O.N.G. CORE...</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="scr-login" class="screen hidden">
+    <section id="scr-login" class="screen">
         <div class="login-frame">
-            <pre class="ong-logo-main">
- ██████  ███    ██  ██████  
-██    ██ ████   ██ ██       
-██    ██ ██ ██  ██ ██   ███ 
-██    ██ ██  ██ ██ ██    ██ 
- ██████  ██   ████  ██████  </pre>
+            <h1 class="glitch" data-text="G.L.O.M.G.">G.L.O.M.G.</h1>
             <div id="output" class="terminal-output"></div>
             <div class="login-form">
-                <div class="input-line">
-                    <span class="prompt">ID:> </span>
-                    <input type="text" id="cmd" autofocus spellcheck="false" autocomplete="off">
-                </div>
-                <div class="guest-access-btn" onclick="enterGuestMode()">[ GUEST_LOG_IN ]</div>
+                <div class="input-line"><span class="prompt">ID:> </span><input type="text" id="cmd" autofocus autocomplete="off"></div>
+                <div class="guest-btn" onclick="toggleGuest()">[ GUEST_ACCESS ]</div>
             </div>
-            <div id="guest-news" class="guest-news-box hidden">
-                <div class="news-title">> LATEST_SYSTEM_UPDATES:</div>
-                <div class="news-item">- Интеграция протокола TG_MESSENGER</div>
-                <div class="news-item">- Оптимизация видеопамяти (VHS_FIX)</div>
-                <div class="news-item">- Добавлен уровень доступа S-Class</div>
+            <div id="guest-box" class="guest-box hidden">
+                <div class="news-title">> LATEST_NEWS:</div>
+                <p>- Интеграция TG_BOT [OK]<br>- Сектор "Реактор" нестабилен</p>
+                <div class="news-title">> ABOUT:</div>
+                <p>O.N.G. CORE — Глобальная сеть мониторинга.</p>
             </div>
         </div>
     </section>
@@ -58,56 +33,38 @@
             <button class="btn-ui-nav" onclick="toggleSidebar(true)">MENU</button>
             <div id="clock">00:00:00</div>
         </header>
-        <div class="main-content center-layout">
-            <h2 class="label">OPERATOR_IDENTIFIED:</h2>
-            <h1 id="user-name-display">---</h1>
-            <div class="dash-grid">
+        <div class="center-layout">
+            <h2>OPERATOR: <span id="user-name-display">---</span></h2>
+            <div class="dash-btns">
                 <button class="mega-btn" onclick="startTransition('scr-radar')">РАДАР</button>
                 <button class="mega-btn" onclick="startTransition('scr-archive')">АРХИВ</button>
-                <button class="mega-btn" onclick="startTransition('scr-status')">СТАТУС</button>
             </div>
         </div>
     </section>
 
     <section id="scr-radar" class="screen hidden">
-        <header class="status-bar">
-            <button class="btn-ui-nav" onclick="startTransition('scr-dash')">BACK</button>
-            <div>TACTICAL_SCANNER</div>
-        </header>
-        <div class="radar-container">
-            <div class="radar-disk"><div class="radar-beam"></div></div>
+        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">BACK</button><div>TACTICAL_RADAR</div></header>
+        <div class="radar-fullscreen">
+            <div class="radar-line-scanner"></div>
+            <div class="node lab-ong" style="top:25%; left:30%;"></div>
+            <div class="node bunker-prism" style="top:45%; left:75%;"></div>
+            <div class="node reactor-duk" style="top:75%; left:45%;"></div>
         </div>
-    </section>
-
-    <section id="scr-archive" class="screen hidden">
-        <header class="status-bar">
-            <button class="btn-ui-nav" onclick="startTransition('scr-dash')">BACK</button>
-            <div>SYSTEM_DATABASE</div>
-        </header>
-        <div id="archive-list" class="archive-layout">
-            </div>
-    </section>
-
-    <section id="scr-status" class="screen hidden">
-        <header class="status-bar">
-            <button class="btn-ui-nav" onclick="startTransition('scr-dash')">BACK</button>
-            <div>CORE_HARDWARE</div>
-        </header>
-        <div class="center-layout stats-container">
-            <div class="stat-item">CPU_LOAD: <span id="cpu-val">0%</span></div>
-            <div class="stat-item">MEM_USED: <span id="mem-val">0%</span></div>
-            <div class="stat-item">TEMP: <span id="temp-val">42</span>°C</div>
+        <div class="radar-info-panel">
+            <div class="info-card">LAB_ONG: <span style="color:#a855f7">ONLINE</span></div>
+            <div class="info-card">BUNKER_PRISM: <span style="color:#00ffff">SECURE</span></div>
+            <div class="info-card">REACTOR_DUK: <span style="color:#ff2233">CRITICAL</span></div>
         </div>
     </section>
 
     <div id="sidebar" class="sidebar">
-        <div class="sidebar-header">O.N.G. NAVIGATION</div>
-        <div class="profile-preview">
-            <p id="p-name">NAME: ---</p>
-            <p id="p-lvl">LVL: ---</p>
+        <div class="sidebar-header">PROFILE_DATA</div>
+        <div class="old-profile-style">
+            <p>NAME: <span id="p-name">---</span></p>
+            <p>LEVEL: <span id="p-lvl">---</span></p>
+            <p>STATUS: <span style="color:#0f4">CONNECTED</span></p>
         </div>
-        <button class="side-link-btn" onclick="alert('ACCESS_KEY: ' + Math.random().toString(36).substr(2, 9))">[ MY_PROFILE ]</button>
-        <button class="side-link-btn btn-logout" onclick="logout()">[ LOGOUT ]</button>
+        <button class="btn-ui-logout" onclick="logout()">LOGOUT</button>
     </div>
 
     <script src="script.js"></script>
