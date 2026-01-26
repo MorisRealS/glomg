@@ -2,7 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>G.L.O.M.G. | CORE V32.0</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G.L.O.M.G. | CORE TERMINAL v32.8</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,91 +12,146 @@
 
     <div id="modal-profile" class="modal hidden">
         <div class="profile-card">
-            <button class="close-profile" onclick="closeProfile()">← [ ВЕРНУТЬСЯ_В_ТЕРМИНАЛ ]</button>
+            <div class="corner-tl"></div>
+            <div class="corner-br"></div>
+            <button class="close-profile" onclick="closeProfile()"><-- [ ВЕРНУТЬСЯ_В_ТЕРМИНАЛ ]</button>
             <div class="profile-header">
                 <div class="profile-avatar">
-                    <img src="https://i.imgur.com/8N69fS7.png" alt="AVATAR"> </div>
-                <div class="profile-main-info">
+                    <img src="https://i.imgur.com/8N69fS7.png" alt="AVATAR">
+                </div>
+                <div class="profile-info-top">
                     <h2 id="p-name">МОРИС</h2>
                     <p class="token">ID_TOKEN: <span id="p-token">MRS</span></p>
                     <div class="status-tag">STATUS: ACTIVE</div>
                 </div>
             </div>
             <div class="profile-grid">
-                <div class="p-item">
-                    <label>ПОДРАЗДЕЛЕНИЕ</label>
-                    <span class="p-value">НАУЧНЫЙ ОТДЕЛ</span>
-                </div>
-                <div class="p-item">
-                    <label>УРОВЕНЬ ДОПУСКА</label>
-                    <span class="p-value" id="p-lvl">L4</span>
-                </div>
-                <div class="p-item">
-                    <label>СПЕЦИАЛИЗАЦИЯ</label>
-                    <span class="p-value">ГЛАВА ОНГ</span>
-                </div>
-                <div class="p-item">
-                    <label>ДАТА ЗАЧИСЛЕНИЯ</label>
-                    <span class="p-value">25.01.2026</span>
-                </div>
+                <div class="p-item"><label>ПОДРАЗДЕЛЕНИЕ</label><span class="p-value">НАУЧНЫЙ ОТДЕЛ</span></div>
+                <div class="p-item"><label>УРОВЕНЬ ДОПУСКА</label><span class="p-value" id="p-lvl">L4</span></div>
+                <div class="p-item"><label>СПЕЦИАЛИЗАЦИЯ</label><span class="p-value">ГЛАВА ОНГ</span></div>
+                <div class="p-item"><label>ДАТА ЗАЧИСЛЕНИЯ</label><span class="p-value">25.01.2026</span></div>
             </div>
             <div class="profile-footer">
                 <label>ОСОБЫЕ_ОТМЕТКИ:</label>
-                <div class="notes">КУРАТОР ОНГ</div>
+                <div class="notes">КУРАТОР ОНГ. ОБЪЕКТ ПОД НАБЛЮДЕНИЕМ.</div>
             </div>
-            <div class="system-status">СВЯЗЬ: <span class="green-t">ШТАТНЫЙ РЕЖИМ</span></div>
+            <div class="sys-status">СВЯЗЬ: <span class="green-text">ШТАТНЫЙ РЕЖИМ</span></div>
         </div>
     </div>
 
     <section id="scr-login" class="screen">
-        <div class="login-frame">
-            <h1 class="glitch">G.L.O.M.G.</h1>
-            <div class="inputs">
-                <input type="text" id="inp-id" placeholder="OPERATOR_ID">
+        <div class="login-box">
+            <h1 class="main-logo">G.L.O.M.G.</h1>
+            <div class="login-inputs">
+                <input type="text" id="inp-id" placeholder="ID_OPERATOR" spellcheck="false">
                 <input type="password" id="inp-pass" placeholder="ACCESS_KEY">
             </div>
-            <div class="actions">
-                <button class="btn-scan" onclick="processLogin()"><span class="btn-text">ВЫПОЛНИТЬ: АВТОРИЗАЦИЯ</span></button>
-                <button class="btn-scan" onclick="transitionToScreen('scr-guest')"><span class="btn-text">ВЫПОЛНИТЬ: ГОСТЬ</span></button>
+            <div class="login-btns">
+                <button class="btn-scan" onclick="processLogin()">ВЫПОЛНИТЬ: АВТОРИЗАЦИЯ</button>
+                <button class="btn-scan" onclick="transitionToScreen('scr-guest')">ВЫПОЛНИТЬ: ГОСТЬ</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="scr-guest" class="screen hidden">
+        <header class="top-bar">
+            <div class="bar-left">GUEST_LINK // NO_AUTH</div>
+            <button class="btn-minimal" onclick="transitionToScreen('scr-login')">LOG_IN</button>
+        </header>
+        <div class="guest-content">
+            <div class="guest-logs">
+                <div class="label">LIVE_SYSTEM_LOGS:</div>
+                <div id="guest-console" class="log-container"></div>
+            </div>
+            <div class="guest-info">
+                <div class="label">INFORMATION:</div>
+                <div class="info-text">
+                    <p>> Система G.L.O.M.G. работает в штатном режиме.</p>
+                    <p>> Доступ к терминалу ROOT ограничен.</p>
+                    <p>> Обнаружено активных узлов: 14.</p>
+                </div>
             </div>
         </div>
     </section>
 
     <section id="scr-dash" class="screen hidden">
-        <header class="status-bar">
-            <div class="bar-left"><button class="btn-ui" onclick="toggleSidebar(true)">MENU</button></div>
-            <div class="bar-center" id="clock">00:00:00</div>
-            <div class="bar-right">LVL: <span id="u-lvl-display">0</span></div>
+        <header class="top-bar">
+            <button class="btn-minimal" onclick="toggleSidebar(true)">MENU</button>
+            <div id="clock">00:00:00</div>
+            <div>LVL: <span id="u-lvl-display">0</span></div>
         </header>
-        <div class="main-content">
-            <div class="big-buttons-grid">
-                <button class="btn-scan mega" onclick="initializeTacticalRadar()"><span class="btn-text">ВЫПОЛНИТЬ: КАРТА_ОБЪЕКТА</span></button>
-                <button class="btn-scan mega" onclick="transitionToScreen('scr-archive')"><span class="btn-text">ВЫПОЛНИТЬ: АРХИВ_АНОМАЛИЙ</span></button>
-                <button class="btn-scan mega" onclick="transitionToScreen('scr-sysdata')"><span class="btn-text">ВЫПОЛНИТЬ: БАЗА_ДАННЫХ</span></button>
+        <div class="dash-layout">
+            <div class="button-grid">
+                <button class="btn-scan" onclick="initializeTacticalRadar()">ВЫПОЛНИТЬ: КАРТА_ОБЪЕКТА</button>
+                <button class="btn-scan" onclick="transitionToScreen('scr-archive')">ВЫПОЛНИТЬ: АРХИВ_АНОМАЛИЙ</button>
+                <button class="btn-scan" onclick="transitionToScreen('scr-sysdata')">ВЫПОЛНИТЬ: БАЗА_ДАННЫХ</button>
             </div>
-            <button class="btn-scan console-trigger" onclick="transitionToScreen('scr-full-console')"><span class="btn-text">ВЫПОЛНИТЬ: ROOT_TERMINAL</span></button>
+            <button class="btn-scan wide-btn" onclick="transitionToScreen('scr-full-console')">ВЫПОЛНИТЬ: ROOT_TERMINAL</button>
+        </div>
+    </section>
+
+    <section id="scr-archive" class="screen hidden">
+        <header class="top-bar">
+            <span>DATABASE_ARCHIVE</span>
+            <button class="btn-minimal" onclick="transitionToScreen('scr-dash')">RETURN</button>
+        </header>
+        <div class="data-page">
+            <div class="data-item">> [001] Ядро запущено оператором morisreal.</div>
+            <div class="data-item">> [002] Sumber: Авторизация в узле PRISMA.</div>
+            <div class="data-item">> [003] Dykzxz: Всплеск энергии в секторе 4.</div>
+            <div class="data-item">> [004] Msk4ne_: Подключен к терминалу.</div>
+        </div>
+    </section>
+
+    <section id="scr-sysdata" class="screen hidden">
+        <header class="top-bar">
+            <span>OPERATOR_REGISTRY</span>
+            <button class="btn-minimal" onclick="transitionToScreen('scr-dash')">RETURN</button>
+        </header>
+        <div class="data-page">
+            <div class="user-row">morisreal | LVL 6 | CHIEF OPERATOR</div>
+            <div class="user-row">sumber | LVL 5 | PRISMA OWNER</div>
+            <div class="user-row">Dykzxz | LVL 4 | REACTOR ENG</div>
+            <div class="user-row">Msk4ne_ | LVL 4 | OPERATOR</div>
+        </div>
+    </section>
+
+    <section id="scr-map" class="screen hidden">
+        <header class="top-bar">
+            <button class="btn-minimal" onclick="transitionToScreen('scr-dash')">RETURN</button>
+            <span>TACTICAL_RADAR</span>
+            <div id="radar-clock">00:00:00</div>
+        </header>
+        <div class="radar-container">
+            <div class="radar-disk">
+                <div class="scanner"></div>
+                <div id="radar-nodes"></div>
+            </div>
+            <div class="radar-details">
+                <h3 id="r-title">SCANNING...</h3>
+                <p id="r-desc">Выберите объект на радаре.</p>
+            </div>
         </div>
     </section>
 
     <section id="scr-full-console" class="screen hidden">
-        <header class="status-bar">
-            <div class="bar-left">TERMINAL_CORE</div>
-            <div class="bar-right"><button class="btn-ui" onclick="transitionToScreen('scr-dash')">RETURN</button></div>
+        <header class="top-bar">
+            <span>ROOT_CORE_INTERFACE</span>
+            <button class="btn-minimal" onclick="transitionToScreen('scr-dash')">RETURN</button>
         </header>
-        <div id="terminal-out" class="terminal-body"></div>
-        <div class="terminal-input-area">
+        <div id="terminal-out" class="term-body"></div>
+        <div class="term-input-line">
             <span class="prompt">></span>
-            <input type="text" id="terminal-input" placeholder="Type command..." onkeypress="handleTerminalCommand(event)">
+            <input type="text" id="terminal-input" spellcheck="false" autocomplete="off" onkeypress="handleTerminalCommand(event)">
         </div>
     </section>
 
     <div id="side-overlay" onclick="toggleSidebar(false)"></div>
     <div id="sidebar" class="sidebar">
-        <div class="s-head"><span>CORE MENU</span><button onclick="toggleSidebar(false)">✕</button></div>
-        <nav class="side-nav">
-            <button class="side-link" onclick="openProfile()">ЛИЧНОЕ ДОСЬЕ</button>
-            <button class="side-link logout-red" onclick="location.reload()">РАЗОРВАТЬ СОЕДИНЕНИЕ</button>
-        </nav>
+        <div class="s-head">CORE MENU <button onclick="toggleSidebar(false)">✕</button></div>
+        <button class="side-btn" onclick="openProfile()">ЛИЧНОЕ ДОСЬЕ</button>
+        <div class="divider"></div>
+        <button class="side-btn red" onclick="location.reload()">РАЗОРВАТЬ СОЕДИНЕНИЕ</button>
     </div>
 
     <script src="script.js"></script>
