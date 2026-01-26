@@ -6,7 +6,6 @@
     --error: #ff2233;
     --terminal-green: #00ff44;
 }
-
 /* --- ОБНУЛЕНИЕ --- */
 * { box-sizing: border-box; }
 
@@ -20,7 +19,6 @@ body, html {
     font-family: 'Courier New', Courier, monospace;
     overflow: hidden;
 }
-
 /* --- КНОПКИ (ЗОЛОТОЙ СТАНДАРТ V31.8) --- */
 button {
     cursor: pointer;
@@ -38,14 +36,12 @@ button:hover {
     color: #000;
     box-shadow: 0 0 20px var(--purple);
 }
-
 /* Навигационные кнопки в шапке */
 .btn-ui-nav {
     padding: 8px 20px;
     font-weight: bold;
     font-size: 0.85rem;
 }
-
 /* Кнопки авторизации */
 .btn-gold {
     padding: 15px 40px;
@@ -60,7 +56,6 @@ button:hover {
     font-size: 0.9rem;
     opacity: 0.8;
 }
-
 /* Огромные кнопки дашборда */
 .big-buttons-grid {
     display: grid;
@@ -86,7 +81,6 @@ button:hover {
     font-weight: bold;
     border-width: 2px;
 }
-
 /* --- ШАПКА (STATUS BAR) --- */
 .status-bar {
     position: absolute;
@@ -111,7 +105,6 @@ button:hover {
     font-weight: bold;
     letter-spacing: 3px;
 }
-
 /* --- ЭКРАНЫ --- */
 .screen {
     position: fixed;
@@ -128,7 +121,6 @@ button:hover {
 }
 
 .hidden { display: none !important; }
-
 /* --- АВТОРИЗАЦИЯ --- */
 .login-frame {
     padding: 60px;
@@ -164,7 +156,6 @@ button:hover {
     justify-content: center;
     margin-top: 30px;
 }
-
 /* --- ГОСТЕВОЙ РЕЖИМ --- */
 .guest-layout {
     display: flex;
@@ -195,7 +186,6 @@ button:hover {
     background: rgba(168, 85, 247, 0.03);
     line-height: 1.6;
 }
-
 /* --- КОНСОЛЬ (ROOT) --- */
 .terminal-body {
     width: 100%;
@@ -1530,6 +1520,43 @@ input {
 .db-log-header:hover { background: var(--purple-dim); }
 .db-log-content { max-height: 0; overflow: hidden; transition: 0.3s; padding: 0 15px; color: #ccc; }
 .db-log-content.open { max-height: 100px; padding: 15px; border-top: 1px solid var(--purple-dim); }
+
+/* ПЕРЕХОД (BLACK FADE) */
+#fade-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: #000; z-index: 9999; pointer-events: none;
+    opacity: 0; transition: opacity 0.5s ease;
+}
+#fade-overlay.active { opacity: 1; }
+
+/* САЙДБАР ФИКСЫ */
+#side-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7); z-index: 1500; display: none;
+}
+.sidebar {
+    position: fixed; top: 0; left: -260px; width: 260px; height: 100%;
+    background: #0a0510; border-right: 1px solid var(--purple);
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 2000; padding: 25px;
+    display: flex; flex-direction: column;
+}
+.sidebar.open { left: 0; }
+.sidebar-header { font-size: 1.2rem; border-bottom: 1px solid var(--purple-dim); padding-bottom: 10px; margin-bottom: 20px; }
+
+/* КНОПКА LOGOUT */
+.btn-logout { 
+    color: #ff2233 !important; border-color: #ff2233 !important; 
+    margin-top: auto !important; 
+}
+.btn-logout:hover { background: rgba(255, 34, 51, 0.1) !important; box-shadow: 0 0 10px #ff2233 !important; }
+
+/* НОВОСТИ ГОСТЯ */
+.guest-news-box {
+    margin-top: 20px; padding: 15px; border: 1px dashed var(--purple-dim);
+    background: rgba(168, 85, 247, 0.05); text-align: left;
+}
+.news-title { color: var(--purple); font-weight: bold; margin-bottom: 5px; }
+.news-item { font-size: 0.8rem; margin: 3px 0; opacity: 0.8; }
 
 /* Дополнение для анимации заставки */
 #intro-logo.hidden { display: none; }
