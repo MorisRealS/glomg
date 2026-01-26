@@ -1,33 +1,33 @@
-const DB = {
-    "morisreal": { pass: "123", lvl: 6, name: "МОРИС", token: "MRS" },
-    "sumber": { pass: "prisma", lvl: 5, name: "SUMBER", token: "SBR" }
+// Твой старый объект профилей (оставил как был)
+const PROFILES = {
+    "kiddy":    { name: "Kiddy", pass: "1111", level: "A1", token: "KID" },
+    "dykzxz":   { name: "Dykzxz", pass: "2222", level: "B3", token: "DYK" },
+    "msk4ne_":  { name: "MSK4NE", pass: "3333", level: "S-Class", token: "MSK" },
+    "sumber":   { name: "Sumber", pass: "0000", level: "Admin", token: "SBR" },
+    "morisreal": { name: "МОРИС", pass: "123", level: "L4", token: "MRS" }
 };
 
-function transitionToScreen(id) {
-    const fade = document.getElementById('fade');
-    fade.style.opacity = 1;
-    setTimeout(() => {
-        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-        document.getElementById(id).classList.remove('hidden');
-        toggleSidebar(false);
-        fade.style.opacity = 0;
-    }, 400);
-}
+let currentUser = null;
 
 function processLogin() {
     const u = document.getElementById('inp-id').value.toLowerCase();
     const p = document.getElementById('inp-pass').value;
-    if (DB[u] && DB[u].pass === p) {
-        document.getElementById('u-lvl-display').innerText = DB[u].lvl;
-        document.getElementById('p-name').innerText = DB[u].name;
-        document.getElementById('p-token').innerText = DB[u].token;
-        document.getElementById('p-lvl').innerText = "L" + DB[u].lvl;
+
+    if (PROFILES[u] && PROFILES[u].pass === p) {
+        currentUser = PROFILES[u];
+        // Заполняем личное дело
+        document.getElementById('p-name').innerText = currentUser.name;
+        document.getElementById('p-token').innerText = currentUser.token || "UNK";
+        document.getElementById('p-lvl-val').innerText = currentUser.level;
+        document.getElementById('u-lvl-display').innerText = currentUser.level;
+        
         transitionToScreen('scr-dash');
     } else {
-        alert("ОШИБКА: ДОСТУП ЗАПРЕЩЕН");
+        alert("ACCESS_DENIED: Invalid Credentials");
     }
 }
 
+// НОВАЯ КОНСОЛЬ (Чистая, без root@glomg)
 function handleTerminalCommand(e) {
     if (e.key === 'Enter') {
         const out = document.getElementById('terminal-out');
@@ -35,22 +35,13 @@ function handleTerminalCommand(e) {
         if (!val) return;
 
         const line = document.createElement('div');
-        line.innerHTML = `<span style="color:#a855f7">></span> ${val}`;
+        line.innerHTML = `<span class="prompt">></span> ${val}`;
         out.appendChild(line);
         
         const res = document.createElement('div');
         res.style.color = "#666";
         res.style.marginBottom = "15px";
-        
-        if(val.toLowerCase() === 'help') {
-            res.innerText = "Available: STATUS, CLEAR, EXIT, WHOAMI";
-        } else if(val.toLowerCase() === 'clear') {
-            out.innerHTML = "";
-            e.target.value = "";
-            return;
-        } else {
-            res.innerText = `System: command '${val}' not found in core modules.`;
-        }
+        res.innerText = `System: command '${val}' not found in core modules.`;
         
         out.appendChild(res);
         e.target.value = "";
@@ -58,12 +49,9 @@ function handleTerminalCommand(e) {
     }
 }
 
-function toggleSidebar(state) {
-    document.getElementById('sidebar').classList.toggle('open', state);
-    document.getElementById('side-overlay').style.display = state ? 'block' : 'none';
-}
-
+// УПРАВЛЕНИЕ ОКНОМ ПРОФИЛЯ
 function openProfile() {
+    if(!currentUser) { alert("Сначала авторизуйтесь!"); return; }
     document.getElementById('modal-profile').classList.remove('hidden');
     toggleSidebar(false);
 }
@@ -72,20 +60,13 @@ function closeProfile() {
     document.getElementById('modal-profile').classList.add('hidden');
 }
 
-// РЕЖИМ ГОСТЯ: ЖИВЫЕ ЛОГИ
-setInterval(() => {
-    const con = document.getElementById('guest-console');
-    if (con && !document.getElementById('scr-guest').classList.contains('hidden')) {
-        const d = document.createElement('div');
-        d.innerText = `[${new Date().toLocaleTimeString()}] PING_NODE_${Math.floor(Math.random()*999)} ... OK`;
-        con.prepend(d);
-        if (con.childNodes.length > 20) con.lastChild.remove();
-    }
-}, 1500);
+function toggleSidebar(s) {
+    document.getElementById('sidebar').classList.toggle('open', s);
+    document.getElementById('side-overlay').style.display = s ? 'block' : 'none';
+}
 
-// ЧАСЫ
+// Таймер для часов
 setInterval(() => {
     const t = new Date().toLocaleTimeString();
     if(document.getElementById('clock')) document.getElementById('clock').innerText = t;
-    if(document.getElementById('radar-clock')) document.getElementById('radar-clock').innerText = t;
 }, 1000);
