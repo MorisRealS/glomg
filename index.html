@@ -64,7 +64,7 @@
                 <button class="mega-btn" onclick="location.href='system.html'">СИСТЕМА</button>
             </div>
             <div class="purple-fading-line"></div>
-            <p class="staff-subtext">LEVEL_6_ACCESS: GRANTED // USER: MORISREAL</p>
+            <p class="staff-subtext">ADMIN_ACCESS: LEVEL_6 // SECURE_CONNECTION</p>
         </div>
     </section>
 
@@ -72,7 +72,7 @@
     <div id="sidebar" class="sidebar">
         <div class="sidebar-header">O.N.G. CORE</div>
         <button class="side-link-btn" onclick="openProfile()">[ MY_PROFILE ]</button>
-        <button class="side-link-btn" style="color:var(--error); margin-top:20px;" onclick="location.reload()">[ LOGOUT ]</button>
+        <button class="side-link-btn" style="color:red; margin-top:20px;" onclick="location.reload()">[ LOGOUT ]</button>
     </div>
 
     <div id="modal-profile" class="modal-profile hidden">
@@ -80,10 +80,7 @@
             <button class="btn-ui" onclick="closeProfile()">[ CLOSE ]</button>
             <div class="profile-header">
                 <div class="profile-avatar"></div>
-                <div>
-                    <h2 id="p-name-val">---</h2>
-                    <p id="p-uuid-val">UUID: 0000</p>
-                </div>
+                <div><h2 id="p-name-val">---</h2><p id="p-uuid-val">UUID: 0000</p></div>
             </div>
         </div>
     </div>
