@@ -1,4 +1,3 @@
-// Твой старый объект профилей (оставил как был)
 const PROFILES = {
     "kiddy":    { name: "Kiddy", pass: "1111", level: "A1", token: "KID" },
     "dykzxz":   { name: "Dykzxz", pass: "2222", level: "B3", token: "DYK" },
@@ -7,51 +6,66 @@ const PROFILES = {
     "morisreal": { name: "МОРИС", pass: "123", level: "L4", token: "MRS" }
 };
 
-let currentUser = null;
+let step = "ID";
+let tempUser = null;
 
-function processLogin() {
-    const u = document.getElementById('inp-id').value.toLowerCase();
-    const p = document.getElementById('inp-pass').value;
+const output = document.getElementById('output');
+const cmdInput = document.getElementById('cmd');
 
-    if (PROFILES[u] && PROFILES[u].pass === p) {
-        currentUser = PROFILES[u];
-        // Заполняем личное дело
-        document.getElementById('p-name').innerText = currentUser.name;
-        document.getElementById('p-token').innerText = currentUser.token || "UNK";
-        document.getElementById('p-lvl-val').innerText = currentUser.level;
-        document.getElementById('u-lvl-display').innerText = currentUser.level;
-        
-        transitionToScreen('scr-dash');
-    } else {
-        alert("ACCESS_DENIED: Invalid Credentials");
-    }
+function print(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    output.appendChild(div);
+    output.scrollTop = output.scrollHeight;
 }
 
-// НОВАЯ КОНСОЛЬ (Чистая, без root@glomg)
-function handleTerminalCommand(e) {
-    if (e.key === 'Enter') {
-        const out = document.getElementById('terminal-out');
-        const val = e.target.value;
-        if (!val) return;
+// ЛОГИКА ВХОДА (ИСПРАВЛЕН ПРОМПТ)
+cmdInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+        const val = cmdInput.value.trim().toLowerCase();
+        print("> " + val); // Убрал root@glomg
 
-        const line = document.createElement('div');
-        line.innerHTML = `<span class="prompt">></span> ${val}`;
-        out.appendChild(line);
-        
-        const res = document.createElement('div');
-        res.style.color = "#666";
-        res.style.marginBottom = "15px";
-        res.innerText = `System: command '${val}' not found in core modules.`;
-        
-        out.appendChild(res);
-        e.target.value = "";
-        out.scrollTop = out.scrollHeight;
+        if (step === "ID") {
+            if (PROFILES[val]) {
+                tempUser = PROFILES[val];
+                print("ID ACCEPTED. Введите пароль...");
+                cmdInput.type = "password";
+                step = "PASSWORD";
+            } else {
+                print("ERROR: Unknown ID.");
+            }
+        } 
+        else if (step === "PASSWORD") {
+            if (val === tempUser.pass) {
+                print("ACCESS GRANTED.");
+                // Загружаем данные в модалку
+                document.getElementById('p-name-val').innerText = tempUser.name;
+                document.getElementById('p-lvl-val').innerText = tempUser.level;
+                document.getElementById('p-token-val').innerText = tempUser.token || "UNK";
+                
+                setTimeout(() => transitionToScreen('scr-dash'), 500);
+            } else {
+                print("DENIED. System lockout...");
+                setTimeout(() => location.reload(), 1500);
+            }
+        }
+        cmdInput.value = "";
     }
+});
+
+function transitionToScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
 }
 
-// УПРАВЛЕНИЕ ОКНОМ ПРОФИЛЯ
+function toggleSidebar(state) {
+    const side = document.getElementById('sidebar');
+    const over = document.getElementById('side-overlay');
+    side.classList.toggle('open', state);
+    over.style.display = state ? 'block' : 'none';
+}
+
 function openProfile() {
-    if(!currentUser) { alert("Сначала авторизуйтесь!"); return; }
     document.getElementById('modal-profile').classList.remove('hidden');
     toggleSidebar(false);
 }
@@ -60,13 +74,15 @@ function closeProfile() {
     document.getElementById('modal-profile').classList.add('hidden');
 }
 
-function toggleSidebar(s) {
-    document.getElementById('sidebar').classList.toggle('open', s);
-    document.getElementById('side-overlay').style.display = s ? 'block' : 'none';
-}
-
-// Таймер для часов
+// Твои часы
 setInterval(() => {
-    const t = new Date().toLocaleTimeString();
-    if(document.getElementById('clock')) document.getElementById('clock').innerText = t;
+    document.getElementById('clock').innerText = new Date().toLocaleTimeString();
 }, 1000);
+
+// Инициализация (Твое интро)
+window.onload = () => {
+    setTimeout(() => {
+        document.getElementById('scr-intro').classList.add('hidden');
+        document.getElementById('scr-login').classList.remove('hidden');
+    }, 2000);
+};
