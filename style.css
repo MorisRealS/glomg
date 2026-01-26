@@ -1414,6 +1414,78 @@ body::after {
     cursor: pointer;
 }
 
+/* --- ФИКС КОНСОЛИ ГОСТЯ --- */
+.console-box {
+    height: 160px !important; /* Фиксированная высота для 5 строк */
+    max-height: 160px !important;
+    overflow: hidden !important; /* Запрет любого скролла */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background: rgba(0, 0, 0, 0.8) !important;
+    border: 1px solid var(--purple-dim) !important;
+    padding: 10px !important;
+}
+
+.console-box p {
+    margin: 2px 0 !important;
+    font-size: 0.85rem !important;
+    color: var(--terminal-green) !important;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+/* --- СТИЛИ БАЗЫ ДАННЫХ --- */
+.db-container {
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.db-log-item {
+    border: 1px solid var(--purple-dim);
+    background: rgba(168, 85, 247, 0.03);
+    margin-bottom: 12px;
+    transition: all 0.3s ease;
+}
+
+.db-log-item:hover {
+    background: rgba(168, 85, 247, 0.08);
+    border-color: var(--purple);
+}
+
+.db-log-header {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    gap: 15px;
+}
+
+.db-expand-btn {
+    padding: 4px 12px;
+    font-size: 0.7rem;
+    min-width: 90px;
+    border: 1px solid var(--purple);
+}
+
+.db-log-content {
+    padding: 0 15px;
+    max-height: 0; /* Скрыто по умолчанию */
+    overflow: hidden;
+    transition: max-height 0.4s ease-out, padding 0.4s ease;
+    background: rgba(0, 0, 0, 0.4);
+    color: #ccc;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.db-log-content.open {
+    max-height: 500px; /* Разворачивание */
+    padding: 15px;
+    border-top: 1px solid var(--purple-dim);
+}
+
 /* Дополнение для анимации заставки */
 #intro-logo.hidden { display: none; }
 .blink { animation: blinker 1.5s linear infinite; }
