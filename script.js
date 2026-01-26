@@ -7,27 +7,46 @@ let step = "ID", tempUser = null, myMessages = [], fullArchive = [];
 const socket = typeof io !== 'undefined' ? io() : null;
 
 if (socket) {
-    socket.on('tg_msg', (data) => alert("🚨 ТЕРМИНАЛ: " + data.text));
-    
+    socket.on('connect', () => console.log("Соединение с CORE установлено"));
+
     // Почта
-    socket.on('load_mail', (msgs) => { myMessages = msgs; renderMail(); });
-    socket.on('new_mail', (msg) => { myMessages.push(msg); renderMail(); alert("📬 НОВОЕ ПИСЬМО"); });
+    socket.on('load_mail', (msgs) => { 
+        myMessages = msgs; 
+        renderMail(); 
+    });
+    socket.on('new_mail', (msg) => { 
+        myMessages.push(msg); 
+        renderMail(); 
+        alert("📬 ПОЛУЧЕНО СООБЩЕНИЕ В ПОЧТУ"); 
+    });
 
     // Архив
-    socket.on('init_archive', (data) => { fullArchive = data; renderArchive(); });
-    socket.on('new_archive_data', (entry) => { fullArchive.push(entry); renderArchive(); });
+    socket.on('init_archive', (data) => { 
+        fullArchive = data; 
+        renderArchive(); 
+    });
+    socket.on('new_archive_data', (entry) => { 
+        fullArchive.push(entry); 
+        renderArchive(); 
+    });
 }
 
 function renderArchive() {
     const container = document.getElementById('archive-list');
     if (!container) return;
+    
+    if (fullArchive.length === 0) {
+        container.innerHTML = '<p style="opacity:0.3">[ АРХИВ ПУСТ ]</p>';
+        return;
+    }
+
     container.innerHTML = fullArchive.map((item, index) => `
-        <div style="border: 1px solid #a855f7; margin-bottom: 10px; background: rgba(0,0,0,0.5);">
-            <div onclick="toggleArchiveItem(${index})" style="padding: 10px; cursor: pointer; display: flex; justify-content: space-between; background: rgba(168, 85, 247, 0.2);">
-                <span>[+] ТЕМА: ${item.title}</span>
-                <span style="font-size: 10px; opacity: 0.6;">${item.timestamp}</span>
+        <div style="border: 1px solid #a855f7; margin-bottom: 10px; background: rgba(20, 10, 30, 0.8); text-align: left;">
+            <div onclick="toggleArchiveItem(${index})" style="padding: 12px; cursor: pointer; display: flex; justify-content: space-between; background: rgba(168, 85, 247, 0.15);">
+                <span style="color: #a855f7; font-weight: bold;">[+] ТЕМА: ${item.title}</span>
+                <span style="font-size: 10px; opacity: 0.5;">${item.timestamp}</span>
             </div>
-            <div id="arch-body-${index}" style="display: none; padding: 15px; border-top: 1px dashed #a855f7; color: #ccc;">
+            <div id="arch-body-${index}" style="display: none; padding: 15px; border-top: 1px dashed #a855f7; color: #eee; line-height: 1.5; font-size: 14px;">
                 ${item.content}
             </div>
         </div>
@@ -36,7 +55,7 @@ function renderArchive() {
 
 function toggleArchiveItem(index) {
     const el = document.getElementById(`arch-body-${index}`);
-    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
 
 function renderMail() {
@@ -45,18 +64,24 @@ function renderMail() {
     if(list && count) {
         count.innerText = myMessages.length;
         list.innerHTML = myMessages.map(m => `
-            <div style="border: 1px solid #0f4; padding: 10px; margin-bottom: 5px; text-align: left;">
-                <div style="font-size: 9px; color: #0f4;">ОТ: ${m.from} | ${m.date}</div>
-                <div>${m.text}</div>
+            <div style="border: 1px solid #0f4; padding: 10px; margin-bottom: 5px; text-align: left; background: rgba(0,255,70,0.05);">
+                <div style="font-size: 9px; color: #0f4; margin-bottom: 4px;">ОТ: ${m.from} | ${m.date}</div>
+                <div style="color: #fff;">${m.text}</div>
             </div>
         `).reverse().join('');
     }
 }
 
-// Стандартные функции переходов
 function startTransition(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-    document.getElementById(id).classList.remove('hidden');
+    const fade = document.getElementById('fade-overlay');
+    fade.classList.add('active');
+    setTimeout(() => {
+        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+        fade.classList.remove('active');
+        if(id === 'scr-archive') renderArchive();
+        if(id === 'scr-mail') renderMail();
+    }, 500);
 }
 
 document.getElementById('cmd').addEventListener("keydown", (e) => {
