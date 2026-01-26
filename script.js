@@ -1,78 +1,86 @@
 const PROFILES = {
-    "kiddy":    { name: "Kiddy", pass: "1111", level: "A1", token: "KID" },
-    "dykzxz":   { name: "Dykzxz", pass: "2222", level: "B3", token: "DYK" },
-    "msk4ne_":  { name: "MSK4NE", pass: "3333", level: "S-Class", token: "MSK" },
-    "sumber":   { name: "Sumber", pass: "0000", level: "Admin", token: "SBR" },
-    "krimpi":   { name: "Krimpi", pass: "5555", level: "Guest", token: "KRM" },
-    "morisreal": { name: "МОРИС", pass: "123", level: "L4", token: "MRS" }
+    "kiddy":    { name: "Kiddy", pass: "1111", level: 4, token: "KID", uuid: "1100110010" },
+    "dykzxz":   { name: "Dykzxz", pass: "2222", level: 4, token: "DYK", uuid: "1010101100" },
+    "msk4ne_":  { name: "MSK4NE", pass: "3333", level: 4, token: "MSK", uuid: "0011001101" },
+    "sumber":   { name: "Sumber", pass: "0000", level: 5, token: "SBR", uuid: "1111100000" },
+    "morisreal": { name: "МОРИС", pass: "123", level: 6, token: "MRS", uuid: "1010101010" }
 };
 
-let step = "ID"; 
+const RADAR_NODES = [
+    { id: "S-01", x: 30, y: 40, type: "REACTIVE", status: "STABLE" },
+    { id: "S-07", x: 70, y: 20, type: "ANOMALY", status: "ACTIVE" },
+    { id: "X-99", x: 55, y: 75, type: "CORE", status: "CRITICAL" }
+];
+
 let tempUser = null;
 
-const output = document.getElementById('output');
-const inpId = document.getElementById('inp-id');
-const inpPass = document.getElementById('inp-pass');
-const dashScreen = document.getElementById('scr-dash');
-const loginScreen = document.getElementById('scr-login');
-
-function print(text, color = "") {
-    if (!output) return;
-    const div = document.createElement('div');
-    if (color) div.style.color = color;
-    div.textContent = text;
-    output.appendChild(div);
-    output.scrollTop = output.scrollHeight;
+// Инициализация радара
+function initializeTacticalRadar() {
+    transitionToScreen('scr-map');
+    const container = document.getElementById('radar-nodes');
+    container.innerHTML = '';
+    RADAR_NODES.forEach(node => {
+        const el = document.createElement('div');
+        el.className = 'node';
+        el.style.left = node.x + '%';
+        el.style.top = node.y + '%';
+        el.onclick = () => {
+            document.getElementById('p-title').innerText = "OBJECT: " + node.id;
+            document.getElementById('p-text').innerHTML = `TYPE: ${node.type}<br>STATUS: ${node.status}`;
+        };
+        container.appendChild(el);
+    });
 }
 
+// ЛОГИКА ВХОДА И ПЕРЕХОДОВ
 function processLogin() {
-    const idVal = inpId.value.trim().toLowerCase();
-    const passVal = inpPass.value;
+    const id = document.getElementById('inp-id').value.toLowerCase();
+    const pass = document.getElementById('inp-pass').value;
+    const out = document.getElementById('login-output');
 
-    if (PROFILES[idVal]) {
-        if (PROFILES[idVal].pass === passVal) {
-            tempUser = PROFILES[idVal];
-            print("> ACCESS_GRANTED", "#00ff44");
-            
-            // Загружаем данные в профиль
-            document.getElementById('p-name-val').innerText = tempUser.name;
-            document.getElementById('p-lvl-val').innerText = tempUser.level;
-            document.getElementById('p-token-val').innerText = tempUser.token || "UNK";
-            document.getElementById('u-lvl-display').innerText = tempUser.level;
+    if (PROFILES[id] && PROFILES[id].pass === pass) {
+        tempUser = PROFILES[id];
+        out.innerHTML = "<span style='color:var(--terminal-green)'>ACCESS GRANTED. SYNCING...</span>";
+        
+        // Заполнение профиля
+        document.getElementById('p-name-val').innerText = tempUser.name;
+        document.getElementById('p-token-val').innerText = tempUser.token;
+        document.getElementById('p-lvl-text-val').innerText = "LEVEL " + tempUser.level;
+        document.getElementById('p-uuid-val').innerText = tempUser.uuid;
+        document.getElementById('u-lvl-display').innerText = tempUser.level;
 
-            startTransition();
-        } else {
-            print("> ERROR: INVALID_KEY", "#ff2233");
-        }
+        // Статус модерации
+        let status = "USER";
+        if (tempUser.level === 4) status = "MODERATOR";
+        if (tempUser.level >= 5) status = "ADMINISTRATOR";
+        document.getElementById('p-status-val').innerText = status;
+
+        startTransition('scr-dash');
     } else {
-        print("> ERROR: ID_NOT_FOUND", "#ff2233");
+        out.innerHTML = "<span style='color:var(--error)'>AUTHENTICATION FAILED.</span>";
     }
 }
 
-function startTransition() {
-    document.getElementById('fade').classList.add('active');
+function startTransition(targetId) {
+    const fade = document.getElementById('fade');
+    fade.classList.add('active');
     setTimeout(() => {
-        loginScreen.classList.add('hidden');
-        dashScreen.classList.remove('hidden');
-        document.getElementById('fade').classList.remove('active');
-    }, 600);
+        transitionToScreen(targetId);
+        fade.classList.remove('active');
+    }, 800);
 }
 
 function transitionToScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
     document.getElementById(id).classList.remove('hidden');
+    if(id === 'scr-guest') startGuestLogs();
 }
 
 function toggleSidebar(state) {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('side-overlay');
-    if (state) {
-        sidebar.classList.add('open');
-        overlay.style.display = 'block';
-    } else {
-        sidebar.classList.remove('open');
-        overlay.style.display = 'none';
-    }
+    const side = document.getElementById('sidebar');
+    const over = document.getElementById('side-overlay');
+    side.classList.toggle('open', state);
+    over.style.display = state ? 'block' : 'none';
 }
 
 function openProfile() {
@@ -84,38 +92,41 @@ function closeProfile() {
     document.getElementById('modal-profile').classList.add('hidden');
 }
 
-function handleTerminalCommand(event) {
-    if (event.key === "Enter") {
-        const input = document.getElementById('terminal-input');
-        const out = document.getElementById('terminal-out');
-        const cmd = input.value;
-        
-        const line = document.createElement('div');
-        line.innerHTML = `<span style="color:var(--purple)">></span> ${cmd}`;
-        out.appendChild(line);
-        
-        input.value = "";
-        out.scrollTop = out.scrollHeight;
-    }
+// ГОСТЕВЫЕ ЛОГИ
+function startGuestLogs() {
+    const box = document.getElementById('guest-console');
+    box.innerHTML = '';
+    const lines = [
+        "Initializing guest session...",
+        "Connection: SECURE",
+        "Loading system modules...",
+        "Access Level: 0 (RESTRICTED)",
+        "Warning: Command line disabled."
+    ];
+    let i = 0;
+    const interval = setInterval(() => {
+        if(i < lines.length) {
+            const p = document.createElement('p');
+            p.innerText = "> " + lines[i];
+            box.appendChild(p);
+            i++;
+        } else clearInterval(interval);
+    }, 400);
 }
 
-// Часы
+// ЧАСЫ
 setInterval(() => {
-    const now = new Date();
-    const time = now.toLocaleTimeString();
+    const time = new Date().toLocaleTimeString();
     if(document.getElementById('clock')) document.getElementById('clock').innerText = time;
     if(document.getElementById('radar-clock')) document.getElementById('radar-clock').innerText = time;
 }, 1000);
 
-// Интро
+// ИНТРО (ЛОГОТИП)
 window.onload = () => {
+    const intro = document.getElementById('intro-ascii');
+    intro.innerText = "G.L.O.M.G. SYSTEM BOOTING...";
     setTimeout(() => {
-        document.getElementById('scr-intro').classList.add('hidden');
-        document.getElementById('scr-login').classList.remove('hidden');
-    }, 2500);
+        document.getElementById('intro-logo').classList.remove('hidden');
+        setTimeout(() => startTransition('scr-login'), 3000);
+    }, 1500);
 };
-
-// Радар (Заглушка логики)
-function initializeTacticalRadar() {
-    transitionToScreen('scr-map');
-}
