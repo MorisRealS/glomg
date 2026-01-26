@@ -2,57 +2,75 @@
     --purple: #a855f7;
     --purple-dim: rgba(168, 85, 247, 0.3);
     --bg: #050208;
+    --error: #ff2233;
 }
+
+* { box-sizing: border-box; }
 
 body, html {
     margin: 0; padding: 0; width: 100%; height: 100%;
     background: var(--bg); color: var(--purple);
-    font-family: 'Courier New', monospace; overflow: hidden;
+    font-family: 'Courier New', monospace; overflow-x: hidden;
 }
 
-#matrix-canvas { position: fixed; top: 0; left: 0; z-index: -1; }
+/* ФОН */
+#matrix-canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.5; }
+.vhs-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+    z-index: 999; pointer-events: none;
+}
 
-/* ГЛАВНЫЙ КОНТЕЙНЕР ДЛЯ ЦЕНТРОВКИ */
+/* ЭКРАНЫ */
 .screen {
+    width: 100vw; height: 100vh;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    width: 100vw; height: 100vh;
     position: absolute; top: 0; left: 0;
 }
 
 .hidden { display: none !important; }
 
-/* ОФОРМЛЕНИЕ ФОРМЫ */
-.login-frame, .main-content {
-    display: flex; flex-direction: column;
-    align-items: center; text-align: center;
-}
+/* ЛОГОТИПЫ */
+pre { font-size: 10px; line-height: 1.1; text-shadow: 0 0 5px var(--purple); margin: 20px 0; }
 
-pre { font-size: 10px; line-height: 1; margin: 10px 0; }
-
-input {
-    background: rgba(20, 10, 30, 0.8);
-    border: 1px solid var(--purple);
-    color: var(--purple);
-    padding: 8px; margin: 5px;
-    outline: none;
-}
-
-.btn-ui, .mega-btn {
+/* КНОПКИ */
+.btn-ui, .mega-btn, .btn-ui-nav {
     background: transparent; border: 1px solid var(--purple);
     color: var(--purple); padding: 10px 20px;
-    cursor: pointer; margin: 5px; transition: 0.3s;
+    cursor: pointer; font-family: inherit; margin: 5px;
+    transition: 0.3s; text-transform: uppercase;
 }
-.btn-ui:hover { background: var(--purple-dim); box-shadow: 0 0 10px var(--purple); }
+.btn-ui:hover, .mega-btn:hover { background: var(--purple-dim); box-shadow: 0 0 10px var(--purple); }
 
-/* САЙДБАР (Скрыт по умолчанию) */
+/* ЛОГИН ФОРМА */
+.login-form { display: flex; flex-direction: column; align-items: center; }
+input {
+    background: rgba(20, 10, 40, 0.6); border: 1px solid var(--purple);
+    color: var(--purple); padding: 10px; margin: 5px; outline: none; width: 250px;
+}
+
+/* САЙДБАР */
 .sidebar {
-    position: fixed; top: 0; left: -250px; width: 250px; height: 100%;
-    background: #0a050f; border-right: 1px solid var(--purple);
-    transition: 0.3s; z-index: 1000; padding: 20px;
+    position: fixed; top: 0; left: -260px; width: 250px; height: 100%;
+    background: #0a0510; border-right: 1px solid var(--purple);
+    transition: 0.3s; z-index: 2000; padding: 20px;
 }
 .sidebar.open { left: 0; }
 
-/* АРХИВ И РАДАР (Базовые стили внутри одного файла) */
-.db-container { width: 80%; max-width: 600px; margin-top: 20px; }
-.archive-item { border: 1px solid var(--purple-dim); margin: 5px; padding: 10px; text-align: left; }
+/* ГОСТЬ (ФИКС ВИДИМОСТИ) */
+.guest-body { background: #08050a; }
+#noise-canvas { position: fixed; top: 0; left: 0; z-index: -2; opacity: 0.2; }
+.guest-layout { padding: 40px; position: relative; z-index: 5; }
+.guest-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; max-width: 1000px; }
+.console-box, .news-block, .info-container {
+    border: 1px solid var(--purple-dim); padding: 15px; background: rgba(168, 85, 247, 0.05);
+    min-height: 150px; text-align: left;
+}
+
+/* АРХИВ */
+.archive-layout { width: 100%; max-width: 800px; margin: 40px auto; padding: 20px; }
+.archive-item { border: 1px solid var(--purple-dim); margin-bottom: 10px; background: rgba(168, 85, 247, 0.05); }
+.archive-item-header { padding: 15px; cursor: pointer; display: flex; justify-content: space-between; }
+.archive-item-content { max-height: 0; overflow: hidden; padding: 0 15px; transition: 0.4s; }
+.archive-item.open .archive-item-content { max-height: 300px; padding: 15px; border-top: 1px solid var(--purple-dim); }
