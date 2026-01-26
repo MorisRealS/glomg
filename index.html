@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G.L.O.M.G. | CORE V32.0 FINAL</title>
+    <title>G.L.O.M.G. | CORE V32.5</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,32 +11,13 @@
     <div class="scanline-effect"></div>
     <div id="fade"></div>
 
+    <audio id="ambient-pc" loop>
+        <source src="https://www.soundjay.com/transportation/sounds/small-electric-motor-1.mp3" type="audio/mpeg">
+    </audio>
+
     <div id="custom-menu">
         <div onclick="location.reload()">[ REBOOT_SYSTEM ]</div>
         <div onclick="startTransition('scr-login')">[ SWITCH_USER ]</div>
-        <div onclick="toggleSidebar(true)">[ OPEN_SIDEBAR ]</div>
-    </div>
-
-    <div id="modal-profile" class="modal-profile hidden">
-        <div class="profile-card">
-            <div class="corner-tl"></div><div class="corner-br"></div>
-            <button class="close-profile-btn" onclick="closeProfile()"><-- [ BACK ]</button>
-            <div class="profile-header">
-                <div class="profile-avatar">
-                    <svg viewBox="0 0 24 24" fill="#A855F7"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                </div>
-                <div class="profile-main-info">
-                    <h2 id="p-name-val" class="ong-logo-small">OPERATOR</h2>
-                    <p class="token">TOKEN: <span id="p-token-val">---</span></p>
-                    <div class="status-tag">STATUS: ACTIVE</div>
-                </div>
-            </div>
-            <div class="profile-grid">
-                <div class="p-item"><label>LVL</label><span class="p-value" id="p-lvl-text-val">0</span></div>
-                <div class="p-item"><label>UUID</label><span class="p-value" id="p-uuid-val">0000</span></div>
-                <div class="p-item"><label>RANK</label><span class="p-value" id="p-status-val">USER</span></div>
-            </div>
-        </div>
     </div>
 
     <section id="scr-intro" class="screen">
@@ -47,7 +28,6 @@
  ██████  ███    ██  ██████  
 ██    ██ ████   ██ ██       
 ██    ██ ██ ██  ██ ██   ███ 
-██    ██ ██  ██ ██ ██    ██ 
  ██████  ██   ████  ██████  </pre>
                 <p class="blink">INITIALIZING O.N.G. CORE...</p>
             </div>
@@ -58,14 +38,14 @@
         <canvas id="matrix-bg"></canvas>
         <div class="login-frame">
             <h1 class="glitch" data-text="G.L.O.M.G.">G.L.O.M.G.</h1>
-            <div id="login-output" class="status-msg">WAITING_FOR_AUTH...</div>
+            <div id="login-output" class="status-msg">READY_FOR_AUTH</div>
             <div class="inputs">
-                <input type="text" id="inp-id" placeholder="OPERATOR_ID" autocomplete="off">
-                <input type="password" id="inp-pass" placeholder="ACCESS_KEY">
+                <input type="text" id="inp-id" placeholder="OPERATOR_ID" oninput="playTypingSound()">
+                <input type="password" id="inp-pass" placeholder="ACCESS_KEY" oninput="playTypingSound()">
             </div>
             <div class="actions">
                 <button class="btn-ui btn-gold" onclick="processLogin()">INITIALIZE</button>
-                <button class="btn-ui btn-gold-sec" onclick="startTransition('scr-guest')">GUEST_ACCESS</button>
+                <button class="btn-ui btn-gold-sec" onclick="startTransition('scr-guest')">GUEST_MODE</button>
             </div>
         </div>
     </section>
@@ -78,27 +58,27 @@
 ██    ██ ██ ██  ██ ██   ███ 
  ██████  ██   ████  ██████  </pre>
             
-            <button class="btn-ui btn-gold" style="width: 320px; margin-bottom: 40px;" onclick="startTransition('scr-login')">ПРИСОЕДИНИТЬСЯ</button>
+            <button class="btn-ui btn-gold" style="width: 320px; margin-bottom: 40px;" onclick="startTransition('scr-login')">АВТОРИЗАЦИЯ</button>
 
             <div class="guest-grid">
                 <div class="guest-col">
-                    <h3 class="label">SYSTEM_STREAM:</h3>
+                    <h3 class="label">CONSOLE_LOG:</h3>
                     <div id="guest-console" class="console-box"></div>
                 </div>
                 <div class="guest-col">
                     <h3 class="label">MISSION_DATA:</h3>
                     <div class="info-container">
                         <p style="color: var(--purple); font-weight: bold;">[ ОБЪЕКТ ОНГ ]</p>
-                        <p>Независимая группа по стабилизации UUID. Мы обеспечиваем порядок в цифровом хаосе Сектора 04.</p>
+                        <p>Вы находитесь на внешнем узле Основной Научной Группы. Мы занимаемся изучением аномальных UUID-структур и защитой цифрового периметра от корпорации P.R.I.S.M. Свободный доступ ограничен протоколом "Zero Trust".</p>
                     </div>
                 </div>
             </div>
 
             <div class="news-section">
-                <h3 class="label">LATEST_SYSTEM_UPDATES:</h3>
+                <h3 class="label">НОВОСТИ_СИСТЕМЫ:</h3>
                 <div class="news-block">
-                    <p><b>[26.01.2026]</b> — Внедрена V32.0. CRT-эмуляция, глитч-переходы и сканирование сетки активны.</p>
-                    <p><b>[20.01.2026]</b> — Радар обновлен до пульсирующего режима.</p>
+                    <p><b>[26.01.2026]</b> — <b>ГЛОБАЛЬНОЕ ОБНОВЛЕНИЕ:</b> Ядро переведено на версию 32.5. Внедрена система "Matrix-ID", позволяющая визуализировать поток данных в зависимости от уровня доступа оператора.</p>
+                    <p><b>[24.01.2026]</b> — <b>БЕЗОПАСНОСТЬ:</b> Зафиксирована активность ботов P.R.I.S.M в районе бункера Sumber. Всем сотрудникам рекомендуется обновить ключи шифрования.</p>
                 </div>
             </div>
         </div>
@@ -116,72 +96,35 @@
 ██    ██ ████   ██ ██       
 ██    ██ ██ ██  ██ ██   ███ 
  ██████  ██   ████  ██████  </pre>
-            <div class="welcome-text-block">
-                <h2>Welcome, <span id="welcome-user-name" style="color: var(--purple);">---</span></h2>
-                <p>Доступ к ядру ОНГ подтвержден. Система готова.</p>
-            </div>
+            <h2>Welcome, <span id="welcome-user-name" style="color: var(--purple);">---</span></h2>
             
             <div class="dash-row-buttons">
-                <button class="mega-btn" onclick="initializeTacticalRadar()">КАРТА ОБЪЕКТОВ</button>
-                <button class="mega-btn" onclick="startTransition('scr-archive')">АРХИВ ДАННЫХ</button>
-                <button class="mega-btn" onclick="startTransition('scr-sysdata')">СОСТОЯНИЕ СИСТЕМЫ</button>
+                <button class="mega-btn" onclick="initializeTacticalRadar()">РАДАР</button>
+                <button class="mega-btn" onclick="startTransition('scr-archive')">АРХИВ</button>
+                <button class="mega-btn" onclick="startTransition('scr-sysdata')">СИСТЕМА</button>
             </div>
 
             <div class="staff-info-block">
                 <div class="purple-fading-line"></div>
-                <p>ВНИМАНИЕ: Все действия логируются. Директор: MorisReal</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="scr-map" class="screen hidden">
-        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>RADAR_OS</div></header>
-        <div class="radar-scroll-wrapper" id="radar-scroll">
-            <div class="radar-view-section">
-                <div class="radar-disk">
-                    <div class="pulse-ring"></div>
-                    <div id="radar-nodes"></div>
-                </div>
-            </div>
-            <div class="radar-info-section" id="radar-info">
-                <div class="purple-fading-line"></div>
-                <h2 id="p-title" class="ong-logo-small">SCANNING...</h2>
-                <p id="p-text">Выберите узел на сетке для анализа.</p>
+                <h4 style="color: var(--purple); margin-bottom: 5px;">ИНСТРУКЦИЯ ДЛЯ ПЕРСОНАЛА:</h4>
+                <p>1. При обнаружении задержки в UUID-потоке более 15мс — немедленно доложить оператору <b>Kiddy</b>.<br>
+                2. Доступ к терминалу <b>MorisReal</b> строго запрещен под угрозой обнуления UUID.<br>
+                3. Любые сигналы из сектора "Бункер Призмы" считать враждебными.</p>
             </div>
         </div>
     </section>
 
     <section id="scr-sysdata" class="screen hidden">
-        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>MONITORING</div></header>
+        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>SYSTEM_HEALTH</div></header>
         <div class="sys-mon-container">
+            <div class="overall-status">CORE_CONDITION: <span id="sys-health-text" style="color: lime;">OPTIMAL</span></div>
             <div class="sensor-grid">
-                <div class="sensor-card"><label>CPU</label><div class="bar-bg"><div id="bar-cpu" class="bar-fill"></div></div><span id="val-cpu">0%</span></div>
-                <div class="sensor-card"><label>TEMP</label><div class="bar-bg"><div id="bar-temp" class="bar-fill"></div></div><span id="val-temp">0°C</span></div>
-                <div class="sensor-card"><label>RAM</label><div class="bar-bg"><div id="bar-mem" class="bar-fill"></div></div><span id="val-mem">0 GB</span></div>
+                <div class="sensor-card"><label>CPU_LOAD</label><div class="bar-bg"><div id="bar-cpu" class="bar-fill"></div></div><span id="val-cpu">0%</span></div>
+                <div class="sensor-card"><label>TEMP_CORE</label><div class="bar-bg"><div id="bar-temp" class="bar-fill"></div></div><span id="val-temp">0°C</span></div>
+                <div class="sensor-card"><label>MEM_USAGE</label><div class="bar-bg"><div id="bar-mem" class="bar-fill"></div></div><span id="val-mem">0 GB</span></div>
             </div>
         </div>
     </section>
-
-    <section id="scr-archive" class="screen hidden scrollable">
-        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>SECURE_ARCHIVE</div></header>
-        <div class="archive-container">
-            <div class="archive-item">
-                <button class="archive-header" onclick="toggleArchive(this)">[+] ОТЧЕТ #031: ИНЦИДЕНТ DYK</button>
-                <div class="archive-content hidden">Нестабильность ядра. UUID-поток прерван.</div>
-            </div>
-            <div class="archive-item">
-                <button class="archive-header" onclick="toggleArchive(this)">[+] ПРОТОКОЛ P.R.I.S.M: INTERCEPT</button>
-                <div class="archive-content hidden">Зафиксирована попытка сканирования из Сектора 04.</div>
-            </div>
-        </div>
-    </section>
-
-    <div id="side-overlay" onclick="toggleSidebar(false)"></div>
-    <div id="sidebar" class="sidebar">
-        <button class="side-link-btn" onclick="openProfile()">PERSONAL_PROFILE</button>
-        <button class="side-link-btn" onclick="startTransition('scr-login')">SWITCH_USER</button>
-        <button class="side-link-btn logout-red-btn" onclick="location.reload()">LOGOUT</button>
-    </div>
 
     <script src="script.js"></script>
 </body>
