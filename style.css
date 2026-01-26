@@ -1444,6 +1444,52 @@ body::after {
 /* РАДАР */
 .radar-desc { padding: 40px; text-align: center; min-height: 500px; border-top: 1px solid var(--purple-dim); }
 
+/* КНОПКИ: Исправление багов текста */
+button:hover {
+    background-color: var(--purple) !important;
+    color: #fff !important; /* Текст больше не черный */
+    box-shadow: 0 0 20px var(--purple);
+}
+
+/* ЛОГОТИПЫ */
+.mini-logo-box {
+    border: 1px solid var(--purple);
+    padding: 5px 15px;
+    display: inline-block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+/* ДАТЧИКИ ГОРИЗОНТАЛЬНО */
+.sensor-row-horizontal {
+    display: flex;
+    gap: 20px;
+    padding: 40px;
+    justify-content: space-around;
+    width: 100%;
+}
+.sensor-card {
+    flex: 1;
+    background: rgba(168, 85, 247, 0.05);
+    border: 1px solid var(--purple-dim);
+    padding: 20px;
+}
+
+/* РАДАР */
+.radar-fullscreen { width: 100vw; height: 100vh; position: relative; }
+.radar-disk { width: 500px; height: 500px; border: 1px solid var(--purple-dim); border-radius: 50%; margin: 40px auto; position: relative; }
+
+/* ТЕМНЫЕ ПОЛЯ ВВОДА */
+input {
+    background: rgba(20, 5, 30, 0.9) !important;
+    border: 1px solid var(--purple);
+    color: var(--purple);
+    padding: 12px;
+    margin: 5px;
+    width: 260px;
+}
+
 /* Дополнение для анимации заставки */
 #intro-logo.hidden { display: none; }
 .blink { animation: blinker 1.5s linear infinite; }
