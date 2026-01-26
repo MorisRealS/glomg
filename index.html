@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>G.L.O.M.G. | CORE V29.5 FINAL</title>
+    <title>G.L.O.M.G. | CORE V30</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -24,14 +24,14 @@
 
     <section id="scr-login" class="screen hidden">
         <div class="login-frame">
-            <h1 class="glitch">G.L.O.M.G.</h1>
+            <h1 class="glitch" data-text="G.L.O.M.G.">G.L.O.M.G.</h1>
             <div class="inputs">
                 <input type="text" id="inp-id" placeholder="OPERATOR_ID" spellcheck="false">
                 <input type="password" id="inp-pass" placeholder="ACCESS_KEY">
             </div>
             <div class="actions">
-                <button class="btn-main btn-ui" onclick="processLogin()">INITIALIZE</button>
-                <button class="btn-sec btn-ui" onclick="transitionToScreen('scr-guest')">GUEST_ACCESS</button>
+                <button class="btn-main" onclick="processLogin()">INITIALIZE</button>
+                <button class="btn-sec" onclick="transitionToScreen('scr-guest')">GUEST_ACCESS</button>
             </div>
         </div>
     </section>
@@ -39,7 +39,7 @@
     <section id="scr-guest" class="screen hidden">
         <header class="status-bar">
             <div class="bar-left">GUEST_SESSION | LVL: 0</div>
-            <div class="bar-right"><button class="btn-ui" onclick="transitionToScreen('scr-login')">LOGIN_PAGE</button></div>
+            <div class="bar-right"><button class="btn-ui" onclick="transitionToScreen('scr-login')">LOGIN</button></div>
         </header>
         <div class="guest-layout">
             <div class="guest-col">
@@ -47,12 +47,13 @@
                 <div id="guest-console" class="console-box"></div>
             </div>
             <div class="guest-col">
-                <h3 class="label">INFO_SECTOR:</h3>
-                <div class="info-container">
+                <div class="news-block">
                     <p class="purple-t">> NEWS:</p>
-                    <p>Core V29.5 online. Стабильность узлов 100%.</p>
+                    <p>Core V30 deployed. Interface nodes recalibrated.</p>
+                </div>
+                <div class="about-block">
                     <p class="purple-t">> ABOUT:</p>
-                    <p>Доступ по протоколу GUEST ограничен. Для полного доступа к радару нужна авторизация.</p>
+                    <p>G.L.O.M.G. Monitoring protocols active. Unauthorized access is logged.</p>
                 </div>
             </div>
         </div>
@@ -67,44 +68,32 @@
         <div class="main-content">
             <h2 id="welcome-msg" class="glitch-slow">WELCOME</h2>
             <div class="big-buttons-grid">
-                <button class="mega-btn btn-ui" onclick="initializeTacticalRadar()">ТАКТИЧЕСКИЙ РАДАР</button>
-                <button class="mega-btn btn-ui" onclick="transitionToScreen('scr-archive')">АРХИВ ДАННЫХ</button>
-                <button class="mega-btn btn-ui" onclick="transitionToScreen('scr-sysdata')">СИСТЕМНЫЕ ДАННЫЕ</button>
+                <button class="mega-btn" onclick="initializeTacticalRadar()">ТАКТИЧЕСКИЙ РАДАР</button>
+                <button class="mega-btn" onclick="transitionToScreen('scr-archive')">АРХИВ ДАННЫХ</button>
+                <button class="mega-btn" onclick="transitionToScreen('scr-sysdata')">СИСТЕМНЫЕ ДАННЫЕ</button>
             </div>
-            <button class="console-btn btn-ui" onclick="transitionToScreen('scr-full-console')">КОНСОЛЬ УПРАВЛЕНИЯ</button>
+            <button class="console-btn" onclick="transitionToScreen('scr-full-console')">КОНСОЛЬ УПРАВЛЕНИЯ</button>
         </div>
     </section>
 
     <section id="scr-archive" class="screen hidden">
-        <header class="page-header">
-            <span>FILE_ARCHIVE</span> 
-            <button class="btn-ui" onclick="transitionToScreen('scr-dash')">RETURN</button>
-        </header>
+        <header class="page-header"><span>FILE_ARCHIVE</span> <button class="btn-ui" onclick="transitionToScreen('scr-dash')">RETURN</button></header>
         <div class="page-body">
             <div class="data-row">> [RECORD_001] Ядро запущено оператором morisreal.</div>
-            <div class="data-row">> [RECORD_002] Sumber: Авторизация в узле PRISMA.</div>
-            <div class="data-row">> [RECORD_003] Dykzxz зафиксировал всплеск энергии в секторе 4.</div>
+            <div class="data-row">> [RECORD_002] Входящее соединение от Sumber.</div>
         </div>
     </section>
 
     <section id="scr-sysdata" class="screen hidden">
-        <header class="page-header">
-            <span>USERS_DATABASE</span> 
-            <button class="btn-ui" onclick="transitionToScreen('scr-dash')">RETURN</button>
-        </header>
+        <header class="page-header"><span>USERS_DATABASE</span> <button class="btn-ui" onclick="transitionToScreen('scr-dash')">RETURN</button></header>
         <div class="page-body">
             <div class="user-card">morisreal | LVL 6 | CHIEF OPERATOR</div>
             <div class="user-card">sumber | LVL 5 | PRISMA OWNER</div>
-            <div class="user-card">Dykzxz | LVL 4 | REACTOR ENG</div>
-            <div class="user-card">Msk4ne_ | LVL 4 | OPERATOR</div>
         </div>
     </section>
 
     <section id="scr-full-console" class="screen hidden">
-        <header class="page-header">
-            <span>ROOT_TERMINAL</span> 
-            <button class="btn-ui" onclick="transitionToScreen('scr-dash')">RETURN</button>
-        </header>
+        <header class="page-header"><span>ROOT_TERMINAL</span> <button class="btn-ui" onclick="transitionToScreen('scr-dash')">RETURN</button></header>
         <div id="terminal-out" class="terminal-body"></div>
         <div class="terminal-input-area">
             <span class="prompt">></span>
@@ -129,8 +118,7 @@
             <div class="radar-info-section" id="radar-info">
                 <div class="info-details">
                     <h2 id="p-title">OBJECT_DATA</h2>
-                    <hr style="border: 0; border-top: 1px solid rgba(168,85,247,0.3); margin: 20px 0;">
-                    <div id="p-text">ВЫБЕРИТЕ ОБЪЕКТ НА РАДАРЕ...</div>
+                    <div id="p-text">ВЫБЕРИТЕ ОБЪЕКТ...</div>
                 </div>
             </div>
         </div>
@@ -142,14 +130,17 @@
             <span>SYSTEM MENU</span>
             <button class="btn-close" onclick="toggleSidebar(false)">✕</button>
         </div>
-        <div class="user-profile-icon">
-            <img src="https://www.pngall.com/wp-content/uploads/12/Avatar-Profile-PNG-Photos.png" alt="User" class="win-user-img">
+        <div class="user-avatar-gray">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
         </div>
         <nav class="side-nav">
-            <button class="side-link btn-ui" onclick="alert('Profile secure.')">ЛИЧНЫЙ ПРОФИЛЬ</button>
-            <button class="side-link btn-ui" onclick="alert('Settings restricted.')">НАСТРОЙКИ ЯДРА</button>
-            <div style="height: 1px; background: rgba(168,85,247,0.2); margin: 20px 0;"></div>
-            <button class="side-link logout-red btn-ui" onclick="location.reload()">LOGOUT</button>
+            <button class="side-link" onclick="alert('Profile encrypted')">PROFILE</button>
+            <button class="side-link" onclick="alert('Settings locked')">SETTINGS</button>
+            <div class="nav-divider"></div>
+            <button class="side-link logout-red" onclick="location.reload()">LOGOUT</button>
         </nav>
     </div>
 
