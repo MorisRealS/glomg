@@ -6,7 +6,7 @@ const io = require('socket.io')(http);
 const TelegramBot = require('node-telegram-bot-api');
 
 // Твой актуальный токен
-const TOKEN = '8117485520:AAE01_awKVOA_pPTZIOCMUs7PDAzD6S5pck'; 
+const TOKEN = '8117485520:AAF4oGiiFI18knK_VPGu5M0bVBC465lsSzs'; 
 const bot = new TelegramBot(TOKEN, {polling: true});
 
 let mailBox = {};
