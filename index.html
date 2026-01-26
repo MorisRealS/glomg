@@ -71,21 +71,28 @@
 ██    ██ ██ ██  ██ ██   ███ 
  ██████  ██   ████  ██████  </pre>
             
-            <button class="btn-ui btn-gold" style="width: 300px; margin-bottom: 30px;" onclick="startTransition('scr-login')">ПРИСОЕДИНИТЬСЯ</button>
+            <button class="btn-ui btn-gold" style="width: 320px; margin-bottom: 40px;" onclick="startTransition('scr-login')">ПРИСОЕДИНИТЬСЯ</button>
 
             <div class="guest-grid">
                 <div class="guest-col">
-                    <h3 class="label">SYSTEM_STREAM:</h3>
-                    <div id="guest-console" class="console-box" style="height: 280px;"></div>
+                    <h3 class="label">LIVE_CONSOLES_STREAM:</h3>
+                    <div id="guest-console" class="console-box"></div>
                 </div>
                 <div class="guest-col">
-                    <h3 class="label">О НАС:</h3>
-                    <div class="info-container" style="text-align: left; line-height: 1.6;">
-                        <p style="color: var(--purple); font-weight: bold;">[ ОБЪЕКТ ОНГ ]</p>
-                        <p>Мы — Основная Научная Группа. Наша миссия: контроль UUID-потоков и стабилизация реакторов. Мы не подчиняемся P.R.I.S.M.</p>
-                        <div class="purple-fading-line"></div>
-                        <p>Статус: <span style="color: lime;">ВЕРБОВКА ОТКРЫТА</span></p>
+                    <h3 class="label">О НАС (MISSION_DATA):</h3>
+                    <div class="info-container">
+                        <p style="color: var(--purple); font-weight: bold;">[ ОНГ — ОСНОВНАЯ НАУЧНАЯ ГРУППА ]</p>
+                        <p>Мы — независимая организация, занимающаяся изучением аномалий UUID и стабилизацией энергетических ядер. Наша цель: технологический суверенитет.</p>
                     </div>
+                </div>
+            </div>
+
+            <div class="news-section">
+                <h3 class="label">LATEST_SYSTEM_UPDATES:</h3>
+                <div class="news-block">
+                    <p><b>[26.01.2026]</b> — Обновление протокола радара до V3. Добавлены точки интереса P.R.I.S.M. и неактивный реактор Dykzxz. Исправлена центровка интерфейса.</p>
+                    <p><b>[20.01.2026]</b> — Внедрена система "бесконечного лога" для гостевых терминалов. Усилена защита архива данных.</p>
+                    <p><b>[15.01.2026]</b> — Запуск проекта. Морисом назначен основной курс развития ОНГ.</p>
                 </div>
             </div>
         </div>
@@ -93,7 +100,7 @@
 
     <section id="scr-dash" class="screen hidden">
         <header class="status-bar">
-            <button class="btn-ui-nav" onclick="toggleSidebar(true)">SYSTEM_MENU</button>
+            <button class="btn-ui-nav" onclick="toggleSidebar(true)">MENU</button>
             <div id="clock">00:00:00</div>
             <div>LVL: <span id="u-lvl-display">0</span></div>
         </header>
@@ -104,22 +111,30 @@
 ██    ██ ██ ██  ██ ██   ███ 
  ██████  ██   ████  ██████  </pre>
             <div class="welcome-text-block">
-                <h2>Добро пожаловать, <span id="welcome-user-name">USER</span>!</h2>
-                <p>Доступ к ядру ОНГ подтвержден.</p>
+                <h2>Приветствуем, <span id="welcome-user-name" style="color: var(--purple);">---</span></h2>
+                <p>Ваш уровень доступа подтвержден. Система готова к работе.</p>
             </div>
-            <div class="big-buttons-grid">
-                <button class="mega-btn wide" onclick="initializeTacticalRadar()">КАРТА ОБЪЕКТОВ</button>
-                <button class="mega-btn wide" onclick="startTransition('scr-archive')">АРХИВ ДАННЫХ</button>
-                <button class="mega-btn wide" onclick="startTransition('scr-sysdata')">СОСТОЯНИЕ СИСТЕМЫ</button>
+            
+            <div class="dash-center-container">
+                <div class="big-buttons-grid center-grid">
+                    <button class="mega-btn wide" onclick="initializeTacticalRadar()">КАРТА ОБЪЕКТОВ</button>
+                    <button class="mega-btn wide" onclick="startTransition('scr-archive')">АРХИВ ДАННЫХ</button>
+                    <button class="mega-btn wide" onclick="startTransition('scr-sysdata')">СОСТОЯНИЕ СИСТЕМЫ</button>
+                </div>
+                <div class="purple-fading-line" style="width: 500px; margin: 30px auto;"></div>
             </div>
-            <div class="purple-fading-line"></div>
+
+            <div class="staff-info-block" style="text-align: center; margin-top: 20px;">
+                <p style="color: #555; font-size: 0.8rem;">ВНИМАНИЕ: Все действия логируются. Несанкционированный доступ к Архиву карается баном UUID.</p>
+                <p style="color: var(--purple-dim); margin-top: 10px;">Генеральный Директор: MorisReal</p>
+            </div>
         </div>
     </section>
 
     <section id="scr-map" class="screen hidden">
         <header class="status-bar">
             <button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button>
-            <div>RADAR_SCANNER_V3</div>
+            <div>RADAR_OS_V3</div>
         </header>
         <div class="radar-scroll-wrapper" id="radar-scroll">
             <div class="radar-view-section">
@@ -130,8 +145,8 @@
             </div>
             <div class="radar-info-section" id="radar-info">
                 <div class="purple-fading-line"></div>
-                <h2 id="p-title" class="ong-logo-small">ID_SCAN</h2>
-                <div id="p-text">ОЖИДАНИЕ ВЫБОРА ЦЕЛИ...</div>
+                <h2 id="p-title" class="ong-logo-small">SCANNING...</h2>
+                <p id="p-text">Выберите объект на сетке.</p>
             </div>
         </div>
     </section>
@@ -157,7 +172,7 @@
         <div class="archive-container">
             <div class="archive-item">
                 <button class="archive-header" onclick="toggleArchive(this)">[+] ОТЧЕТ ОНГ #031</button>
-                <div class="archive-content hidden">Объект S-07 стабилен.</div>
+                <div class="archive-content hidden">Эксперимент по синтезу UUID прошел успешно.</div>
             </div>
         </div>
     </section>
