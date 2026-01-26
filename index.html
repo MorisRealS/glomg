@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G.L.O.M.G. | CORE V31.8 FINAL</title>
+    <title>G.L.O.M.G. | CORE V31.8</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="vhs-overlay"></div> <div class="scanline-effect"></div> <div id="fade"></div> <div id="modal-profile" class="modal-profile hidden">
+    <div class="vhs-overlay"></div>
+    <div class="scanline-effect"></div>
+    <div id="fade"></div>
+
+    <div id="modal-profile" class="modal-profile hidden">
         <div class="profile-card">
             <div class="corner-tl"></div><div class="corner-br"></div>
             <button class="close-profile-btn" onclick="closeProfile()"><-- [ ВЕРНУТЬСЯ ]</button>
@@ -24,14 +28,14 @@
             <div class="profile-grid">
                 <div class="p-item"><label>УРОВЕНЬ</label><span class="p-value" id="p-lvl-text-val">0</span></div>
                 <div class="p-item"><label>СТАТУС</label><span class="p-value" id="p-status-val">USER</span></div>
-                <div class="p-item"><label>UUID_KEY</label><span class="p-value" id="p-uuid-val" style="font-size: 0.8rem;">0000000000</span></div>
+                <div class="p-item"><label>UUID_KEY</label><span class="p-value" id="p-uuid-val">0000000000</span></div>
             </div>
         </div>
     </div>
 
     <section id="scr-intro" class="screen">
-        <div class="intro-container">
-            <pre id="intro-ascii" class="ascii-font">BOOTING...</pre>
+        <div class="center-layout">
+            <pre id="intro-ascii" class="ascii-font"></pre>
             <div id="intro-logo" class="hidden">
                 <pre class="ong-logo">
  ██████  ███    ██  ██████  
@@ -39,7 +43,7 @@
 ██    ██ ██ ██  ██ ██   ███ 
 ██    ██ ██  ██ ██ ██    ██ 
  ██████  ██   ████  ██████  </pre>
-                <p class="blink">INITIALIZING O.N.G. CORE...</p>
+                <p class="blink">INITIALIZING CORE...</p>
             </div>
         </div>
     </section>
@@ -49,7 +53,7 @@
             <h1 class="glitch" data-text="G.L.O.M.G.">G.L.O.M.G.</h1>
             <div id="login-output" class="status-msg"></div>
             <div class="inputs">
-                <input type="text" id="inp-id" placeholder="OPERATOR_ID" spellcheck="false">
+                <input type="text" id="inp-id" placeholder="OPERATOR_ID" spellcheck="false" autocomplete="off">
                 <input type="password" id="inp-pass" placeholder="ACCESS_KEY">
             </div>
             <div class="actions">
@@ -60,28 +64,25 @@
     </section>
 
     <section id="scr-guest" class="screen hidden">
-        <header class="status-bar">
-            <div class="bar-left">GUEST_LINK | LVL: 0</div>
-            <div class="bar-right"><button class="btn-ui-nav" onclick="startTransition('scr-login')">BACK</button></div>
-        </header>
         <div class="guest-layout">
-            <div class="guest-header-logo">
-                <pre class="ong-logo-small">
+            <pre class="ong-logo">
  ██████  ███    ██  ██████  
 ██    ██ ████   ██ ██       
 ██    ██ ██ ██  ██ ██   ███ 
  ██████  ██   ████  ██████  </pre>
-            </div>
+            
+            <button class="btn-ui btn-gold" style="width: 300px; margin-bottom: 30px;" onclick="startTransition('scr-login')">ПРИСОЕДИНИТЬСЯ</button>
+
             <div class="guest-grid">
                 <div class="guest-col">
-                    <h3 class="label">LIVE_SYSTEM_LOGS:</h3>
+                    <h3 class="label">SYSTEM_CONSOLE:</h3>
                     <div id="guest-console" class="console-box"></div>
                 </div>
                 <div class="guest-col">
-                    <h3 class="label">SYSTEM_NEWS:</h3>
-                    <div class="info-container" id="news-box">
-                        <p class="purple-t">[26.01] Протокол "Neon" активен.</p>
-                        <p class="purple-t">[25.01] Обновление ядра до v31.8.</p>
+                    <h3 class="label">NEWS_FEED:</h3>
+                    <div class="info-container">
+                        <p class="purple-t">[!] Обнаружена активность в секторе Dykzxz.</p>
+                        <p class="purple-t">[!] P.R.I.S.M запрашивает протоколы обмена.</p>
                     </div>
                 </div>
             </div>
@@ -90,7 +91,7 @@
 
     <section id="scr-dash" class="screen hidden">
         <header class="status-bar">
-            <button class="btn-ui-nav" onclick="toggleSidebar(true)">SYSTEM_MENU</button>
+            <button class="btn-ui-nav" onclick="toggleSidebar(true)">MENU</button>
             <div id="clock">00:00:00</div>
             <div>LVL: <span id="u-lvl-display">0</span></div>
         </header>
@@ -100,12 +101,10 @@
 ██    ██ ████   ██ ██       
 ██    ██ ██ ██  ██ ██   ███ 
  ██████  ██   ████  ██████  </pre>
-
             <div class="welcome-text-block">
-                <h2>Добро пожаловать в личный кабинет, <span id="welcome-user-name" style="color:var(--purple)">USER</span>!</h2>
-                <p>Мы рады приветствовать вас в составе <b>ОНГ (Основная Научная Группа)</b>.</p>
+                <h2>Добро пожаловать, <span id="welcome-user-name">USER</span>!</h2>
+                <p>Вы находитесь в личном кабинете <b>ОНГ (Основная Научная Группа)</b>.</p>
             </div>
-
             <div class="dash-center-container">
                 <div class="big-buttons-grid">
                     <button class="mega-btn wide" onclick="initializeTacticalRadar()">КАРТА ОБЪЕКТОВ</button>
@@ -114,11 +113,8 @@
                 </div>
                 <div class="purple-fading-line"></div>
             </div>
-
             <div class="staff-info-block">
-                <p><b>Карта</b> — объекты ОНГ и P.R.I.S.M. | <b>Архив</b> — записи опытов.</p>
-                <p><b>Статус системы</b> — мониторинг показаний ядра в реальном времени.</p>
-                <p style="margin-top: 15px; font-style: italic; font-size: 0.8rem;">С уважением, Генеральный Директор ОНГ MorisReal.</p>
+                <p>С уважением, Генеральный Директор ОНГ MorisReal.</p>
             </div>
         </div>
     </section>
@@ -126,47 +122,31 @@
     <section id="scr-sysdata" class="screen hidden">
         <header class="status-bar">
             <button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button>
-            <div>SYSTEM_HARDWARE_MONITOR</div>
+            <div>HARDWARE_MONITOR</div>
         </header>
         <div class="sys-mon-container">
             <div class="sensor-grid">
-                <div class="sensor-card">
-                    <label>ТЕМПЕРАТУРА ЯДРА</label>
-                    <div class="bar-bg"><div id="bar-temp" class="bar-fill"></div></div>
-                    <span id="val-temp">0°C</span>
-                </div>
-                <div class="sensor-card">
-                    <label>ЗАГРУЗКА ЦП</label>
-                    <div class="bar-bg"><div id="bar-cpu" class="bar-fill"></div></div>
-                    <span id="val-cpu">0%</span>
-                </div>
-                <div class="sensor-card">
-                    <label>ПАМЯТЬ</label>
-                    <div class="bar-bg"><div id="bar-mem" class="bar-fill"></div></div>
-                    <span id="val-mem">0 GB</span>
-                </div>
+                <div class="sensor-card"><label>CPU_LOAD</label><div class="bar-bg"><div id="bar-cpu" class="bar-fill"></div></div><span id="val-cpu">0%</span></div>
+                <div class="sensor-card"><label>CORE_TEMP</label><div class="bar-bg"><div id="bar-temp" class="bar-fill"></div></div><span id="val-temp">0°C</span></div>
+                <div class="sensor-card"><label>MEMORY</label><div class="bar-bg"><div id="bar-mem" class="bar-fill"></div></div><span id="val-mem">0 GB</span></div>
             </div>
-            <div class="sensor-card total-load">
-                <label>ОБЩИЙ ПРОЦЕНТ ЗАГРУЗКИ СИСТЕМЫ</label>
-                <div class="bar-bg"><div id="bar-total" class="bar-fill"></div></div>
-                <span id="val-total">0%</span>
-            </div>
+            <div class="sensor-card total-load"><label>TOTAL_SYSTEM_STABILITY</label><div class="bar-bg"><div id="bar-total" class="bar-fill"></div></div><span id="val-total">0%</span></div>
         </div>
     </section>
 
     <section id="scr-archive" class="screen hidden">
         <header class="status-bar">
             <button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button>
-            <div>DATA_ARCHIVE_ENCRYPTED</div>
+            <div>ENCRYPTED_ARCHIVE</div>
         </header>
         <div class="archive-container">
             <div class="archive-item">
-                <button class="archive-header" onclick="toggleArchive(this)">[+] ЭКСПЕРИМЕНТ "НЕОН" (P.R.I.S.M)</button>
-                <div class="archive-content hidden">Тест стабильности плазменного ядра. Результат: 87% синхронизации.</div>
+                <button class="archive-header" onclick="toggleArchive(this)">[+] ОТЧЕТ ОНГ #031 (ОБЪЕКТ S-07)</button>
+                <div class="archive-content hidden">Объект проявляет признаки разумности. Переведен в режим изоляции.</div>
             </div>
             <div class="archive-item">
-                <button class="archive-header" onclick="toggleArchive(this)">[+] ОТЧЕТ ОНГ #031 (ОБЪЕКТ S-07)</button>
-                <div class="archive-content hidden">Объект переведен в режим строгой изоляции. Куратор: Moris.</div>
+                <button class="archive-header" onclick="toggleArchive(this)">[+] ДАННЫЕ РЕАКТОРА DYKZXZ</button>
+                <div class="archive-content hidden">Статус: КРИТИЧЕСКИЙ СБОЙ. Реактор остановлен из-за перегрузки UUID-каналов.</div>
             </div>
         </div>
     </section>
@@ -174,7 +154,7 @@
     <section id="scr-map" class="screen hidden">
         <header class="status-bar">
             <button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button>
-            <div>RADAR_SCANNER</div>
+            <div>RADAR_V3</div>
         </header>
         <div class="radar-scroll-wrapper">
             <div class="radar-view-section">
@@ -184,8 +164,12 @@
                 </div>
             </div>
             <div class="radar-info-section">
-                <h2 id="p-title">OBJECT_ID</h2>
-                <div id="p-text">ВЫБЕРИТЕ ОБЪЕКТ...</div>
+                <div class="purple-fading-line" style="width: 100%; margin: 10px 0;"></div>
+                <div id="radar-stats" style="color: #555; font-size: 0.8rem; margin-bottom: 15px;">
+                    ОБЪЕКТОВ В ЗОНЕ: <span id="obj-count" style="color: var(--purple);">3</span>
+                </div>
+                <h2 id="p-title">ID_SCANNER</h2>
+                <div id="p-text">ОЖИДАНИЕ ЦЕЛИ...</div>
             </div>
         </div>
     </section>
