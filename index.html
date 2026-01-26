@@ -1,119 +1,144 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G.L.O.M.G. | CORE V32.8</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body oncontextmenu="return false;">
-    <div class="vhs-overlay"></div>
-    <div class="scanline-effect"></div>
-    <div id="fade"></div>
+const PROFILES = {
+    "msk4ne_":  { name: "MSK4NE", pass: "3333", uuid: "0001-M" },
+    "sumber":   { name: "Sumber", pass: "0000", uuid: "7777-S" },
+    "dykzxz":   { name: "Dykzxz", pass: "2222", uuid: "1011-D" }
+};
 
-    <section id="scr-intro" class="screen">
-        <div class="center-layout">
-            <pre id="intro-ascii" class="ascii-font">SYSTEM_BOOTING...</pre>
-            <div id="intro-logo" class="hidden">
-                <pre class="ong-logo">
- ██████  ███    ██  ██████  
-██    ██ ████   ██ ██       
-██    ██ ██ ██  ██ ██   ███ 
-██    ██ ██  ██ ██ ██    ██ 
- ██████  ██   ████  ██████  </pre>
-                <p class="blink">INITIALIZING O.N.G. CORE...</p>
+const LOG_CMDS = ["SYNCING...", "ENCRYPTING...", "SECTOR_7_SCAN", "UUID_MATCH", "CORE_STABLE", "GATE_OPEN", "DECRYPT_RSA", "TRACE_CLEARED"];
+let activeUser = null;
+let guestInterval = null;
+
+// MATRIX FON
+function initMatrix() {
+    const canvas = document.getElementById('matrix-canvas');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    const drops = Array(Math.floor(canvas.width/14)).fill(1);
+    setInterval(() => {
+        ctx.fillStyle = "rgba(5, 2, 8, 0.1)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#a855f7"; drops.forEach((y, i) => {
+            ctx.fillText(Math.floor(Math.random()*2), i*14, y*14);
+            if(y*14 > canvas.height && Math.random() > 0.98) drops[i] = 0;
+            drops[i]++;
+        });
+    }, 50);
+}
+
+// SIDEBAR & PROFILE
+function toggleSidebar(state) {
+    const sb = document.getElementById('sidebar');
+    const ov = document.getElementById('side-overlay');
+    if(state) {
+        sb.classList.add('open');
+        ov.classList.add('active');
+    } else {
+        sb.classList.remove('open');
+        ov.classList.remove('active');
+    }
+}
+
+function openProfile() {
+    if(!activeUser) return;
+    document.getElementById('p-name-val').innerText = activeUser.name;
+    document.getElementById('p-uuid-val').innerText = activeUser.uuid;
+    document.getElementById('modal-profile').classList.remove('hidden');
+    toggleSidebar(false);
+}
+
+function closeProfile() {
+    document.getElementById('modal-profile').classList.add('hidden');
+}
+
+// AUTH
+function attemptLogin() {
+    const id = document.getElementById('user-id').value.trim().toLowerCase();
+    const pass = document.getElementById('user-pass').value.trim();
+    if (PROFILES[id] && PROFILES[id].pass === pass) {
+        activeUser = PROFILES[id];
+        startTransition('main-dashboard');
+    } else {
+        document.getElementById('output').innerHTML = "<div style='color:red'>> ERROR: ACCESS_DENIED</div>";
+    }
+}
+
+// RADAR
+function initRadar() {
+    startTransition('scr-radar');
+    const container = document.getElementById('radar-nodes');
+    container.innerHTML = '';
+    const pts = [
+        { x: 30, y: 30, n: "ЛАБОРАТОРИЯ ОНГ", c: "#a855f7", act: true },
+        { x: 70, y: 45, n: "БУНКЕР P.R.I.S.M", c: "#00f7ff", act: true },
+        { x: 50, y: 75, n: "РЕАКТОР DYKzxz", c: "#ff2233", act: false }
+    ];
+    pts.forEach(p => {
+        const d = document.createElement('div');
+        d.className = 'node';
+        d.style.left = p.x + '%'; d.style.top = p.y + '%';
+        d.style.backgroundColor = p.c;
+        d.style.boxShadow = `0 0 10px ${p.c}`;
+        if(p.act) d.classList.add('pulse');
+        d.onclick = () => {
+            document.getElementById('rad-title').innerText = p.n;
+            document.getElementById('rad-title').style.color = p.c;
+            document.getElementById('rad-text').innerText = p.act ? "СТАТУС: АКТИВЕН // СИНХРОНИЗАЦИЯ: 100% // СИГНАЛ: СТАБИЛЬНЫЙ" : "СТАТУС: OFFLINE // ПИТАНИЕ ПРЕРВАНО";
+            // Плавный скролл вниз к инфо
+            setTimeout(() => {
+                document.getElementById('scr-radar').scrollTo({top: 500, behavior: 'smooth'});
+            }, 100);
+        };
+        container.appendChild(d);
+    });
+}
+
+// ARCHIVE
+function renderArchive() {
+    const data = [
+        {id: "LOG_882", msg: "Ядро V32.8 функционирует в штатном режиме. Все протоколы активны."},
+        {id: "LOG_885", msg: "Зафиксирована попытка сканирования портов из внешнего сектора."},
+        {id: "LOG_890", msg: "Синхронизация UUID завершена. MSK4NE подтвержден."}
+    ];
+    const list = document.getElementById('db-logs-list');
+    list.innerHTML = data.map(i => `
+        <div class="db-log-item">
+            <div class="db-log-header" onclick="this.nextElementSibling.classList.toggle('open')">
+                <span>[ ${i.id} ]</span> <span>ДАННЫЕ_ОБЪЕКТА</span>
             </div>
+            <div class="db-log-content">${i.msg}</div>
         </div>
-    </section>
+    `).join('');
+}
 
-    <section id="scr-login" class="screen hidden">
-        <div class="login-frame">
-            <h1 class="glitch" data-text="G.L.O.M.G.">G.L.O.M.G.</h1>
-            <div id="login-output" class="status-msg">READY_FOR_AUTH</div>
-            <div class="inputs">
-                <input type="text" id="inp-id" placeholder="OPERATOR_ID">
-                <input type="password" id="inp-pass" placeholder="ACCESS_KEY">
-            </div>
-            <div class="actions">
-                <button class="btn-ui btn-gold" onclick="processLogin()">INITIALIZE</button>
-                <button class="btn-ui btn-gold-sec" onclick="startTransition('scr-guest')">GUEST_MODE</button>
-            </div>
-        </div>
-    </section>
+function startTransition(id) {
+    document.getElementById('fade').style.opacity = 1;
+    if(guestInterval) clearInterval(guestInterval);
+    setTimeout(() => {
+        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+        const target = document.getElementById(id);
+        if(target) target.classList.remove('hidden');
 
-    <section id="scr-guest" class="screen hidden scrollable">
-        <div class="guest-layout">
-            <pre class="ong-logo">
- ██████  ███    ██  ██████  
-██    ██ ████   ██ ██       
-██    ██ ██ ██  ██ ██   ███ 
-██    ██ ██  ██ ██ ██    ██ 
- ██████  ██   ████  ██████  </pre>
-            <div class="guest-grid">
-                <div class="guest-col">
-                    <h3 class="label">CONSOLE_LOG:</h3>
-                    <div id="guest-console" class="console-box"></div>
-                </div>
-                <div class="guest-col">
-                    <h3 class="label">MISSION_DATA:</h3>
-                    <div class="info-container">
-                        <p style="color: var(--purple); font-weight: bold;">[ ОБЪЕКТ ОНГ ]</p>
-                        <p>Мы — хранители порядка и спокойствия людей. Мы — гарант безопасности вселенной.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="join-section">
-                <button class="btn-ui btn-gold" onclick="startTransition('scr-login')">ВХОД ДЛЯ ПЕРСОНАЛА</button>
-            </div>
-            <div class="extra-height-spacer"></div>
-        </div>
-    </section>
+        if(id === 'main-dashboard') {
+            document.getElementById('user-name-display').innerText = activeUser.name;
+        }
+        if(id === 'scr-archive') renderArchive();
+        if(id === 'scr-guest') {
+            const box = document.getElementById('guest-console');
+            box.innerHTML = '';
+            guestInterval = setInterval(() => {
+                const l = document.createElement('div');
+                l.innerText = "> " + LOG_CMDS[Math.floor(Math.random()*LOG_CMDS.length)];
+                box.prepend(l); if(box.childNodes.length > 12) box.removeChild(box.lastChild);
+            }, 800);
+        }
+        document.getElementById('fade').style.opacity = 0;
+    }, 500);
+}
 
-    <section id="scr-dash" class="screen hidden scrollable">
-        <header class="status-bar">
-            <button class="btn-ui-nav" onclick="toggleSidebar(true)">MENU</button>
-            <div class="status-center"><div id="clock">00:00:00</div></div>
-            <div id="threat-level">THREAT: <span style="color: lime;">LOW</span></div>
-        </header>
-        <div class="main-content center-layout">
-            <pre class="ong-logo">
- ██████  ███    ██  ██████  
-██    ██ ████   ██ ██       
-██    ██ ██ ██  ██ ██   ███ 
-██    ██ ██  ██ ██ ██    ██ 
- ██████  ██   ████  ██████  </pre>
-            <h2>Welcome, <span id="welcome-user-name" style="color: var(--purple);">---</span></h2>
-            <div class="dash-row-buttons">
-                <button class="mega-btn" onclick="initializeTacticalRadar()">РАДАР</button>
-                <button class="mega-btn" onclick="startTransition('scr-database')">БАЗА ДАННЫХ</button>
-                <button class="mega-btn" onclick="startTransition('scr-sysdata')">СИСТЕМА</button>
-            </div>
-        </div>
-    </section>
-
-    <section id="scr-database" class="screen hidden scrollable">
-        <header class="status-bar">
-            <button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button>
-            <div>SYSTEM_ARCHIVE</div>
-        </header>
-        <div class="db-container">
-            <h3 class="label">АРХИВНЫЕ ЛОГИ:</h3>
-            <div id="db-logs-list"></div>
-        </div>
-    </section>
-
-    <section id="scr-sysdata" class="screen hidden">
-        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>HARDWARE</div></header>
-        <div class="sys-mon-container">
-            <div class="sensor-card"><label>CPU</label><div class="bar-bg"><div id="bar-cpu" class="bar-fill"></div></div><span id="val-cpu">0%</span></div>
-            <div class="sensor-card"><label>TEMP</label><div class="bar-bg"><div id="bar-temp" class="bar-fill"></div></div><span id="val-temp">0°C</span></div>
-        </div>
-    </section>
-
-    <div id="sidebar" class="sidebar">
-        <button class="side-link-btn" onclick="location.reload()">LOGOUT</button>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
+window.onload = () => {
+    initMatrix();
+    setInterval(() => { 
+        const clock = document.getElementById('clock');
+        if(clock) clock.innerText = new Date().toLocaleTimeString(); 
+    }, 1000);
+};
