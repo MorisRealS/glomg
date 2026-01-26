@@ -19,12 +19,6 @@
                 <div class="input-line"><span class="prompt">ID:> </span><input type="text" id="cmd" autofocus autocomplete="off"></div>
                 <div class="guest-btn" onclick="toggleGuest()">[ GUEST_ACCESS ]</div>
             </div>
-            <div id="guest-box" class="guest-box hidden">
-                <div class="news-title">> LATEST_NEWS:</div>
-                <p>- Интеграция TG_BOT [OK]<br>- Сектор "Реактор" нестабилен</p>
-                <div class="news-title">> ABOUT:</div>
-                <p>O.N.G. CORE — Глобальная сеть мониторинга.</p>
-            </div>
         </div>
     </section>
 
@@ -38,7 +32,24 @@
             <div class="dash-btns">
                 <button class="mega-btn" onclick="startTransition('scr-radar')">РАДАР</button>
                 <button class="mega-btn" onclick="startTransition('scr-archive')">АРХИВ</button>
+                <button class="mega-btn" onclick="startTransition('scr-mail')">ПОЧТА [<span id="mail-count">0</span>]</button>
             </div>
+        </div>
+    </section>
+
+    <section id="scr-archive" class="screen hidden">
+        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">BACK</button><div>DATABASE_ARCHIVE</div></header>
+        <div class="center-layout">
+            <div id="archive-list" style="width: 90%; max-height: 70vh; overflow-y: auto; margin-top: 20px;">
+                </div>
+        </div>
+    </section>
+
+    <section id="scr-mail" class="screen hidden">
+        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">BACK</button><div>INBOX</div></header>
+        <div class="center-layout">
+            <div id="mail-list" style="width: 90%; margin-top: 20px;">
+                </div>
         </div>
     </section>
 
@@ -50,11 +61,6 @@
             <div class="node bunker-prism" style="top:45%; left:75%;"></div>
             <div class="node reactor-duk" style="top:75%; left:45%;"></div>
         </div>
-        <div class="radar-info-panel">
-            <div class="info-card">LAB_ONG: <span style="color:#a855f7">ONLINE</span></div>
-            <div class="info-card">BUNKER_PRISM: <span style="color:#00ffff">SECURE</span></div>
-            <div class="info-card">REACTOR_DUK: <span style="color:#ff2233">CRITICAL</span></div>
-        </div>
     </section>
 
     <div id="sidebar" class="sidebar">
@@ -62,7 +68,6 @@
         <div class="old-profile-style">
             <p>NAME: <span id="p-name">---</span></p>
             <p>LEVEL: <span id="p-lvl">---</span></p>
-            <p>STATUS: <span style="color:#0f4">CONNECTED</span></p>
         </div>
         <button class="btn-ui-logout" onclick="logout()">LOGOUT</button>
     </div>
