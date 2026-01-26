@@ -1,0 +1,6 @@
+/* radar.css — Только для страницы radar.html */
+.radar-container { padding: 60px 20px; max-width: 800px; margin: 0 auto; text-align: center; }
+.radar-disk { position: relative; width: 350px; height: 350px; margin: 0 auto; border: 2px solid var(--purple); border-radius: 50%; overflow: hidden; }
+.radar-beam { position: absolute; width: 50%; height: 50%; top: 50%; left: 50%; background: linear-gradient(45deg, var(--purple) 0%, transparent 50%); transform-origin: top left; animation: radar-sweep 4s linear infinite; }
+.node { position: absolute; width: 10px; height: 10px; background: #00f7ff; border-radius: 50%; cursor: pointer; transform: translate(-50%, -50%); }
+@keyframes radar-sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
