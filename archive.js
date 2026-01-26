@@ -1,38 +1,37 @@
-const FILES = [
-    { id: "LOG_001", title: "Протокол 'Prisma'", lvl: 3, content: "Эксперимент по созданию нейронного щита завершен успешно. Эффективность: 88%." },
-    { id: "LOG_042", title: "Инцидент в Секторе 7", lvl: 5, content: "Зафиксирован несанкционированный доступ. Источник: [ДАННЫЕ УДАЛЕНЫ]. Режим охраны усилен." },
-    { id: "LOG_099", title: "Личное дело: MorisReal", lvl: 6, content: "Статус: Главный Администратор. Полный доступ ко всем подсистемам ядра O.N.G." },
-    { id: "LOG_105", title: "Проект 'G.L.O.M.G.'", lvl: 4, content: "Глобальная Локальная Операционная Мониторинговая Группа. Текущая фаза: Стабилизация." }
+const DB_DATA = [
+    { id: "LOG_882", title: "Project 'Prisma' Status", lvl: 3, text: "Эксперимент по нейронной модуляции завершен. Результаты стабильны." },
+    { id: "LOG_890", title: "Operator_MorisReal_Bio", lvl: 6, text: "Главный администратор узла. Статус: Вне подозрений. Приоритет доступа: Омега." },
+    { id: "LOG_912", title: "Sector 7 Incident", lvl: 5, text: "Обнаружен разлом в защитном контуре. Протокол зачистки активирован." },
+    { id: "LOG_950", title: "G.L.O.M.G. Core Update", lvl: 4, text: "Ядро обновлено до V32.8. Все системы синхронизированы." }
 ];
 
-function renderArchive() {
+function initArchive() {
     const list = document.getElementById('archive-list');
-    const userData = JSON.parse(localStorage.getItem('ong_user')) || { lvl: 0 };
-
-    list.innerHTML = FILES.map(file => {
-        const isLocked = userData.lvl < file.lvl;
-        
+    const user = JSON.parse(localStorage.getItem('ong_user')) || { lvl: 0 };
+    
+    list.innerHTML = DB_DATA.map(item => {
+        const isLocked = user.lvl < item.lvl;
         return `
-            <div class="db-log-item ${isLocked ? 'locked' : ''}">
-                <div class="db-log-header" onclick="${isLocked ? '' : 'toggleLog(this)'}">
-                    <span class="file-id">[ ${file.id} ]</span>
-                    <span class="file-title">${file.title}</span>
-                    <span class="file-status">${isLocked ? 'LOCKED (LVL ' + file.lvl + ')' : 'OPEN'}</span>
+            <div class="archive-item ${isLocked ? 'locked' : ''}">
+                <div class="archive-item-header" onclick="${isLocked ? '' : 'expandItem(this)'}">
+                    <span>[${item.id}] ${item.title}</span>
+                    <span class="lock-status">${isLocked ? 'ACCESS_DENIED' : 'DECRYPTED'}</span>
                 </div>
-                <div class="db-log-content">
-                    <div class="purple-fading-line"></div>
-                    <p>${file.content}</p>
+                <div class="archive-item-content">
+                    <p>${item.text}</p>
+                    <div class="content-footer">STAMP: ${new Date().toLocaleDateString()}</div>
                 </div>
             </div>
         `;
     }).join('');
 }
 
-function toggleLog(element) {
-    element.parentElement.classList.toggle('open');
+function expandItem(el) {
+    const parent = el.parentElement;
+    parent.classList.toggle('open');
 }
 
-// Матричный фон для единства стиля
+// Фоновая матрица (для единства стиля)
 function initMatrix() {
     const canvas = document.getElementById('matrix-canvas');
     const ctx = canvas.getContext('2d');
@@ -51,5 +50,5 @@ function initMatrix() {
 
 window.onload = () => {
     initMatrix();
-    renderArchive();
+    initArchive();
 };
