@@ -6,17 +6,24 @@ const PROFILES = {
     "morisreal": { name: "МОРИС", pass: "123", level: 6, token: "MRS", uuid: "1010101010" }
 };
 
+const CONSOLE_LOGS = [
+    "> Запрос UUID от внешнего узла...", "> Поток данных: Стабилен.", 
+    "> ВНИМАНИЕ: Попытка сканирования порта 8080.", "> Синхронизация с P.R.I.S.M...",
+    "> Реактор Dykzxz: Фоновый шум в норме.", "> Очистка временных файлов...",
+    "> Калибровка сенсоров радара...", "> Авторизация: MorisReal.",
+    "> Состояние ядра: 98.4% КПД.", "> Ошибка доступа в сектор 4."
+];
+
 let currentUser = null;
 
-// ПЕРЕХОДЫ МЕЖДУ ЭКРАНАМИ
+// ПЕРЕХОДЫ
 function startTransition(targetId) {
     const fade = document.getElementById('fade');
     fade.classList.add('active');
-    
     setTimeout(() => {
         document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
         document.getElementById(targetId).classList.remove('hidden');
-        if(targetId === 'scr-guest') startGuestLogs();
+        if (targetId === 'scr-guest') startInfiniteLogs();
         fade.classList.remove('active');
     }, 600);
 }
@@ -35,115 +42,99 @@ function processLogin() {
         document.getElementById('p-lvl-text-val').innerText = "LEVEL " + currentUser.level;
         document.getElementById('p-uuid-val').innerText = currentUser.uuid;
         document.getElementById('u-lvl-display').innerText = currentUser.level;
-        
-        let status = currentUser.level >= 5 ? "ADMINISTRATOR" : "MODERATOR";
-        document.getElementById('p-status-val').innerText = status;
-
-        out.style.color = "var(--terminal-green)";
-        out.innerText = "SUCCESS. LOADING...";
+        document.getElementById('p-status-val').innerText = currentUser.level >= 5 ? "ADMINISTRATOR" : "OPERATIVE";
+        out.style.color = "lime";
+        out.innerText = "ACCESS GRANTED";
         setTimeout(() => startTransition('scr-dash'), 1000);
     } else {
         out.style.color = "red";
-        out.innerText = "ACCESS DENIED";
+        out.innerText = "DENIED";
     }
 }
 
-// РАДАР С 3 ТОЧКАМИ
+// БЕСКОНЕЧНЫЕ ЛОГИ ДЛЯ ГОСТЯ
+async function startInfiniteLogs() {
+    const box = document.getElementById('guest-console');
+    box.innerHTML = '';
+    let i = 0;
+    async function addNextLine() {
+        if (!document.getElementById('scr-guest').classList.contains('hidden')) {
+            const p = document.createElement('p');
+            p.innerText = CONSOLE_LOGS[i];
+            box.appendChild(p);
+            box.scrollTop = box.scrollHeight;
+            if (box.children.length > 12) box.removeChild(box.firstChild);
+            i = (i + 1) % CONSOLE_LOGS.length;
+            setTimeout(addNextLine, Math.random() * 2000 + 500);
+        }
+    }
+    addNextLine();
+}
+
+// РАДАР
 function initializeTacticalRadar() {
     startTransition('scr-map');
-    const nodesContainer = document.getElementById('radar-nodes');
-    nodesContainer.innerHTML = '';
-    
+    const container = document.getElementById('radar-nodes');
+    container.innerHTML = '';
     const nodes = [
-        {id: "ONG_LAB", x: 45, y: 30, type: "ong", info: "Основная лаборатория ОНГ. Статус: АКТИВНА"},
-        {id: "PRISM_BASE", x: 65, y: 55, type: "prism", info: "База P.R.I.S.M. Статус: НАБЛЮДЕНИЕ"},
-        {id: "DYK_REACTOR", x: 30, y: 70, type: "dyk", info: "Реактор Dykzxz. Статус: ОСТАНОВЛЕН (КРИТИЧЕСКИЙ СБОЙ)"}
+        {id: "ONG_LAB", x: 45, y: 30, type: "ong", info: "База ОНГ. UUID_STABLE."},
+        {id: "PRISM", x: 65, y: 55, type: "prism", info: "Сектор P.R.I.S.M. Наблюдение."},
+        {id: "DYK_REACTOR", x: 30, y: 70, type: "dyk", info: "Реактор Dykzxz. НЕ РАБОТАЕТ."}
     ];
-
     nodes.forEach(n => {
-        const div = document.createElement('div');
-        div.className = `node ${n.type}`;
-        div.style.left = n.x + '%';
-        div.style.top = n.y + '%';
-        div.onclick = () => {
+        const d = document.createElement('div');
+        d.className = `node ${n.type}`;
+        d.style.left = n.x + '%'; d.style.top = n.y + '%';
+        d.onclick = () => {
             document.getElementById('p-title').innerText = n.id;
             document.getElementById('p-text').innerText = n.info;
+            document.getElementById('radar-scroll').scrollTo({top: 500, behavior: 'smooth'});
         };
-        nodesContainer.appendChild(div);
+        container.appendChild(d);
     });
 }
 
-// ПРЫГАЮЩИЕ ДАТЧИКИ
+// ПРОФИЛЬ (ПЛАВНЫЙ)
+function openProfile() {
+    document.getElementById('modal-profile').classList.remove('hidden');
+    toggleSidebar(false);
+}
+function closeProfile() {
+    document.getElementById('modal-profile').classList.add('hidden');
+}
+
+// ДАТЧИКИ
 function initSensors() {
-    let cpu = 15, temp = 40, mem = 0.5;
     setInterval(() => {
         if (document.getElementById('scr-sysdata').classList.contains('hidden')) return;
-        
-        const jump = () => [1, -2, 4, -1, 2, -5][Math.floor(Math.random()*6)];
-        
-        cpu = Math.max(10, Math.min(20, cpu + jump()));
-        temp = Math.max(30, Math.min(60, temp + jump()));
-        mem = Math.max(0.1, Math.min(1.0, mem + (jump()/100)));
-
+        let cpu = Math.floor(Math.random() * 20) + 10;
+        let temp = Math.floor(Math.random() * 15) + 40;
         document.getElementById('val-cpu').innerText = cpu + "%";
-        document.getElementById('bar-cpu').style.width = (cpu/20*100) + "%";
-        
+        document.getElementById('bar-cpu').style.width = cpu + "%";
         document.getElementById('val-temp').innerText = temp + "°C";
-        document.getElementById('bar-temp').style.width = (temp/120*100) + "%";
-        
-        document.getElementById('val-mem').innerText = mem.toFixed(2) + " GB";
-        document.getElementById('bar-mem').style.width = (mem/10*100) + "%";
-
-        let total = Math.floor((cpu/20*40) + (temp/60*60));
-        document.getElementById('val-total').innerText = total + "%";
-        document.getElementById('bar-total').style.width = total + "%";
-    }, 1000);
+        document.getElementById('bar-temp').style.width = (temp/100*100) + "%";
+    }, 1500);
 }
 
-// ГОСТЕВАЯ КОНСОЛЬ (5 строк)
-async function startGuestLogs() {
-    const box = document.getElementById('guest-console');
-    box.innerHTML = '';
-    const logs = [
-        "> Establishing uplink...",
-        "> Handshake: SUCCESS",
-        "> Запрос UUID от внешнего узла: ОТКЛОНЕНО.",
-        "> ВНИМАНИЕ: Гостевой вход в секторе 0.",
-        "> [OK] Система мониторинга активна."
-    ];
-    for (let line of logs) {
-        await new Promise(r => setTimeout(r, 700));
-        const p = document.createElement('p');
-        p.innerText = line;
-        box.appendChild(p);
-    }
+function toggleArchive(b) {
+    const c = b.nextElementSibling;
+    c.classList.toggle('hidden');
 }
-
-// ВСПОМОГАТЕЛЬНОЕ
-function toggleArchive(btn) {
-    const content = btn.nextElementSibling;
-    content.classList.toggle('hidden');
-    btn.innerText = content.classList.contains('hidden') ? btn.innerText.replace('[-]', '[+]') : btn.innerText.replace('[+]', '[-]');
-}
-
 function toggleSidebar(s) {
     document.getElementById('sidebar').classList.toggle('open', s);
     document.getElementById('side-overlay').style.display = s ? 'block' : 'none';
 }
 
-function openProfile() { document.getElementById('modal-profile').classList.remove('hidden'); toggleSidebar(false); }
-function closeProfile() { document.getElementById('modal-profile').classList.add('hidden'); }
-
 window.onload = () => {
     initSensors();
-    const intro = document.getElementById('intro-ascii');
-    intro.innerText = "INITIALIZING O.N.G. CORE...";
+    document.getElementById('intro-ascii').innerText = "O.N.G. OS LOADING...";
     setTimeout(() => {
         document.getElementById('intro-logo').classList.remove('hidden');
-        setTimeout(() => startTransition('scr-login'), 2500);
-    }, 1200);
+        setTimeout(() => startTransition('scr-login'), 2000);
+    }, 1000);
 };
 
 setInterval(() => {
-    document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+    const c = document.getElementById('clock');
+    if(c) c.innerText = new Date().toLocaleTimeString();
 }, 1000);
