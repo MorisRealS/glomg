@@ -696,6 +696,66 @@ button:hover {
     50% { opacity: 0; }
 }
 
+/* --- СВЕТЯЩИЙСЯ ЛОГОТИП ONG --- */
+.ong-logo, .ong-logo-small {
+    color: var(--purple);
+    text-shadow: 0 0 10px var(--purple), 0 0 20px rgba(168, 85, 247, 0.5);
+    font-weight: bold;
+}
+
+/* --- ЧЕРНЫЕ ПОЛЯ ВВОДА --- */
+.inputs input {
+    background: #000 !important;
+    border: 1px solid var(--purple-dim);
+    color: var(--purple);
+    padding: 12px;
+    margin-bottom: 10px;
+    outline: none;
+    transition: box-shadow 0.3s;
+}
+.inputs input:focus {
+    box-shadow: 0 0 10px var(--purple-dim);
+}
+
+/* --- ПЛАВНОЕ ПОЯВЛЕНИЕ ПРОФИЛЯ --- */
+.modal-profile {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s;
+}
+.modal-profile:not(.hidden) {
+    opacity: 1;
+    visibility: visible;
+    display: flex !important; /* перебиваем hidden */
+}
+
+/* --- ИСПРАВЛЕНИЕ БАГА В АРХИВЕ --- */
+.archive-header:hover {
+    background: rgba(168, 85, 247, 0.2);
+    color: #fff !important; /* Теперь текст всегда белый при наведении */
+}
+
+/* --- РАДАР: КРУТЯЩИЙСЯ СКАНЕР --- */
+.scanner-beam {
+    position: absolute;
+    width: 50%; height: 50%;
+    top: 50%; left: 50%;
+    background: linear-gradient(45deg, rgba(168, 85, 247, 0.4), transparent 70%);
+    transform-origin: top left;
+    animation: radar-sweep 4s linear infinite;
+    border-radius: 0 0 0 0;
+    pointer-events: none;
+}
+@keyframes radar-sweep {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ТОЧКИ НА РАДАРЕ (Цвета) */
+.node.ong { background: var(--purple); box-shadow: 0 0 10px var(--purple); }
+.node.prism { background: #00f2ff; box-shadow: 0 0 10px #00f2ff; }
+.node.dyk { background: #ff0000; box-shadow: 0 0 10px #ff0000; }
+
 /* Дополнение для анимации заставки */
 #intro-logo.hidden { display: none; }
 .blink { animation: blinker 1.5s linear infinite; }
