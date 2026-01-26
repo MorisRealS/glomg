@@ -5,7 +5,7 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const TelegramBot = require('node-telegram-bot-api');
 
-const TOKEN = '8117485520:AAGjY1wJFjm9fW9FVxXZ06Ox9oUZHBYWfu4'; 
+const TOKEN = '8117485520:AAE01_awKVOA_pPTZIOCMUs7PDAzD6S5pck'; 
 const bot = new TelegramBot(TOKEN, {polling: true});
 
 let mailBox = {};
