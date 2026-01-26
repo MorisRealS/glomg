@@ -2,22 +2,21 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>O.N.G. | DATABASE_ARCHIVE</title>
-    <link rel="stylesheet" href="style.css">
-</head>
+    <title>O.N.G. | ARCHIVE</title>
+    <link rel="stylesheet" href="style.css"> <link rel="stylesheet" href="archive.css"> </head>
 <body class="scrollable">
     <canvas id="matrix-canvas"></canvas>
     <div class="vhs-overlay"></div>
 
     <header class="status-bar">
-        <button class="btn-ui-nav" onclick="history.back()">[ BACK ]</button>
-        <div class="header-title">SECURE_ARCHIVE_V4</div>
+        <button class="btn-ui-nav" onclick="history.back()">[ BACK_TO_CORE ]</button>
+        <div id="archive-status" class="blink">ENCRYPTED_DATABASE</div>
     </header>
 
-    <div class="archive-container">
+    <div class="archive-layout">
         <div class="archive-header">
-            <h2 class="vhs-text">ЦЕНТРАЛЬНОЕ ХРАНИЛИЩЕ ДАННЫХ</h2>
-            <p class="staff-subtext">Доступ разрешен для операторов уровня 3 и выше.</p>
+            <h2>СЕКРЕТНЫЕ ЛОГИ СИСТЕМЫ</h2>
+            <div class="purple-fading-line"></div>
         </div>
 
         <div id="archive-list" class="db-container">
