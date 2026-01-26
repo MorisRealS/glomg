@@ -1592,6 +1592,28 @@ body::after {
 .db-log-content { padding: 0 15px; max-height: 0; overflow: hidden; transition: 0.3s ease; background: rgba(0,0,0,0.3); }
 .db-log-content.open { max-height: 400px; padding: 20px; border-top: 1px solid var(--purple-dim); }
 
+/* КРАСНЫЙ ЛОГАУТ */
+.btn-logout-red {
+    color: #ff4444 !important;
+    border: 1px solid #ff4444 !important;
+}
+.btn-logout-red:hover {
+    background: #ff4444 !important;
+    color: #000 !important;
+    box-shadow: 0 0 15px #ff4444;
+}
+
+/* РАДАР И ИНФО */
+.radar-scroll-container { display: flex; flex-direction: column; align-items: center; }
+.radar-disk { width: 280px !important; height: 280px !important; margin-top: 20px; }
+.radar-info-section { 
+    margin-top: 50px; 
+    padding: 40px; 
+    border-top: 1px solid var(--purple-dim); 
+    width: 100%; 
+    min-height: 500px;
+}
+
 /* Дополнение для анимации заставки */
 #intro-logo.hidden { display: none; }
 .blink { animation: blinker 1.5s linear infinite; }
