@@ -1,146 +1,115 @@
-/**
- * O.N.G. CORE SYSTEM v32.8
- * GLOBAL ACCESS CONTROL & AUTHENTICATION
- */
-
 const PROFILES = {
-    "morisreal": { name: "MorisReal", pass: "admin", uuid: "0006-ADM", lvl: 6, role: "ADMIN" },
-    "msk4ne_":   { name: "MSK4NE", pass: "3333", uuid: "0001-M", lvl: 5 },
-    "sumber":    { name: "Sumber", pass: "0000", uuid: "7777-S", lvl: 5 },
-    "dykzxz":    { name: "Dykzxz", pass: "2222", uuid: "1011-D", lvl: 3 }
+    "kiddy": { name: "Kiddy", pass: "1111", uuid: "1101" },
+    "dykzxz": { name: "Dykzxz", pass: "2222", uuid: "1011" },
+    "sumber": { name: "Sumber", pass: "0000", uuid: "1110" },
+    "morisreal": { name: "МОРИС", pass: "123", uuid: "1010" }
 };
 
-let activeUser = null;
+const LOG_LINES = ["> SYNCING...", "> UUID_CHECK...", "> CORE_STABLE", "> MEMORY_CLEAN", "> ACCESS_LOGGED"];
+const DATABASE_LOGS = [
+    { title: "LOG_EVENT: 0x442", date: "24.01.2026", text: "Обнаружена попытка доступа к сектору Sumber. Протокол Zero Trust активен." },
+    { title: "LOG_EVENT: 0x119", date: "25.01.2026", text: "Обновление ядра V32.8 завершено. Все узлы синхронизированы." },
+    { title: "LOG_EVENT: 0x901", date: "26.01.2026", text: "Аномалия в районе Призмы. Датчики зафиксировали всплеск энергии." }
+];
 
-// --- 1. ИНИЦИАЛИЗАЦИЯ СИСТЕМЫ ---
-window.addEventListener('DOMContentLoaded', () => {
-    const savedUser = localStorage.getItem('ong_user');
-    const introScreen = document.getElementById('scr-intro');
-    const loginScreen = document.getElementById('login-screen');
-    const dashScreen = document.getElementById('main-dashboard');
+let guestInterval = null;
+let sensorInterval = null;
 
-    // Если пользователь уже авторизован, пропускаем интро и логин
-    if (savedUser) {
-        activeUser = JSON.parse(savedUser);
-        if (introScreen) introScreen.classList.add('hidden');
-        if (loginScreen) loginScreen.classList.add('hidden');
-        if (dashScreen) {
-            dashScreen.classList.remove('hidden');
-            renderDashboard();
+function startTransition(targetId) {
+    const fade = document.getElementById('fade');
+    fade.classList.add('glitch-active');
+    
+    if(guestInterval) clearInterval(guestInterval);
+    if(sensorInterval) clearInterval(sensorInterval);
+
+    setTimeout(() => {
+        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+        const next = document.getElementById(targetId);
+        if(next) {
+            next.classList.remove('hidden');
+            next.scrollTop = 0;
         }
-        initMatrix();
-    } else {
-        // Если зашли первый раз — запускаем старую загрузку
-        runBootSequence();
-    }
-});
 
-// --- 2. СТАРАЯ ЗАГРУЗКА (BOOTING SEQUENCE) ---
-function runBootSequence() {
-    const introText = document.getElementById('intro-ascii');
-    const introLogo = document.getElementById('intro-logo');
-    const introScreen = document.getElementById('scr-intro');
-    const loginScreen = document.getElementById('login-screen');
+        if(targetId === 'scr-guest') startGuestConsole();
+        if(targetId === 'scr-database') initDatabase();
+        if(targetId === 'scr-sysdata') initSensors();
 
-    setTimeout(() => {
-        if(introText) introText.classList.add('hidden');
-        if(introLogo) introLogo.classList.remove('hidden');
+        fade.classList.remove('glitch-active');
+    }, 400);
+}
+
+// КОНСОЛЬ: СТРОГО 5 СТРОК
+function startGuestConsole() {
+    const box = document.getElementById('guest-console');
+    if(!box) return;
+    box.innerHTML = '';
+    let i = 0;
+    guestInterval = setInterval(() => {
+        const p = document.createElement('p');
+        p.innerText = LOG_LINES[i];
+        box.insertBefore(p, box.firstChild);
+        if(box.childNodes.length > 5) box.removeChild(box.lastChild);
+        i = (i + 1) % LOG_LINES.length;
     }, 1500);
-
-    setTimeout(() => {
-        if(introScreen) introScreen.style.opacity = '0';
-        setTimeout(() => {
-            if(introScreen) introScreen.classList.add('hidden');
-            if(loginScreen) {
-                loginScreen.classList.remove('hidden');
-                initMatrix();
-            }
-        }, 1000);
-    }, 4000);
 }
 
-// --- 3. МАТРИЧНЫЙ ФОН ---
-function initMatrix() {
-    const canvas = document.getElementById('matrix-canvas');
-    if(!canvas) return;
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-    const drops = Array(Math.floor(canvas.width/14)).fill(1);
-    
-    const matrixLoop = () => {
-        ctx.fillStyle = "rgba(5, 2, 8, 0.1)"; 
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#a855f7"; 
-        drops.forEach((y, i) => {
-            ctx.fillText(Math.floor(Math.random()*2), i*14, y*14);
-            if(y*14 > canvas.height && Math.random() > 0.98) drops[i] = 0;
-            drops[i]++;
-        });
-    };
-    setInterval(matrixLoop, 50);
+// БАЗА ДАННЫХ
+function initDatabase() {
+    const list = document.getElementById('db-logs-list');
+    if(!list) return;
+    list.innerHTML = DATABASE_LOGS.map((log, index) => `
+        <div class="db-log-item">
+            <div class="db-log-header">
+                <button class="db-expand-btn" onclick="toggleLog(${index})">OPEN</button>
+                <span>${log.title}</span>
+                <small style="margin-left:auto; opacity:0.5;">${log.date}</small>
+            </div>
+            <div id="log-body-${index}" class="db-log-content">${log.text}</div>
+        </div>
+    `).join('');
 }
 
-// --- 4. АВТОРИЗАЦИЯ ---
-function attemptLogin() {
-    const id = document.getElementById('user-id').value.trim().toLowerCase();
-    const pass = document.getElementById('user-pass').value.trim();
-    
-    if (PROFILES[id] && PROFILES[id].pass === pass) {
-        activeUser = PROFILES[id];
-        localStorage.setItem('ong_user', JSON.stringify(activeUser));
-        
-        document.getElementById('login-screen').classList.add('hidden');
-        document.getElementById('main-dashboard').classList.remove('hidden');
-        renderDashboard();
+function toggleLog(idx) {
+    const body = document.getElementById(`log-body-${idx}`);
+    const btn = body.previousElementSibling.querySelector('.db-expand-btn');
+    const open = body.classList.toggle('open');
+    btn.innerText = open ? "CLOSE" : "OPEN";
+}
+
+// ЛОГИН
+function processLogin() {
+    const id = document.getElementById('inp-id').value.toLowerCase().trim();
+    const pass = document.getElementById('inp-pass').value.trim();
+    if(PROFILES[id] && PROFILES[id].pass === pass) {
+        document.getElementById('welcome-user-name').innerText = PROFILES[id].name;
+        startTransition('scr-dash');
     } else {
-        const out = document.getElementById('output');
-        out.innerHTML = "<div style='color:#ff2233; text-shadow: 0 0 5px red;'>> ERROR: ACCESS_DENIED</div>";
+        document.getElementById('login-output').innerText = "ACCESS_DENIED";
     }
 }
 
-// --- 5. РАБОТА С КАБИНЕТОМ ---
-function renderDashboard() {
-    const display = document.getElementById('user-name-display');
-    if (display && activeUser) {
-        display.innerText = activeUser.name;
-        if(activeUser.role === "ADMIN") display.style.color = "#ff2233";
-    }
+// СИСТЕМА
+function initSensors() {
+    sensorInterval = setInterval(() => {
+        let cpu = Math.floor(Math.random()*20)+10;
+        let temp = Math.floor(Math.random()*5)+40;
+        document.getElementById('bar-cpu').style.width = cpu + "%";
+        document.getElementById('val-cpu').innerText = cpu + "%";
+        document.getElementById('bar-temp').style.width = (temp*1.5) + "%";
+        document.getElementById('val-temp').innerText = temp + "°C";
+    }, 2000);
 }
 
-function toggleSidebar(state) {
-    const sb = document.getElementById('sidebar');
-    const ov = document.getElementById('side-overlay');
-    if(state) { 
-        sb.classList.add('open'); 
-        ov.style.display = 'block'; 
-    } else { 
-        sb.classList.remove('open'); 
-        ov.style.display = 'none'; 
-    }
-}
+function toggleSidebar(s) { document.getElementById('sidebar').classList.toggle('open', s); }
 
-function openProfile() {
-    if(!activeUser) return;
-    document.getElementById('p-name-val').innerText = activeUser.name;
-    document.getElementById('p-uuid-val').innerText = `UUID: ${activeUser.uuid} | LVL: ${activeUser.lvl}`;
-    document.getElementById('modal-profile').classList.remove('hidden');
-    toggleSidebar(false);
-}
-
-function closeProfile() {
-    document.getElementById('modal-profile').classList.add('hidden');
-}
-
-function logout() {
-    localStorage.removeItem('ong_user');
-    location.reload();
-}
-
-// --- 6. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ---
-setInterval(() => {
-    const cl = document.getElementById('clock');
-    if(cl) cl.innerText = new Date().toLocaleTimeString();
-}, 1000);
-
-// Обработка кнопки выхода в сайдбаре (если в HTML прописан onclick="logout()")
-window.logout = logout;
+// ЗАГРУЗКА
+window.onload = () => {
+    setTimeout(() => {
+        document.getElementById('intro-logo').classList.remove('hidden');
+        setTimeout(() => startTransition('scr-login'), 2500);
+    }, 1000);
+    setInterval(() => {
+        const c = document.getElementById('clock');
+        if(c) c.innerText = new Date().toLocaleTimeString();
+    }, 1000);
+};
