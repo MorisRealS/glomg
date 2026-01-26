@@ -2,87 +2,50 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>G.L.O.M.G. | CORE V32.8</title>
+    <title>G.L.O.M.G. | CORE</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body oncontextmenu="return false;">
+<body>
     <canvas id="matrix-canvas"></canvas>
-    <div class="vhs-overlay"></div>
-    <div id="fade"></div>
 
     <section id="scr-intro" class="screen">
-        <div class="center-layout">
-            <pre id="intro-ascii" class="ascii-font">SYSTEM_BOOTING...</pre>
-            <div id="intro-logo" class="hidden">
-                <pre class="ong-logo">
- ██████  ███    ██  ██████  
-██    ██ ████   ██ ██       
-██    ██ ██ ██  ██ ██   ███ 
-██    ██ ██  ██ ██ ██    ██ 
- ██████  ██   ████  ██████  </pre>
-                <p class="blink">INITIALIZING O.N.G. CORE...</p>
-            </div>
-        </div>
+        <pre>SYSTEM_BOOTING...</pre>
     </section>
 
     <section id="login-screen" class="screen hidden">
-        <div class="login-frame">
-            <pre class="ong-logo-main">
+        <pre>
  ██████  ███    ██  ██████  
 ██    ██ ████   ██ ██       
 ██    ██ ██ ██  ██ ██   ███ 
 ██    ██ ██  ██ ██ ██    ██ 
- ██████  ██   ████  ██████  </pre>
-            <div id="output" class="terminal-output"></div>
-            <div class="login-form">
-                <input type="text" id="user-id" placeholder="OPERATOR_ID" spellcheck="false">
-                <input type="password" id="user-pass" placeholder="PASSWORD" spellcheck="false">
-                <div class="login-btns">
-                    <button class="btn-ui btn-confirm" onclick="attemptLogin()">[ CONFIRM ]</button>
-                    <button class="btn-ui btn-guest" onclick="location.href='guest.html'">[ GUEST ]</button>
-                </div>
-            </div>
+ ██████  ██   ████  ██████ </pre>
+        <div class="login-form">
+            <input type="text" id="user-id" placeholder="OPERATOR_ID">
+            <input type="password" id="user-pass" placeholder="PASSWORD">
+            <br>
+            <button class="btn-ui" onclick="attemptLogin()">[ CONFIRM ]</button>
+            <button class="btn-ui" onclick="location.href='guest.html'">[ GUEST ]</button>
         </div>
+        <div id="output"></div>
     </section>
 
     <section id="main-dashboard" class="screen hidden">
-        <header class="status-bar">
-            <button class="btn-ui-nav" onclick="toggleSidebar(true)">MENU</button>
-            <div id="clock">00:00:00</div>
-        </header>
-        <div class="main-content center-layout">
-            <pre class="ong-logo-small">
- ██████  ███    ██  ██████  
-██    ██ ████   ██ ██       
-██    ██ ██ ██  ██ ██   ███ 
-██    ██ ██  ██ ██ ██    ██ 
- ██████  ██   ████  ██████  </pre>
-            <h2>OPERATOR: <span id="user-name-display">---</span></h2>
-            <div class="dash-row-horizontal">
+        <div class="main-content">
+            <h2>WELCOME, <span id="user-name-display"></span></h2>
+            <div class="dash-btns">
                 <button class="mega-btn" onclick="location.href='radar.html'">РАДАР</button>
                 <button class="mega-btn" onclick="location.href='archive.html'">АРХИВ</button>
-                <button class="mega-btn" onclick="location.href='system.html'">СИСТЕМА</button>
             </div>
-            <div class="purple-fading-line"></div>
-            <p class="staff-subtext">ADMIN_ACCESS: LEVEL_6 // SECURE_CONNECTION</p>
+            <button class="btn-ui" onclick="toggleSidebar(true)">[ MENU ]</button>
         </div>
     </section>
 
-    <div id="side-overlay" onclick="toggleSidebar(false)"></div>
     <div id="sidebar" class="sidebar">
-        <div class="sidebar-header">O.N.G. CORE</div>
-        <button class="side-link-btn" onclick="openProfile()">[ MY_PROFILE ]</button>
-        <button class="side-link-btn" style="color:red; margin-top:20px;" onclick="logout()">[ LOGOUT ]</button>
-    </div>
-
-    <div id="modal-profile" class="modal-profile hidden">
-        <div class="profile-card">
-            <button class="btn-ui" onclick="closeProfile()">[ CLOSE ]</button>
-            <div class="profile-header">
-                <div class="profile-avatar"></div>
-                <div><h2 id="p-name-val">---</h2><p id="p-uuid-val">UUID: 0000</p></div>
-            </div>
-        </div>
+        <h3>OPTIONS</h3>
+        <button class="btn-ui" onclick="openProfile()">MY_PROFILE</button>
+        <button class="btn-ui" onclick="logout()" style="color:red">LOGOUT</button>
+        <br><br>
+        <button class="btn-ui" onclick="toggleSidebar(false)">CLOSE</button>
     </div>
 
     <script src="script.js"></script>
