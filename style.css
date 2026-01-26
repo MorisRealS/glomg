@@ -3,44 +3,79 @@
     --purple-dim: rgba(168, 85, 247, 0.3);
     --bg: #050208;
     --error: #ff2233;
-    --font: 'Courier New', monospace;
 }
 
 * { box-sizing: border-box; }
 
-body {
-    margin: 0; background: var(--bg); color: var(--purple);
-    font-family: var(--font); overflow-x: hidden;
+body, html {
+    margin: 0; padding: 0;
+    width: 100%; height: 100%;
+    background: var(--bg); color: var(--purple);
+    font-family: 'Courier New', monospace;
+    overflow-x: hidden;
 }
 
-/* Эффекты фона (Матрица и VHS) */
+/* ФОНОВЫЕ ЭФФЕКТЫ */
 #matrix-canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.5; }
 .vhs-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
-                linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-    z-index: 1000; pointer-events: none;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+    z-index: 9999; pointer-events: none;
 }
 
-/* Кнопки и UI */
-.btn-ui-nav, .mega-btn, .btn-ui {
+/* ЦЕНТРИРОВАНИЕ (ГЛАВНОЕ) */
+.screen {
+    width: 100%; min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+}
+
+.center-layout {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+}
+
+/* ЛОГОТИПЫ (ЧТОБЫ НЕ ЕХАЛИ) */
+pre {
+    font-family: monospace; line-height: 1.1;
+    display: inline-block; text-align: left;
+    margin: 20px 0;
+}
+
+/* КНОПКИ */
+.btn-ui, .btn-ui-nav, .mega-btn {
     background: transparent; border: 1px solid var(--purple);
-    color: var(--purple); padding: 10px 20px; cursor: pointer;
-    font-family: var(--font); text-transform: uppercase;
-    transition: 0.3s;
+    color: var(--purple); padding: 10px 20px;
+    cursor: pointer; font-family: inherit;
+    text-transform: uppercase; transition: 0.3s;
+    margin: 5px;
 }
-.btn-ui-nav:hover, .mega-btn:hover { background: var(--purple-dim); box-shadow: 0 0 15px var(--purple); }
-
-.status-bar {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 10px 20px; border-bottom: 1px solid var(--purple-dim);
-    background: rgba(0,0,0,0.8); position: sticky; top: 0; z-index: 100;
+.btn-ui:hover, .mega-btn:hover {
+    background: var(--purple-dim); box-shadow: 0 0 15px var(--purple);
 }
 
-.purple-fading-line { height: 1px; background: linear-gradient(90deg, transparent, var(--purple), transparent); margin: 20px 0; }
+/* СКРЫТИЕ (ЧТОБЫ КНОПКИ НЕ ТОРЧАЛИ) */
 .hidden { display: none !important; }
-.blink { animation: blink-anim 1s infinite; }
-@keyframes blink-anim { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-/* ASCII Логотипы */
-pre { font-family: monospace; line-height: 1.1; color: var(--purple); text-shadow: 0 0 5px var(--purple); }
+/* САЙДБАР (ЧТОБЫ ОН НЕ ВИСЕЛ ПОСРЕДИ ЭКРАНА) */
+.sidebar {
+    position: fixed; top: 0; left: -250px;
+    width: 250px; height: 100%;
+    background: rgba(10, 5, 15, 0.95);
+    border-right: 1px solid var(--purple);
+    transition: 0.4s; z-index: 10000;
+    padding: 20px;
+}
+.sidebar.open { left: 0; }
+#side-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7); display: none; z-index: 9999;
+}
+
+/* ХЕДЕР */
+.status-bar {
+    width: 100%; display: flex; justify-content: space-between;
+    padding: 15px 30px; border-bottom: 1px solid var(--purple-dim);
+    background: rgba(0,0,0,0.8);
+}
