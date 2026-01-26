@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G.L.O.M.G. | CORE V32.5 FINAL</title>
+    <title>G.L.O.M.G. | CORE V32.7 FULL</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body oncontextmenu="return false;">
@@ -18,7 +18,6 @@
     <div id="custom-menu">
         <div onclick="location.reload()">[ REBOOT_SYSTEM ]</div>
         <div onclick="startTransition('scr-login')">[ SWITCH_USER ]</div>
-        <div onclick="toggleSidebar(true)">[ OPEN_MENU ]</div>
     </div>
 
     <div id="modal-profile" class="modal-profile hidden">
@@ -28,12 +27,13 @@
                 <div class="profile-avatar"></div>
                 <div class="profile-main-info">
                     <h2 id="p-name-val">OPERATOR</h2>
-                    <p>TOKEN: <span id="p-token-val">---</span></p>
+                    <p>UUID: <span id="p-uuid-val">0000</span></p>
                 </div>
             </div>
             <div class="profile-grid">
                 <div class="p-item"><label>LEVEL</label><span id="p-lvl-text-val">0</span></div>
-                <div class="p-item"><label>UUID</label><span id="p-uuid-val">0000</span></div>
+                <div class="p-item"><label>RANK</label><span id="p-rank-val">STAFF</span></div>
+                <div class="p-item"><label>JOIN_DATE</label><span id="p-date-val">20.01.2025</span></div>
             </div>
         </div>
     </div>
@@ -70,7 +70,7 @@
     </section>
 
     <section id="scr-guest" class="screen hidden scrollable">
-        <div class="guest-layout">
+        <div class="guest-layout container-scroll">
             <pre class="ong-logo">
  ██████  ███    ██  ██████  
 ██    ██ ████   ██ ██       
@@ -99,6 +99,7 @@
                     <p><b>[25.01.2025]</b> — Успешное подключение к узлам системы P.R.I.S.M.</p>
                 </div>
             </div>
+            <div style="height: 100px;"></div>
         </div>
     </section>
 
@@ -106,7 +107,7 @@
         <header class="status-bar">
             <button class="btn-ui-nav" onclick="toggleSidebar(true)">MENU</button>
             <div id="clock">00:00:00</div>
-            <div id="threat-indicator">THREAT: <span style="color: lime;">LOW</span></div>
+            <div id="msg-alert" class="hidden pulse-red" onclick="startTransition('scr-messages')">NEW_MESSAGE</div>
         </header>
         <div class="main-content center-layout">
             <pre class="ong-logo">
@@ -118,44 +119,59 @@
             <h2>Welcome, <span id="welcome-user-name" style="color: var(--purple);">---</span></h2>
             <div class="dash-row-buttons">
                 <button class="mega-btn" onclick="initializeTacticalRadar()">РАДАР</button>
-                <button class="mega-btn" onclick="startTransition('scr-archive')">АРХИВ</button>
+                <button class="mega-btn" onclick="startTransition('scr-messages')">СВЯЗЬ</button>
                 <button class="mega-btn" onclick="startTransition('scr-sysdata')">СИСТЕМА</button>
             </div>
             <div class="staff-info-block">
                 <div class="purple-fading-line"></div>
-                <p>1. При задержке UUID более 15мс доложить оператору <b>Kiddy</b>.<br>
-                2. Доступ к терминалу <b>MorisReal</b> запрещен.<br>
-                3. Сигналы из "Бункера Призмы" — враждебны.</p>
+                <h4 style="color: var(--purple);">ВНИМАНИЕ СОТРУДНИКАМ:</h4>
+                <p id="staff-message-gen">Загрузка актуальных директив...</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="scr-messages" class="screen hidden scrollable">
+        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>UUID_MESSENGER</div></header>
+        <div class="msg-container">
+            <div class="msg-box" id="inbox">
+                <h3 class="label">INBOX:</h3>
+                <div id="messages-list"></div>
+            </div>
+            <div class="msg-send">
+                <h3 class="label">SEND_MESSAGE:</h3>
+                <select id="msg-recipient" class="inp-select">
+                    <option value="kiddy">Kiddy (UUID: 1101)</option>
+                    <option value="dykzxz">Dykzxz (UUID: 1011)</option>
+                    <option value="sumber">Sumber (UUID: 1110)</option>
+                    <option value="morisreal">MorisReal (UUID: 1010)</option>
+                </select>
+                <textarea id="msg-text" placeholder="Введите сообщение..."></textarea>
+                <button class="btn-ui btn-gold" onclick="sendMessage()">ОТПРАВИТЬ</button>
             </div>
         </div>
     </section>
 
     <section id="scr-map" class="screen hidden">
-        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>RADAR_SCANNER</div></header>
+        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>TACTICAL_RADAR</div></header>
         <div class="radar-scroll-wrapper" id="radar-scroll">
             <div class="radar-view-section"><div class="radar-disk"><div class="pulse-ring"></div><div id="radar-nodes"></div></div></div>
-            <div class="radar-info-section"><h2 id="p-title">SCANNING...</h2><p id="p-text">Выберите объект.</p></div>
-        </div>
-    </section>
-
-    <section id="scr-sysdata" class="screen hidden">
-        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>HARDWARE_LOG</div></header>
-        <div class="sys-mon-container">
-            <div class="overall-status">CORE_CONDITION: <span id="sys-health-text">OPTIMAL</span></div>
-            <div class="sensor-grid">
-                <div class="sensor-card"><label>CPU</label><div class="bar-bg"><div id="bar-cpu" class="bar-fill"></div></div><span id="val-cpu">0%</span></div>
-                <div class="sensor-card"><label>TEMP</label><div class="bar-bg"><div id="bar-temp" class="bar-fill"></div></div><span id="val-temp">0°C</span></div>
-                <div class="sensor-card"><label>RAM</label><div class="bar-bg"><div id="bar-mem" class="bar-fill"></div></div><span id="val-mem">0 GB</span></div>
+            <div class="radar-info-section" id="radar-info-block">
+                <div class="purple-fading-line"></div>
+                <h2 id="p-title">SCANNING...</h2>
+                <p id="p-text">Выберите объект на сетке для получения данных.</p>
+                <div style="height: 100px;"></div>
             </div>
         </div>
     </section>
 
-    <section id="scr-archive" class="screen hidden scrollable">
-        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>SECURE_ARCHIVE</div></header>
-        <div class="archive-container">
-            <div class="archive-item">
-                <button class="archive-header" onclick="toggleArchive(this)">[+] ОТЧЕТ ОНГ #031: ИНЦИДЕНТ DYK</button>
-                <div class="archive-content hidden">Критическая нестабильность в ядре. UUID-поток прерван.</div>
+    <section id="scr-sysdata" class="screen hidden">
+        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>HARDWARE_MONITOR</div></header>
+        <div class="sys-mon-container">
+            <div class="overall-status">CORE_CONDITION: <span id="sys-health-text">OPTIMAL</span></div>
+            <div class="sensor-grid">
+                <div class="sensor-card"><label>CPU_LOAD</label><div class="bar-bg"><div id="bar-cpu" class="bar-fill"></div></div><span id="val-cpu">0%</span></div>
+                <div class="sensor-card"><label>TEMP_CORE</label><div class="bar-bg"><div id="bar-temp" class="bar-fill"></div></div><span id="val-temp">0°C</span></div>
+                <div class="sensor-card"><label>MEM_USAGE</label><div class="bar-bg"><div id="bar-mem" class="bar-fill"></div></div><span id="val-mem">0 GB</span></div>
             </div>
         </div>
     </section>
@@ -164,6 +180,7 @@
     <div id="sidebar" class="sidebar">
         <button class="side-link-btn" onclick="openProfile()">PERSONAL_PROFILE</button>
         <button class="side-link-btn" onclick="startTransition('scr-login')">SWITCH_USER</button>
+        <button class="side-link-btn logout-red-btn" onclick="location.reload()">LOGOUT_SESSION</button>
     </div>
 
     <script src="script.js"></script>
