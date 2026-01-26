@@ -1,136 +1,115 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>G.L.O.M.G. | CORE V27.2</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="vhs-overlay"></div>
-    <div id="fade"></div>
+const DB = {
+    "morisreal": { pass: "morisreal_profile_console", lvl: 6, rank: "CHIEF OPERATOR", title: "МОЯ ЛАБОРАТОРИЯ" },
+    "sumber": { pass: "SumberTheAdminPRISMS", lvl: 5, rank: "PRISMA OWNER", title: "БУНКЕР ПРИЗМЫ" },
+    "dykzxz": { pass: "DykProfileConsoleONG", lvl: 4, rank: "REACTOR ENG", title: "МОЙ РЕАКТОР" }
+};
 
-    <section id="scr-intro" class="screen">
-        <pre id="intro-ascii" class="ascii-font"></pre>
-        <div id="intro-logo" class="hidden">
-            <pre class="logo-txt">
-   ______ __     ____   __  ___ ______
-  / ____// /    / __ \ /  |/  // ____/
- / / __ / /    / / / // /|_/ // / __  
-/ /_/ // /___ / /_/ // /  / // /_/ /  
-\____//_____/ \____//_/  /_/ \____/ </pre>
-            <p class="blink">SYSTEM INITIALIZING...</p>
-        </div>
-    </section>
+let activeUser = null;
 
-    <section id="scr-login" class="screen hidden">
-        <div class="login-frame">
-            <h1 class="glitch">G.L.O.M.G.</h1>
-            <div class="inputs">
-                <input type="text" id="inp-id" placeholder="OPERATOR_ID" spellcheck="false">
-                <input type="password" id="inp-pass" placeholder="ACCESS_KEY">
-            </div>
-            <div class="actions">
-                <button class="btn-main" onclick="auth()">INITIALIZE</button>
-                <button class="btn-sec" onclick="goGuest()">GUEST_ACCESS</button>
-            </div>
-        </div>
-    </section>
+// ИНТРО
+window.onload = () => {
+    const pre = document.getElementById('intro-ascii');
+    const txt = "G.L.O.M.G. v28.2_STABLE\nLOADING_CORE_SYSTEMS...\nESTABLISHING_ENCRYPTED_TUNNEL...\nSYSTEM_READY.";
+    let i = 0;
+    let t = setInterval(() => {
+        pre.textContent += txt[i]; i++;
+        if(i >= txt.length) { 
+            clearInterval(t); 
+            document.getElementById('intro-logo').classList.remove('hidden');
+            setTimeout(() => transition('scr-login'), 2500);
+        }
+    }, 45);
+};
 
-    <section id="scr-guest" class="screen hidden">
-        <div class="guest-container">
-            <header class="hud-mini">
-                <span>GUEST_ACCESS_LEVEL: 0</span>
-                <button class="btn-login-small" onclick="transition('scr-login')">LOGIN</button>
-            </header>
-            <div class="guest-layout">
-                <div class="left-col">
-                    <h3>SYSTEM_NOTIFICATIONS:</h3>
-                    <div id="guest-console" class="console-box"></div>
-                </div>
-                <div class="right-col">
-                    <div class="news-box">
-                        <h3>LATEST_NEWS:</h3>
-                        <p>> Ядро обновлено до V27.2.</p>
-                        <p>> Добавлены уровни доступа (0-6).</p>
-                        <p>> Реактор Dykzxz требует внимания.</p>
-                    </div>
-                    <div class="info-box">
-                        <h3>ABOUT_US:</h3>
-                        <p>G.L.O.M.G. — автономная сеть управления кристаллическими ядрами и мониторинга реакторов.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+// ПЕРЕХОДЫ МЕЖДУ СТРАНИЦАМИ
+function transition(id) {
+    document.getElementById('fade').classList.add('active');
+    setTimeout(() => {
+        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+        document.getElementById('fade').classList.remove('active');
+        side(false); // Закрываем меню при переходе
+    }, 450);
+}
 
-    <section id="scr-dash" class="screen hidden">
-        <header class="hud">
-            <div class="hud-left"><button class="menu-btn" onclick="side(true)">MENU</button></div>
-            <div class="hud-center" id="clock">00:00:00</div>
-            <div class="hud-right">LVL: <span id="u-lvl-display">0</span></div>
-        </header>
-        <div class="main-content">
-            <h2 id="welcome-msg">WELCOME, OPERATOR</h2>
-            <div class="big-buttons-grid">
-                <button class="mega-btn" onclick="goMap()">ТАКТИЧЕСКИЙ РАДАР</button>
-                <button class="mega-btn" onclick="modal('mod-archive', true)">АРХИВ ДАННЫХ</button>
-                <button class="mega-btn" onclick="modal('mod-sysdata', true)">СИСТЕМНЫЕ ДАННЫЕ</button>
-            </div>
-            <button class="console-btn" onclick="transition('scr-full-console')">КОНСОЛЬ УПРАВЛЕНИЯ</button>
-        </div>
-    </section>
+// АВТОРИЗАЦИЯ
+function auth() {
+    const id = document.getElementById('inp-id').value.toLowerCase();
+    const ps = document.getElementById('inp-pass').value;
+    if(DB[id] && DB[id].pass === ps) {
+        activeUser = { id, ...DB[id] };
+        document.getElementById('u-lvl-display').textContent = activeUser.lvl;
+        document.getElementById('welcome-msg').textContent = `WELCOME, ${id.toUpperCase()}`;
+        document.getElementById('prof-info').innerHTML = `ID: ${id.toUpperCase()}<br>LEVEL: ${activeUser.lvl}<br>POSITION: ${activeUser.rank}`;
+        transition('scr-dash');
+    } else {
+        alert("ACCESS_DENIED: INVALID_CREDENTIALS");
+    }
+}
 
-    <section id="scr-full-console" class="screen hidden">
-        <div class="console-header">
-            <span>TERMINAL_ROOT_ACCESS</span>
-            <button onclick="transition('scr-dash')">ВЕРНУТЬСЯ</button>
-        </div>
-        <div id="terminal-out" class="terminal-body"></div>
-        <input type="text" id="terminal-input" placeholder="Введите команду..." onkeypress="handleCmd(event)">
-    </section>
+// ГОСТЬ
+function goGuest() {
+    activeUser = null;
+    transition('scr-guest');
+    const con = document.getElementById('guest-console');
+    const logs = ["> PING node_1... OK", "> DB_SYNC... 100%", "> TEMP_CHECK... NORMAL", "> RADIATION_LEVEL... 0.04mSv", "> CORE_STATUS... IDLE", "> SCANNING... NO_THREATS"];
+    setInterval(() => {
+        const d = document.createElement('div');
+        d.textContent = `[${new Date().toLocaleTimeString()}] ${logs[Math.floor(Math.random()*logs.length)]}`;
+        con.prepend(d);
+        if(con.childNodes.length > 18) con.lastChild.remove(); // Заполнение всей консоли
+    }, 1600);
+}
 
-    <section id="scr-map" class="screen hidden">
-        <div class="map-ui-top"><button class="btn-exit" onclick="transition('scr-dash')">← НАЗАД</button></div>
-        <div class="radar-fullscreen">
-            <div class="radar-disk-wide" id="radar-disk">
-                <div class="scanner-beam"></div>
-                <div class="radar-grid"></div>
-                <div id="radar-nodes"></div>
-            </div>
-        </div>
-        <div id="radar-popup" class="node-popup hidden">
-            <div class="p-head"><span id="p-title">OBJECT</span> <span onclick="this.parentElement.parentElement.classList.add('hidden')" style="cursor:pointer">✕</span></div>
-            <div class="p-body" id="p-text"></div>
-        </div>
-    </section>
+// РАДАР
+function goMap() {
+    transition('scr-map');
+    const box = document.getElementById('radar-nodes'); box.innerHTML = "";
+    const nodes = [ {x:50,y:50,o:"morisreal",t:"owner"}, {x:35,y:45,o:"sumber",t:"online"}, {x:75,y:65,o:"dykzxz",t:"broken"} ];
+    nodes.forEach(n => {
+        const dot = document.createElement('div');
+        dot.className = `node ${n.t}`;
+        dot.style.left = n.x + "%"; dot.style.top = n.y + "%";
+        dot.onclick = () => {
+            document.getElementById('radar-popup').classList.remove('hidden');
+            document.getElementById('p-title').textContent = n.o.toUpperCase();
+            document.getElementById('p-text').textContent = (n.o === activeUser.id) ? DB[n.o].title : `DATA_ACCESS: RESTRICTED | RANK: ${DB[n.o].rank}`;
+        };
+        box.appendChild(dot);
+    });
+}
 
-    <div id="mod-archive" class="modal hidden">
-        <div class="modal-box">
-            <div class="m-head">АРХИВ ИССЛЕДОВАНИЙ <span onclick="modal('mod-archive',false)">✕</span></div>
-            <div class="m-body">
-                <p>> [LOG_44] Стабильность: 98%.</p>
-                <p>> [LOG_89] Обнаружен резонанс в секторе Дука.</p>
-            </div>
-        </div>
-    </div>
+// САЙДБАР
+function side(st) {
+    document.getElementById('sidebar').classList.toggle('open', st);
+    document.getElementById('side-overlay').style.display = st ? 'block' : 'none';
+}
 
-    <div id="mod-sysdata" class="modal hidden">
-        <div class="modal-box">
-            <div class="m-head">СИСТЕМНЫЕ ДАННЫЕ <span onclick="modal('mod-sysdata',false)">✕</span></div>
-            <div class="m-body">
-                <div class="user-row">morisreal | LVL 6 | CHIEF</div>
-                <div class="user-row">sumber | LVL 5 | PRISMA_OWNER</div>
-                <div class="user-row">Dykzxz | LVL 4 | REACTOR_ENG</div>
-                <div class="user-row">Msk4ne_ | LVL 4 | OPERATOR</div>
-            </div>
-        </div>
-    </div>
+// МОДАЛКИ
+function modal(id, st) {
+    document.getElementById(id).classList.toggle('hidden', !st);
+}
 
-    <div id="sidebar" class="sidebar">
-        <div class="s-head">МЕНЮ <span onclick="side(false)">✕</span></div>
-        <button class="red-t" onclick="location.reload()">ВЫЙТИ ИЗ СИСТЕМЫ</button>
-    </div>
+// КОНСОЛЬ
+function handleCmd(e) {
+    if(e.key === 'Enter') {
+        const out = document.getElementById('terminal-out');
+        const cmd = e.target.value;
+        const d = document.createElement('div');
+        d.textContent = `> root@glomg:~# ${cmd}`;
+        out.appendChild(d);
+        
+        const res = document.createElement('div');
+        res.style.color = "#888";
+        res.textContent = `System: command '${cmd}' not found in core modules.`;
+        out.appendChild(res);
+        
+        e.target.value = "";
+        out.scrollTop = out.scrollHeight;
+    }
+}
 
-    <script src="script.js"></script>
-</body>
-</html>
+setInterval(() => {
+    const c = document.getElementById('clock');
+    if(c) c.textContent = new Date().toLocaleTimeString();
+}, 1000);
