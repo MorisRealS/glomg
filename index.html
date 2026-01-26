@@ -17,7 +17,7 @@
             <button class="close-profile-btn" onclick="closeProfile()"><-- [ ВЕРНУТЬСЯ_В_ТЕРМИНАЛ ]</button>
             <div class="profile-header">
                 <div class="profile-avatar">
-                    <img src="https://i.imgur.com/8N69fS7.png" alt="AVATAR">
+                    <svg viewBox="0 0 24 24" fill="#555" xmlns="http://www.w3.org/2000/svg"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                 </div>
                 <div class="profile-main-info">
                     <h2 id="p-name-val">M_OPERATOR</h2>
@@ -26,14 +26,14 @@
                 </div>
             </div>
             <div class="profile-grid">
-                <div class="p-item"><label>ПОДРАЗДЕЛЕНИЕ</label><span class="p-value">НАУЧНЫЙ ОТДЕЛ</span></div>
-                <div class="p-item"><label>УРОВЕНЬ ДОПУСКА</label><span class="p-value" id="p-lvl-val">L0</span></div>
+                <div class="p-item"><label>УРОВЕНЬ ДОПУСКА</label><span class="p-value" id="p-lvl-text-val">LVL_UNKNOWN</span></div>
+                <div class="p-item"><label>СТАТУС</label><span class="p-value" id="p-status-val">USER</span></div>
                 <div class="p-item"><label>СПЕЦИАЛИЗАЦИЯ</label><span class="p-value">ОПЕРАТОР СИСТЕМЫ</span></div>
                 <div class="p-item"><label>ДАТА ЗАЧИСЛЕНИЯ</label><span class="p-value">25.01.2026</span></div>
             </div>
             <div class="profile-footer">
-                <label>ОСОБЫЕ_ОТМЕТКИ:</label>
-                <div class="notes">ОБЪЕКТ ПОД НАБЛЮДЕНИЕМ. КУРАТОР: MORIS.</div>
+                <label>UUID_LEVEL_IDENTIFIER:</label>
+                <div class="notes" id="p-uuid-val">0000000000</div>
             </div>
             <div class="sys-status">СВЯЗЬ: <span style="color: var(--terminal-green)">ШТАТНЫЙ РЕЖИМ</span></div>
         </div>
@@ -55,14 +55,14 @@
     <section id="scr-login" class="screen hidden">
         <div class="login-frame">
             <h1 class="glitch" data-text="G.L.O.M.G.">G.L.O.M.G.</h1>
-            <div id="output" class="login-console-output" style="height: 100px; overflow-y: auto; color: var(--purple); margin-bottom: 20px; text-align: left;"></div>
+            <div id="login-output" class="console-box" style="height: 60px; margin-bottom: 20px; font-size: 0.8rem; border: none;"></div>
             <div class="inputs">
                 <input type="text" id="inp-id" placeholder="OPERATOR_ID" spellcheck="false" autocomplete="off">
                 <input type="password" id="inp-pass" placeholder="ACCESS_KEY" autocomplete="off">
             </div>
             <div class="actions">
-                <button class="btn-ui btn-gold" onclick="processLogin()">ВЫПОЛНИТЬ: INITIALIZE</button>
-                <button class="btn-ui btn-gold-sec" onclick="transitionToScreen('scr-guest')">ВЫПОЛНИТЬ: GUEST_ACCESS</button>
+                <button class="btn-ui btn-gold" onclick="processLogin()">INITIALIZE</button>
+                <button class="btn-ui btn-gold-sec" onclick="transitionToScreen('scr-guest')">GUEST_ACCESS</button>
             </div>
         </div>
     </section>
@@ -78,6 +78,11 @@
             <div class="guest-col-logs">
                 <h3 class="label">LIVE_SYSTEM_LOGS:</h3>
                 <div id="guest-console" class="console-box"></div>
+                <h3 class="label" style="margin-top: 20px;">SYSTEM_NEWS:</h3>
+                <div class="info-container" id="news-box">
+                    <p style="color: var(--purple)">[25.01] Система CORE обновлена до v31.8.</p>
+                    <p style="color: var(--purple)">[24.01] Внедрен новый протокол визуализации радара.</p>
+                </div>
             </div>
             <div class="guest-col-info">
                 <h3 class="label">DATABASE_INFO:</h3>
@@ -85,9 +90,7 @@
                     <p class="purple-t">> CORE_STATUS:</p>
                     <p>Версия 31.8 активна. Все узлы синхронизированы.</p>
                     <p class="purple-t">> RESTRICTIONS:</p>
-                    <p>Доступ в режиме просмотра. Командный интерпретатор отключен. Радар работает в режиме пониженной четкости.</p>
-                    <p class="purple-t">> CONTACT:</p>
-                    <p>Для повышения уровня доступа обратитесь к @morisreal.</p>
+                    <p>Доступ в режиме просмотра. Командный интерпретатор отключен.</p>
                 </div>
             </div>
         </div>
@@ -102,11 +105,11 @@
         <div class="main-content">
             <h2 id="welcome-msg" class="glitch-slow">SECURE_CONNECTION</h2>
             <div class="big-buttons-grid">
-                <button class="btn-scan mega-btn" onclick="initializeTacticalRadar()">ВЫПОЛНИТЬ: ТАКТИЧЕСКИЙ РАДАР</button>
-                <button class="btn-scan mega-btn" onclick="transitionToScreen('scr-archive')">ВЫПОЛНИТЬ: АРХИВ ДАННЫХ</button>
-                <button class="btn-scan mega-btn" onclick="transitionToScreen('scr-sysdata')">ВЫПОЛНИТЬ: СИСТЕМНЫЕ ДАННЫЕ</button>
+                <button class="mega-btn" onclick="initializeTacticalRadar()">ТАКТИЧЕСКИЙ РАДАР</button>
+                <button class="mega-btn" onclick="transitionToScreen('scr-archive')">АРХИВ ДАННЫХ</button>
+                <button class="mega-btn" onclick="transitionToScreen('scr-sysdata')">СИСТЕМНЫЕ ДАННЫЕ</button>
             </div>
-            <button class="btn-scan console-btn-big" onclick="transitionToScreen('scr-full-console')">ВЫПОЛНИТЬ: ТЕРМИНАЛ УПРАВЛЕНИЯ (ROOT)</button>
+            <button class="console-btn-big" onclick="transitionToScreen('scr-full-console')">ТЕРМИНАЛ УПРАВЛЕНИЯ (ROOT)</button>
         </div>
     </section>
 
@@ -115,34 +118,7 @@
             <div class="bar-left">FILE_ARCHIVE_SECTOR</div>
             <div class="bar-right"><button class="btn-ui-nav" onclick="transitionToScreen('scr-dash')">RETURN</button></div>
         </header>
-        <div class="page-body-content">
-            <div class="data-row">> [RECORD_001] Ядро запущено оператором morisreal. Локация: Сектор 7.</div>
-            <div class="data-row">> [RECORD_002] Sumber: Авторизация в узле PRISMA. Протокол "Neon" активен.</div>
-            <div class="data-row">> [RECORD_003] Dykzxz зафиксировал всплеск энергии в секторе 4. Проверка реактора.</div>
-            <div class="data-row">> [RECORD_004] Msk4ne_ подключен к удаленному терминалу. Синхронизация...</div>
-            <div class="data-row">> [RECORD_005] Система переведена на версию v31.8. Ошибок нет.</div>
-        </div>
-    </section>
-
-    <section id="scr-sysdata" class="screen hidden">
-        <header class="status-bar">
-            <div class="bar-left">AUTHORIZED_OPERATORS_DB</div>
-            <div class="bar-right"><button class="btn-ui-nav" onclick="transitionToScreen('scr-dash')">RETURN</button></div>
-        </header>
-        <div class="page-body-content">
-            <div class="user-card">
-                <span class="u-name">morisreal</span> | LVL 6 | <span class="u-rank">CHIEF_OPERATOR</span>
-            </div>
-            <div class="user-card">
-                <span class="u-name">sumber</span> | LVL 5 | <span class="u-rank">PRISMA_OWNER</span>
-            </div>
-            <div class="user-card">
-                <span class="u-name">Dykzxz</span> | LVL 4 | <span class="u-rank">REACTOR_ENGINEER</span>
-            </div>
-            <div class="user-card">
-                <span class="u-name">Msk4ne_</span> | LVL 4 | <span class="u-rank">SYSTEM_OPERATOR</span>
-            </div>
-        </div>
+        <div class="page-body-content" id="archive-list"></div>
     </section>
 
     <section id="scr-full-console" class="screen hidden">
@@ -152,7 +128,7 @@
         </header>
         <div id="terminal-out" class="terminal-body"></div>
         <div class="terminal-input-area">
-            <span class="prompt">> </span>
+            <span class="prompt">> root@glomg:~#</span>
             <input type="text" id="terminal-input" placeholder="..." spellcheck="false" onkeypress="handleTerminalCommand(event)">
         </div>
     </section>
@@ -181,19 +157,15 @@
 
     <div id="side-overlay" onclick="toggleSidebar(false)"></div>
     <div id="sidebar" class="sidebar">
-        <div class="s-head">
-            <span>SYSTEM_COMMANDS</span>
-            <button class="btn-close-x" onclick="toggleSidebar(false)">✕</button>
-        </div>
+        <div class="s-head"><span>SYSTEM_COMMANDS</span><button class="btn-close-x" onclick="toggleSidebar(false)">✕</button></div>
         <div class="user-avatar-area">
             <div class="user-avatar-gray">
-                <img src="https://i.imgur.com/8N69fS7.png" style="width:100%; border-radius:50%">
+                <svg viewBox="0 0 24 24" fill="#555"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
             </div>
             <div class="user-label">OPERATOR</div>
         </div>
         <nav class="side-nav-links">
             <button class="side-link-btn" onclick="openProfile()">PERSONAL_PROFILE</button>
-            <button class="side-link-btn" onclick="alert('Access Restricted')">CORE_SETTINGS</button>
             <div class="nav-divider"></div>
             <button class="side-link-btn logout-red-btn" onclick="location.reload()">LOGOUT_SYSTEM</button>
         </nav>
