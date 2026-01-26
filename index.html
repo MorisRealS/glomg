@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G.L.O.M.G. | CORE V32.5</title>
+    <title>G.L.O.M.G. | CORE V32.5 FINAL</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body oncontextmenu="return false;">
     <div class="vhs-overlay"></div>
     <div class="scanline-effect"></div>
     <div id="fade"></div>
@@ -18,6 +18,24 @@
     <div id="custom-menu">
         <div onclick="location.reload()">[ REBOOT_SYSTEM ]</div>
         <div onclick="startTransition('scr-login')">[ SWITCH_USER ]</div>
+        <div onclick="toggleSidebar(true)">[ OPEN_MENU ]</div>
+    </div>
+
+    <div id="modal-profile" class="modal-profile hidden">
+        <div class="profile-card">
+            <button class="close-profile-btn" onclick="closeProfile()"><-- [ BACK ]</button>
+            <div class="profile-header">
+                <div class="profile-avatar"></div>
+                <div class="profile-main-info">
+                    <h2 id="p-name-val">OPERATOR</h2>
+                    <p>TOKEN: <span id="p-token-val">---</span></p>
+                </div>
+            </div>
+            <div class="profile-grid">
+                <div class="p-item"><label>LEVEL</label><span id="p-lvl-text-val">0</span></div>
+                <div class="p-item"><label>UUID</label><span id="p-uuid-val">0000</span></div>
+            </div>
+        </div>
     </div>
 
     <section id="scr-intro" class="screen">
@@ -28,6 +46,7 @@
  ██████  ███    ██  ██████  
 ██    ██ ████   ██ ██       
 ██    ██ ██ ██  ██ ██   ███ 
+██    ██ ██  ██ ██ ██    ██ 
  ██████  ██   ████  ██████  </pre>
                 <p class="blink">INITIALIZING O.N.G. CORE...</p>
             </div>
@@ -56,10 +75,9 @@
  ██████  ███    ██  ██████  
 ██    ██ ████   ██ ██       
 ██    ██ ██ ██  ██ ██   ███ 
+██    ██ ██  ██ ██ ██    ██ 
  ██████  ██   ████  ██████  </pre>
-            
             <button class="btn-ui btn-gold" style="width: 320px; margin-bottom: 40px;" onclick="startTransition('scr-login')">АВТОРИЗАЦИЯ</button>
-
             <div class="guest-grid">
                 <div class="guest-col">
                     <h3 class="label">CONSOLE_LOG:</h3>
@@ -69,16 +87,16 @@
                     <h3 class="label">MISSION_DATA:</h3>
                     <div class="info-container">
                         <p style="color: var(--purple); font-weight: bold;">[ ОБЪЕКТ ОНГ ]</p>
-                        <p>Вы находитесь на внешнем узле Основной Научной Группы. Мы занимаемся изучением аномальных UUID-структур и защитой цифрового периметра от корпорации P.R.I.S.M. Свободный доступ ограничен протоколом "Zero Trust".</p>
+                        <p>Вы находитесь на внешнем узле Основной Научной Группы. Свободный доступ ограничен протоколом "Zero Trust".</p>
                     </div>
                 </div>
             </div>
-
             <div class="news-section">
                 <h3 class="label">НОВОСТИ_СИСТЕМЫ:</h3>
                 <div class="news-block">
-                    <p><b>[26.01.2026]</b> — <b>ГЛОБАЛЬНОЕ ОБНОВЛЕНИЕ:</b> Ядро переведено на версию 32.5. Внедрена система "Matrix-ID", позволяющая визуализировать поток данных в зависимости от уровня доступа оператора.</p>
-                    <p><b>[24.01.2026]</b> — <b>БЕЗОПАСНОСТЬ:</b> Зафиксирована активность ботов P.R.I.S.M в районе бункера Sumber. Всем сотрудникам рекомендуется обновить ключи шифрования.</p>
+                    <p><b>[26.01.2026]</b> — Внешний канал связи с Бункером Sumber восстановлен. Скорость передачи данных: 400 Тб/с. Внимание: гостевой доступ не дает права на скачивание архивов.</p>
+                    <p><b>[25.01.2026]</b> — Успешное обновление системы до версии V32.5.</p>
+                    <p><b>[25.01.2025]</b> — Успешное подключение к узлам системы P.R.I.S.M.</p>
                 </div>
             </div>
         </div>
@@ -91,40 +109,62 @@
             <div id="threat-indicator">THREAT: <span style="color: lime;">LOW</span></div>
         </header>
         <div class="main-content center-layout">
-            <pre class="ong-logo-small">
+            <pre class="ong-logo">
  ██████  ███    ██  ██████  
 ██    ██ ████   ██ ██       
 ██    ██ ██ ██  ██ ██   ███ 
+██    ██ ██  ██ ██ ██    ██ 
  ██████  ██   ████  ██████  </pre>
             <h2>Welcome, <span id="welcome-user-name" style="color: var(--purple);">---</span></h2>
-            
             <div class="dash-row-buttons">
                 <button class="mega-btn" onclick="initializeTacticalRadar()">РАДАР</button>
                 <button class="mega-btn" onclick="startTransition('scr-archive')">АРХИВ</button>
                 <button class="mega-btn" onclick="startTransition('scr-sysdata')">СИСТЕМА</button>
             </div>
-
             <div class="staff-info-block">
                 <div class="purple-fading-line"></div>
-                <h4 style="color: var(--purple); margin-bottom: 5px;">ИНСТРУКЦИЯ ДЛЯ ПЕРСОНАЛА:</h4>
-                <p>1. При обнаружении задержки в UUID-потоке более 15мс — немедленно доложить оператору <b>Kiddy</b>.<br>
-                2. Доступ к терминалу <b>MorisReal</b> строго запрещен под угрозой обнуления UUID.<br>
-                3. Любые сигналы из сектора "Бункер Призмы" считать враждебными.</p>
+                <p>1. При задержке UUID более 15мс доложить оператору <b>Kiddy</b>.<br>
+                2. Доступ к терминалу <b>MorisReal</b> запрещен.<br>
+                3. Сигналы из "Бункера Призмы" — враждебны.</p>
             </div>
+        </div>
+    </section>
+
+    <section id="scr-map" class="screen hidden">
+        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>RADAR_SCANNER</div></header>
+        <div class="radar-scroll-wrapper" id="radar-scroll">
+            <div class="radar-view-section"><div class="radar-disk"><div class="pulse-ring"></div><div id="radar-nodes"></div></div></div>
+            <div class="radar-info-section"><h2 id="p-title">SCANNING...</h2><p id="p-text">Выберите объект.</p></div>
         </div>
     </section>
 
     <section id="scr-sysdata" class="screen hidden">
-        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>SYSTEM_HEALTH</div></header>
+        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>HARDWARE_LOG</div></header>
         <div class="sys-mon-container">
-            <div class="overall-status">CORE_CONDITION: <span id="sys-health-text" style="color: lime;">OPTIMAL</span></div>
+            <div class="overall-status">CORE_CONDITION: <span id="sys-health-text">OPTIMAL</span></div>
             <div class="sensor-grid">
-                <div class="sensor-card"><label>CPU_LOAD</label><div class="bar-bg"><div id="bar-cpu" class="bar-fill"></div></div><span id="val-cpu">0%</span></div>
-                <div class="sensor-card"><label>TEMP_CORE</label><div class="bar-bg"><div id="bar-temp" class="bar-fill"></div></div><span id="val-temp">0°C</span></div>
-                <div class="sensor-card"><label>MEM_USAGE</label><div class="bar-bg"><div id="bar-mem" class="bar-fill"></div></div><span id="val-mem">0 GB</span></div>
+                <div class="sensor-card"><label>CPU</label><div class="bar-bg"><div id="bar-cpu" class="bar-fill"></div></div><span id="val-cpu">0%</span></div>
+                <div class="sensor-card"><label>TEMP</label><div class="bar-bg"><div id="bar-temp" class="bar-fill"></div></div><span id="val-temp">0°C</span></div>
+                <div class="sensor-card"><label>RAM</label><div class="bar-bg"><div id="bar-mem" class="bar-fill"></div></div><span id="val-mem">0 GB</span></div>
             </div>
         </div>
     </section>
+
+    <section id="scr-archive" class="screen hidden scrollable">
+        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>SECURE_ARCHIVE</div></header>
+        <div class="archive-container">
+            <div class="archive-item">
+                <button class="archive-header" onclick="toggleArchive(this)">[+] ОТЧЕТ ОНГ #031: ИНЦИДЕНТ DYK</button>
+                <div class="archive-content hidden">Критическая нестабильность в ядре. UUID-поток прерван.</div>
+            </div>
+        </div>
+    </section>
+
+    <div id="side-overlay" onclick="toggleSidebar(false)"></div>
+    <div id="sidebar" class="sidebar">
+        <button class="side-link-btn" onclick="openProfile()">PERSONAL_PROFILE</button>
+        <button class="side-link-btn" onclick="startTransition('scr-login')">SWITCH_USER</button>
+    </div>
 
     <script src="script.js"></script>
 </body>
