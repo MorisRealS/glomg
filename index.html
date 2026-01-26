@@ -2,145 +2,127 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>G.L.O.M.G. | CORE V32.8 FINAL</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body oncontextmenu="return false;">
     <canvas id="matrix-canvas"></canvas>
-    
     <div class="vhs-overlay"></div>
+    <div class="scanlines"></div>
     <div id="fade"></div>
 
     <div id="modal-profile" class="modal-profile hidden">
         <div class="profile-card">
-            <button class="close-profile-btn" onclick="closeProfile()">[ BACK ]</button>
+            <button class="close-profile-btn" onclick="closeProfile()">[ CLOSE ]</button>
             <div class="profile-header">
                 <div class="profile-avatar"></div>
-                <div class="profile-main-info">
-                    <h2 id="p-name-val">OPERATOR</h2>
+                <div>
+                    <h2 id="p-name-val">---</h2>
                     <p>UUID: <span id="p-uuid-val">0000</span></p>
                 </div>
-            </div>
-            <div class="profile-grid">
-                <div class="p-item"><label>LEVEL</label><span id="p-lvl-text-val">0</span></div>
-                <div class="p-item"><label>RANK</label><span id="p-rank-val">STAFF</span></div>
-                <div class="p-item"><label>STATUS</label><span style="color:var(--terminal-green)">ONLINE</span></div>
             </div>
         </div>
     </div>
 
     <section id="login-screen" class="screen">
         <div class="login-frame">
-            <h1 class="glitch" data-text="G.L.O.M.G.">G.L.O.M.G.</h1>
+<pre class="ascii-logo-main">
+ ██████  ███    ██  ██████  
+██    ██ ████   ██ ██       
+██    ██ ██ ██  ██ ██   ███ 
+██    ██ ██  ██ ██ ██    ██ 
+ ██████  ██   ████  ██████  </pre>
             <div id="output" class="terminal-output"></div>
-            <div class="input-line">
-                <span class="prompt">ID:> </span>
-                <input type="text" id="cmd" autofocus spellcheck="false">
-            </div>
-            <div style="margin-top: 20px; display: flex; gap: 10px;">
-                 <button class="btn-ui btn-gold-sec" onclick="startTransition('scr-guest')">GUEST_MODE</button>
+            <div class="login-form">
+                <input type="text" id="user-id" placeholder="OPERATOR_ID" spellcheck="false">
+                <input type="password" id="user-pass" placeholder="PASSWORD" spellcheck="false">
+                <div class="login-btns">
+                    <button class="btn-ui btn-confirm" onclick="attemptLogin()">[ CONFIRM ]</button>
+                    <button class="btn-ui btn-guest" onclick="startTransition('scr-guest')">[ GUEST ]</button>
+                </div>
             </div>
         </div>
     </section>
 
     <section id="scr-guest" class="screen hidden scrollable">
         <div class="guest-layout">
-            <pre class="ong-logo">
+<pre class="ascii-logo-main">
  ██████  ███    ██  ██████  
 ██    ██ ████   ██ ██       
 ██    ██ ██ ██  ██ ██   ███ 
 ██    ██ ██  ██ ██ ██    ██ 
  ██████  ██   ████  ██████  </pre>
-            
             <div class="guest-grid">
                 <div class="guest-col">
-                    <pre class="ong-logo-mini">
- ██████  ███    ██  ██████  
-██    ██ ████   ██ ██       
-██    ██ ██ ██  ██ ██   ███ 
-██    ██ ██  ██ ██ ██    ██ 
- ██████  ██   ████  ██████  </pre>
-                    <h3 class="label">CONSOLE_FEED:</h3>
+                    <div class="mini-logo-box">/ O.N.G. CONSOLE /</div>
                     <div id="guest-console" class="console-box"></div>
                 </div>
                 <div class="guest-col">
-                    <pre class="ong-logo-mini">
- ██████  ███    ██  ██████  
-██    ██ ████   ██ ██       
-██    ██ ██ ██  ██ ██   ███ 
-██    ██ ██  ██ ██ ██    ██ 
- ██████  ██   ████  ██████  </pre>
-                    <h3 class="label">ABOUT_ONG:</h3>
+                    <div class="mini-logo-box">/ O.N.G. INFO_DB /</div>
                     <div class="info-container">
-                        <p>О.Н.Г. — Объединенный Надзор Галактики. Безопасность через тотальный контроль UUID и мониторинг секторов.</p>
+                        <p>ПУБЛИЧНЫЙ ДОСТУП ПРЕДОСТАВЛЕН.<br>СЕКТОР: ПРИЗМА.<br>СТАТУС: НАБЛЮДЕНИЕ.</p>
                     </div>
                 </div>
             </div>
-
-            <div class="news-section">
-                <h3 class="label">SYSTEM_NEWS:</h3>
-                <div class="news-item"><b>[26.01]</b> Сектор Призма: Стабильность 99%.</div>
-                <div class="news-item"><b>[25.01]</b> Обновление ядра до V.32.8 завершено.</div>
-            </div>
-
-            <div class="extra-height-spacer"></div>
-            <button class="btn-ui btn-gold" onclick="startTransition('login-screen')">ВЕРНУТЬСЯ К ВХОДУ</button>
+            <button class="btn-ui btn-confirm" onclick="startTransition('login-screen')" style="margin-top:30px;">[ RETURN ]</button>
         </div>
     </section>
 
     <section id="main-dashboard" class="screen hidden scrollable">
         <header class="status-bar">
-            <button id="menu-btn" class="btn-ui-nav" onclick="toggleSidebar(true)">MENU</button>
-            <div class="status-center">ONG_CORE_LINK // SECURE_CHANNEL</div>
+            <button class="btn-ui-nav" onclick="toggleSidebar(true)">MENU</button>
             <div id="clock">00:00:00</div>
         </header>
-
         <div class="main-content center-layout">
-<pre class="ong-logo">
+<pre class="ascii-logo-main">
  ██████  ███    ██  ██████  
 ██    ██ ████   ██ ██       
 ██    ██ ██ ██  ██ ██   ███ 
 ██    ██ ██  ██ ██ ██    ██ 
  ██████  ██   ████  ██████  </pre>
-            
-            <h2>Welcome, <span id="user-name-display" style="color: var(--purple);">---</span></h2>
-            
-            <div class="dash-row-buttons">
-                <button class="mega-btn full-width" onclick="initRadar()">[ ТАКТИЧЕСКИЙ РАДАР ]</button>
-                <button class="mega-btn full-width" onclick="startTransition('scr-archive')">[ ЦЕНТРАЛЬНЫЙ АРХИВ ]</button>
-                <button class="mega-btn full-width" onclick="startTransition('scr-sysdata')">[ МОНИТОРИНГ ЯДРА ]</button>
-            </div>
-            
-            <div class="staff-info-block">
-                <div class="purple-fading-line"></div>
-                <p>KERNEL_STATUS: OPTIMAL // UUID_SYNC: ACTIVE</p>
+            <h2>WELCOME, <span id="user-name-display" style="color:var(--purple)">---</span></h2>
+            <div class="dash-row-horizontal">
+                <button class="mega-btn" onclick="initRadar()">РАДАР</button>
+                <button class="mega-btn" onclick="startTransition('scr-archive')">АРХИВ</button>
+                <button class="mega-btn" onclick="startTransition('scr-sysdata')">ЯДРО</button>
             </div>
         </div>
     </section>
 
-    <section id="scr-radar" class="screen hidden scrollable">
-        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('main-dashboard')">RETURN</button><div>RADAR_SCAN</div></header>
-        <div class="radar-container">
+    <section id="scr-sysdata" class="screen hidden">
+        <header class="status-bar">
+            <button class="btn-ui-nav" onclick="startTransition('main-dashboard')">BACK</button>
+            <div>CORE_HARDWARE</div>
+        </header>
+        <div class="sensor-row-horizontal">
+            <div class="sensor-card">
+                <label>ЗАГРУЗКА ЦП</label>
+                <div class="bar-bg"><div id="bar-cpu" class="bar-fill"></div></div>
+                <span id="val-cpu">15%</span>
+            </div>
+            <div class="sensor-card">
+                <label>ТЕМПЕРАТУРА</label>
+                <div class="bar-bg"><div id="bar-temp" class="bar-fill"></div></div>
+                <span id="val-temp">45°C</span>
+            </div>
+            <div class="sensor-card">
+                <label>ПАМЯТЬ</label>
+                <div class="bar-bg"><div id="bar-mem" class="bar-fill"></div></div>
+                <span id="val-mem">800 MB</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="scr-radar" class="screen hidden">
+        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('main-dashboard')">CLOSE</button><div>TACTICAL_RADAR</div></header>
+        <div class="radar-fullscreen">
             <div class="radar-disk"><div id="radar-nodes"></div></div>
-            <div id="radar-info" class="radar-desc">
-                <h2 id="rad-title">SCANNING...</h2>
-                <p id="rad-text">Выберите объект на карте.</p>
+            <div id="radar-info" class="radar-mini-card">
+                <h3 id="rad-title">SCANNING...</h3>
+                <p id="rad-text">ОЖИДАНИЕ ВЫБОРА ЦЕЛИ</p>
             </div>
         </div>
     </section>
-
-    <section id="scr-archive" class="screen hidden scrollable">
-        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('main-dashboard')">RETURN</button><div>SYSTEM_ARCHIVE</div></header>
-        <div id="db-logs-list" class="db-container"></div>
-    </section>
-
-    <div id="side-overlay" onclick="toggleSidebar(false)"></div>
-    <div id="sidebar" class="sidebar">
-        <div class="sidebar-header">USER_CONTROLS</div>
-        <button class="side-link-btn" onclick="openProfile()">PERSONAL_PROFILE</button>
-        <button class="side-link-btn" style="color:var(--error); border-color:var(--error);" onclick="location.reload()">LOGOUT</button>
-    </div>
 
     <script src="script.js"></script>
 </body>
