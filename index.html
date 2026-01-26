@@ -2,51 +2,48 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>G.L.O.M.G. | CORE V32.8 FINAL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G.L.O.M.G. | CORE V32.8</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body oncontextmenu="return false;">
-    <canvas id="matrix-canvas"></canvas>
     <div class="vhs-overlay"></div>
-    <div class="scanlines"></div>
+    <div class="scanline-effect"></div>
     <div id="fade"></div>
 
-    <div id="modal-profile" class="modal-profile hidden">
-        <div class="profile-card">
-            <button class="btn-ui" onclick="closeProfile()">[ CLOSE ]</button>
-            <div class="profile-header">
-                <div class="profile-avatar"></div>
-                <div>
-                    <h2 id="p-name-val">---</h2>
-                    <p>UUID: <span id="p-uuid-val">0000</span></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <section id="login-screen" class="screen">
-        <div class="login-frame">
-<pre class="ascii-logo-main">
+    <section id="scr-intro" class="screen">
+        <div class="center-layout">
+            <pre id="intro-ascii" class="ascii-font">SYSTEM_BOOTING...</pre>
+            <div id="intro-logo" class="hidden">
+                <pre class="ong-logo">
  ██████  ███    ██  ██████  
 ██    ██ ████   ██ ██       
 ██    ██ ██ ██  ██ ██   ███ 
 ██    ██ ██  ██ ██ ██    ██ 
  ██████  ██   ████  ██████  </pre>
-            <div id="output" class="terminal-output"></div>
-            <div class="login-form">
-                <input type="text" id="user-id" placeholder="OPERATOR_ID" spellcheck="false">
-                <input type="password" id="user-pass" placeholder="PASSWORD" spellcheck="false">
-                <div class="login-btns">
-                    <button class="btn-ui btn-confirm" onclick="attemptLogin()">[ CONFIRM ]</button>
-                    <button class="btn-ui btn-guest" onclick="startTransition('scr-guest')">[ GUEST ]</button>
-                </div>
+                <p class="blink">INITIALIZING O.N.G. CORE...</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="scr-login" class="screen hidden">
+        <div class="login-frame">
+            <h1 class="glitch" data-text="G.L.O.M.G.">G.L.O.M.G.</h1>
+            <div id="login-output" class="status-msg">READY_FOR_AUTH</div>
+            <div class="inputs">
+                <input type="text" id="inp-id" placeholder="OPERATOR_ID">
+                <input type="password" id="inp-pass" placeholder="ACCESS_KEY">
+            </div>
+            <div class="actions">
+                <button class="btn-ui btn-gold" onclick="processLogin()">INITIALIZE</button>
+                <button class="btn-ui btn-gold-sec" onclick="startTransition('scr-guest')">GUEST_MODE</button>
             </div>
         </div>
     </section>
 
     <section id="scr-guest" class="screen hidden scrollable">
         <div class="guest-layout">
-<pre class="ascii-logo-main">
+            <pre class="ong-logo">
  ██████  ███    ██  ██████  
 ██    ██ ████   ██ ██       
 ██    ██ ██ ██  ██ ██   ███ 
@@ -54,91 +51,67 @@
  ██████  ██   ████  ██████  </pre>
             <div class="guest-grid">
                 <div class="guest-col">
-                    <div class="mini-logo-box">/ CONSOLE_FEED /</div>
+                    <h3 class="label">CONSOLE_LOG:</h3>
                     <div id="guest-console" class="console-box"></div>
                 </div>
                 <div class="guest-col">
-                    <div class="mini-logo-box">/ DATABASE_INFO /</div>
+                    <h3 class="label">MISSION_DATA:</h3>
                     <div class="info-container">
-                        <p>О.Н.Г. — Объединенный Надзор Галактики. Публичный узел мониторинга v32.8. Сектор: ПРИЗМА. Доступ к ядру закрыт.</p>
+                        <p style="color: var(--purple); font-weight: bold;">[ ОБЪЕКТ ОНГ ]</p>
+                        <p>Мы — хранители порядка и спокойствия людей. Мы — гарант безопасности вселенной.</p>
                     </div>
                 </div>
             </div>
-            <button class="btn-ui" onclick="startTransition('login-screen')" style="margin-top:20px;">[ BACK ]</button>
+            <div class="join-section">
+                <button class="btn-ui btn-gold" onclick="startTransition('scr-login')">ВХОД ДЛЯ ПЕРСОНАЛА</button>
+            </div>
+            <div class="extra-height-spacer"></div>
         </div>
     </section>
 
-    <section id="main-dashboard" class="screen hidden scrollable">
+    <section id="scr-dash" class="screen hidden scrollable">
         <header class="status-bar">
             <button class="btn-ui-nav" onclick="toggleSidebar(true)">MENU</button>
-            <div id="clock">00:00:00</div>
+            <div class="status-center"><div id="clock">00:00:00</div></div>
+            <div id="threat-level">THREAT: <span style="color: lime;">LOW</span></div>
         </header>
         <div class="main-content center-layout">
-<pre class="ascii-logo-main">
+            <pre class="ong-logo">
  ██████  ███    ██  ██████  
 ██    ██ ████   ██ ██       
 ██    ██ ██ ██  ██ ██   ███ 
 ██    ██ ██  ██ ██ ██    ██ 
  ██████  ██   ████  ██████  </pre>
-            <h2>OPERATOR: <span id="user-name-display">---</span></h2>
-            <div class="dash-row-horizontal">
-                <button class="mega-btn" onclick="initRadar()">РАДАР</button>
-                <button class="mega-btn" onclick="startTransition('scr-archive')">АРХИВ</button>
-                <button class="mega-btn" onclick="startTransition('scr-sysdata')">ЯДРО</button>
-            </div>
-            <div class="staff-info-block">
-                <div class="purple-fading-line"></div>
-                <p>KERNEL_STATUS: OPTIMAL // UUID_SYNC: ACTIVE</p>
+            <h2>Welcome, <span id="welcome-user-name" style="color: var(--purple);">---</span></h2>
+            <div class="dash-row-buttons">
+                <button class="mega-btn" onclick="initializeTacticalRadar()">РАДАР</button>
+                <button class="mega-btn" onclick="startTransition('scr-database')">БАЗА ДАННЫХ</button>
+                <button class="mega-btn" onclick="startTransition('scr-sysdata')">СИСТЕМА</button>
             </div>
         </div>
     </section>
 
-    <section id="scr-radar" class="screen hidden scrollable">
-        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('main-dashboard')">CLOSE</button><div>TACTICAL_RADAR</div></header>
-        <div class="radar-fullscreen">
-            <div class="radar-disk">
-                <div class="radar-scanner-square"></div>
-                <div id="radar-nodes"></div>
-            </div>
-            <div class="purple-fading-line"></div>
-            <div id="radar-info" class="radar-desc-zone">
-                <h3 id="rad-title">SCANNING...</h3>
-                <p id="rad-text">Выберите объект для анализа данных.</p>
-            </div>
+    <section id="scr-database" class="screen hidden scrollable">
+        <header class="status-bar">
+            <button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button>
+            <div>SYSTEM_ARCHIVE</div>
+        </header>
+        <div class="db-container">
+            <h3 class="label">АРХИВНЫЕ ЛОГИ:</h3>
+            <div id="db-logs-list"></div>
         </div>
-    </section>
-
-    <section id="scr-archive" class="screen hidden scrollable">
-        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('main-dashboard')">BACK</button><div>ARCHIVE_DB</div></header>
-        <div id="db-logs-list" class="db-container"></div>
     </section>
 
     <section id="scr-sysdata" class="screen hidden">
-        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('main-dashboard')">BACK</button><div>CORE_HARDWARE</div></header>
-        <div class="sensor-row-horizontal">
-            <div class="sensor-card">
-                <label>CPU_LOAD</label>
-                <div class="bar-bg"><div id="bar-cpu" class="bar-fill"></div></div>
-                <span id="val-cpu">15%</span>
-            </div>
-            <div class="sensor-card">
-                <label>TEMP</label>
-                <div class="bar-bg"><div id="bar-temp" class="bar-fill"></div></div>
-                <span id="val-temp">45°C</span>
-            </div>
-            <div class="sensor-card">
-                <label>MEM</label>
-                <div class="bar-bg"><div id="bar-mem" class="bar-fill"></div></div>
-                <span id="val-mem">800 MB</span>
-            </div>
+        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>HARDWARE</div></header>
+        <div class="sys-mon-container">
+            <div class="sensor-card"><label>CPU</label><div class="bar-bg"><div id="bar-cpu" class="bar-fill"></div></div><span id="val-cpu">0%</span></div>
+            <div class="sensor-card"><label>TEMP</label><div class="bar-bg"><div id="bar-temp" class="bar-fill"></div></div><span id="val-temp">0°C</span></div>
         </div>
     </section>
 
-    <div id="side-overlay" onclick="toggleSidebar(false)"></div>
     <div id="sidebar" class="sidebar">
-        <div class="sidebar-header">USER_CONTROLS</div>
-        <button class="side-link-btn" onclick="openProfile()">VIEW_PROFILE</button>
-        <button class="side-link-btn" style="color:red;" onclick="location.reload()">LOGOUT</button>
+        <button class="side-link-btn" onclick="location.reload()">LOGOUT</button>
     </div>
 
     <script src="script.js"></script>
