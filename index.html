@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G.L.O.M.G. | CORE V32.7 FULL</title>
+    <title>G.L.O.M.G. | CORE V32.8 FINAL_STABLE</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body oncontextmenu="return false;">
@@ -11,14 +11,7 @@
     <div class="scanline-effect"></div>
     <div id="fade"></div>
 
-    <audio id="ambient-pc" loop>
-        <source src="https://www.soundjay.com/transportation/sounds/small-electric-motor-1.mp3" type="audio/mpeg">
-    </audio>
-
-    <div id="custom-menu">
-        <div onclick="location.reload()">[ REBOOT_SYSTEM ]</div>
-        <div onclick="startTransition('scr-login')">[ SWITCH_USER ]</div>
-    </div>
+    <audio id="ambient-pc" loop><source src="https://www.soundjay.com/transportation/sounds/small-electric-motor-1.mp3" type="audio/mpeg"></audio>
 
     <div id="modal-profile" class="modal-profile hidden">
         <div class="profile-card">
@@ -77,7 +70,7 @@
 ██    ██ ██ ██  ██ ██   ███ 
 ██    ██ ██  ██ ██ ██    ██ 
  ██████  ██   ████  ██████  </pre>
-            <button class="btn-ui btn-gold" style="width: 320px; margin-bottom: 40px;" onclick="startTransition('scr-login')">АВТОРИЗАЦИЯ</button>
+            <button class="btn-ui btn-gold" style="width: 320px; margin-bottom: 50px;" onclick="startTransition('scr-login')">АВТОРИЗАЦИЯ</button>
             <div class="guest-grid">
                 <div class="guest-col">
                     <h3 class="label">CONSOLE_LOG:</h3>
@@ -87,27 +80,30 @@
                     <h3 class="label">MISSION_DATA:</h3>
                     <div class="info-container">
                         <p style="color: var(--purple); font-weight: bold;">[ ОБЪЕКТ ОНГ ]</p>
-                        <p>Вы находитесь на внешнем узле Основной Научной Группы. Свободный доступ ограничен протоколом "Zero Trust".</p>
+                        <p>Доступ по протоколу Zero Trust. Внешний узел связи.</p>
                     </div>
                 </div>
             </div>
             <div class="news-section">
                 <h3 class="label">НОВОСТИ_СИСТЕМЫ:</h3>
                 <div class="news-block">
-                    <p><b>[26.01.2026]</b> — Внешний канал связи с Бункером Sumber восстановлен. Скорость передачи данных: 400 Тб/с. Внимание: гостевой доступ не дает права на скачивание архивов.</p>
-                    <p><b>[25.01.2026]</b> — Успешное обновление системы до версии V32.5.</p>
+                    <p><b>[26.01.2026]</b> — Внешний канал связи с Бункером Sumber восстановлен. Скорость передачи данных: 400 Тб/с.</p>
+                    <p><b>[25.01.2026]</b> — Успешное обновление системы до версии V32.8.</p>
                     <p><b>[25.01.2025]</b> — Успешное подключение к узлам системы P.R.I.S.M.</p>
                 </div>
             </div>
-            <div style="height: 100px;"></div>
+            <div class="extra-height-spacer"></div>
         </div>
     </section>
 
     <section id="scr-dash" class="screen hidden scrollable">
         <header class="status-bar">
             <button class="btn-ui-nav" onclick="toggleSidebar(true)">MENU</button>
-            <div id="clock">00:00:00</div>
-            <div id="msg-alert" class="hidden pulse-red" onclick="startTransition('scr-messages')">NEW_MESSAGE</div>
+            <div class="status-center">
+                <div id="clock">00:00:00</div>
+                <div id="msg-alert" class="hidden pulse-red" onclick="startTransition('scr-messages')">[ NEW_MESSAGE ]</div>
+            </div>
+            <div id="threat-level">THREAT: <span style="color: lime;">LOW</span></div>
         </header>
         <div class="main-content center-layout">
             <pre class="ong-logo">
@@ -131,22 +127,25 @@
     </section>
 
     <section id="scr-messages" class="screen hidden scrollable">
-        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>UUID_MESSENGER</div></header>
-        <div class="msg-container">
-            <div class="msg-box" id="inbox">
+        <header class="status-bar">
+            <button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button>
+            <div>UUID_MESSENGER</div>
+        </header>
+        <div class="msg-interface">
+            <div class="msg-inbox">
                 <h3 class="label">INBOX:</h3>
                 <div id="messages-list"></div>
             </div>
-            <div class="msg-send">
+            <div class="msg-composer">
                 <h3 class="label">SEND_MESSAGE:</h3>
-                <select id="msg-recipient" class="inp-select">
+                <select id="msg-recipient" class="ui-select">
                     <option value="kiddy">Kiddy (UUID: 1101)</option>
                     <option value="dykzxz">Dykzxz (UUID: 1011)</option>
                     <option value="sumber">Sumber (UUID: 1110)</option>
                     <option value="morisreal">MorisReal (UUID: 1010)</option>
                 </select>
-                <textarea id="msg-text" placeholder="Введите сообщение..."></textarea>
-                <button class="btn-ui btn-gold" onclick="sendMessage()">ОТПРАВИТЬ</button>
+                <textarea id="msg-text" class="ui-textarea" placeholder="Введите сообщение..."></textarea>
+                <button class="btn-ui btn-gold full-width" onclick="sendMessage()">SEND DATA</button>
             </div>
         </div>
     </section>
@@ -158,7 +157,7 @@
             <div class="radar-info-section" id="radar-info-block">
                 <div class="purple-fading-line"></div>
                 <h2 id="p-title">SCANNING...</h2>
-                <p id="p-text">Выберите объект на сетке для получения данных.</p>
+                <p id="p-text">Выберите объект на сетке.</p>
                 <div style="height: 100px;"></div>
             </div>
         </div>
@@ -180,7 +179,7 @@
     <div id="sidebar" class="sidebar">
         <button class="side-link-btn" onclick="openProfile()">PERSONAL_PROFILE</button>
         <button class="side-link-btn" onclick="startTransition('scr-login')">SWITCH_USER</button>
-        <button class="side-link-btn logout-red-btn" onclick="location.reload()">LOGOUT_SESSION</button>
+        <button class="side-link-btn logout-red-btn" onclick="location.reload()">TERMINATE_SESSION</button>
     </div>
 
     <script src="script.js"></script>
