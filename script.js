@@ -1,31 +1,62 @@
 const PROFILES = {
     "morisreal": { name: "MorisReal", pass: "admin", lvl: 6 },
-    "dykzxz":    { name: "Dykzxz", pass: "2222", lvl: 3 },
     "sumber":    { name: "Sumber", pass: "0000", lvl: 5 }
 };
 
-let step = "ID";
-let tempUser = null;
+let step = "ID", tempUser = null, myMessages = [], fullArchive = [];
 const socket = typeof io !== 'undefined' ? io() : null;
 
 if (socket) {
-    socket.on('tg_msg', (data) => {
-        alert("🚨 СООБЩЕНИЕ ИЗ ТЕЛЕГРАМА: " + data.text);
-    });
-    socket.on('alarm', () => {
-        document.body.classList.add('alarm-red');
-        alert("!!! КРИТИЧЕСКАЯ ТРЕВОГА !!!");
-    });
+    socket.on('tg_msg', (data) => alert("🚨 ТЕРМИНАЛ: " + data.text));
+    
+    // Почта
+    socket.on('load_mail', (msgs) => { myMessages = msgs; renderMail(); });
+    socket.on('new_mail', (msg) => { myMessages.push(msg); renderMail(); alert("📬 НОВОЕ ПИСЬМО"); });
+
+    // Архив
+    socket.on('init_archive', (data) => { fullArchive = data; renderArchive(); });
+    socket.on('new_archive_data', (entry) => { fullArchive.push(entry); renderArchive(); });
 }
 
-function startTransition(targetId) {
-    const fade = document.getElementById('fade-overlay');
-    fade.classList.add('active');
-    setTimeout(() => {
-        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-        document.getElementById(targetId).classList.remove('hidden');
-        fade.classList.remove('active');
-    }, 500);
+function renderArchive() {
+    const container = document.getElementById('archive-list');
+    if (!container) return;
+    container.innerHTML = fullArchive.map((item, index) => `
+        <div style="border: 1px solid #a855f7; margin-bottom: 10px; background: rgba(0,0,0,0.5);">
+            <div onclick="toggleArchiveItem(${index})" style="padding: 10px; cursor: pointer; display: flex; justify-content: space-between; background: rgba(168, 85, 247, 0.2);">
+                <span>[+] ТЕМА: ${item.title}</span>
+                <span style="font-size: 10px; opacity: 0.6;">${item.timestamp}</span>
+            </div>
+            <div id="arch-body-${index}" style="display: none; padding: 15px; border-top: 1px dashed #a855f7; color: #ccc;">
+                ${item.content}
+            </div>
+        </div>
+    `).reverse().join('');
+}
+
+function toggleArchiveItem(index) {
+    const el = document.getElementById(`arch-body-${index}`);
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+function renderMail() {
+    const list = document.getElementById('mail-list');
+    const count = document.getElementById('mail-count');
+    if(list && count) {
+        count.innerText = myMessages.length;
+        list.innerHTML = myMessages.map(m => `
+            <div style="border: 1px solid #0f4; padding: 10px; margin-bottom: 5px; text-align: left;">
+                <div style="font-size: 9px; color: #0f4;">ОТ: ${m.from} | ${m.date}</div>
+                <div>${m.text}</div>
+            </div>
+        `).reverse().join('');
+    }
+}
+
+// Стандартные функции переходов
+function startTransition(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
 }
 
 document.getElementById('cmd').addEventListener("keydown", (e) => {
@@ -33,10 +64,8 @@ document.getElementById('cmd').addEventListener("keydown", (e) => {
         const val = e.target.value.trim().toLowerCase();
         e.target.value = "";
         if (step === "ID" && PROFILES[val]) {
-            tempUser = PROFILES[val];
-            step = "PASS";
-            document.querySelector('.prompt').innerText = "PASS:> ";
-            e.target.type = "password";
+            tempUser = PROFILES[val]; step = "PASS";
+            document.querySelector('.prompt').innerText = "PASS:> "; e.target.type = "password";
         } else if (step === "PASS" && val === tempUser.pass) {
             loginSuccess(tempUser);
         }
@@ -56,26 +85,8 @@ function toggleSidebar(s) { document.getElementById('sidebar').classList.toggle(
 function logout() { location.reload(); }
 
 window.onload = () => {
-    initMatrix();
     setInterval(() => {
         const clk = document.getElementById('clock');
         if(clk) clk.innerText = new Date().toLocaleTimeString();
     }, 1000);
 };
-
-function initMatrix() {
-    const canvas = document.getElementById('matrix-canvas');
-    if(!canvas) return;
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-    const drops = Array(Math.floor(canvas.width/14)).fill(1);
-    setInterval(() => {
-        ctx.fillStyle = "rgba(5, 2, 8, 0.1)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#a855f7"; 
-        drops.forEach((y, i) => {
-            ctx.fillText(Math.floor(Math.random()*2), i*14, y*14);
-            if(y*14 > canvas.height && Math.random() > 0.98) drops[i] = 0;
-            drops[i]++;
-        });
-    }, 50);
-}
