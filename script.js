@@ -1,100 +1,137 @@
 const PROFILES = {
     "morisreal": { name: "MorisReal", pass: "admin", lvl: 6 },
     "sumber":    { name: "Sumber", pass: "0000", lvl: 5 },
-    "dykzxz":    { name: "Dykzxz", pass: "2222", lvl: 3 }
+    "dykzxz":    { name: "Dykzxz", pass: "2222", lvl: 3 },
+    "kiddy":     { name: "Kiddy", pass: "1111", lvl: 2 }
 };
 
 let step = "ID";
 let tempUser = null;
 
-// ФУНКЦИЯ ПЛАВНОГО ПЕРЕХОДА
-function transition(callback) {
+// Плавный переход через черный экран
+function startTransition(targetId) {
     const fade = document.getElementById('fade-overlay');
-    fade.classList.add('active'); // Затемняем
+    fade.classList.add('active');
+    
     setTimeout(() => {
-        callback(); // Меняем экран
-        setTimeout(() => fade.classList.remove('active'), 200); // Проявляем
+        // Скрываем все экраны
+        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+        // Показываем нужный
+        document.getElementById(targetId).classList.remove('hidden');
+        
+        // Спец-функции для модулей
+        if(targetId === 'scr-archive') renderArchive();
+        if(targetId === 'scr-status') startHardwareMonitor();
+        
+        fade.classList.remove('active');
     }, 600);
 }
 
-// ЛОГИКА ТЕРМИНАЛА
-document.getElementById('cmd').addEventListener("keydown", (e) => {
+// Работа терминала (Логин)
+const cmdInput = document.getElementById('cmd');
+const output = document.getElementById('output');
+
+cmdInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
-        const val = e.target.value.trim().toLowerCase();
-        e.target.value = "";
-        const out = document.getElementById('output');
+        const val = cmdInput.value.trim().toLowerCase();
+        cmdInput.value = "";
 
         if (step === "ID") {
-            if (val === "guest") {
-                document.getElementById('guest-news').classList.remove('hidden');
-                out.innerHTML += "<div>> GUEST_ACCESS_GRANTED</div>";
-                return;
-            }
             if (PROFILES[val]) {
                 tempUser = PROFILES[val];
                 step = "PASSWORD";
-                document.querySelector('.prompt').innerText = "PASS:> ";
-                e.target.type = "password";
-                out.innerHTML += `<div>> USER: ${tempUser.name} IDENTIFIED.</div>`;
+                output.innerHTML += `<div>> USER '${val}' FOUND. WAITING FOR KEY...</div>`;
+                document.querySelector('.prompt').textContent = "PASS:> ";
+                cmdInput.type = "password";
             } else {
-                out.innerHTML += `<div style="color:red">> ERROR: UNKNOWN_ID</div>`;
+                output.innerHTML += `<div style="color:red">> ERROR: INVALID_ID</div>`;
             }
         } else if (step === "PASSWORD") {
             if (val === tempUser.pass) {
-                transition(() => {
-                    localStorage.setItem('ong_user', JSON.stringify(tempUser));
-                    showDashboard(tempUser);
-                });
+                localStorage.setItem('ong_user', JSON.stringify(tempUser));
+                loginSuccess(tempUser);
             } else {
-                out.innerHTML += `<div style="color:red">> WRONG_PASSWORD. RESETTING...</div>`;
-                setTimeout(() => location.reload(), 1000);
+                output.innerHTML += `<div style="color:red">> ACCESS_DENIED. SYSTEM REBOOT...</div>`;
+                setTimeout(() => location.reload(), 1500);
             }
         }
     }
 });
 
-function showDashboard(user) {
-    document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('main-dashboard').classList.remove('hidden');
-    document.getElementById('user-name-display').innerText = user.name;
-    if(user.lvl === 6) document.getElementById('user-name-display').style.color = "#ff2233";
+function loginSuccess(user) {
+    startTransition('scr-dash');
+    document.getElementById('user-name-display').textContent = user.name;
+    document.getElementById('p-name').textContent = "NAME: " + user.name;
+    document.getElementById('p-lvl').textContent = "LVL: " + user.lvl;
 }
 
-// САЙДБАР
+function enterGuestMode() {
+    document.getElementById('guest-news').classList.remove('hidden');
+    output.innerHTML = "<div>> GUEST_SESSION_STARTED. READ_ONLY.</div>";
+}
+
+// Сайдбар
 function toggleSidebar(state) {
-    document.getElementById('sidebar').classList.toggle('open', state);
-    document.getElementById('side-overlay').style.display = state ? 'block' : 'none';
+    const sb = document.getElementById('sidebar');
+    const ov = document.getElementById('side-overlay');
+    if(state) {
+        sb.classList.add('open');
+        ov.style.display = 'block';
+    } else {
+        sb.classList.remove('open');
+        ov.style.display = 'none';
+    }
 }
 
 function logout() {
-    transition(() => {
-        localStorage.removeItem('ong_user');
-        location.reload();
-    });
+    localStorage.removeItem('ong_user');
+    location.reload();
 }
 
-// ЗАГРУЗКА
+// --- МОДУЛЬ АРХИВА ---
+function renderArchive() {
+    const logs = [
+        { id: "LOG_88", title: "Project Prisma Status", txt: "Всё стабильно, утечек нет." },
+        { id: "LOG_92", title: "Security Breach #2", txt: "Обнаружена попытка входа извне." },
+        { id: "LOG_99", title: "Administrator Note", txt: "Сменить пароли к Level 6." }
+    ];
+    const container = document.getElementById('archive-list');
+    container.innerHTML = logs.map(l => `
+        <div class="archive-item">
+            <div class="archive-header" onclick="this.parentElement.classList.toggle('open')">
+                <span>[${l.id}] ${l.title}</span>
+            </div>
+            <div class="archive-content">${l.txt}</div>
+        </div>
+    `).join('');
+}
+
+// --- МОДУЛЬ СТАТУСА ---
+function startHardwareMonitor() {
+    setInterval(() => {
+        if(document.getElementById('scr-status').classList.contains('hidden')) return;
+        document.getElementById('cpu-val').textContent = Math.floor(Math.random() * 100) + "%";
+        document.getElementById('mem-val').textContent = Math.floor(Math.random() * 100) + "%";
+        document.getElementById('temp-val').textContent = 40 + Math.floor(Math.random() * 10);
+    }, 1000);
+}
+
+// --- ЗАГРУЗКА И ФОН ---
 window.onload = () => {
     const saved = localStorage.getItem('ong_user');
     if (saved) {
-        showDashboard(JSON.parse(saved));
-        document.getElementById('scr-intro').classList.add('hidden');
+        loginSuccess(JSON.parse(saved));
     } else {
+        // Последовательность интро
         setTimeout(() => {
             document.getElementById('intro-ascii').classList.add('hidden');
             document.getElementById('intro-logo').classList.remove('hidden');
-            setTimeout(() => {
-                transition(() => {
-                    document.getElementById('scr-intro').classList.add('hidden');
-                    document.getElementById('login-screen').classList.remove('hidden');
-                });
-            }, 3000);
+            setTimeout(() => startTransition('scr-login'), 3000);
         }, 1500);
     }
     initMatrix();
 };
 
-// МАТРИЦА (Упрощенная)
 function initMatrix() {
     const canvas = document.getElementById('matrix-canvas');
     const ctx = canvas.getContext('2d');
@@ -110,3 +147,20 @@ function initMatrix() {
         });
     }, 50);
 }
+
+setInterval(() => {
+    const cl = document.getElementById('clock');
+    if(cl) cl.innerText = new Date().toLocaleTimeString();
+}, 1000);
+
+// --- ЛОГИКА СООБЩЕНИЙ ОТ БОТА (WebSocket заготовка) ---
+/*
+const socket = new WebSocket('ws://твой_сервер');
+socket.onmessage = (event) => {
+    const msg = JSON.parse(event.data);
+    if(msg.type === 'ALARM') {
+        document.body.classList.add('alarm-active');
+        alert("ТРЕВОГА: " + msg.text);
+    }
+};
+*/
