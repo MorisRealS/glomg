@@ -998,6 +998,82 @@ body {
     padding-bottom: 15px; /* Запас снизу */
 }
 
+/* 19. CRT ЭФФЕКТ (Легкая выпуклость и полосы) */
+body::before {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    z-index: 10000;
+    pointer-events: none;
+    background-size: 100% 4px, 3px 100%;
+}
+
+/* 2. БИТЫЕ ПИКСЕЛИ (Анимация помех) */
+@keyframes dead-pixel {
+    0% { opacity: 0; }
+    50% { opacity: 0.8; background: #A855F7; }
+    100% { opacity: 0; }
+}
+.pixel-noise {
+    position: fixed;
+    width: 2px; height: 2px;
+    animation: dead-pixel 0.5s infinite;
+}
+
+/* 15. ГЛИТЧ ПРИ ПЕРЕХОДЕ */
+.glitch-active {
+    position: fixed;
+    inset: 0;
+    background: #A855F7;
+    z-index: 99999;
+    opacity: 0.5;
+    animation: transition-glitch 0.4s steps(2);
+}
+
+@keyframes transition-glitch {
+    0% { clip-path: inset(10% 0 30% 0); transform: skew(10deg); }
+    50% { clip-path: inset(50% 0 5% 0); transform: skew(-20deg); }
+    100% { clip-path: inset(0 0 0 0); }
+}
+
+/* 8. СКАНЕР ЭКРАНА */
+.login-scanner {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 5px;
+    background: var(--purple);
+    box-shadow: 0 0 20px var(--purple);
+    animation: scan-move 1.5s linear;
+    z-index: 10;
+}
+@keyframes scan-move {
+    0% { top: 0; }
+    100% { top: 100%; }
+}
+
+/* 20. КОНТЕКСТНОЕ МЕНЮ */
+#custom-menu {
+    position: absolute;
+    background: #0a0a0a;
+    border: 1px solid var(--purple);
+    z-index: 20000;
+    display: none;
+    padding: 5px 0;
+}
+#custom-menu div {
+    padding: 8px 20px;
+    color: var(--purple);
+    cursor: pointer;
+    font-size: 12px;
+}
+#custom-menu div:hover {
+    background: var(--purple);
+    color: #000;
+}
+
 /* Дополнение для анимации заставки */
 #intro-logo.hidden { display: none; }
 .blink { animation: blinker 1.5s linear infinite; }
