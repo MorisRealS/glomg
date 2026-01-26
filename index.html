@@ -11,24 +11,6 @@
     <div class="scanline-effect"></div>
     <div id="fade"></div>
 
-    <div id="modal-profile" class="modal-profile hidden">
-        <div class="profile-card">
-            <button class="close-profile-btn" onclick="closeProfile()"><-- [ BACK ]</button>
-            <div class="profile-header">
-                <div class="profile-avatar"></div>
-                <div class="profile-main-info">
-                    <h2 id="p-name-val">OPERATOR</h2>
-                    <p>UUID: <span id="p-uuid-val">0000</span></p>
-                </div>
-            </div>
-            <div class="profile-grid">
-                <div class="p-item"><label>LEVEL</label><span id="p-lvl-text-val">0</span></div>
-                <div class="p-item"><label>RANK</label><span id="p-rank-val">STAFF</span></div>
-                <div class="p-item"><label>JOIN_DATE</label><span id="p-date-val">20.01.2025</span></div>
-            </div>
-        </div>
-    </div>
-
     <section id="scr-intro" class="screen">
         <div class="center-layout">
             <pre id="intro-ascii" class="ascii-font">SYSTEM_BOOTING...</pre>
@@ -45,13 +27,12 @@
     </section>
 
     <section id="scr-login" class="screen hidden">
-        <canvas id="matrix-bg"></canvas>
         <div class="login-frame">
             <h1 class="glitch" data-text="G.L.O.M.G.">G.L.O.M.G.</h1>
             <div id="login-output" class="status-msg">READY_FOR_AUTH</div>
             <div class="inputs">
-                <input type="text" id="inp-id" placeholder="OPERATOR_ID" oninput="playTypingSound()">
-                <input type="password" id="inp-pass" placeholder="ACCESS_KEY" oninput="playTypingSound()">
+                <input type="text" id="inp-id" placeholder="OPERATOR_ID">
+                <input type="password" id="inp-pass" placeholder="ACCESS_KEY">
             </div>
             <div class="actions">
                 <button class="btn-ui btn-gold" onclick="processLogin()">INITIALIZE</button>
@@ -81,15 +62,8 @@
                     </div>
                 </div>
             </div>
-            <div class="news-section">
-                <h3 class="label">ОБЩАЯ ИНФОРМАЦИЯ:</h3>
-                <div class="news-block">
-                    <p>Наша цель — изучение аномалий, мгновенная реакция и минимизация ущерба.</p>
-                </div>
-            </div>
             <div class="join-section">
-                <h3 class="label">ПРИСОЕДИНЯЙТЕСЬ К НАМ</h3>
-                <button class="btn-ui btn-gold" style="width: 320px;" onclick="startTransition('scr-login')">ВХОД ДЛЯ ПЕРСОНАЛА</button>
+                <button class="btn-ui btn-gold" onclick="startTransition('scr-login')">ВХОД ДЛЯ ПЕРСОНАЛА</button>
             </div>
             <div class="extra-height-spacer"></div>
         </div>
@@ -98,10 +72,7 @@
     <section id="scr-dash" class="screen hidden scrollable">
         <header class="status-bar">
             <button class="btn-ui-nav" onclick="toggleSidebar(true)">MENU</button>
-            <div class="status-center">
-                <div id="clock">00:00:00</div>
-                <div id="msg-alert" class="hidden pulse-red" onclick="startTransition('scr-messages')">[ NEW_MESSAGE ]</div>
-            </div>
+            <div class="status-center"><div id="clock">00:00:00</div></div>
             <div id="threat-level">THREAT: <span style="color: lime;">LOW</span></div>
         </header>
         <div class="main-content center-layout">
@@ -114,13 +85,8 @@
             <h2>Welcome, <span id="welcome-user-name" style="color: var(--purple);">---</span></h2>
             <div class="dash-row-buttons">
                 <button class="mega-btn" onclick="initializeTacticalRadar()">РАДАР</button>
-                <button class="mega-btn" onclick="startTransition('scr-messages')">СВЯЗЬ</button>
                 <button class="mega-btn" onclick="startTransition('scr-database')">БАЗА ДАННЫХ</button>
                 <button class="mega-btn" onclick="startTransition('scr-sysdata')">СИСТЕМА</button>
-            </div>
-            <div class="staff-info-block">
-                <h4 style="color: var(--purple);">ДИРЕКТИВА:</h4>
-                <p id="staff-message-gen">...</p>
             </div>
         </div>
     </section>
@@ -136,34 +102,6 @@
         </div>
     </section>
 
-    <section id="scr-messages" class="screen hidden scrollable">
-        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>MESSENGER</div></header>
-        <div class="msg-interface">
-            <div class="msg-inbox"><div id="messages-list"></div></div>
-            <div class="msg-composer">
-                <select id="msg-recipient" class="ui-select">
-                    <option value="kiddy">Kiddy</option>
-                    <option value="dykzxz">Dykzxz</option>
-                    <option value="sumber">Sumber</option>
-                    <option value="morisreal">Moris</option>
-                </select>
-                <textarea id="msg-text" class="ui-textarea" placeholder="Message..."></textarea>
-                <button class="btn-ui btn-gold full-width" onclick="sendMessage()">SEND</button>
-            </div>
-        </div>
-    </section>
-
-    <section id="scr-map" class="screen hidden">
-        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>RADAR</div></header>
-        <div class="radar-scroll-wrapper" id="radar-scroll">
-            <div class="radar-view-section"><div class="radar-disk"><div id="radar-nodes"></div></div></div>
-            <div class="radar-info-section">
-                <h2 id="p-title">SCANNING...</h2>
-                <p id="p-text">Select node.</p>
-            </div>
-        </div>
-    </section>
-
     <section id="scr-sysdata" class="screen hidden">
         <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>HARDWARE</div></header>
         <div class="sys-mon-container">
@@ -172,10 +110,8 @@
         </div>
     </section>
 
-    <div id="side-overlay" onclick="toggleSidebar(false)"></div>
     <div id="sidebar" class="sidebar">
-        <button class="side-link-btn" onclick="openProfile()">PROFILE</button>
-        <button class="side-link-btn logout-red-btn" onclick="location.reload()">LOGOUT</button>
+        <button class="side-link-btn" onclick="location.reload()">LOGOUT</button>
     </div>
 
     <script src="script.js"></script>
