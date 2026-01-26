@@ -57,22 +57,22 @@
 ██    ██ ██ ██  ██ ██   ███ 
 ██    ██ ██  ██ ██ ██    ██ 
  ██████  ██   ████  ██████  </pre>
-            <h2>OPERATOR: <span id="user-name-display" style="color:var(--purple)">---</span></h2>
+            <h2>OPERATOR: <span id="user-name-display">---</span></h2>
             <div class="dash-row-horizontal">
                 <button class="mega-btn" onclick="location.href='radar.html'">РАДАР</button>
                 <button class="mega-btn" onclick="location.href='archive.html'">АРХИВ</button>
                 <button class="mega-btn" onclick="location.href='system.html'">СИСТЕМА</button>
             </div>
             <div class="purple-fading-line"></div>
-            <p class="staff-subtext">STATUS: SECURE // ENCRYPTION: ACTIVE</p>
+            <p class="staff-subtext">LEVEL_6_ACCESS: GRANTED // USER: MORISREAL</p>
         </div>
     </section>
 
     <div id="side-overlay" onclick="toggleSidebar(false)"></div>
     <div id="sidebar" class="sidebar">
-        <div class="sidebar-header">USER_CONTROLS</div>
-        <button class="side-link-btn" onclick="openProfile()">VIEW_PROFILE</button>
-        <button class="side-link-btn" style="color:red; margin-top:20px;" onclick="location.reload()">LOGOUT</button>
+        <div class="sidebar-header">O.N.G. CORE</div>
+        <button class="side-link-btn" onclick="openProfile()">[ MY_PROFILE ]</button>
+        <button class="side-link-btn" style="color:var(--error); margin-top:20px;" onclick="location.reload()">[ LOGOUT ]</button>
     </div>
 
     <div id="modal-profile" class="modal-profile hidden">
@@ -80,7 +80,10 @@
             <button class="btn-ui" onclick="closeProfile()">[ CLOSE ]</button>
             <div class="profile-header">
                 <div class="profile-avatar"></div>
-                <div><h2 id="p-name-val">---</h2><p id="p-uuid-val">UUID: 0000</p></div>
+                <div>
+                    <h2 id="p-name-val">---</h2>
+                    <p id="p-uuid-val">UUID: 0000</p>
+                </div>
             </div>
         </div>
     </div>
