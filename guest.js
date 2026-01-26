@@ -1,22 +1,15 @@
-const NEWS_LIST = [
-    "Ядро V32.8 запущено успешно.",
-    "Сектор 7: Обнаружены помехи сигнала.",
-    "MorisReal: Права администратора подтверждены.",
-    "ВНИМАНИЕ: Критическая ошибка загрузки модуля 'ARCHIVE' для гостя."
-];
+const NEWS = ["Ядро V32.8 активно.", "MorisReal: Доступ разрешен.", "Сектор 7 под наблюдением."];
 
-// Генерация шума
-function initNoise() {
+function initVhsNoise() {
     const canvas = document.getElementById('noise-canvas');
     const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
 
     function noise() {
         const idata = ctx.createImageData(canvas.width, canvas.height);
         const buffer = new Uint32Array(idata.data.buffer);
         for (let i = 0; i < buffer.length; i++) {
-            if (Math.random() < 0.5) buffer[i] = 0xffffffff;
+            if (Math.random() < 0.15) buffer[i] = Math.random() < 0.5 ? 0xff222222 : 0xff111111;
         }
         ctx.putImageData(idata, 0, 0);
         requestAnimationFrame(noise);
@@ -24,19 +17,14 @@ function initNoise() {
     noise();
 }
 
-function startConsole() {
+window.onload = () => {
+    initVhsNoise();
+    document.getElementById('news-feed').innerHTML = NEWS.map(n => `<div class="news-item">>> ${n}</div>`).join('');
     const box = document.getElementById('guest-console');
     setInterval(() => {
         const l = document.createElement('div');
-        l.innerText = `> ERR_SIGNAL_LOST_NODE_${Math.floor(Math.random()*99)}... RECONNECTING`;
-        l.style.color = Math.random() > 0.8 ? "#ff2233" : "var(--purple)";
+        l.innerText = `> SIGNAL_DATA_NODE_${Math.floor(Math.random()*99)}... OK`;
         box.prepend(l);
-        if(box.childNodes.length > 15) box.removeChild(box.lastChild);
-    }, 800);
-}
-
-window.onload = () => {
-    initNoise();
-    startConsole();
-    document.getElementById('news-feed').innerHTML = NEWS_LIST.map(n => `<div class="news-item">>> ${n}</div>`).join('');
+        if(box.childNodes.length > 10) box.removeChild(box.lastChild);
+    }, 1000);
 };
