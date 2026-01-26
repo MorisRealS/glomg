@@ -1414,6 +1414,41 @@ body::after {
     cursor: pointer;
 }
 
+/* Делаем гостевой экран прокручиваемым */
+#scr-guest {
+    overflow-y: auto;
+    height: 100vh; /* Занимает всю высоту экрана */
+    scroll-behavior: smooth;
+}
+
+/* Стили для контейнера внутри, чтобы контент не прилипал к краям */
+.guest-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 20px;
+    min-height: 200vh; /* Гарантируем двойную высоту экрана для скролла */
+}
+
+/* Тот самый «заполнитель» внизу страницы */
+.extra-height-spacer {
+    height: 800px; /* Регулируй это число, чтобы менять длину прокрутки */
+    width: 100%;
+    pointer-events: none; /* Чтобы не мешал кликам */
+}
+
+/* Скроллбар в стиле терминала (опционально, для красоты) */
+#scr-guest::-webkit-scrollbar {
+    width: 4px;
+}
+#scr-guest::-webkit-scrollbar-track {
+    background: #000;
+}
+#scr-guest::-webkit-scrollbar-thumb {
+    background: var(--purple);
+    box-shadow: 0 0 10px var(--purple);
+}
+
 /* Дополнение для анимации заставки */
 #intro-logo.hidden { display: none; }
 .blink { animation: blinker 1.5s linear infinite; }
