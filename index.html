@@ -55,7 +55,7 @@
     <section id="scr-login" class="screen hidden">
         <div class="login-frame">
             <h1 class="glitch" data-text="G.L.O.M.G.">G.L.O.M.G.</h1>
-            <div id="login-output" class="console-box" style="height: 60px; margin-bottom: 20px; font-size: 0.8rem; border: none;"></div>
+            <div id="login-output" class="console-box" style="height: 60px; margin-bottom: 20px; font-size: 0.8rem; border: none; box-shadow: none;"></div>
             <div class="inputs">
                 <input type="text" id="inp-id" placeholder="OPERATOR_ID" spellcheck="false" autocomplete="off">
                 <input type="password" id="inp-pass" placeholder="ACCESS_KEY" autocomplete="off">
@@ -80,8 +80,8 @@
                 <div id="guest-console" class="console-box"></div>
                 <h3 class="label" style="margin-top: 20px;">SYSTEM_NEWS:</h3>
                 <div class="info-container" id="news-box">
-                    <p style="color: var(--purple)">[25.01] Система CORE обновлена до v31.8.</p>
-                    <p style="color: var(--purple)">[24.01] Внедрен новый протокол визуализации радара.</p>
+                    <p style="color: var(--purple)">[26.01] Система переведена на ядро v31.8. Синхронизация завершена.</p>
+                    <p style="color: var(--purple)">[25.01] Обнаружена активность в секторе 4. Радар откалиброван.</p>
                 </div>
             </div>
             <div class="guest-col-info">
@@ -118,7 +118,10 @@
             <div class="bar-left">FILE_ARCHIVE_SECTOR</div>
             <div class="bar-right"><button class="btn-ui-nav" onclick="transitionToScreen('scr-dash')">RETURN</button></div>
         </header>
-        <div class="page-body-content" id="archive-list"></div>
+        <div class="page-body-content">
+            <div class="data-row">> [RECORD_001] Ядро запущено оператором morisreal. Локация: Сектор 7.</div>
+            <div class="data-row">> [RECORD_002] Sumber: Авторизация в узле PRISMA. Протокол "Neon" активен.</div>
+        </div>
     </section>
 
     <section id="scr-full-console" class="screen hidden">
