@@ -1490,6 +1490,47 @@ input {
     width: 260px;
 }
 
+/* САЙДБАР ФИКС */
+.sidebar {
+    position: fixed; top: 0; left: -300px; width: 300px; height: 100%;
+    background: #050208; border-right: 1px solid var(--purple);
+    transition: 0.4s; z-index: 2000; padding: 20px;
+}
+.sidebar.open { left: 0; box-shadow: 10px 0 30px rgba(168, 85, 247, 0.2); }
+#side-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; z-index: 1500; }
+
+/* КРАСНАЯ/ФИОЛЕТОВАЯ ЛИНИЯ */
+.purple-fading-line {
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--purple), transparent);
+    margin: 20px 0;
+}
+
+/* КОНСОЛЬ В ГОСТЕ (ФИКС ВЫСОТЫ) */
+.console-box { height: 200px; overflow-y: hidden; border: 1px solid var(--purple-dim); padding: 10px; font-size: 0.8rem; }
+
+/* РАДАР И СКАНЕР */
+.radar-disk { width: 350px; height: 350px; border: 1px solid var(--purple-dim); border-radius: 50%; margin: 50px auto; position: relative; overflow: hidden; }
+.radar-scanner-square {
+    position: absolute; width: 150px; height: 150px; border: 1px solid var(--purple);
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    animation: scan-rotate 4s linear infinite; opacity: 0.5;
+}
+@keyframes scan-rotate {
+    0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+    50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.2); }
+    100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); }
+}
+.node.pulse { animation: node-pulse 1.5s infinite; }
+@keyframes node-pulse { 0% { box-shadow: 0 0 0 0px rgba(168, 85, 247, 0.7); } 100% { box-shadow: 0 0 0 15px transparent; } }
+
+/* АРХИВ КРАСИВЫЙ */
+.db-log-item { border: 1px solid var(--purple-dim); margin-bottom: 10px; background: rgba(168, 85, 247, 0.05); }
+.db-log-header { padding: 15px; display: flex; justify-content: space-between; cursor: pointer; }
+.db-log-header:hover { background: var(--purple-dim); }
+.db-log-content { max-height: 0; overflow: hidden; transition: 0.3s; padding: 0 15px; color: #ccc; }
+.db-log-content.open { max-height: 100px; padding: 15px; border-top: 1px solid var(--purple-dim); }
+
 /* Дополнение для анимации заставки */
 #intro-logo.hidden { display: none; }
 .blink { animation: blinker 1.5s linear infinite; }
