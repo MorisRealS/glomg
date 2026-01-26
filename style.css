@@ -1074,6 +1074,39 @@ body::before {
     color: #000;
 }
 
+/* ЖИРНЫЙ СКРОЛЛБУК */
+::-webkit-scrollbar {
+    width: 12px;
+}
+::-webkit-scrollbar-track {
+    background: #050505;
+    border-left: 1px solid var(--purple-dim);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--purple);
+    box-shadow: 0 0 10px var(--purple);
+    border-radius: 0px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #fff;
+}
+
+/* ОБЩЕЕ СОСТОЯНИЕ */
+.overall-status {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    padding: 10px;
+    border: 1px dashed var(--purple);
+    background: rgba(168, 85, 247, 0.1);
+}
+
+/* СТИЛЬ ИНСТРУКЦИИ ДЛЯ СОТРУДНИКОВ */
+.staff-info-block p {
+    line-height: 1.6;
+    color: #ccc !important;
+}
+
 /* Дополнение для анимации заставки */
 #intro-logo.hidden { display: none; }
 .blink { animation: blinker 1.5s linear infinite; }
