@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G.L.O.M.G. | CORE V31.8</title>
+    <title>G.L.O.M.G. | CORE V32.0 FINAL</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,13 +11,19 @@
     <div class="scanline-effect"></div>
     <div id="fade"></div>
 
+    <div id="custom-menu">
+        <div onclick="location.reload()">[ REBOOT_SYSTEM ]</div>
+        <div onclick="startTransition('scr-login')">[ SWITCH_USER ]</div>
+        <div onclick="toggleSidebar(true)">[ OPEN_SIDEBAR ]</div>
+    </div>
+
     <div id="modal-profile" class="modal-profile hidden">
         <div class="profile-card">
             <div class="corner-tl"></div><div class="corner-br"></div>
-            <button class="close-profile-btn" onclick="closeProfile()"><-- [ ВЕРНУТЬСЯ ]</button>
+            <button class="close-profile-btn" onclick="closeProfile()"><-- [ BACK ]</button>
             <div class="profile-header">
                 <div class="profile-avatar">
-                    <svg viewBox="0 0 24 24" fill="#555"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                    <svg viewBox="0 0 24 24" fill="#A855F7"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                 </div>
                 <div class="profile-main-info">
                     <h2 id="p-name-val" class="ong-logo-small">OPERATOR</h2>
@@ -26,9 +32,9 @@
                 </div>
             </div>
             <div class="profile-grid">
-                <div class="p-item"><label>УРОВЕНЬ</label><span class="p-value" id="p-lvl-text-val">0</span></div>
-                <div class="p-item"><label>СТАТУС</label><span class="p-value" id="p-status-val">USER</span></div>
-                <div class="p-item"><label>UUID_KEY</label><span class="p-value" id="p-uuid-val">0000000000</span></div>
+                <div class="p-item"><label>LVL</label><span class="p-value" id="p-lvl-text-val">0</span></div>
+                <div class="p-item"><label>UUID</label><span class="p-value" id="p-uuid-val">0000</span></div>
+                <div class="p-item"><label>RANK</label><span class="p-value" id="p-status-val">USER</span></div>
             </div>
         </div>
     </div>
@@ -41,6 +47,7 @@
  ██████  ███    ██  ██████  
 ██    ██ ████   ██ ██       
 ██    ██ ██ ██  ██ ██   ███ 
+██    ██ ██  ██ ██ ██    ██ 
  ██████  ██   ████  ██████  </pre>
                 <p class="blink">INITIALIZING O.N.G. CORE...</p>
             </div>
@@ -48,9 +55,10 @@
     </section>
 
     <section id="scr-login" class="screen hidden">
-        <canvas id="matrix-bg"></canvas> <div class="login-frame">
+        <canvas id="matrix-bg"></canvas>
+        <div class="login-frame">
             <h1 class="glitch" data-text="G.L.O.M.G.">G.L.O.M.G.</h1>
-            <div id="login-output" class="status-msg"></div>
+            <div id="login-output" class="status-msg">WAITING_FOR_AUTH...</div>
             <div class="inputs">
                 <input type="text" id="inp-id" placeholder="OPERATOR_ID" autocomplete="off">
                 <input type="password" id="inp-pass" placeholder="ACCESS_KEY">
@@ -62,71 +70,66 @@
         </div>
     </section>
 
-    <section id="scr-guest" class="screen hidden">
-        <div class="guest-scroll-container">
-            <div class="guest-layout">
-                <pre class="ong-logo">
+    <section id="scr-guest" class="screen hidden scrollable">
+        <div class="guest-layout">
+            <pre class="ong-logo">
  ██████  ███    ██  ██████  
 ██    ██ ████   ██ ██       
 ██    ██ ██ ██  ██ ██   ███ 
  ██████  ██   ████  ██████  </pre>
-                
-                <button class="btn-ui btn-gold" style="width: 300px; margin-bottom: 40px;" onclick="startTransition('scr-login')">ПРИСОЕДИНИТЬСЯ</button>
+            
+            <button class="btn-ui btn-gold" style="width: 320px; margin-bottom: 40px;" onclick="startTransition('scr-login')">ПРИСОЕДИНИТЬСЯ</button>
 
-                <div class="guest-grid">
-                    <div class="guest-col">
-                        <h3 class="label">SYSTEM_STREAM:</h3>
-                        <div id="guest-console" class="console-box"></div>
-                    </div>
-                    <div class="guest-col">
-                        <h3 class="label">О НАС (MISSION_DATA):</h3>
-                        <div class="info-container">
-                            <p style="color: var(--purple); font-weight: bold;">[ ОНГ — ОСНОВНАЯ НАУЧНАЯ ГРУППА ]</p>
-                            <p>Независимая организация, занимающаяся изучением аномалий UUID и стабилизацией энергетических ядер. Мы не подчиняемся P.R.I.S.M.</p>
-                        </div>
+            <div class="guest-grid">
+                <div class="guest-col">
+                    <h3 class="label">SYSTEM_STREAM:</h3>
+                    <div id="guest-console" class="console-box"></div>
+                </div>
+                <div class="guest-col">
+                    <h3 class="label">MISSION_DATA:</h3>
+                    <div class="info-container">
+                        <p style="color: var(--purple); font-weight: bold;">[ ОБЪЕКТ ОНГ ]</p>
+                        <p>Независимая группа по стабилизации UUID. Мы обеспечиваем порядок в цифровом хаосе Сектора 04.</p>
                     </div>
                 </div>
+            </div>
 
-                <div class="news-section">
-                    <h3 class="label">LATEST_SYSTEM_UPDATES:</h3>
-                    <div class="news-block">
-                        <p><b>[26.01.2026]</b> — Исправлена центровка и логика консоли. Внедрена пульсация радара вместо луча. Добавлен Матричный фон на авторизацию.</p>
-                        <p><b>[20.01.2026]</b> — Радар V3 запущен. Улучшена детализация объектов.</p>
-                    </div>
+            <div class="news-section">
+                <h3 class="label">LATEST_SYSTEM_UPDATES:</h3>
+                <div class="news-block">
+                    <p><b>[26.01.2026]</b> — Внедрена V32.0. CRT-эмуляция, глитч-переходы и сканирование сетки активны.</p>
+                    <p><b>[20.01.2026]</b> — Радар обновлен до пульсирующего режима.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="scr-dash" class="screen hidden">
-        <div class="dash-scroll-container">
-            <header class="status-bar">
-                <button class="btn-ui-nav" onclick="toggleSidebar(true)">MENU</button>
-                <div id="clock">00:00:00</div>
-                <div>LVL: <span id="u-lvl-display">0</span></div>
-            </header>
-            <div class="main-content center-layout">
-                <pre class="ong-logo-small">
+    <section id="scr-dash" class="screen hidden scrollable">
+        <header class="status-bar">
+            <button class="btn-ui-nav" onclick="toggleSidebar(true)">MENU</button>
+            <div id="clock">00:00:00</div>
+            <div id="threat-indicator">THREAT: <span style="color: lime;">LOW</span></div>
+        </header>
+        <div class="main-content center-layout">
+            <pre class="ong-logo-small">
  ██████  ███    ██  ██████  
 ██    ██ ████   ██ ██       
 ██    ██ ██ ██  ██ ██   ███ 
  ██████  ██   ████  ██████  </pre>
-                <div class="welcome-text-block">
-                    <h2>Приветствуем, <span id="welcome-user-name" style="color: var(--purple);">---</span></h2>
-                    <p>Доступ к ядру ОНГ подтвержден. Система готова к работе.</p>
-                </div>
-                
-                <div class="dash-row-buttons">
-                    <button class="mega-btn" onclick="initializeTacticalRadar()">КАРТА ОБЪЕКТОВ</button>
-                    <button class="mega-btn" onclick="startTransition('scr-archive')">АРХИВ ДАННЫХ</button>
-                    <button class="mega-btn" onclick="startTransition('scr-sysdata')">СОСТОЯНИЕ СИСТЕМЫ</button>
-                </div>
+            <div class="welcome-text-block">
+                <h2>Welcome, <span id="welcome-user-name" style="color: var(--purple);">---</span></h2>
+                <p>Доступ к ядру ОНГ подтвержден. Система готова.</p>
+            </div>
+            
+            <div class="dash-row-buttons">
+                <button class="mega-btn" onclick="initializeTacticalRadar()">КАРТА ОБЪЕКТОВ</button>
+                <button class="mega-btn" onclick="startTransition('scr-archive')">АРХИВ ДАННЫХ</button>
+                <button class="mega-btn" onclick="startTransition('scr-sysdata')">СОСТОЯНИЕ СИСТЕМЫ</button>
+            </div>
 
-                <div class="staff-info-block">
-                    <div class="purple-fading-line"></div>
-                    <p style="color: #555; font-size: 0.8rem;">ВНИМАНИЕ: Все действия логируются. Несанкционированный доступ к Архиву карается баном UUID.</p>
-                    <p style="color: var(--purple-dim); margin-top: 10px;">Генеральный Директор: MorisReal</p>
-                </div>
+            <div class="staff-info-block">
+                <div class="purple-fading-line"></div>
+                <p>ВНИМАНИЕ: Все действия логируются. Директор: MorisReal</p>
             </div>
         </div>
     </section>
@@ -142,8 +145,8 @@
             </div>
             <div class="radar-info-section" id="radar-info">
                 <div class="purple-fading-line"></div>
-                <h2 id="p-title" class="ong-logo-small">ID_SCAN</h2>
-                <p id="p-text">Выберите узел на сетке для получения полных спецификаций.</p>
+                <h2 id="p-title" class="ong-logo-small">SCANNING...</h2>
+                <p id="p-text">Выберите узел на сетке для анализа.</p>
             </div>
         </div>
     </section>
@@ -159,11 +162,25 @@
         </div>
     </section>
 
+    <section id="scr-archive" class="screen hidden scrollable">
+        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>SECURE_ARCHIVE</div></header>
+        <div class="archive-container">
+            <div class="archive-item">
+                <button class="archive-header" onclick="toggleArchive(this)">[+] ОТЧЕТ #031: ИНЦИДЕНТ DYK</button>
+                <div class="archive-content hidden">Нестабильность ядра. UUID-поток прерван.</div>
+            </div>
+            <div class="archive-item">
+                <button class="archive-header" onclick="toggleArchive(this)">[+] ПРОТОКОЛ P.R.I.S.M: INTERCEPT</button>
+                <div class="archive-content hidden">Зафиксирована попытка сканирования из Сектора 04.</div>
+            </div>
+        </div>
+    </section>
+
     <div id="side-overlay" onclick="toggleSidebar(false)"></div>
     <div id="sidebar" class="sidebar">
         <button class="side-link-btn" onclick="openProfile()">PERSONAL_PROFILE</button>
-        <button class="side-link-btn" onclick="startTransition('scr-login')">СМЕНИТЬ АККАУНТ</button>
-        <button class="side-link-btn logout-red-btn" onclick="location.reload()">ВЫХОД</button>
+        <button class="side-link-btn" onclick="startTransition('scr-login')">SWITCH_USER</button>
+        <button class="side-link-btn logout-red-btn" onclick="location.reload()">LOGOUT</button>
     </div>
 
     <script src="script.js"></script>
