@@ -1,126 +1,167 @@
 const PROFILES = {
-    "kiddy": { name: "Kiddy", pass: "1111", uuid: "1101", lvl: "A1", rank: "Lead" },
-    "dykzxz": { name: "Dykzxz", pass: "2222", uuid: "1011", lvl: "B3", rank: "Tech" },
-    "morisreal": { name: "МОРИС", pass: "123", uuid: "1010", lvl: "S1", rank: "Director" }
+    "kiddy": { name: "Kiddy", pass: "1111", uuid: "1101", lvl: "A1", rank: "Lead", date: "12.05.2024" },
+    "dykzxz": { name: "Dykzxz", pass: "2222", uuid: "1011", lvl: "B3", rank: "Tech", date: "15.06.2024" },
+    "morisreal": { name: "МОРИС", pass: "123", uuid: "1010", lvl: "S1", rank: "Director", date: "01.01.2020" }
 };
-const LOGS = ["> SYNC...", "> UUID_CHECK...", "> CORE_STABLE", "> MEM_CLEAN", "> ACCESS_LOGGED"];
-const ARCHIVE_DATA = [
-    { t: "LOG_0x442", d: "24.01.2026", txt: "Зафиксирована попытка взлома порта 8080 в секторе Sumber. Протокол защиты 'Zero' активирован." },
-    { t: "LOG_0x901", d: "26.01.2026", txt: "Аномальный всплеск энергии в зоне Призмы. Рекомендуется ручная калибровка датчиков." }
+
+const LOG_LINES = [
+    "> SYNCING_UUID...", 
+    "> ENCRYPTING_CHANNEL...", 
+    "> CORE_STABLE", 
+    "> MEMORY_CLEAN_OK", 
+    "> ACCESS_LOGGED", 
+    "> RADAR_SYNCED"
 ];
 
-let gInt = null, sInt = null;
-const snd = new Audio('https://www.soundjay.com/communication/sounds/typewriter-key-1.mp3');
-snd.volume = 0.1;
+const ARCHIVE = [
+    { t: "LOG_0x442", d: "24.01.2026", txt: "Зафиксирована попытка несанкционированного доступа к порту 8080. Протокол Zero-Trust активирован." },
+    { t: "LOG_0x901", d: "26.01.2026", txt: "Аномалия в секторе Призма. Датчики зафиксировали всплеск темной материи. Требуется калибровка." }
+];
 
+let guestInt = null;
+let sensorInt = null;
+const typingSnd = new Audio('https://www.soundjay.com/communication/sounds/typewriter-key-1.mp3');
+typingSnd.volume = 0.1;
+
+// --- ПЕРЕХОДЫ ---
 function startTransition(id) {
     const fade = document.getElementById('fade');
     fade.classList.add('glitch-active');
-    clearInterval(gInt); clearInterval(sInt);
     
+    // Очистка интервалов при уходе с экрана
+    if(guestInt) clearInterval(guestInt);
+    if(sensorInt) clearInterval(sensorInt);
+
     setTimeout(() => {
         document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-        const next = document.getElementById(id);
-        if(next) { next.classList.remove('hidden'); next.scrollTop = 0; }
-        
-        if(id === 'scr-guest') startGuestConsole();
-        if(id === 'scr-sysdata') startSensors();
-        if(id === 'scr-database') startDatabase();
+        const target = document.getElementById(id);
+        if(target) {
+            target.classList.remove('hidden');
+            target.scrollTop = 0;
+        }
+
+        // Запуск логики конкретных экранов
+        if(id === 'scr-guest') initGuestConsole();
+        if(id === 'scr-sysdata') initSensors();
+        if(id === 'scr-database') initDatabase();
         
         fade.classList.remove('glitch-active');
     }, 400);
 }
 
-// РАДАР (ВОССТАНОВЛЕН)
+// --- ГОСТЬ: КОНСОЛЬ (СТРОГО 5 СТРОК) ---
+function initGuestConsole() {
+    const box = document.getElementById('guest-console');
+    box.innerHTML = '';
+    guestInt = setInterval(() => {
+        const p = document.createElement('p');
+        p.innerText = LOG_LINES[Math.floor(Math.random() * LOG_LINES.length)];
+        box.insertBefore(p, box.firstChild);
+        
+        if(box.childNodes.length > 5) {
+            box.removeChild(box.lastChild);
+        }
+    }, 1500);
+}
+
+// --- РАДАР: УМЕНЬШЕННЫЙ + СКРОЛЛ ---
 function initRadar() {
     startTransition('scr-map');
     const nodes = [
-        { x: 40, y: 50, name: "CENTRAL_HQ" },
-        { x: 75, y: 30, name: "PRISM_SECTOR" },
-        { x: 20, y: 70, name: "BUNKER_01" }
+        { x: 45, y: 50, n: "CENTRAL_HQ" },
+        { x: 70, y: 30, n: "PRISM_GATE" },
+        { x: 25, y: 75, n: "BUNKER_01" }
     ];
     const container = document.getElementById('radar-nodes');
     container.innerHTML = '';
-    nodes.forEach(n => {
-        const div = document.createElement('div');
-        div.className = 'node ong';
-        div.style.left = n.x + '%';
-        div.style.top = n.y + '%';
-        div.onclick = () => {
-            document.getElementById('p-title').innerText = "OBJECT: " + n.name;
-            document.getElementById('p-text').innerText = `Координаты: ${n.x}, ${n.y}. Статус: Активен.`;
+    
+    nodes.forEach(node => {
+        const d = document.createElement('div');
+        d.className = 'node ong';
+        d.style.left = node.x + '%';
+        d.style.top = node.y + '%';
+        d.onclick = () => {
+            document.getElementById('p-title').innerText = "OBJECT: " + node.n;
+            document.getElementById('p-text').innerText = `Координаты: ${node.x}, ${node.y}. Статус: Стабилен. UUID объекта подтвержден.`;
+            // Плавный скролл вниз к информации
+            document.getElementById('scr-map').scrollTo({ top: 350, behavior: 'smooth' });
         };
-        container.appendChild(div);
+        container.appendChild(d);
     });
 }
 
-// КОНСОЛЬ (5 СТРОК)
-function startGuestConsole() {
-    const box = document.getElementById('guest-console');
-    box.innerHTML = ''; let i = 0;
-    gInt = setInterval(() => {
-        const p = document.createElement('p');
-        p.innerText = LOGS[i];
-        box.insertBefore(p, box.firstChild);
-        if(box.childNodes.length > 5) box.removeChild(box.lastChild);
-        i = (i + 1) % LOGS.length;
-    }, 1500);
-}
-
-// ДАТЧИКИ
-function startSensors() {
-    sInt = setInterval(() => {
-        let cpu = Math.floor(Math.random()*20)+15;
-        let temp = Math.floor(Math.random()*10)+45;
+// --- ДАТЧИКИ ---
+function initSensors() {
+    sensorInt = setInterval(() => {
+        let cpu = Math.floor(Math.random() * 20) + 15;
+        let temp = Math.floor(Math.random() * 8) + 42;
         document.getElementById('bar-cpu').style.width = cpu + "%";
         document.getElementById('val-cpu').innerText = cpu + "%";
-        document.getElementById('bar-temp').style.width = (temp*1.2) + "%";
+        document.getElementById('bar-temp').style.width = (temp * 1.5) + "%";
         document.getElementById('val-temp').innerText = temp + "°C";
-    }, 1500);
+    }, 2000);
 }
 
-// БАЗА ДАННЫХ
-function startDatabase() {
-    document.getElementById('db-logs-list').innerHTML = ARCHIVE_DATA.map((l, i) => `
+// --- БАЗА ДАННЫХ ---
+function initDatabase() {
+    const list = document.getElementById('db-logs-list');
+    list.innerHTML = ARCHIVE.map((log, i) => `
         <div class="db-log-item">
             <div class="db-log-header">
                 <button class="db-expand-btn" onclick="this.parentElement.nextElementSibling.classList.toggle('open')">OPEN</button>
-                <span>${l.t}</span><small style="margin-left:auto">${l.d}</small>
+                <span>${log.t}</span>
+                <small style="margin-left:auto; opacity:0.5;">${log.d}</small>
             </div>
-            <div class="db-log-content">${l.txt}</div>
+            <div class="db-log-content">${log.txt}</div>
         </div>
     `).join('');
 }
 
+// --- ЛОГИН ---
 function processLogin() {
     const id = document.getElementById('inp-id').value.toLowerCase().trim();
     const ps = document.getElementById('inp-pass').value.trim();
-    if(PROFILES[id] && PROFILES[id].pass === ps) {
-        const u = PROFILES[id];
-        document.getElementById('welcome-user-name').innerText = u.name;
-        document.getElementById('p-name-val').innerText = u.name;
-        document.getElementById('p-uuid-val').innerText = u.uuid;
-        document.getElementById('p-lvl-text-val').innerText = u.lvl;
-        document.getElementById('p-rank-val').innerText = u.rank;
+    
+    if (PROFILES[id] && PROFILES[id].pass === ps) {
+        const user = PROFILES[id];
+        document.getElementById('welcome-user-name').innerText = user.name;
+        // Данные в профиль
+        document.getElementById('p-name-val').innerText = user.name;
+        document.getElementById('p-uuid-val').innerText = user.uuid;
+        document.getElementById('p-lvl-text-val').innerText = user.lvl;
+        document.getElementById('p-rank-val').innerText = user.rank;
+        document.getElementById('p-date-val').innerText = user.date;
         startTransition('scr-dash');
     } else {
         document.getElementById('login-output').innerText = "ACCESS_DENIED";
+        document.getElementById('login-output').style.color = "red";
     }
 }
 
-function playTypingSound() { snd.currentTime = 0; snd.play().catch(()=>{}); }
+// --- ВСПОМОГАТЕЛЬНОЕ ---
+function playTypingSound() { typingSnd.currentTime = 0; typingSnd.play().catch(()=>{}); }
+
 function toggleSidebar(s) { 
     document.getElementById('sidebar').classList.toggle('open', s); 
     document.getElementById('side-overlay').style.display = s ? 'block' : 'none';
 }
-function openProfile() { document.getElementById('modal-profile').classList.remove('hidden'); toggleSidebar(false); }
-function closeProfile() { document.getElementById('modal-profile').classList.add('hidden'); }
 
+function openProfile() { 
+    document.getElementById('modal-profile').classList.remove('hidden'); 
+    toggleSidebar(false); 
+}
+
+function closeProfile() { 
+    document.getElementById('modal-profile').classList.add('hidden'); 
+}
+
+// --- ЗАПУСК ---
 window.onload = () => {
     setTimeout(() => {
         document.getElementById('intro-logo').classList.remove('hidden');
         setTimeout(() => startTransition('scr-login'), 2500);
     }, 1000);
+    
     setInterval(() => {
         const c = document.getElementById('clock');
         if(c) c.innerText = new Date().toLocaleTimeString();
