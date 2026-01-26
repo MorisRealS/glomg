@@ -11,7 +11,7 @@
 
     <div id="modal-profile" class="modal-profile hidden">
         <div class="profile-card">
-            <button class="btn-ui" onclick="closeProfile()">[ BACK ]</button>
+            <button class="close-profile-btn" onclick="closeProfile()"><-- [ BACK ]</button>
             <div class="profile-header">
                 <div class="profile-avatar"></div>
                 <div class="profile-main-info">
@@ -20,16 +20,15 @@
                 </div>
             </div>
             <div class="profile-grid">
-                <div class="p-item"><label>LEVEL</label><span id="p-lvl-val">0</span></div>
+                <div class="p-item"><label>LEVEL</label><span id="p-lvl-text-val">0</span></div>
                 <div class="p-item"><label>RANK</label><span id="p-rank-val">STAFF</span></div>
-                <div class="p-item"><label>DATE</label><span id="p-date-val">--.--.--</span></div>
             </div>
         </div>
     </div>
 
     <section id="scr-intro" class="screen">
         <div class="center-layout">
-            <pre id="intro-ascii">SYSTEM_BOOTING...</pre>
+            <pre id="intro-ascii" class="ascii-font">SYSTEM_BOOTING...</pre>
             <div id="intro-logo" class="hidden">
                 <pre class="ong-logo">██████  ███    ██  ██████</pre>
             </div>
@@ -53,22 +52,23 @@
 
     <section id="scr-guest" class="screen hidden scrollable">
         <div class="guest-layout">
-            <pre class="ong-logo" style="margin-bottom: 50px;">██████  ███    ██  ██████</pre>
-            
-            <div class="guest-grid">
+            <pre class="ong-logo">██████  ███    ██  ██████</pre> <div class="guest-grid">
                 <div class="guest-col">
-                    <pre class="ong-logo" style="font-size: 0.4rem; margin-bottom: 10px;">██████  ███    ██  ██████</pre>
-                    <h3 class="label">CONSOLE_LOG:</h3>
+                    <pre class="ong-logo" style="font-size:0.4rem; opacity:0.5;">██████  ███    ██  ██████</pre> <h3 class="label">CONSOLE_LOG:</h3>
                     <div id="guest-console" class="console-box"></div>
                 </div>
                 <div class="guest-col">
-                    <pre class="ong-logo" style="font-size: 0.4rem; margin-bottom: 10px;">██████  ███    ██  ██████</pre>
-                    <h3 class="label">MISSION_DATA:</h3>
-                    <div class="info-container"><p>ОБЪЕКТ ОНГ: МЫ ГАРАНТ БЕЗОПАСНОСТИ ВСЕЛЕННОЙ.</p></div>
+                    <pre class="ong-logo" style="font-size:0.4rem; opacity:0.5;">██████  ███    ██  ██████</pre> <h3 class="label">MISSION_DATA:</h3>
+                    <div class="info-container">
+                        <p style="color:var(--purple); font-weight:bold;">[ ОБЪЕКТ ОНГ ]</p>
+                        <p>Мы — хранители порядка. Гарант безопасности вселенной в условиях хаоса.</p>
+                    </div>
                 </div>
             </div>
 
-            <div style="height: 1200px;"></div> <button class="btn-ui btn-gold" onclick="startTransition('scr-login')">ВЕРНУТЬСЯ</button>
+            <div class="extra-height-spacer"></div> <div class="join-section">
+                <button class="btn-ui btn-gold" onclick="startTransition('scr-login')">ВЕРНУТЬСЯ К АВТОРИЗАЦИИ</button>
+            </div>
         </div>
     </section>
 
@@ -76,44 +76,53 @@
         <header class="status-bar">
             <button class="btn-ui-nav" onclick="toggleSidebar(true)">MENU</button>
             <div id="clock">00:00:00</div>
+            <div id="threat-level">THREAT: <span style="color: lime;">LOW</span></div>
         </header>
         <div class="main-content center-layout">
             <pre class="ong-logo">██████  ███    ██  ██████</pre>
-            <h2>Welcome, <span id="welcome-user-name">---</span></h2>
+            <h2>Welcome, <span id="welcome-user-name" style="color: var(--purple);">---</span></h2>
             <div class="dash-row-buttons">
-                <button class="mega-btn" onclick="initializeTacticalRadar()">РАДАР</button>
+                <button class="mega-btn" onclick="initRadar()">РАДАР</button>
                 <button class="mega-btn" onclick="startTransition('scr-database')">БАЗА ДАННЫХ</button>
                 <button class="mega-btn" onclick="startTransition('scr-sysdata')">СИСТЕМА</button>
             </div>
             <div class="staff-info-block">
                 <div class="purple-fading-line"></div>
-                <p id="staff-message-gen">CORE_SYSTEM: OPTIMAL | UUID: ACTIVE</p>
+                <h4 style="color: var(--purple);">ТЕХНИЧЕСКАЯ ИНФОРМАЦИЯ:</h4>
+                <p>ЯДРО CORE V32.8 АКТИВНО. ВСЕ СИСТЕМЫ В ПРЕДЕЛАХ НОРМЫ.</p>
             </div>
         </div>
     </section>
 
     <section id="scr-map" class="screen hidden">
-        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>RADAR</div></header>
-        <div class="radar-disk"><div id="radar-nodes"></div></div>
-        <h2 id="p-title" style="text-align:center;">SCANNING...</h2>
+        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>RADAR_OS</div></header>
+        <div class="radar-scroll-wrapper">
+            <div class="radar-view-section"><div class="radar-disk"><div id="radar-nodes"></div></div></div>
+            <div class="radar-info-section">
+                <h2 id="p-title">SCANNING...</h2>
+                <p id="p-text">Объекты не выбраны.</p>
+            </div>
+        </div>
     </section>
 
     <section id="scr-sysdata" class="screen hidden">
         <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>HARDWARE</div></header>
-        <div class="sys-mon-container" style="padding: 20px;">
-            <div class="sensor-card"><label>CPU</label><div class="bar-bg"><div id="bar-cpu" class="bar-fill"></div></div><span id="val-cpu">0%</span></div>
-            <div class="sensor-card"><label>TEMP</label><div class="bar-bg"><div id="bar-temp" class="bar-fill"></div></div><span id="val-temp">0°C</span></div>
+        <div class="sys-mon-container">
+            <div class="sensor-grid">
+                <div class="sensor-card"><label>CPU_LOAD</label><div class="bar-bg"><div id="bar-cpu" class="bar-fill"></div></div><span id="val-cpu">0%</span></div>
+                <div class="sensor-card"><label>TEMP_CORE</label><div class="bar-bg"><div id="bar-temp" class="bar-fill"></div></div><span id="val-temp">0°C</span></div>
+            </div>
         </div>
     </section>
 
     <section id="scr-database" class="screen hidden scrollable">
-        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>DATABASE</div></header>
+        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">RETURN</button><div>SYSTEM_ARCHIVE</div></header>
         <div id="db-logs-list" class="db-container"></div>
     </section>
 
     <div id="side-overlay" onclick="toggleSidebar(false)"></div>
     <div id="sidebar" class="sidebar">
-        <button class="side-link-btn" onclick="openProfile()">PROFILE</button>
+        <button class="side-link-btn" onclick="openProfile()">MY_PROFILE</button>
         <button class="side-link-btn" onclick="location.reload()">LOGOUT</button>
     </div>
 
