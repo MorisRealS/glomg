@@ -492,6 +492,210 @@ button:hover {
 .p-value { color: var(--purple); font-size: 1.4rem; }
 .notes { border: 1px dashed #333; padding: 20px; color: #888; margin-top: 20px; font-family: monospace; font-size: 1.2rem; letter-spacing: 2px; }
 
+/* ================================================= */
+/* НОВЫЕ ЭФФЕКТЫ И АНИМАЦИИ G.L.O.M.G.        */
+/* ================================================= */
+
+/* 1. ЭФФЕКТ СТАРОГО ТВ (СКАНИРУЮЩАЯ ПОЛОСА) */
+.scanline-effect {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba(168, 85, 247, 0.08) 50%,
+        transparent
+    );
+    background-size: 100% 8px;
+    z-index: 9997;
+    pointer-events: none;
+    animation: scanline 10s linear infinite;
+}
+
+@keyframes scanline {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+}
+
+/* 2. ФИОЛЕТОВАЯ ЛИНИЯ (ПРОЗРАЧНАЯ ПО КРАЯМ) */
+.purple-fading-line {
+    width: 600px;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--purple) 50%, 
+        transparent 100%
+    );
+    margin: 30px auto;
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+}
+
+/* 3. СОСТОЯНИЕ СИСТЕМЫ (ДАТЧИКИ) */
+.sys-mon-container {
+    width: 80%;
+    margin: 80px auto 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sensor-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.sensor-card {
+    background: rgba(10, 5, 15, 0.8);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    padding: 15px;
+    text-align: center;
+}
+
+.sensor-card label {
+    display: block;
+    font-size: 0.7rem;
+    color: #888;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.sensor-card span {
+    font-family: monospace;
+    font-size: 1.2rem;
+    color: var(--purple);
+}
+
+.total-load {
+    width: 100%;
+}
+
+/* ПОЛОСКИ ПРОГРЕССА ДАТЧИКОВ */
+.bar-bg {
+    width: 100%;
+    height: 6px;
+    background: #111;
+    margin: 10px 0;
+    border: 1px solid #222;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    background: var(--purple);
+    width: 0%;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 10px var(--purple);
+}
+
+/* 4. ЛОГОТИПЫ O.N.G. */
+.ong-logo {
+    color: var(--purple);
+    font-weight: bold;
+    line-height: 1.2;
+    text-shadow: 0 0 10px var(--purple);
+    margin-bottom: 20px;
+}
+
+.ong-logo-small {
+    color: var(--purple);
+    font-size: 0.6rem;
+    opacity: 0.8;
+    margin-bottom: 20px;
+    text-align: center;
+    display: block;
+}
+
+/* 5. АРХИВ (АККОРДЕОН) */
+.archive-container {
+    width: 70%;
+    margin: 60px auto;
+}
+
+.archive-item {
+    margin-bottom: 5px;
+    border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+.archive-header {
+    width: 100%;
+    background: rgba(168, 85, 247, 0.05);
+    border: none;
+    color: #fff;
+    padding: 12px;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.3s;
+}
+
+.archive-header:hover {
+    background: rgba(168, 85, 247, 0.15);
+}
+
+.archive-content {
+    padding: 15px;
+    background: #050505;
+    color: #999;
+    font-size: 0.9rem;
+    border-top: 1px solid rgba(168, 85, 247, 0.1);
+    line-height: 1.4;
+}
+
+/* 6. ГОСТЕВОЙ РЕЖИМ (LAYOUT) */
+.guest-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.guest-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 30px;
+    width: 90%;
+    margin-top: 20px;
+}
+
+.guest-header-logo {
+    margin-bottom: 20px;
+}
+
+/* 7. ВСПОМОГАТЕЛЬНЫЕ КЛАССЫ */
+.center-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.welcome-text-block {
+    margin-bottom: 30px;
+}
+
+.mega-btn.wide {
+    width: 500px;
+    margin: 10px 0;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* МИГАНИЕ (БЛИНК) */
+.blink {
+    animation: blinker 1.5s linear infinite;
+}
+
+@keyframes blinker {
+    50% { opacity: 0; }
+}
+
 /* Дополнение для анимации заставки */
 #intro-logo.hidden { display: none; }
 .blink { animation: blinker 1.5s linear infinite; }
