@@ -2,24 +2,28 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>O.N.G. | GUEST_ACCESS</title>
+    <title>O.N.G. | GUEST_ZONE</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="scrollable">
+    <canvas id="matrix-canvas"></canvas>
     <div class="vhs-overlay"></div>
-    
-    <div class="guest-nav">
+
+    <header class="guest-nav">
         <div class="nav-line"></div>
-        <button class="btn-ui-nav" onclick="location.href='index.html'">[ AUTHORIZATION ]</button>
-    </div>
+        <button class="btn-ui-nav login-trigger" onclick="location.href='index.html'">
+            [ AUTHORIZATION ]
+        </button>
+    </header>
 
     <div class="guest-layout">
-        <pre class="ascii-logo-main">
+        <pre class="ong-logo-main">
  ██████  ███    ██  ██████  
 ██    ██ ████   ██ ██       
 ██    ██ ██ ██  ██ ██   ███ 
 ██    ██ ██  ██ ██ ██    ██ 
  ██████  ██   ████  ██████  </pre>
+
         <div class="guest-grid">
             <div class="guest-col">
                 <div class="mini-logo-box">/ CONSOLE_FEED /</div>
@@ -29,14 +33,22 @@
                 <div id="news-feed" class="news-block">
                     </div>
             </div>
+
             <div class="guest-col">
                 <div class="mini-logo-box">/ DATABASE_INFO /</div>
                 <div class="info-container">
-                    <p>Публичный узел мониторинга. Сектор: ПРИЗМА. Доступ к ядру заблокирован для GUEST.</p>
+                    <p class="label">NODE: PRISMA_01</p>
+                    <p>Статус: Публичный мониторинг.</p>
+                    <div class="purple-fading-line"></div>
+                    <p style="font-size: 0.8rem; opacity: 0.7;">
+                        Вы находитесь в гостевом узле Объединенного Надзора Галактики. 
+                        Для полного доступа к Архиву, Радару и Системе требуется UUID 6-го уровня.
+                    </p>
                 </div>
             </div>
         </div>
     </div>
+
     <script src="guest.js"></script>
 </body>
 </html>
