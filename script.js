@@ -1,74 +1,118 @@
-// База данных с UUID и уровнями
+// База данных пользователей с уникальными UUID (10 знаков 0 и 1)
 const PROFILES = {
-    "kiddy":    { name: "Kiddy", pass: "1111", level: 4, token: "KID", uuid: "1100110010" },
-    "dykzxz":   { name: "Dykzxz", pass: "2222", level: 4, token: "DYK", uuid: "1010101100" },
-    "msk4ne_":  { name: "MSK4NE", pass: "3333", level: 4, token: "MSK", uuid: "0011001101" },
-    "sumber":   { name: "Sumber", pass: "0000", level: 5, token: "SBR", uuid: "1111100000" },
+    "kiddy":    { name: "Kiddy", pass: "1111", level: 4, token: "KID", uuid: "1101010010" },
+    "dykzxz":   { name: "Dykzxz", pass: "2222", level: 4, token: "DYK", uuid: "1011100001" },
+    "msk4ne_":  { name: "MSK4NE", pass: "3333", level: 4, token: "MSK", uuid: "0001110100" },
+    "sumber":   { name: "Sumber", pass: "0000", level: 5, token: "SBR", uuid: "1110001110" },
     "morisreal": { name: "МОРИС", pass: "123", level: 6, token: "MRS", uuid: "1010101010" }
 };
 
-let tempUser = null;
+let currentUser = null;
 
-// 1. АНИМАЦИЯ ИНТРО
-window.onload = () => {
-    const introAscii = document.getElementById('intro-ascii');
-    introAscii.innerText = "G.L.O.M.G. SYSTEM BOOTING...";
+// ПЛАВНЫЙ ПЕРЕХОД ЧЕРЕЗ ЗАТЕМНЕНИЕ
+function startTransition(targetId) {
+    const fade = document.getElementById('fade');
+    fade.classList.add('active'); // Включаем черный экран
     
     setTimeout(() => {
-        document.getElementById('intro-logo').classList.remove('hidden');
-        setTimeout(() => {
-            startTransition('scr-login');
-        }, 3000);
-    }, 1500);
-};
+        // Скрываем все экраны
+        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+        // Показываем нужный
+        document.getElementById(targetId).classList.remove('hidden');
+        
+        // Если перешли в гостевой режим - запускаем логи
+        if(targetId === 'scr-guest') startGuestLogs();
+        
+        // Убираем черный экран
+        fade.classList.remove('active');
+    }, 600);
+}
 
-// 2. ЛОГИКА ВХОДА
+// ЛОГИКА АВТОРИЗАЦИИ
 function processLogin() {
-    const id = document.getElementById('inp-id').value.trim().toLowerCase();
-    const pass = document.getElementById('inp-pass').value.trim();
+    const idField = document.getElementById('inp-id');
+    const passField = document.getElementById('inp-pass');
     const output = document.getElementById('login-output');
 
-    if (PROFILES[id] && PROFILES[id].pass === pass) {
-        tempUser = PROFILES[id];
-        output.innerHTML = "<span style='color:var(--terminal-green)'>ACCESS GRANTED. SYNCING...</span>";
-        
-        // Заполняем профиль данными
-        document.getElementById('p-name-val').innerText = tempUser.name;
-        document.getElementById('p-token-val').innerText = tempUser.token;
-        document.getElementById('p-lvl-text-val').innerText = "LEVEL " + tempUser.level;
-        document.getElementById('p-uuid-val').innerText = tempUser.uuid;
-        document.getElementById('u-lvl-display').innerText = tempUser.level;
+    const id = idField.value.toLowerCase().trim();
+    const pass = passField.value.trim();
 
-        // Статус на основе уровня
+    if (PROFILES[id] && PROFILES[id].pass === pass) {
+        currentUser = PROFILES[id];
+        output.style.color = "var(--terminal-green)";
+        output.innerText = "AUTHENTICATION SUCCESSFUL. LOADING...";
+        
+        // Заполняем данные профиля перед входом
+        document.getElementById('p-name-val').innerText = currentUser.name;
+        document.getElementById('p-token-val').innerText = currentUser.token;
+        document.getElementById('p-lvl-text-val').innerText = "LEVEL " + currentUser.level;
+        document.getElementById('p-uuid-val').innerText = currentUser.uuid;
+        document.getElementById('u-lvl-display').innerText = currentUser.level;
+        
+        // Определяем статус (модератор/админ)
         let status = "USER";
-        if (tempUser.level === 4) status = "MODERATOR";
-        if (tempUser.level >= 5) status = "ADMINISTRATOR";
+        if(currentUser.level === 4) status = "MODERATOR";
+        if(currentUser.level >= 5) status = "ADMINISTRATOR";
         document.getElementById('p-status-val').innerText = status;
 
+        // Переходим на дашборд
         setTimeout(() => startTransition('scr-dash'), 1000);
     } else {
-        output.innerHTML = "<span style='color:var(--error)'>ERROR: INVALID CREDENTIALS</span>";
+        output.style.color = "var(--error)";
+        output.innerText = "ACCESS DENIED: INVALID KEY";
+        idField.value = "";
+        passField.value = "";
     }
 }
 
-// 3. ПЕРЕХОДЫ МЕЖДУ ЭКРАНАМИ
-function transitionToScreen(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-    document.getElementById(id).classList.remove('hidden');
+// ГОСТЕВОЙ РЕЖИМ: ЛОГИ С ЗАДЕРЖКОЙ
+async function startGuestLogs() {
+    const box = document.getElementById('guest-console');
+    box.innerHTML = '';
+    const logs = [
+        "> Establishing uplink to CORE...",
+        "> Handshake: SUCCESS",
+        "> Protocol: GUEST_LIVE_STREAM",
+        "> Warning: Commands restricted for Level 0",
+        "> Syncing system logs...",
+        "> [OK] Monitoring active."
+    ];
+
+    for (const line of logs) {
+        await new Promise(r => setTimeout(r, 700)); // Задержка 0.7 сек между строками
+        const p = document.createElement('p');
+        p.innerText = line;
+        box.appendChild(p);
+        box.scrollTop = box.scrollHeight;
+    }
+}
+
+// РАДАР
+function initializeTacticalRadar() {
+    startTransition('scr-map');
+    const nodesContainer = document.getElementById('radar-nodes');
+    nodesContainer.innerHTML = ''; // Очистка
     
-    if (id === 'scr-guest') startGuestLogs();
+    // Создаем тестовую точку (можно добавить массив точек)
+    const nodes = [
+        {id: "S-07", x: 45, y: 30, info: "Объект под наблюдением. Статус: Стабилен"},
+        {id: "X-01", x: 65, y: 55, info: "Аномальная активность. Проверка..."}
+    ];
+
+    nodes.forEach(n => {
+        const div = document.createElement('div');
+        div.className = 'node';
+        div.style.left = n.x + '%';
+        div.style.top = n.y + '%';
+        div.onclick = () => {
+            document.getElementById('p-title').innerText = "OBJECT: " + n.id;
+            document.getElementById('p-text').innerText = n.info;
+        };
+        nodesContainer.appendChild(div);
+    });
 }
 
-function startTransition(targetId) {
-    const fade = document.getElementById('fade');
-    fade.classList.add('active');
-    setTimeout(() => {
-        transitionToScreen(targetId);
-        fade.classList.remove('active');
-    }, 800);
-}
-
-// 4. ЛИЧНОЕ ДЕЛО И МЕНЮ
+// ПРОФИЛЬ И САЙДБАР
 function toggleSidebar(state) {
     const side = document.getElementById('sidebar');
     const over = document.getElementById('side-overlay');
@@ -85,65 +129,22 @@ function closeProfile() {
     document.getElementById('modal-profile').classList.add('hidden');
 }
 
-// 5. РАДАР (Восстановление работы)
-function initializeTacticalRadar() {
-    transitionToScreen('scr-map');
-    const nodesContainer = document.getElementById('radar-nodes');
-    nodesContainer.innerHTML = '';
-    
-    const nodes = [
-        {id: "S-01", x: 30, y: 40, info: "Стабильный узел связи"},
-        {id: "X-99", x: 70, y: 20, info: "Обнаружена аномалия"},
-        {id: "CORE", x: 50, y: 50, info: "Центральный процессор"}
-    ];
-
-    nodes.forEach(n => {
-        const div = document.createElement('div');
-        div.className = 'node';
-        div.style.left = n.x + '%';
-        div.style.top = n.y + '%';
-        div.onclick = () => {
-            document.getElementById('p-title').innerText = "OBJECT: " + n.id;
-            document.getElementById('p-text').innerText = n.info;
-        };
-        nodesContainer.appendChild(div);
-    });
-}
-
-// 6. ГОСТЕВЫЕ ЛОГИ
-function startGuestLogs() {
-    const box = document.getElementById('guest-console');
-    box.innerHTML = '';
-    const lines = [
-        "Initializing guest bridge...",
-        "Connection: ESTABLISHED",
-        "Permission: READ_ONLY",
-        "Loading public database...",
-        "Ready."
-    ];
-    let i = 0;
-    const interval = setInterval(() => {
-        if (i < lines.length) {
-            box.innerHTML += `<div>> ${lines[i]}</div>`;
-            i++;
-        } else clearInterval(interval);
-    }, 500);
-}
-
-// 7. КОНСОЛЬ ТЕРМИНАЛА
-function handleTerminalCommand(e) {
-    if (e.key === "Enter") {
-        const input = document.getElementById('terminal-input');
-        const out = document.getElementById('terminal-out');
-        out.innerHTML += `<div><span style="color:var(--purple)">root@glomg:~#</span> ${input.value}</div>`;
-        input.value = "";
-        out.scrollTop = out.scrollHeight;
-    }
-}
-
 // ЧАСЫ
 setInterval(() => {
     const time = new Date().toLocaleTimeString();
-    if(document.getElementById('clock')) document.getElementById('clock').innerText = time;
-    if(document.getElementById('radar-clock')) document.getElementById('radar-clock').innerText = time;
+    const clock = document.getElementById('clock');
+    if(clock) clock.innerText = time;
 }, 1000);
+
+// ИНТРО-ЗАСТАВКА
+window.onload = () => {
+    const introTxt = document.getElementById('intro-ascii');
+    introTxt.innerText = "INITIALIZING G.L.O.M.G. SYSTEM...";
+    
+    setTimeout(() => {
+        document.getElementById('intro-logo').classList.remove('hidden');
+        setTimeout(() => {
+            startTransition('scr-login');
+        }, 3000);
+    }, 1500);
+};
