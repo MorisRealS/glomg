@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>O.N.G. | DATABASE_ARCHIVE</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="scrollable">
+    <canvas id="matrix-canvas"></canvas>
+    <div class="vhs-overlay"></div>
+
+    <header class="status-bar">
+        <button class="btn-ui-nav" onclick="history.back()">[ BACK ]</button>
+        <div class="header-title">SECURE_ARCHIVE_V4</div>
+    </header>
+
+    <div class="archive-container">
+        <div class="archive-header">
+            <h2 class="vhs-text">ЦЕНТРАЛЬНОЕ ХРАНИЛИЩЕ ДАННЫХ</h2>
+            <p class="staff-subtext">Доступ разрешен для операторов уровня 3 и выше.</p>
+        </div>
+
+        <div id="archive-list" class="db-container">
+            </div>
+    </div>
+
+    <script src="archive.js"></script>
+</body>
+</html>
