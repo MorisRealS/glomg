@@ -1,115 +1,112 @@
 const PROFILES = {
-    "kiddy": { name: "Kiddy", pass: "1111", uuid: "1101" },
-    "dykzxz": { name: "Dykzxz", pass: "2222", uuid: "1011" },
-    "sumber": { name: "Sumber", pass: "0000", uuid: "1110" },
-    "morisreal": { name: "МОРИС", pass: "123", uuid: "1010" }
+    "morisreal": { name: "MorisReal", pass: "admin", lvl: 6 },
+    "sumber":    { name: "Sumber", pass: "0000", lvl: 5 },
+    "dykzxz":    { name: "Dykzxz", pass: "2222", lvl: 3 }
 };
 
-const LOG_LINES = ["> SYNCING...", "> UUID_CHECK...", "> CORE_STABLE", "> MEMORY_CLEAN", "> ACCESS_LOGGED"];
-const DATABASE_LOGS = [
-    { title: "LOG_EVENT: 0x442", date: "24.01.2026", text: "Обнаружена попытка доступа к сектору Sumber. Протокол Zero Trust активен." },
-    { title: "LOG_EVENT: 0x119", date: "25.01.2026", text: "Обновление ядра V32.8 завершено. Все узлы синхронизированы." },
-    { title: "LOG_EVENT: 0x901", date: "26.01.2026", text: "Аномалия в районе Призмы. Датчики зафиксировали всплеск энергии." }
-];
+let step = "ID";
+let tempUser = null;
 
-let guestInterval = null;
-let sensorInterval = null;
-
-function startTransition(targetId) {
-    const fade = document.getElementById('fade');
-    fade.classList.add('glitch-active');
-    
-    if(guestInterval) clearInterval(guestInterval);
-    if(sensorInterval) clearInterval(sensorInterval);
-
+// ФУНКЦИЯ ПЛАВНОГО ПЕРЕХОДА
+function transition(callback) {
+    const fade = document.getElementById('fade-overlay');
+    fade.classList.add('active'); // Затемняем
     setTimeout(() => {
-        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-        const next = document.getElementById(targetId);
-        if(next) {
-            next.classList.remove('hidden');
-            next.scrollTop = 0;
+        callback(); // Меняем экран
+        setTimeout(() => fade.classList.remove('active'), 200); // Проявляем
+    }, 600);
+}
+
+// ЛОГИКА ТЕРМИНАЛА
+document.getElementById('cmd').addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+        const val = e.target.value.trim().toLowerCase();
+        e.target.value = "";
+        const out = document.getElementById('output');
+
+        if (step === "ID") {
+            if (val === "guest") {
+                document.getElementById('guest-news').classList.remove('hidden');
+                out.innerHTML += "<div>> GUEST_ACCESS_GRANTED</div>";
+                return;
+            }
+            if (PROFILES[val]) {
+                tempUser = PROFILES[val];
+                step = "PASSWORD";
+                document.querySelector('.prompt').innerText = "PASS:> ";
+                e.target.type = "password";
+                out.innerHTML += `<div>> USER: ${tempUser.name} IDENTIFIED.</div>`;
+            } else {
+                out.innerHTML += `<div style="color:red">> ERROR: UNKNOWN_ID</div>`;
+            }
+        } else if (step === "PASSWORD") {
+            if (val === tempUser.pass) {
+                transition(() => {
+                    localStorage.setItem('ong_user', JSON.stringify(tempUser));
+                    showDashboard(tempUser);
+                });
+            } else {
+                out.innerHTML += `<div style="color:red">> WRONG_PASSWORD. RESETTING...</div>`;
+                setTimeout(() => location.reload(), 1000);
+            }
         }
-
-        if(targetId === 'scr-guest') startGuestConsole();
-        if(targetId === 'scr-database') initDatabase();
-        if(targetId === 'scr-sysdata') initSensors();
-
-        fade.classList.remove('glitch-active');
-    }, 400);
-}
-
-// КОНСОЛЬ: СТРОГО 5 СТРОК
-function startGuestConsole() {
-    const box = document.getElementById('guest-console');
-    if(!box) return;
-    box.innerHTML = '';
-    let i = 0;
-    guestInterval = setInterval(() => {
-        const p = document.createElement('p');
-        p.innerText = LOG_LINES[i];
-        box.insertBefore(p, box.firstChild);
-        if(box.childNodes.length > 5) box.removeChild(box.lastChild);
-        i = (i + 1) % LOG_LINES.length;
-    }, 1500);
-}
-
-// БАЗА ДАННЫХ
-function initDatabase() {
-    const list = document.getElementById('db-logs-list');
-    if(!list) return;
-    list.innerHTML = DATABASE_LOGS.map((log, index) => `
-        <div class="db-log-item">
-            <div class="db-log-header">
-                <button class="db-expand-btn" onclick="toggleLog(${index})">OPEN</button>
-                <span>${log.title}</span>
-                <small style="margin-left:auto; opacity:0.5;">${log.date}</small>
-            </div>
-            <div id="log-body-${index}" class="db-log-content">${log.text}</div>
-        </div>
-    `).join('');
-}
-
-function toggleLog(idx) {
-    const body = document.getElementById(`log-body-${idx}`);
-    const btn = body.previousElementSibling.querySelector('.db-expand-btn');
-    const open = body.classList.toggle('open');
-    btn.innerText = open ? "CLOSE" : "OPEN";
-}
-
-// ЛОГИН
-function processLogin() {
-    const id = document.getElementById('inp-id').value.toLowerCase().trim();
-    const pass = document.getElementById('inp-pass').value.trim();
-    if(PROFILES[id] && PROFILES[id].pass === pass) {
-        document.getElementById('welcome-user-name').innerText = PROFILES[id].name;
-        startTransition('scr-dash');
-    } else {
-        document.getElementById('login-output').innerText = "ACCESS_DENIED";
     }
+});
+
+function showDashboard(user) {
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('main-dashboard').classList.remove('hidden');
+    document.getElementById('user-name-display').innerText = user.name;
+    if(user.lvl === 6) document.getElementById('user-name-display').style.color = "#ff2233";
 }
 
-// СИСТЕМА
-function initSensors() {
-    sensorInterval = setInterval(() => {
-        let cpu = Math.floor(Math.random()*20)+10;
-        let temp = Math.floor(Math.random()*5)+40;
-        document.getElementById('bar-cpu').style.width = cpu + "%";
-        document.getElementById('val-cpu').innerText = cpu + "%";
-        document.getElementById('bar-temp').style.width = (temp*1.5) + "%";
-        document.getElementById('val-temp').innerText = temp + "°C";
-    }, 2000);
+// САЙДБАР
+function toggleSidebar(state) {
+    document.getElementById('sidebar').classList.toggle('open', state);
+    document.getElementById('side-overlay').style.display = state ? 'block' : 'none';
 }
 
-function toggleSidebar(s) { document.getElementById('sidebar').classList.toggle('open', s); }
+function logout() {
+    transition(() => {
+        localStorage.removeItem('ong_user');
+        location.reload();
+    });
+}
 
 // ЗАГРУЗКА
 window.onload = () => {
-    setTimeout(() => {
-        document.getElementById('intro-logo').classList.remove('hidden');
-        setTimeout(() => startTransition('scr-login'), 2500);
-    }, 1000);
-    setInterval(() => {
-        const c = document.getElementById('clock');
-        if(c) c.innerText = new Date().toLocaleTimeString();
-    }, 1000);
+    const saved = localStorage.getItem('ong_user');
+    if (saved) {
+        showDashboard(JSON.parse(saved));
+        document.getElementById('scr-intro').classList.add('hidden');
+    } else {
+        setTimeout(() => {
+            document.getElementById('intro-ascii').classList.add('hidden');
+            document.getElementById('intro-logo').classList.remove('hidden');
+            setTimeout(() => {
+                transition(() => {
+                    document.getElementById('scr-intro').classList.add('hidden');
+                    document.getElementById('login-screen').classList.remove('hidden');
+                });
+            }, 3000);
+        }, 1500);
+    }
+    initMatrix();
 };
+
+// МАТРИЦА (Упрощенная)
+function initMatrix() {
+    const canvas = document.getElementById('matrix-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    const drops = Array(Math.floor(canvas.width/14)).fill(1);
+    setInterval(() => {
+        ctx.fillStyle = "rgba(5, 2, 8, 0.1)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#a855f7"; 
+        drops.forEach((y, i) => {
+            ctx.fillText(Math.floor(Math.random()*2), i*14, y*14);
+            if(y*14 > canvas.height && Math.random() > 0.98) drops[i] = 0;
+            drops[i]++;
+        });
+    }, 50);
+}
