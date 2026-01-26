@@ -7,6 +7,7 @@
 </head>
 <body>
     <canvas id="matrix-canvas"></canvas>
+    <div class="vhs-overlay"></div>
 
     <section id="scr-intro" class="screen">
         <pre>SYSTEM_BOOTING...</pre>
@@ -18,21 +19,28 @@
 ██    ██ ████   ██ ██       
 ██    ██ ██ ██  ██ ██   ███ 
 ██    ██ ██  ██ ██ ██    ██ 
- ██████  ██   ████  ██████ </pre>
+ ██████  ██   ████  ██████  </pre>
         <div class="login-form">
             <input type="text" id="user-id" placeholder="OPERATOR_ID">
             <input type="password" id="user-pass" placeholder="PASSWORD">
-            <br>
-            <button class="btn-ui" onclick="attemptLogin()">[ CONFIRM ]</button>
-            <button class="btn-ui" onclick="location.href='guest.html'">[ GUEST ]</button>
+            <div style="display:flex;">
+                <button class="btn-ui" onclick="attemptLogin()">[ CONFIRM ]</button>
+                <button class="btn-ui" onclick="location.href='guest.html'">[ GUEST ]</button>
+            </div>
         </div>
-        <div id="output"></div>
+        <div id="output" style="margin-top:10px;"></div>
     </section>
 
     <section id="main-dashboard" class="screen hidden">
         <div class="main-content">
-            <h2>WELCOME, <span id="user-name-display"></span></h2>
-            <div class="dash-btns">
+            <pre>
+ ██████  ███    ██  ██████  
+██    ██ ████   ██ ██       
+██    ██ ██ ██  ██ ██   ███ 
+██    ██ ██  ██ ██ ██    ██ 
+ ██████  ██   ████  ██████  </pre>
+            <h2 style="letter-spacing: 2px;">WELCOME, <span id="user-name-display"></span></h2>
+            <div style="margin: 20px 0;">
                 <button class="mega-btn" onclick="location.href='radar.html'">РАДАР</button>
                 <button class="mega-btn" onclick="location.href='archive.html'">АРХИВ</button>
             </div>
@@ -41,11 +49,10 @@
     </section>
 
     <div id="sidebar" class="sidebar">
-        <h3>OPTIONS</h3>
-        <button class="btn-ui" onclick="openProfile()">MY_PROFILE</button>
-        <button class="btn-ui" onclick="logout()" style="color:red">LOGOUT</button>
-        <br><br>
-        <button class="btn-ui" onclick="toggleSidebar(false)">CLOSE</button>
+        <h3 style="border-bottom: 1px solid var(--purple);">SYSTEM MENU</h3>
+        <button class="btn-ui-nav" style="width:100%;" onclick="openProfile()">[ PROFILE ]</button>
+        <button class="btn-ui-nav" style="width:100%; color:red; margin-top:10px;" onclick="logout()">[ LOGOUT ]</button>
+        <button class="btn-ui-nav" style="width:100%; margin-top:40px;" onclick="toggleSidebar(false)">[ CLOSE ]</button>
     </div>
 
     <script src="script.js"></script>
