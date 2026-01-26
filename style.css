@@ -2,80 +2,57 @@
     --purple: #a855f7;
     --purple-dim: rgba(168, 85, 247, 0.3);
     --bg: #050208;
-    --error: #ff2233;
 }
-
-* { box-sizing: border-box; }
 
 body, html {
-    margin: 0; padding: 0;
-    width: 100%; height: 100%;
+    margin: 0; padding: 0; width: 100%; height: 100%;
     background: var(--bg); color: var(--purple);
-    font-family: 'Courier New', monospace;
-    overflow-x: hidden;
+    font-family: 'Courier New', monospace; overflow: hidden;
 }
 
-/* ФОНОВЫЕ ЭФФЕКТЫ */
-#matrix-canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.5; }
-.vhs-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-    z-index: 9999; pointer-events: none;
-}
+#matrix-canvas { position: fixed; top: 0; left: 0; z-index: -1; }
 
-/* ЦЕНТРИРОВАНИЕ (ГЛАВНОЕ) */
+/* ГЛАВНЫЙ КОНТЕЙНЕР ДЛЯ ЦЕНТРОВКИ */
 .screen {
-    width: 100%; min-height: 100vh;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    text-align: center;
+    width: 100vw; height: 100vh;
+    position: absolute; top: 0; left: 0;
 }
 
-.center-layout {
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-}
-
-/* ЛОГОТИПЫ (ЧТОБЫ НЕ ЕХАЛИ) */
-pre {
-    font-family: monospace; line-height: 1.1;
-    display: inline-block; text-align: left;
-    margin: 20px 0;
-}
-
-/* КНОПКИ */
-.btn-ui, .btn-ui-nav, .mega-btn {
-    background: transparent; border: 1px solid var(--purple);
-    color: var(--purple); padding: 10px 20px;
-    cursor: pointer; font-family: inherit;
-    text-transform: uppercase; transition: 0.3s;
-    margin: 5px;
-}
-.btn-ui:hover, .mega-btn:hover {
-    background: var(--purple-dim); box-shadow: 0 0 15px var(--purple);
-}
-
-/* СКРЫТИЕ (ЧТОБЫ КНОПКИ НЕ ТОРЧАЛИ) */
 .hidden { display: none !important; }
 
-/* САЙДБАР (ЧТОБЫ ОН НЕ ВИСЕЛ ПОСРЕДИ ЭКРАНА) */
-.sidebar {
-    position: fixed; top: 0; left: -250px;
-    width: 250px; height: 100%;
-    background: rgba(10, 5, 15, 0.95);
-    border-right: 1px solid var(--purple);
-    transition: 0.4s; z-index: 10000;
-    padding: 20px;
-}
-.sidebar.open { left: 0; }
-#side-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.7); display: none; z-index: 9999;
+/* ОФОРМЛЕНИЕ ФОРМЫ */
+.login-frame, .main-content {
+    display: flex; flex-direction: column;
+    align-items: center; text-align: center;
 }
 
-/* ХЕДЕР */
-.status-bar {
-    width: 100%; display: flex; justify-content: space-between;
-    padding: 15px 30px; border-bottom: 1px solid var(--purple-dim);
-    background: rgba(0,0,0,0.8);
+pre { font-size: 10px; line-height: 1; margin: 10px 0; }
+
+input {
+    background: rgba(20, 10, 30, 0.8);
+    border: 1px solid var(--purple);
+    color: var(--purple);
+    padding: 8px; margin: 5px;
+    outline: none;
 }
+
+.btn-ui, .mega-btn {
+    background: transparent; border: 1px solid var(--purple);
+    color: var(--purple); padding: 10px 20px;
+    cursor: pointer; margin: 5px; transition: 0.3s;
+}
+.btn-ui:hover { background: var(--purple-dim); box-shadow: 0 0 10px var(--purple); }
+
+/* САЙДБАР (Скрыт по умолчанию) */
+.sidebar {
+    position: fixed; top: 0; left: -250px; width: 250px; height: 100%;
+    background: #0a050f; border-right: 1px solid var(--purple);
+    transition: 0.3s; z-index: 1000; padding: 20px;
+}
+.sidebar.open { left: 0; }
+
+/* АРХИВ И РАДАР (Базовые стили внутри одного файла) */
+.db-container { width: 80%; max-width: 600px; margin-top: 20px; }
+.archive-item { border: 1px solid var(--purple-dim); margin: 5px; padding: 10px; text-align: left; }
