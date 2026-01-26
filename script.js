@@ -1,115 +1,93 @@
 const PROFILES = {
-    "kiddy": { name: "Kiddy", pass: "1111", uuid: "1101" },
-    "dykzxz": { name: "Dykzxz", pass: "2222", uuid: "1011" },
-    "sumber": { name: "Sumber", pass: "0000", uuid: "1110" },
-    "morisreal": { name: "МОРИС", pass: "123", uuid: "1010" }
+    "kiddy": { name: "Kiddy", pass: "1111", uuid: "1101", lvl: 4, rank: "Lead", date: "12.05.2024" },
+    "dykzxz": { name: "Dykzxz", pass: "2222", uuid: "1011", lvl: 3, rank: "Tech", date: "15.06.2024" },
+    "morisreal": { name: "МОРИС", pass: "123", uuid: "1010", lvl: 6, rank: "Director", date: "01.01.2020" }
 };
-
 const LOG_LINES = ["> SYNCING...", "> UUID_CHECK...", "> CORE_STABLE", "> MEMORY_CLEAN", "> ACCESS_LOGGED"];
-const DATABASE_LOGS = [
-    { title: "LOG_EVENT: 0x442", date: "24.01.2026", text: "Обнаружена попытка доступа к сектору Sumber. Протокол Zero Trust активен." },
-    { title: "LOG_EVENT: 0x119", date: "25.01.2026", text: "Обновление ядра V32.8 завершено. Все узлы синхронизированы." },
-    { title: "LOG_EVENT: 0x901", date: "26.01.2026", text: "Аномалия в районе Призмы. Датчики зафиксировали всплеск энергии." }
-];
+const ARCHIVE = [{t:"EVENT_0x442", d:"24.01.26", txt:"Попытка доступа к сектору Sumber. Zero Trust активен."}];
 
-let guestInterval = null;
-let sensorInterval = null;
+let gInt = null, sInt = null;
+const snd = new Audio('https://www.soundjay.com/communication/sounds/typewriter-key-1.mp3');
+snd.volume = 0.1;
 
-function startTransition(targetId) {
-    const fade = document.getElementById('fade');
-    fade.classList.add('glitch-active');
-    
-    if(guestInterval) clearInterval(guestInterval);
-    if(sensorInterval) clearInterval(sensorInterval);
-
+function startTransition(id) {
+    document.getElementById('fade').classList.add('glitch-active');
+    clearInterval(gInt); clearInterval(sInt);
     setTimeout(() => {
         document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-        const next = document.getElementById(targetId);
-        if(next) {
-            next.classList.remove('hidden');
-            next.scrollTop = 0;
-        }
-
-        if(targetId === 'scr-guest') startGuestConsole();
-        if(targetId === 'scr-database') initDatabase();
-        if(targetId === 'scr-sysdata') initSensors();
-
-        fade.classList.remove('glitch-active');
+        const n = document.getElementById(id);
+        if(n) { n.classList.remove('hidden'); n.scrollTop = 0; }
+        if(id === 'scr-guest') startGuest();
+        if(id === 'scr-sysdata') initSensors();
+        if(id === 'scr-database') initDB();
+        document.getElementById('fade').classList.remove('glitch-active');
     }, 400);
 }
 
-// КОНСОЛЬ: СТРОГО 5 СТРОК
-function startGuestConsole() {
-    const box = document.getElementById('guest-console');
-    if(!box) return;
-    box.innerHTML = '';
-    let i = 0;
-    guestInterval = setInterval(() => {
-        const p = document.createElement('p');
-        p.innerText = LOG_LINES[i];
-        box.insertBefore(p, box.firstChild);
-        if(box.childNodes.length > 5) box.removeChild(box.lastChild);
+function startGuest() {
+    const b = document.getElementById('guest-console'); b.innerHTML = ''; let i = 0;
+    gInt = setInterval(() => {
+        const p = document.createElement('p'); p.innerText = LOG_LINES[i];
+        b.insertBefore(p, b.firstChild);
+        if(b.childNodes.length > 5) b.removeChild(box.lastChild); // Удаляем 6-ю строку
         i = (i + 1) % LOG_LINES.length;
+    }, 1200);
+}
+
+function initSensors() {
+    sInt = setInterval(() => {
+        let c = Math.floor(Math.random()*20)+10, t = Math.floor(Math.random()*10)+40;
+        document.getElementById('bar-cpu').style.width = c + "%";
+        document.getElementById('val-cpu').innerText = c + "%";
+        document.getElementById('bar-temp').style.width = (t*1.5) + "%";
+        document.getElementById('val-temp').innerText = t + "°C";
     }, 1500);
 }
 
-// БАЗА ДАННЫХ
-function initDatabase() {
-    const list = document.getElementById('db-logs-list');
-    if(!list) return;
-    list.innerHTML = DATABASE_LOGS.map((log, index) => `
+function initializeTacticalRadar() {
+    startTransition('scr-map');
+    document.getElementById('radar-nodes').innerHTML = '<div class="node ong" style="left:50%;top:45%" onclick="document.getElementById(\'p-title\').innerText=\'HQ DETECTED\'"></div>';
+}
+
+function processLogin() {
+    const id = document.getElementById('inp-id').value.toLowerCase().trim();
+    const ps = document.getElementById('inp-pass').value.trim();
+    if(PROFILES[id] && PROFILES[id].pass === ps) {
+        const u = PROFILES[id];
+        document.getElementById('welcome-user-name').innerText = u.name;
+        document.getElementById('p-name-val').innerText = u.name;
+        document.getElementById('p-uuid-val').innerText = u.uuid;
+        document.getElementById('p-lvl-val').innerText = u.lvl;
+        document.getElementById('p-rank-val').innerText = u.rank;
+        document.getElementById('p-date-val').innerText = u.date;
+        startTransition('scr-dash');
+    } else document.getElementById('login-output').innerText = "DENIED";
+}
+
+function initDB() {
+    document.getElementById('db-logs-list').innerHTML = ARCHIVE.map((l, i) => `
         <div class="db-log-item">
             <div class="db-log-header">
-                <button class="db-expand-btn" onclick="toggleLog(${index})">OPEN</button>
-                <span>${log.title}</span>
-                <small style="margin-left:auto; opacity:0.5;">${log.date}</small>
+                <button class="db-expand-btn" onclick="this.parentElement.nextElementSibling.classList.toggle('open')">OPEN</button>
+                <span>${l.t}</span><small style="margin-left:auto">${l.d}</small>
             </div>
-            <div id="log-body-${index}" class="db-log-content">${log.text}</div>
+            <div class="db-log-content">${l.txt}</div>
         </div>
     `).join('');
 }
 
-function toggleLog(idx) {
-    const body = document.getElementById(`log-body-${idx}`);
-    const btn = body.previousElementSibling.querySelector('.db-expand-btn');
-    const open = body.classList.toggle('open');
-    btn.innerText = open ? "CLOSE" : "OPEN";
+function playTypingSound() { snd.currentTime = 0; snd.play().catch(()=>{}); }
+function toggleSidebar(s) { 
+    document.getElementById('sidebar').classList.toggle('open', s); 
+    document.getElementById('side-overlay').style.display = s ? 'block' : 'none';
 }
+function openProfile() { document.getElementById('modal-profile').classList.remove('hidden'); toggleSidebar(false); }
+function closeProfile() { document.getElementById('modal-profile').classList.add('hidden'); }
 
-// ЛОГИН
-function processLogin() {
-    const id = document.getElementById('inp-id').value.toLowerCase().trim();
-    const pass = document.getElementById('inp-pass').value.trim();
-    if(PROFILES[id] && PROFILES[id].pass === pass) {
-        document.getElementById('welcome-user-name').innerText = PROFILES[id].name;
-        startTransition('scr-dash');
-    } else {
-        document.getElementById('login-output').innerText = "ACCESS_DENIED";
-    }
-}
-
-// СИСТЕМА
-function initSensors() {
-    sensorInterval = setInterval(() => {
-        let cpu = Math.floor(Math.random()*20)+10;
-        let temp = Math.floor(Math.random()*5)+40;
-        document.getElementById('bar-cpu').style.width = cpu + "%";
-        document.getElementById('val-cpu').innerText = cpu + "%";
-        document.getElementById('bar-temp').style.width = (temp*1.5) + "%";
-        document.getElementById('val-temp').innerText = temp + "°C";
-    }, 2000);
-}
-
-function toggleSidebar(s) { document.getElementById('sidebar').classList.toggle('open', s); }
-
-// ЗАГРУЗКА
 window.onload = () => {
     setTimeout(() => {
         document.getElementById('intro-logo').classList.remove('hidden');
         setTimeout(() => startTransition('scr-login'), 2500);
     }, 1000);
-    setInterval(() => {
-        const c = document.getElementById('clock');
-        if(c) c.innerText = new Date().toLocaleTimeString();
-    }, 1000);
+    setInterval(() => { if(document.getElementById('clock')) document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
 };
