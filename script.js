@@ -1,117 +1,115 @@
 const PROFILES = {
-    "msk4ne_":  { name: "MSK4NE", pass: "3333", uuid: "0001-M" },
-    "sumber":   { name: "Sumber", pass: "0000", uuid: "7777-S" },
-    "dykzxz":   { name: "Dykzxz", pass: "2222", uuid: "1011-D" }
+    "kiddy": { name: "Kiddy", pass: "1111", uuid: "1101" },
+    "dykzxz": { name: "Dykzxz", pass: "2222", uuid: "1011" },
+    "sumber": { name: "Sumber", pass: "0000", uuid: "1110" },
+    "morisreal": { name: "МОРИС", pass: "123", uuid: "1010" }
 };
 
-const LOG_CMDS = ["SYNCING...", "ENCRYPTING...", "SECTOR_7_SCAN", "UUID_MATCH", "CORE_STABLE", "GATE_OPEN", "DECRYPT_RSA"];
-let activeUser = null;
+const LOG_LINES = ["> SYNCING...", "> UUID_CHECK...", "> CORE_STABLE", "> MEMORY_CLEAN", "> ACCESS_LOGGED"];
+const DATABASE_LOGS = [
+    { title: "LOG_EVENT: 0x442", date: "24.01.2026", text: "Обнаружена попытка доступа к сектору Sumber. Протокол Zero Trust активен." },
+    { title: "LOG_EVENT: 0x119", date: "25.01.2026", text: "Обновление ядра V32.8 завершено. Все узлы синхронизированы." },
+    { title: "LOG_EVENT: 0x901", date: "26.01.2026", text: "Аномалия в районе Призмы. Датчики зафиксировали всплеск энергии." }
+];
 
-// MATRIX FON
-function initMatrix() {
-    const canvas = document.getElementById('matrix-canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-    const drops = Array(Math.floor(canvas.width/14)).fill(1);
-    setInterval(() => {
-        ctx.fillStyle = "rgba(5, 2, 8, 0.1)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#a855f7"; drops.forEach((y, i) => {
-            ctx.fillText(Math.floor(Math.random()*2), i*14, y*14);
-            if(y*14 > canvas.height && Math.random() > 0.98) drops[i] = 0;
-            drops[i]++;
-        });
-    }, 50);
+let guestInterval = null;
+let sensorInterval = null;
+
+function startTransition(targetId) {
+    const fade = document.getElementById('fade');
+    fade.classList.add('glitch-active');
+    
+    if(guestInterval) clearInterval(guestInterval);
+    if(sensorInterval) clearInterval(sensorInterval);
+
+    setTimeout(() => {
+        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+        const next = document.getElementById(targetId);
+        if(next) {
+            next.classList.remove('hidden');
+            next.scrollTop = 0;
+        }
+
+        if(targetId === 'scr-guest') startGuestConsole();
+        if(targetId === 'scr-database') initDatabase();
+        if(targetId === 'scr-sysdata') initSensors();
+
+        fade.classList.remove('glitch-active');
+    }, 400);
 }
 
-// SIDEBAR FIX
-function toggleSidebar(state) {
-    const sb = document.getElementById('sidebar');
-    const ov = document.getElementById('side-overlay');
-    if(state) { sb.classList.add('open'); ov.style.display = 'block'; }
-    else { sb.classList.remove('open'); ov.style.display = 'none'; }
+// КОНСОЛЬ: СТРОГО 5 СТРОК
+function startGuestConsole() {
+    const box = document.getElementById('guest-console');
+    if(!box) return;
+    box.innerHTML = '';
+    let i = 0;
+    guestInterval = setInterval(() => {
+        const p = document.createElement('p');
+        p.innerText = LOG_LINES[i];
+        box.insertBefore(p, box.firstChild);
+        if(box.childNodes.length > 5) box.removeChild(box.lastChild);
+        i = (i + 1) % LOG_LINES.length;
+    }, 1500);
 }
 
-function openProfile() {
-    document.getElementById('p-name-val').innerText = activeUser.name;
-    document.getElementById('p-uuid-val').innerText = activeUser.uuid;
-    document.getElementById('modal-profile').classList.remove('hidden');
-    toggleSidebar(false);
-}
-function closeProfile() { document.getElementById('modal-profile').classList.add('hidden'); }
-
-// LOGIN
-function attemptLogin() {
-    const id = document.getElementById('user-id').value.trim().toLowerCase();
-    const pass = document.getElementById('user-pass').value.trim();
-    if (PROFILES[id] && PROFILES[id].pass === pass) {
-        activeUser = PROFILES[id];
-        startTransition('main-dashboard');
-    } else {
-        document.getElementById('output').innerHTML = "<div style='color:red'>> ERROR: ACCESS DENIED</div>";
-    }
-}
-
-// RADAR
-function initRadar() {
-    startTransition('scr-radar');
-    const container = document.getElementById('radar-nodes');
-    container.innerHTML = '';
-    const pts = [
-        { x: 30, y: 30, n: "ЛАБОРАТОРИЯ ОНГ", c: "#a855f7", act: true },
-        { x: 70, y: 40, n: "БУНКЕР P.R.I.S.M", c: "#00f7ff", act: true },
-        { x: 50, y: 70, n: "РЕАКТОР DYKzxz", c: "#ff2233", act: false }
-    ];
-    pts.forEach(p => {
-        const d = document.createElement('div');
-        d.className = 'node';
-        d.style.left = p.x + '%'; d.style.top = p.y + '%';
-        d.style.backgroundColor = p.c;
-        if(p.act) d.classList.add('pulse');
-        d.onclick = () => {
-            document.getElementById('rad-title').innerText = p.n;
-            document.getElementById('rad-text').innerText = p.act ? "СТАТУС: АКТИВЕН // СИГНАЛ 100%" : "СТАТУС: OFFLINE";
-            document.getElementById('scr-radar').scrollTo({top: 500, behavior: 'smooth'});
-        };
-        container.appendChild(d);
-    });
-}
-
-// ARCHIVE FIX
-function renderArchive() {
-    const data = [
-        {id: "LOG_01", msg: "Ядро V32.8 запущено удачно."},
-        {id: "LOG_02", msg: "Зафиксирована попытка входа: Сектор 4."}
-    ];
-    document.getElementById('db-logs-list').innerHTML = data.map(i => `
+// БАЗА ДАННЫХ
+function initDatabase() {
+    const list = document.getElementById('db-logs-list');
+    if(!list) return;
+    list.innerHTML = DATABASE_LOGS.map((log, index) => `
         <div class="db-log-item">
-            <div class="db-log-header" onclick="this.nextElementSibling.classList.toggle('open')">
-                <span>[ ${i.id} ]</span> <span>VIEW_LOG</span>
+            <div class="db-log-header">
+                <button class="db-expand-btn" onclick="toggleLog(${index})">OPEN</button>
+                <span>${log.title}</span>
+                <small style="margin-left:auto; opacity:0.5;">${log.date}</small>
             </div>
-            <div class="db-log-content">${i.msg}</div>
+            <div id="log-body-${index}" class="db-log-content">${log.text}</div>
         </div>
     `).join('');
 }
 
-function startTransition(id) {
-    document.getElementById('fade').style.opacity = 1;
-    setTimeout(() => {
-        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-        document.getElementById(id).classList.remove('hidden');
-        if(id === 'main-dashboard') document.getElementById('user-name-display').innerText = activeUser.name;
-        if(id === 'scr-archive') renderArchive();
-        if(id === 'scr-guest') {
-            const box = document.getElementById('guest-console');
-            setInterval(() => {
-                const l = document.createElement('div');
-                l.innerText = "> " + LOG_CMDS[Math.floor(Math.random()*LOG_CMDS.length)];
-                box.prepend(l); if(box.childNodes.length > 20) box.removeChild(box.lastChild);
-            }, 800);
-        }
-        document.getElementById('fade').style.opacity = 0;
-    }, 500);
+function toggleLog(idx) {
+    const body = document.getElementById(`log-body-${idx}`);
+    const btn = body.previousElementSibling.querySelector('.db-expand-btn');
+    const open = body.classList.toggle('open');
+    btn.innerText = open ? "CLOSE" : "OPEN";
 }
 
+// ЛОГИН
+function processLogin() {
+    const id = document.getElementById('inp-id').value.toLowerCase().trim();
+    const pass = document.getElementById('inp-pass').value.trim();
+    if(PROFILES[id] && PROFILES[id].pass === pass) {
+        document.getElementById('welcome-user-name').innerText = PROFILES[id].name;
+        startTransition('scr-dash');
+    } else {
+        document.getElementById('login-output').innerText = "ACCESS_DENIED";
+    }
+}
+
+// СИСТЕМА
+function initSensors() {
+    sensorInterval = setInterval(() => {
+        let cpu = Math.floor(Math.random()*20)+10;
+        let temp = Math.floor(Math.random()*5)+40;
+        document.getElementById('bar-cpu').style.width = cpu + "%";
+        document.getElementById('val-cpu').innerText = cpu + "%";
+        document.getElementById('bar-temp').style.width = (temp*1.5) + "%";
+        document.getElementById('val-temp').innerText = temp + "°C";
+    }, 2000);
+}
+
+function toggleSidebar(s) { document.getElementById('sidebar').classList.toggle('open', s); }
+
+// ЗАГРУЗКА
 window.onload = () => {
-    initMatrix();
-    setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+    setTimeout(() => {
+        document.getElementById('intro-logo').classList.remove('hidden');
+        setTimeout(() => startTransition('scr-login'), 2500);
+    }, 1000);
+    setInterval(() => {
+        const c = document.getElementById('clock');
+        if(c) c.innerText = new Date().toLocaleTimeString();
+    }, 1000);
 };
