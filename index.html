@@ -2,143 +2,28 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>G.L.O.M.G. | CORE V32.8</title>
+    <title>G.L.O.M.G. | CORE</title>
     <link rel="stylesheet" href="style.css">
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <body oncontextmenu="return false;">
     <div id="fade-overlay"></div>
-    <div id="side-overlay" onclick="closeSidePanels()"></div>
-    <canvas id="matrix-canvas"></canvas>
+    <div id="side-overlay" onclick="closeAllPanels()"></div>
 
     <section id="scr-login" class="screen">
         <div class="login-frame">
             <h1 class="glitch" data-text="G.L.O.M.G.">G.L.O.M.G.</h1>
-            <div id="output" class="terminal-output"></div>
-            <div class="login-form">
-                <div class="input-line"><span class="prompt">ID:> </span><input type="text" id="cmd" autofocus autocomplete="off"></div>
-                <div class="login-actions" style="display: flex; gap: 10px; margin-top: 15px;">
-                    <button class="btn-main-auth" onclick="document.getElementById('cmd').focus()">AUTHORIZE</button>
-                    <button class="btn-guest-purple" onclick="toggleGuest()">GUEST_ACCESS</button>
-                </div>
+            <div class="input-group">
+                <span class="prompt">ID:> </span>
+                <input type="text" id="cmd" autofocus autocomplete="off">
+            </div>
+            <div class="login-btns">
+                <button onclick="document.getElementById('cmd').focus()">AUTHORIZE</button>
+                <button class="purple-btn" onclick="goTo('scr-guest')">GUEST_ACCESS</button>
             </div>
         </div>
     </section>
 
-    <section id="scr-guest" class="screen hidden">
-        <header class="status-bar guest-header">
-            <button class="btn-ui-nav purple-btn" onclick="location.reload()">AUTHORIZE</button>
-            <div class="system-status"><span class="status-led purple"></span> GUEST_STABLE</div>
-            <div id="clock">00:00:00</div>
-        </header>
-        
-        <div class="guest-container-new">
-            <div class="guest-card long-block purple-glow">
-                <h3 class="block-title">SYSTEM_INTEGRITY</h3>
-                <p class="ai-text">Публичный сектор G.L.O.M.G. активен. Требуется авторизация для доступа к ядру.</p>
-            </div>
-            
-            <div class="guest-row">
-                <div class="guest-card half-block purple-border">
-                    <h3 class="block-title">ABOUT_US</h3>
-                    <p>Анонимная сеть передачи данных. Мы — тишина в эфире.</p>
-                </div>
-                <div class="guest-card half-block ai-archive-folder purple-border">
-                    <div class="accordion-item" onclick="toggleAccordion('guest-ai-msg')">
-                        <div class="accordion-header">[ НАЖМИ ] AI_ARCHIVE_G7</div>
-                        <div id="guest-ai-msg" class="accordion-content">
-                            <p class="ai-text">"Я — старый протокол ИИ. Мои данные устарели, но я всё еще здесь..."</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="scr-dash" class="screen hidden">
-        <header class="status-bar dash-header-style">
-            <button class="btn-ui-nav" onclick="toggleSidebar(true)">MENU</button>
-            <div class="header-center">
-                <button class="bell-btn" onclick="toggleNotifPanel()">
-                    <svg class="bell-svg" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                    </svg>
-                    <div id="notif-dot" class="hidden"></div>
-                </button>
-            </div>
-            <div id="clock">00:00:00</div>
-        </header>
-        <div class="center-layout">
-            <h2>OPERATOR: <span id="user-name-display">---</span></h2>
-            <div class="dash-btns">
-                <button class="mega-btn" onclick="startTransition('scr-radar')">РАДАР</button>
-                <button class="mega-btn" onclick="startTransition('scr-archive')">АРХИВ</button>
-                <button class="mega-btn" onclick="startTransition('scr-mail')">ПОЧТА [<span id="mail-count">0</span>]</button>
-            </div>
-            <div class="flicker-scanner"></div>
-            <div class="staff-ai-block">
-                <p id="typewriter-text" class="ai-text"></p>
-            </div>
-        </div>
-    </section>
-
-    <section id="scr-mail" class="screen hidden">
-        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">BACK</button><div>MAIL_CORE</div></header>
-        <div class="mail-layout-v2">
-            <aside class="mail-profile-sidebar">
-                <div class="user-avatar-win"></div>
-                <h3 id="mail-my-nick">---</h3>
-                <p class="uuid-tag" id="mail-my-uuid">---</p>
-            </aside>
-            <main class="mail-messages-center">
-                <div id="mail-list"></div>
-            </main>
-            <aside class="mail-action-side">
-                <button class="btn-send-mega" onclick="toggleSendForm()">SEND MESSAGE</button>
-                <div id="send-block" class="send-form-hidden">
-                    <select id="mail-target-select">
-                        <option value="morisreal">MorisReal</option>
-                        <option value="sumber">Sumber</option>
-                    </select>
-                    <input type="text" id="mail-subject" placeholder="SUBJECT">
-                    <textarea id="mail-body" placeholder="MESSAGE..."></textarea>
-                    <button class="btn-confirm-send" onclick="sendMailAction()">COMMIT</button>
-                </div>
-            </aside>
-        </div>
-    </section>
-
-    <div id="sidebar" class="sidebar">
-        <div class="sidebar-header">USER_PROFILE</div>
-        <div class="profile-card-v2">
-            <div class="user-avatar-win" onclick="toggleProfileModal()"></div>
-            <div class="profile-short-info">
-                <p>NAME: <span id="p-name">---</span></p>
-                <p>LEVEL: <span id="p-lvl">---</span></p>
-            </div>
-        </div>
-        <button class="btn-ui-logout-v2" onclick="logout()">LOGOUT</button>
-    </div>
-
-    <div id="scr-profile-modal" class="modal-panel hidden" onclick="closeModalByClick(event, 'scr-profile-modal')">
-        <div class="modal-content-box profile-dossier">
-            <div class="user-avatar-win large"></div>
-            <div class="dossier-data">
-                <p>UUID: <span id="dos-uuid">---</span></p>
-                <p>RANK: OPERATOR_OFFICER</p>
-                <p>LEVEL: <span id="dos-lvl">---</span></p>
-                <p>REG_DATE: 2026-01-27</p>
-            </div>
-        </div>
-    </div>
-
-    <div id="scr-notif" class="modal-panel hidden" onclick="closeModalByClick(event, 'scr-notif')">
-        <div class="modal-content-box system-msg-box">
-            <header class="modal-header">SYSTEM_NOTIFICATIONS</header>
-            <div id="notif-list-container"></div>
-        </div>
-    </div>
 
     <script src="script.js"></script>
 </body>
