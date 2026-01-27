@@ -22,6 +22,46 @@
         </div>
     </section>
 
+    <section id="scr-guest" class="screen hidden">
+        <header class="status-bar">
+            <button class="btn-ui-nav" onclick="location.reload()">BACK</button>
+            <div class="system-status">
+                <span class="status-led"></span> SYSTEM_OK
+            </div>
+            <div id="clock">00:00:00</div>
+        </header>
+        
+        <div class="guest-layout">
+            <div class="guest-sidebar">
+                <h3 style="color: #0f4; border-bottom: 1px solid #0f4;">INFO</h3>
+                <p>PROJECT: G.L.O.M.G.</p>
+                <p>CORE: V32.8</p>
+                <p>STATUS: PUBLIC</p>
+                <hr style="opacity: 0.2;">
+                <p style="font-size: 10px; opacity: 0.6;">Доступ ограничен. Функции администратора заблокированы.</p>
+            </div>
+            
+            <div class="guest-main">
+                <div class="guest-news">
+                    <h3 style="color: #0f4;">NEWS_FEED</h3>
+                    <div id="news-list">
+                        <div class="news-item">>> [2026-01-27] Ядро системы запущено в штатном режиме.</div>
+                        <div class="news-item">>> [2026-01-27] Протоколы связи с Telegram стабилизированы.</div>
+                        <div class="news-item">>> [2026-01-27] Гостевой терминал открыт для посетителей.</div>
+                    </div>
+                </div>
+                
+                <div class="guest-console">
+                    <div id="guest-terminal-out" style="height: calc(100% - 30px); overflow-y: auto; font-size: 13px;"></div>
+                    <div class="input-line">
+                        <span class="prompt" style="color: #0f4;">GUEST@CORE:> </span>
+                        <input type="text" id="guest-cmd" autocomplete="off" style="background: transparent; border: none; color: #0f4; outline: none; width: 100%;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section id="scr-dash" class="screen hidden">
         <header class="status-bar">
             <button class="btn-ui-nav" onclick="toggleSidebar(true)">MENU</button>
