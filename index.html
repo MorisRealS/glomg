@@ -65,6 +65,44 @@
         </div>
     </section>
 
+<section id="scr-dash" class="screen hidden">
+        <header class="top-nav">
+            <div class="nav-left">
+                <span class="status-dot"></span>
+                <span class="status-text">CORE_ACCESS: GRANTED</span>
+            </div>
+            <div class="clock-val">00:00:00</div>
+            <button class="logout-btn" onclick="location.reload()">[ EXIT_SYSTEM ]</button>
+        </header>
+
+        <div class="dash-container">
+            <div class="welcome-zone">
+                <h2 class="glitch-min">WELCOME, <span id="op-name" class="purple-text">---</span></h2>
+                
+                <div class="flicker-scanner"></div>
+                
+                <div class="ai-console">
+                    <p id="dash-ai-text" class="ai-text-typed"></p>
+                </div>
+            </div>
+
+            <footer class="dash-footer">
+                <div class="info-item">
+                    <span class="label">UUID:</span>
+                    <span id="op-uuid" class="val">---</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">CLEARANCE_LVL:</span>
+                    <span id="op-lvl" class="val">---</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">LOCATION:</span>
+                    <span class="val">SECTOR_G7</span>
+                </div>
+            </footer>
+        </div>
+    </section>
+    
     <script src="script.js"></script>
 </body>
 </html>
