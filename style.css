@@ -251,6 +251,40 @@ button:hover { border-color: var(--p-color); color: var(--p-color); }
     box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
 }
 
+/* По умолчанию фон скрыт и не мешает кликам */
+#side-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    pointer-events: none; 
+    transition: 0.4s;
+    z-index: 1000;
+}
+
+/* Когда меню открыто, фон становится активным */
+#side-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Сайдбар жестко вынесен за левый край экрана */
+.sidebar {
+    position: fixed;
+    left: -320px; 
+    top: 0;
+    width: 300px;
+    height: 100%;
+    z-index: 1001;
+    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    /* ... остальные твои стили ... */
+}
+
+.sidebar.open {
+    left: 0;
+}
+
 /* Сюда будем вставлять стили Луча, Почты, Сайдбара */
 
 /* [/CSS_ID: NEW_STYLES_ZONE] */
