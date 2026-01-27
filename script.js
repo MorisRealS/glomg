@@ -105,7 +105,24 @@ function loginSuccess(user) {
     if(socket) socket.emit('auth', user.name);
 }
 
-function toggleGuest() { document.getElementById('guest-box').classList.toggle('hidden'); }
+// Измененная функция для гостевого режима
+function toggleGuest() { 
+    startTransition('scr-guest');
+    addGuestLog("Авторизация как гость...");
+    addGuestLog("Доступ к публичным данным открыт.");
+}
+
+// Новая вспомогательная функция для логирования в гостевой консоли
+function addGuestLog(text) {
+    const out = document.getElementById('guest-terminal-out');
+    if(out) {
+        const p = document.createElement('p');
+        p.innerText = `> ${text}`;
+        out.appendChild(p);
+        out.scrollTop = out.scrollHeight;
+    }
+}
+
 function toggleSidebar(s) { document.getElementById('sidebar').classList.toggle('open', s); }
 function logout() { location.reload(); }
 
@@ -114,4 +131,20 @@ window.onload = () => {
         const clk = document.getElementById('clock');
         if(clk) clk.innerText = new Date().toLocaleTimeString();
     }, 1000);
+
+    // Добавлена обработка команд гостевой консоли
+    const gCmd = document.getElementById('guest-cmd');
+    if(gCmd) {
+        gCmd.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                const val = e.target.value.trim().toLowerCase();
+                e.target.value = "";
+                if (val === "help") addGuestLog("Доступные команды: help, info, status, clear");
+                else if (val === "info") addGuestLog("G.L.O.M.G. - Глобальная Логистическая Операционная Магистраль Групп.");
+                else if (val === "status") addGuestLog("Все системы: OK. Пинг до сервера: 24ms.");
+                else if (val === "clear") document.getElementById('guest-terminal-out').innerHTML = "";
+                else if (val !== "") addGuestLog(`Команда "${val}" не распознана. Введите help.`);
+            }
+        });
+    }
 };
