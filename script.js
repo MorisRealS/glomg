@@ -128,6 +128,35 @@ function initDashboard() {
     typeText(welcomeMsg, 'dash-ai-text', 1000);
 }
 
+function toggleSidebar(open) {
+    const sb = document.getElementById('sidebar');
+    const overlay = document.getElementById('side-overlay');
+    const mainContent = document.getElementById('scr-dash');
+
+    if (open) {
+        sb.classList.add('open');
+        overlay.classList.add('open');
+        mainContent.classList.add('blurred'); // Размытие фона
+    } else {
+        sb.classList.remove('open');
+        overlay.classList.remove('open');
+        mainContent.classList.remove('blurred');
+    }
+}
+
+// Обнови функцию closeAllPanels, чтобы она убирала размытие
+function closeAllPanels() {
+    toggleSidebar(false);
+}
+
+// В функции initDashboard замени текст на фиолетовый приветственный
+function initDashboard() {
+    if (!currentUser) return;
+    document.getElementById('op-name').innerText = currentUser.name;
+    const msg = `> СИСТЕМА: Авторизация завершена. Оператор ${currentUser.name}, протоколы CORE активны. Ожидаю указаний...`;
+    typeText(msg, 'dash-ai-text', 1000);
+}
+
 // Сюда будем добавлять функции для Почты, Радара и т.д.
 
 // [/JS_ID: NEW_FUNCTIONS_ZONE]
