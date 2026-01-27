@@ -69,6 +69,73 @@ button:hover { border-color: var(--p-color); color: var(--p-color); }
 
 .ai-text-typed { color: #bbb; line-height: 1.5; }
 
+/* ЭФФЕКТ VHS ПОЛОС */
+.vhs-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 4px, 3px 100%;
+    pointer-events: none; z-index: 5;
+}
+
+/* Бесконечные линии */
+.vhs-overlay::after {
+    content: " "; position: absolute; inset: 0;
+    background: rgba(168, 85, 247, 0.03);
+    background: linear-gradient(to bottom, transparent 0%, rgba(168, 85, 247, 0.1) 10%, transparent 20%);
+    background-size: 100% 200%;
+    animation: vhs-lines 8s linear infinite;
+}
+
+@keyframes vhs-lines {
+    0% { background-position: 0 -100%; }
+    100% { background-position: 0 100%; }
+}
+
+/* КОНТЕЙНЕР ГОСТЯ */
+#scr-guest { background: radial-gradient(circle, #1a0a2e 0%, #05010a 100%); }
+
+.guest-container {
+    width: 80%; /* Оставляем место по краям */
+    display: flex; flex-direction: column; gap: 20px;
+    z-index: 10;
+}
+
+/* ПЛАЖКА С ТОЧКОЙ */
+.system-status-bar {
+    width: 100%; height: 40px;
+    background: rgba(168, 85, 247, 0.15);
+    border: 1px solid var(--p-color);
+    display: flex; align-items: center; padding: 0 20px;
+}
+
+.status-dot {
+    width: 8px; height: 8px; background: var(--p-color);
+    border-radius: 50%; margin-right: 15px;
+    animation: blink 1.5s infinite;
+    box-shadow: 0 0 10px var(--p-color);
+}
+
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+/* СЕТКА БЛОКОВ */
+.guest-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+}
+
+.guest-card {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    padding: 20px; height: 300px;
+}
+
+.guest-card h3 { 
+    color: var(--p-color); margin-top: 0; 
+    border-bottom: 1px solid rgba(168, 85, 247, 0.3); padding-bottom: 10px;
+}
+
+.card-body p { color: #bbb; line-height: 1.4; margin: 10px 0; }
+
 /* Сюда будем вставлять стили Луча, Почты, Сайдбара */
 
 /* [/CSS_ID: NEW_STYLES_ZONE] */
