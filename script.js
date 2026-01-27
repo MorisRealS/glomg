@@ -1,12 +1,17 @@
+// [JS_ID: PROFILES_DATA]
 const PROFILES = {
     "morisreal": { name: "MorisReal", pass: "admin", lvl: 6, uuid: "X-882-GLOMG" },
-    "sumber":    { name: "Sumber", pass: "0000", lvl: 5, uuid: "X-104-GLOMG" }
+    "sumber":    { name: "Sumber", pass: "0000", lvl: 5, uuid: "X-104-GLOMG" },
+    "msk4ne_":   { name: "Msk4ne_", pass: "0000", lvl: 4, uuid: "X-201-GLOMG" },
+    "dykzxz":    { name: "Dykzxz", pass: "0000", lvl: 4, uuid: "X-202-GLOMG" },
+    "shmegh1":   { name: "shmegh1", pass: "0000", lvl: 4, uuid: "X-203-GLOMG" }
 };
+// [/JS_ID: PROFILES_DATA]
 
 let currentUser = null;
 const socket = io();
 
-// Плавный переход между экранами
+// [JS_ID: CORE_LOGIC]
 function goTo(screenId) {
     const fade = document.getElementById('fade-overlay');
     fade.classList.add('active');
@@ -17,7 +22,6 @@ function goTo(screenId) {
     }, 500);
 }
 
-// Побуквенная печать
 function typeText(text, id, delay = 0) {
     const el = document.getElementById(id);
     if(!el) return;
@@ -31,12 +35,11 @@ function typeText(text, id, delay = 0) {
     }, delay);
 }
 
-// Закрытие панелей
 function closeAllPanels() {
     document.getElementById('side-overlay').classList.remove('open');
+    if(document.getElementById('sidebar')) document.getElementById('sidebar').classList.remove('open');
 }
 
-// Логика ввода (ID и PASS)
 document.getElementById('cmd').addEventListener('keydown', (e) => {
     if(e.key === 'Enter') {
         const val = e.target.value.toLowerCase();
@@ -47,9 +50,19 @@ document.getElementById('cmd').addEventListener('keydown', (e) => {
         } else if(currentUser && val === currentUser.pass) {
             goTo('scr-dash');
             socket.emit('auth', currentUser.name);
+        } else {
+            // Сброс при ошибке
+            currentUser = null;
+            document.querySelector('.prompt').innerText = "ID:> ";
+            e.target.value = ""; e.target.type = "text";
         }
     }
 });
+// [/JS_ID: CORE_LOGIC]
 
 
-// ТУТ БУДУТ НОВЫЕ ФУНКЦИИ (ОТПРАВКА ПОЧТЫ, РАДАР)
+// [JS_ID: NEW_FUNCTIONS_ZONE]
+
+// Сюда будем добавлять функции для Почты, Радара и т.д.
+
+// [/JS_ID: NEW_FUNCTIONS_ZONE]
