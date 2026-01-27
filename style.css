@@ -183,6 +183,74 @@ button:hover { border-color: var(--p-color); color: var(--p-color); }
     color: #eee;
 }
 
+/* Размытие фона при открытом меню */
+.blurred { filter: blur(8px); transition: 0.4s; }
+
+/* Шапка кабинета */
+.dash-header {
+    position: absolute; top: 0; width: 100%; height: 60px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 40px; border-bottom: 1px solid rgba(168, 85, 247, 0.3);
+    z-index: 10;
+}
+
+.welcome-title { margin-top: 100px; text-align: center; font-size: 2em; letter-spacing: 5px; }
+
+/* Сетка кнопок */
+.dash-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 30px; width: 80%; margin: 50px auto 20px auto;
+}
+
+.mega-btn {
+    height: 150px; background: rgba(168, 85, 247, 0.05);
+    border: 1px solid var(--p-color); color: white;
+    font-family: inherit; cursor: pointer; transition: 0.3s;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+}
+
+.mega-btn:hover { background: rgba(168, 85, 247, 0.2); box-shadow: 0 0 20px var(--p-color); }
+
+/* Градиентная линия */
+.gradient-line {
+    width: 80%; height: 2px; margin: 0 auto;
+    background: linear-gradient(90deg, transparent, var(--p-color), transparent);
+}
+
+/* Фиксированная консоль (чтобы не прыгала) */
+.ai-console-fixed {
+    width: 80%; height: 100px; margin: 20px auto;
+    padding: 15px; background: rgba(0,0,0,0.3);
+}
+
+.purple-typed { color: var(--p-color); text-shadow: 0 0 5px var(--p-color); }
+
+/* САЙДБАР */
+.sidebar {
+    position: fixed; left: -300px; top: 0; width: 300px; height: 100%;
+    background: #0d0d0f; border-right: 2px solid var(--p-color);
+    transition: 0.4s; z-index: 1001; padding: 40px 20px;
+}
+.sidebar.open { left: 0; }
+
+.sb-header { font-size: 1.5em; color: var(--p-color); margin-bottom: 40px; text-align: center; }
+
+.sb-btn {
+    width: 100%; padding: 15px; background: transparent;
+    border: 1px solid #333; color: #ccc; margin-bottom: 10px;
+    cursor: pointer; font-family: inherit; transition: 0.3s;
+}
+
+.sb-btn:hover { border-color: var(--p-color); color: var(--p-color); }
+
+/* Красный Logout */
+.logout-special:hover { 
+    background: rgba(255, 0, 0, 0.2) !important; 
+    border-color: #ff0000 !important; 
+    color: #ff0000 !important; 
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+}
+
 /* Сюда будем вставлять стили Луча, Почты, Сайдбара */
 
 /* [/CSS_ID: NEW_STYLES_ZONE] */
