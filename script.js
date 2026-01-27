@@ -82,6 +82,36 @@ function toggleGuestAI() {
     }
 }
 
+// 1. Функция для работы системных часов
+function updateClock() {
+    const clockElements = document.querySelectorAll('.clock-val');
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('ru-RU', { hour12: false });
+    
+    clockElements.forEach(el => {
+        el.innerText = timeString;
+    });
+}
+
+// Запускаем часы каждую секунду
+setInterval(updateClock, 1000);
+updateClock(); // Инициализация сразу
+
+
+// 2. Рандомные VHS помехи (необязательно, но круто для атмосферы)
+// Раз в 3-7 секунд экран будет "дергаться" на мгновение
+function triggerVHSGlitch() {
+    const overlay = document.querySelector('.vhs-overlay');
+    if (!overlay) return;
+
+    const chance = Math.random();
+    if (chance > 0.8) {
+        overlay.style.opacity = "0.8";
+        setTimeout(() => { overlay.style.opacity = "1"; }, 150);
+    }
+}
+setInterval(triggerVHSGlitch, 3000);
+
 // Сюда будем добавлять функции для Почты, Радара и т.д.
 
 // [/JS_ID: NEW_FUNCTIONS_ZONE]
