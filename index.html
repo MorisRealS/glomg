@@ -10,16 +10,25 @@
     <div id="fade-overlay"></div>
     <div id="side-overlay" onclick="closeAllPanels()"></div>
 
-    <section id="scr-login" class="screen">
+   <section id="scr-login" class="screen">
         <div class="login-frame">
             <h1 class="glitch" data-text="G.L.O.M.G.">G.L.O.M.G.</h1>
-            <div class="input-group">
-                <span class="prompt">ID:> </span>
-                <input type="text" id="cmd" autofocus autocomplete="off">
+            
+            <div class="auth-inputs">
+                <div class="input-group">
+                    <span class="prompt">USER_ID:></span>
+                    <input type="text" id="login-id" autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <span class="prompt">PASSWORD:></span>
+                    <input type="password" id="login-pass">
+                </div>
             </div>
+
             <div class="login-btns">
-                <button onclick="document.getElementById('cmd').focus()">AUTHORIZE</button>
-                <button class="purple-btn" onclick="goTo('scr-guest')">GUEST_ACCESS</button>
+                <button class="main-auth-btn" onclick="handleAuth()">AUTHORIZE_SYSTEM</button>
+                
+                <button class="guest-btn-small" onclick="goTo('scr-guest')">GUEST_LOGIN</button>
             </div>
         </div>
     </section>
