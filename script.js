@@ -6,7 +6,23 @@ const PROFILES = {
 let step = "ID", tempUser = null, myMessages = [], fullArchive = [];
 const socket = typeof io !== 'undefined' ? io() : null;
 
-// Функции закрытия (Пункт 5, 6)
+// Побуквенный текст (Пункт 14)
+function typeWriter(text, elementId, speed = 40) {
+    const el = document.getElementById(elementId);
+    if(!el) return;
+    el.innerHTML = "";
+    let i = 0;
+    function type() {
+        if (i < text.length) {
+            el.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(type, speed);
+        }
+    }
+    type();
+}
+
+// Закрытие панелей кликом в пустоту (Пункт 12)
 function closeSidePanels() {
     toggleSidebar(false);
     document.getElementById('scr-notif').classList.add('hidden');
@@ -14,9 +30,13 @@ function closeSidePanels() {
 }
 
 function closeModalByClick(e, id) {
-    if (e.target.id === id) document.getElementById(id).classList.add('hidden');
+    if (e.target.id === id) {
+        document.getElementById(id).classList.add('hidden');
+        if(id === 'sidebar') toggleSidebar(false);
+    }
 }
 
+// Уведомления и Профиль
 function toggleNotifPanel() { 
     document.getElementById('scr-notif').classList.toggle('hidden');
     document.getElementById('notif-dot').classList.add('hidden');
@@ -26,17 +46,20 @@ function toggleProfileModal() {
     document.getElementById('scr-profile-modal').classList.toggle('hidden');
 }
 
-// Пункт 8: Почта
+// Почта (Пункт 6)
 function toggleSendForm() {
     const box = document.getElementById('send-block');
-    const form = box.querySelector('.send-form-content');
-    box.classList.toggle('expanded');
-    form.classList.toggle('hidden');
+    box.classList.toggle('send-form-hidden');
+    box.classList.toggle('send-form-visible');
+}
+
+// Аккордеон (Пункт 9, 10)
+function toggleAccordion(id) {
+    const el = document.getElementById(id);
+    if(el) el.classList.toggle('open');
 }
 
 if (socket) {
-    socket.on('connect', () => console.log("Соединение с CORE установлено"));
-
     socket.on('load_mail', (msgs) => { 
         myMessages = msgs; 
         renderMail(); 
@@ -45,10 +68,8 @@ if (socket) {
         myMessages.push(msg); 
         renderMail(); 
         document.getElementById('notif-dot').classList.remove('hidden');
-        // Добавляем в список уведомлений
         const nList = document.getElementById('notif-list-container');
-        if(nList.innerText.includes('Уведомлений нет')) nList.innerHTML = '';
-        nList.innerHTML += `<div class="notif-item">📬 Новое письмо от ${msg.from}</div>`;
+        nList.innerHTML = `<div class="notif-item">📬 Сообщение от: ${msg.from}</div>` + nList.innerHTML;
     });
 
     socket.on('init_archive', (data) => { 
@@ -64,26 +85,17 @@ if (socket) {
 function renderArchive() {
     const container = document.getElementById('archive-list');
     if (!container) return;
-    if (fullArchive.length === 0) {
-        container.innerHTML = '<p style="opacity:0.3">[ АРХИВ ПУСТ ]</p>';
-        return;
-    }
     container.innerHTML = fullArchive.map((item, index) => `
-        <div style="border: 1px solid #a855f7; margin-bottom: 10px; background: rgba(20, 10, 30, 0.8); text-align: left;">
-            <div onclick="toggleArchiveItem(${index})" style="padding: 12px; cursor: pointer; display: flex; justify-content: space-between; background: rgba(168, 85, 247, 0.15);">
-                <span style="color: #a855f7; font-weight: bold;">[+] ТЕМА: ${item.title}</span>
-                <span style="font-size: 10px; opacity: 0.5;">${item.timestamp}</span>
+        <div class="archive-item-v2">
+            <div onclick="toggleAccordion('arch-body-${index}')" class="archive-header">
+                <span>[+] ТЕМА: ${item.title}</span>
+                <span class="arch-time">${item.timestamp}</span>
             </div>
-            <div id="arch-body-${index}" style="display: none; padding: 15px; border-top: 1px dashed #a855f7; color: #eee; line-height: 1.5; font-size: 14px;">
-                ${item.content}
+            <div id="arch-body-${index}" class="accordion-content">
+                <div class="arch-inner">${item.content}</div>
             </div>
         </div>
     `).reverse().join('');
-}
-
-function toggleArchiveItem(index) {
-    const el = document.getElementById(`arch-body-${index}`);
-    if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
 
 function renderMail() {
@@ -100,6 +112,20 @@ function renderMail() {
     }
 }
 
+function sendMailAction() {
+    const target = document.getElementById('mail-target-select').value;
+    const subj = document.getElementById('mail-subject').value;
+    const body = document.getElementById('mail-body').value;
+    if(!body) return alert("Введите сообщение!");
+
+    const payload = { to: target, subj: subj, body: body, from: tempUser.name };
+    if(socket) socket.emit('send_mail_from_web', payload);
+    
+    document.getElementById('mail-subject').value = "";
+    document.getElementById('mail-body').value = "";
+    toggleSendForm();
+}
+
 function startTransition(id) {
     const fade = document.getElementById('fade-overlay');
     fade.classList.add('active');
@@ -107,6 +133,9 @@ function startTransition(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
         document.getElementById(id).classList.remove('hidden');
         fade.classList.remove('active');
+        if(id === 'scr-dash') {
+            typeWriter(`> СИСТЕМА: С возвращением, оператор ${tempUser.name}. Узлы активны.`, 'typewriter-text');
+        }
         if(id === 'scr-archive') renderArchive();
         if(id === 'scr-mail') renderMail();
     }, 500);
@@ -130,25 +159,15 @@ function loginSuccess(user) {
     document.getElementById('user-name-display').innerText = user.name;
     document.getElementById('p-name').innerText = user.name;
     document.getElementById('p-lvl').innerText = user.lvl;
-    document.getElementById('my-nick').innerText = user.name;
-    document.getElementById('my-uuid').innerText = user.uuid;
+    document.getElementById('dos-uuid').innerText = user.uuid;
+    document.getElementById('dos-lvl').innerText = user.lvl;
+    document.getElementById('mail-my-nick').innerText = user.name;
+    document.getElementById('mail-my-uuid').innerText = user.uuid;
     if(socket) socket.emit('auth', user.name);
 }
 
 function toggleGuest() { 
     startTransition('scr-guest');
-    addGuestLog("Авторизация как гость...");
-    addGuestLog("Доступ к публичным данным открыт.");
-}
-
-function addGuestLog(text) {
-    const out = document.getElementById('guest-terminal-out');
-    if(out) {
-        const p = document.createElement('p');
-        p.innerText = `> ${text}`;
-        out.appendChild(p);
-        out.scrollTop = out.scrollHeight;
-    }
 }
 
 function toggleSidebar(s) { 
@@ -166,19 +185,4 @@ window.onload = () => {
         const clk = document.querySelectorAll('#clock');
         clk.forEach(c => c.innerText = new Date().toLocaleTimeString());
     }, 1000);
-
-    const gCmd = document.getElementById('guest-cmd');
-    if(gCmd) {
-        gCmd.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") {
-                const val = e.target.value.trim().toLowerCase();
-                e.target.value = "";
-                if (val === "help") addGuestLog("Доступные команды: help, info, status, clear");
-                else if (val === "info") addGuestLog("G.L.O.M.G. - Глобальная Логистическая Операционная Магистраль Групп.");
-                else if (val === "status") addGuestLog("Все системы: OK. Пинг до сервера: 24ms.");
-                else if (val === "clear") document.getElementById('guest-terminal-out').innerHTML = "";
-                else if (val !== "") addGuestLog(`Команда "${val}" не распознана. Введите help.`);
-            }
-        });
-    }
 };
