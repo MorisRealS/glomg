@@ -65,41 +65,40 @@
         </div>
     </section>
 
-<section id="scr-dash" class="screen hidden">
-        <header class="top-nav">
-            <div class="nav-left">
-                <span class="status-dot"></span>
-                <span class="status-text">CORE_ACCESS: GRANTED</span>
-            </div>
+<div id="sidebar" class="sidebar">
+        <div class="sb-header">CORE_MENU</div>
+        <nav class="sb-nav">
+            <button class="sb-btn" onclick="toggleModal('scr-profile')">ЛИЧНОЕ ДОСЬЕ</button>
+            <button class="sb-btn logout-special" onclick="location.reload()">LOGOUT</button>
+        </nav>
+    </div>
+
+    <section id="scr-dash" class="screen hidden">
+        <div class="vhs-overlay"></div> <header class="dash-header">
+            <button class="menu-trigger" onclick="toggleSidebar(true)">[ MENU ]</button>
             <div class="clock-val">00:00:00</div>
-            <button class="logout-btn" onclick="location.reload()">[ EXIT_SYSTEM ]</button>
         </header>
 
-        <div class="dash-container">
-            <div class="welcome-zone">
-                <h2 class="glitch-min">WELCOME, <span id="op-name" class="purple-text">---</span></h2>
-                
-                <div class="flicker-scanner"></div>
-                
-                <div class="ai-console">
-                    <p id="dash-ai-text" class="ai-text-typed"></p>
-                </div>
+        <div class="dash-main">
+            <h2 class="welcome-title">WELCOME, <span id="op-name">---</span></h2>
+            
+            <div class="dash-grid">
+                <button class="mega-btn" onclick="goTo('scr-map')">
+                    <span class="btn-icon">◈</span> ТАКТИЧЕСКАЯ КАРТА
+                </button>
+                <button class="mega-btn" onclick="goTo('scr-archive')">
+                    <span class="btn-icon">📂</span> АРХИВ ДАННЫХ
+                </button>
+                <button class="mega-btn" onclick="goTo('scr-status')">
+                    <span class="btn-icon">⚙</span> СТАТУС СИСТЕМЫ
+                </button>
             </div>
 
-            <footer class="dash-footer">
-                <div class="info-item">
-                    <span class="label">UUID:</span>
-                    <span id="op-uuid" class="val">---</span>
-                </div>
-                <div class="info-item">
-                    <span class="label">CLEARANCE_LVL:</span>
-                    <span id="op-lvl" class="val">---</span>
-                </div>
-                <div class="info-item">
-                    <span class="label">LOCATION:</span>
-                    <span class="val">SECTOR_G7</span>
-                </div>
-            </footer>
+            <div class="gradient-line"></div>
+
+            <div class="ai-console-fixed">
+                <p id="dash-ai-text" class="purple-typed"></p>
+            </div>
         </div>
     </section>
     
