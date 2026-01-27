@@ -1,3 +1,4 @@
+/* [CSS_ID: CORE_BASE] */
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
 :root { --p-color: #a855f7; --bg: #0a0a0c; }
@@ -13,20 +14,23 @@ body {
 .screen { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .hidden { display: none !important; }
 
-/* Затемнение при переходах */
 #fade-overlay { 
     position: fixed; inset: 0; background: #000; 
     z-index: 10000; opacity: 0; transition: 0.5s; pointer-events: none; 
 }
 #fade-overlay.active { opacity: 1; }
 
-/* Стиль окна логина */
 .login-frame { text-align: center; border: 1px solid #333; padding: 40px; background: rgba(0,0,0,0.5); }
 .input-group { margin: 20px 0; font-size: 20px; }
 input { background: transparent; border: none; color: var(--p-color); font-family: inherit; font-size: inherit; outline: none; }
 button { cursor: pointer; background: transparent; border: 1px solid #555; color: #ccc; padding: 10px 20px; font-family: inherit; transition: 0.3s; }
 button:hover { border-color: var(--p-color); color: var(--p-color); }
 .purple-btn { border-color: var(--p-color); color: var(--p-color); margin-left: 10px; }
+/* [/CSS_ID: CORE_BASE] */
 
 
-/* ТУТ БУДУТ НОВЫЕ СТИЛИ (ЛУЧ, ПОЧТА, САЙДБАР) */
+/* [CSS_ID: NEW_STYLES_ZONE] */
+
+/* Сюда будем вставлять стили Луча, Почты, Сайдбара */
+
+/* [/CSS_ID: NEW_STYLES_ZONE] */
