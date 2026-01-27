@@ -11,6 +11,7 @@ const bot = new TelegramBot(TOKEN, {polling: true});
 
 let mailBox = {};
 let archiveData = [];
+const userState = {}; // Состояния для пошагового ввода
 
 app.use(express.static(__dirname));
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
@@ -29,7 +30,80 @@ io.on('connection', (socket) => {
     });
 });
 
-// Команда АРХИВА: /archive Тема | Текст
+// --- НОВАЯ ЛОГИКА: КНОПКИ И СОСТОЯНИЯ ---
+
+bot.on('message', (msg) => {
+    const chatId = msg.chat.id;
+    const text = msg.text;
+
+    if (!text) return;
+
+    // Команда вызова меню (Пункт 1)
+    if (text === '/glomg' || text === '/start') {
+        delete userState[chatId]; 
+        return bot.sendMessage(chatId, "🛠 ПАНЕЛЬ УПРАВЛЕНИЯ G.L.O.M.G.", {
+            reply_markup: {
+                inline_keyboard: [
+                    [{ text: "📁 Добавить в Архив", callback_data: "btn_add_archive" }],
+                    [{ text: "✉️ Отправить Почту", callback_data: "btn_info_mail" }]
+                ]
+            }
+        });
+    }
+
+    // Пошаговый ввод для Архива (Пункт 2)
+    if (userState[chatId]) {
+        const state = userState[chatId];
+
+        if (state.step === 'WAIT_TITLE') {
+            state.title = text;
+            state.step = 'WAIT_CONTENT';
+            return bot.sendMessage(chatId, `✅ Тема: "${text}"\n\nТеперь введите текст для архива:`);
+        }
+
+        if (state.step === 'WAIT_CONTENT') {
+            const entry = { title: state.title, content: text, timestamp: new Date().toLocaleString() };
+            archiveData.push(entry);
+            io.emit('new_archive_data', entry);
+            delete userState[chatId];
+            return bot.sendMessage(chatId, `🚀 ЗАПИСЬ ОПУБЛИКОВАНА: ${entry.title}`);
+        }
+    }
+});
+
+// Обработка кликов по кнопкам
+bot.on('callback_query', (query) => {
+    const chatId = query.message.chat.id;
+
+    if (query.data === 'btn_add_archive') {
+        userState[chatId] = { step: 'WAIT_TITLE' };
+        bot.sendMessage(chatId, "📝 Введите ТЕМУ новой записи:");
+    }
+
+    if (query.data === 'btn_info_mail') {
+        bot.sendMessage(chatId, "📨 Для отправки почты используй:\n`/send [ник] [текст]`");
+    }
+
+    bot.answerCallbackQuery(query.id);
+});
+
+// --- НОВАЯ ЛОГИКА: СИСТЕМНЫЙ ВЕЩАТЕЛЬ (Колокольчик) ---
+
+bot.onText(/\/broadcast (.+)/, (msg, match) => {
+    const text = match[1];
+    const systemMsg = { 
+        from: "CORE_SYSTEM", 
+        text: `⚠️ ГЛОБАЛЬНОЕ УВЕДОМЛЕНИЕ: ${text}`, 
+        date: new Date().toLocaleTimeString() 
+    };
+    
+    // Рассылаем всем пользователям (у них на сайте мигнет колокольчик)
+    io.emit('new_mail', systemMsg); 
+    bot.sendMessage(msg.chat.id, "📢 Системное сообщение отправлено на все терминалы.");
+});
+
+// --- ТВОЙ ИСХОДНЫЙ КОД (БЕЗ ИЗМЕНЕНИЙ) ---
+
 bot.onText(/\/archive (.+)/, (msg, match) => {
     const rawText = match[1];
     let title, content;
@@ -46,12 +120,10 @@ bot.onText(/\/archive (.+)/, (msg, match) => {
     const entry = { title, content, timestamp: new Date().toLocaleString() };
     archiveData.push(entry);
     
-    // Рассылаем всем подключенным клиентам
     io.emit('new_archive_data', entry);
     bot.sendMessage(msg.chat.id, `📁 ПРИНЯТО В АРХИВ: ${title}`);
 });
 
-// Команда ПОЧТЫ: /send [ник] [текст]
 bot.onText(/\/send (\w+) (.+)/, (msg, match) => {
     const target = match[1].toLowerCase();
     const text = match[2];
