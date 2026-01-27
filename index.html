@@ -24,6 +24,24 @@
         </div>
     </section>
 
+    <section id="scr-guest" class="screen hidden">
+        <header class="guest-nav">
+            <button onclick="location.reload()">[ ВЕРНУТЬСЯ ]</button>
+            <div class="status-text">STATUS: GUEST_ACCESS</div>
+        </header>
+
+        <div class="guest-content">
+            <div class="accordion-item">
+                <button class="acc-trigger" onclick="toggleGuestAI()">
+                    [+] ПОЛУЧИТЬ ДОСТУП К АРХИВУ ИИ (G7)
+                </button>
+                
+                <div id="guest-ai-body" class="acc-content">
+                    <p id="guest-ai-text" class="ai-text-typed"></p>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <script src="script.js"></script>
 </body>
