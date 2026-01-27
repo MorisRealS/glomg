@@ -40,23 +40,25 @@ function closeAllPanels() {
     if(document.getElementById('sidebar')) document.getElementById('sidebar').classList.remove('open');
 }
 
-document.getElementById('cmd').addEventListener('keydown', (e) => {
-    if(e.key === 'Enter') {
-        const val = e.target.value.toLowerCase();
-        if(!currentUser && PROFILES[val]) {
-            currentUser = PROFILES[val];
-            document.querySelector('.prompt').innerText = "PASS:> ";
-            e.target.value = ""; e.target.type = "password";
-        } else if(currentUser && val === currentUser.pass) {
-            goTo('scr-dash');
-            socket.emit('auth', currentUser.name);
-        } else {
-            // Сброс при ошибке
-            currentUser = null;
-            document.querySelector('.prompt').innerText = "ID:> ";
-            e.target.value = ""; e.target.type = "text";
-        }
+// НОВАЯ ФУНКЦИЯ АВТОРИЗАЦИИ
+function handleAuth() {
+    const login = document.getElementById('login-id').value.toLowerCase();
+    const pass = document.getElementById('login-pass').value;
+
+    if (PROFILES[login] && PROFILES[login].pass === pass) {
+        currentUser = PROFILES[login];
+        goTo('scr-dash');
+        socket.emit('auth', currentUser.name);
+        initDashboard(); // Запуск наполнения кабинета данными
+    } else {
+        alert("ОШИБКА: НЕВЕРНЫЙ ID ИЛИ ПАРОЛЬ");
+        document.getElementById('login-pass').value = "";
     }
+}
+
+// Слушатель для нажатия Enter в поле пароля
+document.getElementById('login-pass').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') handleAuth();
 });
 // [/JS_ID: CORE_LOGIC]
 
@@ -111,6 +113,20 @@ function triggerVHSGlitch() {
     }
 }
 setInterval(triggerVHSGlitch, 3000);
+
+// ФУНКЦИЯ ИНИЦИАЛИЗАЦИИ КАБИНЕТА
+function initDashboard() {
+    if (!currentUser) return;
+
+    // Заполняем данные на экране кабинета
+    if(document.getElementById('op-name')) document.getElementById('op-name').innerText = currentUser.name;
+    if(document.getElementById('op-uuid')) document.getElementById('op-uuid').innerText = currentUser.uuid;
+    if(document.getElementById('op-lvl')) document.getElementById('op-lvl').innerText = currentUser.lvl;
+
+    // Запускаем приветствие ИИ
+    const welcomeMsg = `> СИСТЕМА: Авторизация завершена. Оператор ${currentUser.name}, протоколы CORE активны.`;
+    typeText(welcomeMsg, 'dash-ai-text', 1000);
+}
 
 // Сюда будем добавлять функции для Почты, Радара и т.д.
 
