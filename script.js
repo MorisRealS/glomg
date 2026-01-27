@@ -1,15 +1,42 @@
 const PROFILES = {
-    "morisreal": { name: "MorisReal", pass: "admin", lvl: 6 },
-    "sumber":    { name: "Sumber", pass: "0000", lvl: 5 }
+    "morisreal": { name: "MorisReal", pass: "admin", lvl: 6, uuid: "X-882-GLOMG" },
+    "sumber":    { name: "Sumber", pass: "0000", lvl: 5, uuid: "X-104-GLOMG" }
 };
 
 let step = "ID", tempUser = null, myMessages = [], fullArchive = [];
 const socket = typeof io !== 'undefined' ? io() : null;
 
+// Функции закрытия (Пункт 5, 6)
+function closeSidePanels() {
+    toggleSidebar(false);
+    document.getElementById('scr-notif').classList.add('hidden');
+    document.getElementById('scr-profile-modal').classList.add('hidden');
+}
+
+function closeModalByClick(e, id) {
+    if (e.target.id === id) document.getElementById(id).classList.add('hidden');
+}
+
+function toggleNotifPanel() { 
+    document.getElementById('scr-notif').classList.toggle('hidden');
+    document.getElementById('notif-dot').classList.add('hidden');
+}
+
+function toggleProfileModal() {
+    document.getElementById('scr-profile-modal').classList.toggle('hidden');
+}
+
+// Пункт 8: Почта
+function toggleSendForm() {
+    const box = document.getElementById('send-block');
+    const form = box.querySelector('.send-form-content');
+    box.classList.toggle('expanded');
+    form.classList.toggle('hidden');
+}
+
 if (socket) {
     socket.on('connect', () => console.log("Соединение с CORE установлено"));
 
-    // Почта
     socket.on('load_mail', (msgs) => { 
         myMessages = msgs; 
         renderMail(); 
@@ -17,10 +44,13 @@ if (socket) {
     socket.on('new_mail', (msg) => { 
         myMessages.push(msg); 
         renderMail(); 
-        alert("📬 ПОЛУЧЕНО СООБЩЕНИЕ В ПОЧТУ"); 
+        document.getElementById('notif-dot').classList.remove('hidden');
+        // Добавляем в список уведомлений
+        const nList = document.getElementById('notif-list-container');
+        if(nList.innerText.includes('Уведомлений нет')) nList.innerHTML = '';
+        nList.innerHTML += `<div class="notif-item">📬 Новое письмо от ${msg.from}</div>`;
     });
 
-    // Архив
     socket.on('init_archive', (data) => { 
         fullArchive = data; 
         renderArchive(); 
@@ -34,12 +64,10 @@ if (socket) {
 function renderArchive() {
     const container = document.getElementById('archive-list');
     if (!container) return;
-    
     if (fullArchive.length === 0) {
         container.innerHTML = '<p style="opacity:0.3">[ АРХИВ ПУСТ ]</p>';
         return;
     }
-
     container.innerHTML = fullArchive.map((item, index) => `
         <div style="border: 1px solid #a855f7; margin-bottom: 10px; background: rgba(20, 10, 30, 0.8); text-align: left;">
             <div onclick="toggleArchiveItem(${index})" style="padding: 12px; cursor: pointer; display: flex; justify-content: space-between; background: rgba(168, 85, 247, 0.15);">
@@ -64,9 +92,9 @@ function renderMail() {
     if(list && count) {
         count.innerText = myMessages.length;
         list.innerHTML = myMessages.map(m => `
-            <div style="border: 1px solid #0f4; padding: 10px; margin-bottom: 5px; text-align: left; background: rgba(0,255,70,0.05);">
-                <div style="font-size: 9px; color: #0f4; margin-bottom: 4px;">ОТ: ${m.from} | ${m.date}</div>
-                <div style="color: #fff;">${m.text}</div>
+            <div class="mail-entry">
+                <div class="mail-head">ОТ: ${m.from} | ${m.date}</div>
+                <div class="mail-body-text">${m.text}</div>
             </div>
         `).reverse().join('');
     }
@@ -102,17 +130,17 @@ function loginSuccess(user) {
     document.getElementById('user-name-display').innerText = user.name;
     document.getElementById('p-name').innerText = user.name;
     document.getElementById('p-lvl').innerText = user.lvl;
+    document.getElementById('my-nick').innerText = user.name;
+    document.getElementById('my-uuid').innerText = user.uuid;
     if(socket) socket.emit('auth', user.name);
 }
 
-// Измененная функция для гостевого режима
 function toggleGuest() { 
     startTransition('scr-guest');
     addGuestLog("Авторизация как гость...");
     addGuestLog("Доступ к публичным данным открыт.");
 }
 
-// Новая вспомогательная функция для логирования в гостевой консоли
 function addGuestLog(text) {
     const out = document.getElementById('guest-terminal-out');
     if(out) {
@@ -123,16 +151,22 @@ function addGuestLog(text) {
     }
 }
 
-function toggleSidebar(s) { document.getElementById('sidebar').classList.toggle('open', s); }
+function toggleSidebar(s) { 
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('side-overlay');
+    sidebar.classList.toggle('open', s); 
+    if(s) overlay.classList.add('open');
+    else overlay.classList.remove('open');
+}
+
 function logout() { location.reload(); }
 
 window.onload = () => {
     setInterval(() => {
-        const clk = document.getElementById('clock');
-        if(clk) clk.innerText = new Date().toLocaleTimeString();
+        const clk = document.querySelectorAll('#clock');
+        clk.forEach(c => c.innerText = new Date().toLocaleTimeString());
     }, 1000);
 
-    // Добавлена обработка команд гостевой консоли
     const gCmd = document.getElementById('guest-cmd');
     if(gCmd) {
         gCmd.addEventListener("keydown", (e) => {
