@@ -24,20 +24,33 @@
         </div>
     </section>
 
-    <section id="scr-guest" class="screen hidden">
-        <header class="guest-nav">
+ <section id="scr-guest" class="screen hidden">
+        <div class="vhs-overlay"></div> <header class="guest-nav">
             <button onclick="location.reload()">[ ВЕРНУТЬСЯ ]</button>
-            <div class="status-text">STATUS: GUEST_ACCESS</div>
+            <div class="clock-val">00:00:00</div>
         </header>
 
-        <div class="guest-content">
-            <div class="accordion-item">
-                <button class="acc-trigger" onclick="toggleGuestAI()">
-                    [+] ПОЛУЧИТЬ ДОСТУП К АРХИВУ ИИ (G7)
-                </button>
-                
-                <div id="guest-ai-body" class="acc-content">
-                    <p id="guest-ai-text" class="ai-text-typed"></p>
+        <div class="guest-container">
+            <div class="system-status-bar">
+                <span class="status-dot"></span>
+                <span class="status-text">СИСТЕМА G.L.O.M.G РАБОТАЕТ В ШТАТНОМ РЕЖИМЕ</span>
+            </div>
+
+            <div class="guest-grid">
+                <div class="guest-card card-left">
+                    <h3>[ НОВОСТИ ]</h3>
+                    <div class="card-body">
+                        <p>> Доступно обновление протокола v3.2</p>
+                        <p>> Связь с сектором 7 установлена.</p>
+                        <p>> Обнаружены попытки несанкционированного входа.</p>
+                    </div>
+                </div>
+
+                <div class="guest-card card-right">
+                    <h3>[ О НАС ]</h3>
+                    <div class="card-body">
+                        <p>G.L.O.M.G. — это автономная сеть мониторинга данных. Мы обеспечиваем безопасность и архивное хранение информации в условиях тотальной цифровой изоляции.</p>
+                    </div>
                 </div>
             </div>
         </div>
