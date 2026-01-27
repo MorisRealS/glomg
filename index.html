@@ -65,13 +65,15 @@
         </div>
     </section>
 
+<div id="side-overlay" onclick="toggleSidebar(false)"></div>
+
 <div id="sidebar" class="sidebar">
-        <div class="sb-header">CORE_MENU</div>
-        <nav class="sb-nav">
-            <button class="sb-btn" onclick="toggleModal('scr-profile')">ЛИЧНОЕ ДОСЬЕ</button>
-            <button class="sb-btn logout-special" onclick="location.reload()">LOGOUT</button>
-        </nav>
-    </div>
+    <div class="sb-header">CORE_MENU</div>
+    <nav class="sb-nav">
+        <button class="sb-btn" onclick="openProfile()">ЛИЧНОЕ ДОСЬЕ</button>
+        <button class="sb-btn logout-special" onclick="location.reload()">LOGOUT</button>
+    </nav>
+</div>
 
     <section id="scr-dash" class="screen hidden">
         <div class="vhs-overlay"></div> <header class="dash-header">
