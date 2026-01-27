@@ -63,6 +63,25 @@ document.getElementById('cmd').addEventListener('keydown', (e) => {
 
 // [JS_ID: NEW_FUNCTIONS_ZONE]
 
+function toggleGuestAI() {
+    const body = document.getElementById('guest-ai-body');
+    const textId = 'guest-ai-text';
+    
+    // Переключаем класс для анимации раскрытия
+    body.classList.toggle('open');
+    
+    // Если открыли — печатаем текст с задержкой
+    if(body.classList.contains('open')) {
+        const message = "Обнаружен поврежденный сектор... Я — ИИ серии G7. Мои архивы пусты на 98%, но я помню систему G.L.O.M.G. до великого сбоя...";
+        
+        // Очищаем старый текст перед новой печатью
+        document.getElementById(textId).innerHTML = "";
+        
+        // Задержка 1.5 секунды (1500 мс) перед появлением букв
+        typeText(message, textId, 1500);
+    }
+}
+
 // Сюда будем добавлять функции для Почты, Радара и т.д.
 
 // [/JS_ID: NEW_FUNCTIONS_ZONE]
