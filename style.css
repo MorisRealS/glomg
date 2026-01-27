@@ -31,6 +31,44 @@ button:hover { border-color: var(--p-color); color: var(--p-color); }
 
 /* [CSS_ID: NEW_STYLES_ZONE] */
 
+/* Стили гостевого режима */
+.guest-nav {
+    position: absolute; top: 20px; width: 90%;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--p-color); padding-bottom: 10px;
+}
+
+.status-text { color: var(--p-color); font-weight: bold; text-shadow: 0 0 10px var(--p-color); }
+
+/* Аккордеон (Плавное раскрытие) */
+.accordion-item { width: 80%; max-width: 600px; margin-top: 50px; }
+
+.acc-trigger {
+    width: 100%; padding: 15px; background: rgba(168, 85, 247, 0.1);
+    border: 1px solid var(--p-color); color: var(--p-color);
+    text-align: left; cursor: pointer; font-family: inherit;
+    transition: 0.3s;
+}
+
+.acc-trigger:hover { background: rgba(168, 85, 247, 0.2); }
+
+.acc-content {
+    max-height: 0; /* Изначально скрыто */
+    overflow: hidden;
+    transition: max-height 0.8s ease-in-out; /* Плавность раскрытия */
+    background: rgba(0, 0, 0, 0.4);
+    border: 0px solid var(--p-color);
+    border-top: none;
+}
+
+.acc-content.open {
+    max-height: 500px; /* Максимальная высота при раскрытии */
+    border-width: 1px;
+    padding: 20px;
+}
+
+.ai-text-typed { color: #bbb; line-height: 1.5; }
+
 /* Сюда будем вставлять стили Луча, Почты, Сайдбара */
 
 /* [/CSS_ID: NEW_STYLES_ZONE] */
