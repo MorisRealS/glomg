@@ -8,7 +8,7 @@
 </head>
 <body oncontextmenu="return false;">
     <div id="fade-overlay"></div>
-    <div id="side-overlay" onclick="toggleSidebar(false)"></div>
+    <div id="side-overlay" onclick="closeSidePanels()"></div>
     <canvas id="matrix-canvas"></canvas>
 
     <section id="scr-login" class="screen">
@@ -17,7 +17,10 @@
             <div id="output" class="terminal-output"></div>
             <div class="login-form">
                 <div class="input-line"><span class="prompt">ID:> </span><input type="text" id="cmd" autofocus autocomplete="off"></div>
-                <div class="guest-btn" onclick="toggleGuest()">[ GUEST_ACCESS ]</div>
+                <div class="login-actions" style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button class="btn-main-auth" onclick="document.getElementById('cmd').focus()">AUTHORIZE</button>
+                    <button class="btn-guest-gray" onclick="toggleGuest()">GUEST_ACCESS</button>
+                </div>
             </div>
         </div>
     </section>
@@ -25,54 +28,97 @@
     <section id="scr-guest" class="screen hidden">
         <header class="status-bar">
             <button class="btn-ui-nav" onclick="location.reload()">BACK</button>
-            <div class="system-status">
-                <span class="status-led"></span> SYSTEM_OK
-            </div>
+            <div class="system-status"><span class="status-led"></span> SYSTEM_OK</div>
             <div id="clock">00:00:00</div>
         </header>
         
-        <div class="guest-layout">
-            <div class="guest-sidebar">
-                <h3 style="color: #0f4; border-bottom: 1px solid #0f4;">INFO</h3>
-                <p>PROJECT: G.L.O.M.G.</p>
-                <p>CORE: V32.8</p>
-                <p>STATUS: PUBLIC</p>
-                <hr style="opacity: 0.2;">
-                <p style="font-size: 10px; opacity: 0.6;">Доступ ограничен. Функции администратора заблокированы.</p>
+        <div class="guest-container-new">
+            <div class="guest-card long-block glow-border">
+                <h3 class="block-title">SYSTEM_INTEGRITY</h3>
+                <p class="ai-text">Система G.L.O.M.G. функционирует в штатном режиме. Все узлы активны. Пинг до центрального ядра: 24ms. Угрозы не обнаружены.</p>
             </div>
             
-            <div class="guest-main">
-                <div class="guest-news">
-                    <h3 style="color: #0f4;">NEWS_FEED</h3>
-                    <div id="news-list">
-                        <div class="news-item">>> [2026-01-27] Ядро системы запущено в штатном режиме.</div>
-                        <div class="news-item">>> [2026-01-27] Протоколы связи с Telegram стабилизированы.</div>
-                        <div class="news-item">>> [2026-01-27] Гостевой терминал открыт для посетителей.</div>
-                    </div>
+            <div class="guest-row">
+                <div class="guest-card half-block">
+                    <h3 class="block-title">ABOUT_US</h3>
+                    <p>Мы — децентрализованная сеть мониторинга трафика и данных. GLOMG V32.8 обеспечивает анонимность и стабильность связи в любых секторах.</p>
                 </div>
-                
-                <div class="guest-console">
-                    <div id="guest-terminal-out" style="height: calc(100% - 30px); overflow-y: auto; font-size: 13px;"></div>
-                    <div class="input-line">
-                        <span class="prompt" style="color: #0f4;">GUEST@CORE:> </span>
-                        <input type="text" id="guest-cmd" autocomplete="off" style="background: transparent; border: none; color: #0f4; outline: none; width: 100%;">
-                    </div>
+                <div class="guest-card half-block ai-welcome">
+                    <h3 class="block-title">AI_PROTOCOL_G7</h3>
+                    <p class="ai-text">"Приветствую, пользователь. Я — системный интерфейс G-7. Мои алгоритмы готовы предоставить доступ к публичным архивам."</p>
+                </div>
+            </div>
+
+            <div class="guest-console-mini">
+                <div id="guest-terminal-out"></div>
+                <div class="input-line">
+                    <span class="prompt">GUEST@CORE:> </span>
+                    <input type="text" id="guest-cmd" autocomplete="off">
                 </div>
             </div>
         </div>
     </section>
 
     <section id="scr-dash" class="screen hidden">
-        <header class="status-bar">
+        <header class="status-bar header-decorated">
             <button class="btn-ui-nav" onclick="toggleSidebar(true)">MENU</button>
+            <div class="header-center">
+                <button class="bell-btn" onclick="toggleNotifPanel()">
+                    <span class="bell-icon">🔔</span>
+                    <div id="notif-dot" class="hidden"></div>
+                </button>
+            </div>
             <div id="clock">00:00:00</div>
         </header>
-        <div class="center-layout">
+        <div class="center-layout dash-visual-up">
             <h2>OPERATOR: <span id="user-name-display">---</span></h2>
             <div class="dash-btns">
                 <button class="mega-btn" onclick="startTransition('scr-radar')">РАДАР</button>
                 <button class="mega-btn" onclick="startTransition('scr-archive')">АРХИВ</button>
                 <button class="mega-btn" onclick="startTransition('scr-mail')">ПОЧТА [<span id="mail-count">0</span>]</button>
+            </div>
+            
+            <div class="flicker-divider"></div>
+            
+            <div class="staff-ai-block">
+                <h3 class="block-title">CORE_MESSAGE</h3>
+                <p class="ai-text">> СИСТЕМА: С возвращением, оператор. Все протоколы безопасности подтверждены. Проверьте почту на наличие новых директив.</p>
+            </div>
+        </div>
+    </section>
+
+    <div id="scr-notif" class="modal-panel hidden" onclick="closeModalByClick(event, 'scr-notif')">
+        <div class="modal-content-box">
+            <header class="modal-header">SYSTEM_NOTIFICATIONS <button onclick="toggleNotifPanel()">X</button></header>
+            <div id="notif-list-container">
+                <p style="opacity:0.3">Уведомлений нет...</p>
+            </div>
+        </div>
+    </div>
+
+    <section id="scr-mail" class="screen hidden">
+        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">BACK</button><div>INBOX_MANAGER</div></header>
+        <div class="mail-grid">
+            <div class="mail-side-info">
+                <div class="info-tag">UUID: <span id="my-uuid">####-####</span></div>
+                <div class="info-tag">USER: <span id="my-nick">---</span></div>
+            </div>
+            <div class="mail-main-view">
+                <div id="mail-list"></div>
+            </div>
+            <div class="mail-action-side">
+                <div id="send-block" class="send-collapsed">
+                    <button class="expand-send-btn" onclick="toggleSendForm()">SEND MESSAGE</button>
+                    <div class="send-form-content hidden">
+                        <select id="mail-target-select">
+                            <option value="morisreal">MorisReal</option>
+                            <option value="sumber">Sumber</option>
+                        </select>
+                        <input type="text" id="mail-subject" placeholder="SUBJECT">
+                        <textarea id="mail-body" placeholder="DESCRIPTION"></textarea>
+                        <button class="btn-confirm-send" onclick="sendMailAction()">COMMIT</button>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -80,15 +126,7 @@
     <section id="scr-archive" class="screen hidden">
         <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">BACK</button><div>DATABASE_ARCHIVE</div></header>
         <div class="center-layout">
-            <div id="archive-list" style="width: 90%; max-height: 70vh; overflow-y: auto; margin-top: 20px; padding-bottom: 50px;">
-                </div>
-        </div>
-    </section>
-
-    <section id="scr-mail" class="screen hidden">
-        <header class="status-bar"><button class="btn-ui-nav" onclick="startTransition('scr-dash')">BACK</button><div>INBOX</div></header>
-        <div class="center-layout">
-            <div id="mail-list" style="width: 90%; margin-top: 20px;"></div>
+            <div id="archive-list" style="width: 90%; max-height: 70vh; overflow-y: auto; margin-top: 20px; padding-bottom: 50px;"></div>
         </div>
     </section>
 
@@ -105,10 +143,23 @@
     <div id="sidebar" class="sidebar">
         <div class="sidebar-header">PROFILE_DATA</div>
         <div class="old-profile-style">
+            <button class="btn-profile-expand" onclick="toggleProfileModal()">VIEW_DOSSIER</button>
             <p>NAME: <span id="p-name">---</span></p>
             <p>LEVEL: <span id="p-lvl">---</span></p>
         </div>
-        <button class="btn-ui-logout" onclick="logout()">LOGOUT</button>
+        <button class="btn-ui-logout-stylish" onclick="logout()">LOGOUT</button>
+    </div>
+
+    <div id="scr-profile-modal" class="modal-panel hidden" onclick="closeModalByClick(event, 'scr-profile-modal')">
+        <div class="modal-content-box profile-box">
+            <h3>OPERATOR_DOSSIER</h3>
+            <div class="profile-details">
+                <p>STATUS: ACTIVE</p>
+                <p>RANK: SENIOR_OPERATOR</p>
+                <p>SECTOR: G-01</p>
+            </div>
+            <button class="btn-guest-gray" onclick="toggleProfileModal()">CLOSE</button>
+        </div>
     </div>
 
     <script src="script.js"></script>
