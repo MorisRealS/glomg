@@ -9,9 +9,12 @@ const TelegramBot = require('node-telegram-bot-api');
 const TOKEN = '8117485520:AAF4oGiiFI18knK_VPGu5M0bVBC465lsSzs'; 
 const bot = new TelegramBot(TOKEN, {polling: true});
 
+// Замени на свой ID, чтобы получать уведомления с сайта
+const MY_TELEGRAM_ID = 'ТВОЙ_ID_ЧАТА'; 
+
 let mailBox = {};
 let archiveData = [];
-const userState = {}; // Состояния для пошагового ввода
+const userState = {}; // Для пошагового ввода через кнопки
 
 app.use(express.static(__dirname));
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
@@ -24,21 +27,39 @@ io.on('connection', (socket) => {
         socket.join(user);
         console.log(`[AUTH] Оператор ${user} вошел в систему`);
         
-        // Сразу отправляем накопленные данные
         if (mailBox[user]) socket.emit('load_mail', mailBox[user]);
         socket.emit('init_archive', archiveData);
     });
+
+    // ЛОГИКА ОТПРАВКИ С САЙТА (Пункт 7)
+    socket.on('send_mail_from_web', (data) => {
+        const { to, subj, body, from } = data;
+        const target = to.toLowerCase();
+        const newMsg = { 
+            from: from, 
+            text: `[${subj}] ${body}`, 
+            date: new Date().toLocaleTimeString() 
+        };
+        
+        // 1. Сохраняем в ящик получателя
+        if (!mailBox[target]) mailBox[target] = [];
+        mailBox[target].push(newMsg);
+        
+        // 2. Доставляем в реальном времени на сайт
+        io.to(target).emit('new_mail', newMsg);
+        
+        // 3. Дублируем тебе в Telegram
+        bot.sendMessage(MY_TELEGRAM_ID, `📩 С САЙТА: ${from} -> ${target}\nТема: ${subj}\n\n${body}`);
+    });
 });
 
-// --- НОВАЯ ЛОГИКА: КНОПКИ И СОСТОЯНИЯ ---
+// --- ИНТЕРФЕЙС БОТА (КНОПКИ) ---
 
 bot.on('message', (msg) => {
     const chatId = msg.chat.id;
     const text = msg.text;
-
     if (!text) return;
 
-    // Команда вызова меню (Пункт 1)
     if (text === '/glomg' || text === '/start') {
         delete userState[chatId]; 
         return bot.sendMessage(chatId, "🛠 ПАНЕЛЬ УПРАВЛЕНИЯ G.L.O.M.G.", {
@@ -51,43 +72,37 @@ bot.on('message', (msg) => {
         });
     }
 
-    // Пошаговый ввод для Архива (Пункт 2)
+    // Пошаговый ввод Архива
     if (userState[chatId]) {
         const state = userState[chatId];
-
         if (state.step === 'WAIT_TITLE') {
             state.title = text;
             state.step = 'WAIT_CONTENT';
-            return bot.sendMessage(chatId, `✅ Тема: "${text}"\n\nТеперь введите текст для архива:`);
+            return bot.sendMessage(chatId, `✅ Тема принята. Теперь введи содержимое:`);
         }
-
         if (state.step === 'WAIT_CONTENT') {
             const entry = { title: state.title, content: text, timestamp: new Date().toLocaleString() };
             archiveData.push(entry);
             io.emit('new_archive_data', entry);
             delete userState[chatId];
-            return bot.sendMessage(chatId, `🚀 ЗАПИСЬ ОПУБЛИКОВАНА: ${entry.title}`);
+            return bot.sendMessage(chatId, `🚀 Опубликовано в архиве: ${entry.title}`);
         }
     }
 });
 
-// Обработка кликов по кнопкам
 bot.on('callback_query', (query) => {
     const chatId = query.message.chat.id;
-
     if (query.data === 'btn_add_archive') {
         userState[chatId] = { step: 'WAIT_TITLE' };
-        bot.sendMessage(chatId, "📝 Введите ТЕМУ новой записи:");
+        bot.sendMessage(chatId, "📝 Введите заголовок для архива:");
     }
-
     if (query.data === 'btn_info_mail') {
-        bot.sendMessage(chatId, "📨 Для отправки почты используй:\n`/send [ник] [текст]`");
+        bot.sendMessage(chatId, "📨 Используй команду:\n`/send [ник] [текст]`");
     }
-
     bot.answerCallbackQuery(query.id);
 });
 
-// --- НОВАЯ ЛОГИКА: СИСТЕМНЫЙ ВЕЩАТЕЛЬ (Колокольчик) ---
+// --- КОМАНДЫ (Твой исходный код + Broadcast) ---
 
 bot.onText(/\/broadcast (.+)/, (msg, match) => {
     const text = match[1];
@@ -96,18 +111,13 @@ bot.onText(/\/broadcast (.+)/, (msg, match) => {
         text: `⚠️ ГЛОБАЛЬНОЕ УВЕДОМЛЕНИЕ: ${text}`, 
         date: new Date().toLocaleTimeString() 
     };
-    
-    // Рассылаем всем пользователям (у них на сайте мигнет колокольчик)
     io.emit('new_mail', systemMsg); 
-    bot.sendMessage(msg.chat.id, "📢 Системное сообщение отправлено на все терминалы.");
+    bot.sendMessage(msg.chat.id, "📢 Системное сообщение разослано.");
 });
-
-// --- ТВОЙ ИСХОДНЫЙ КОД (БЕЗ ИЗМЕНЕНИЙ) ---
 
 bot.onText(/\/archive (.+)/, (msg, match) => {
     const rawText = match[1];
     let title, content;
-
     if (rawText.includes('|')) {
         const parts = rawText.split('|');
         title = parts[0].trim();
@@ -116,24 +126,20 @@ bot.onText(/\/archive (.+)/, (msg, match) => {
         title = "LOG_" + Math.floor(Math.random() * 999);
         content = rawText.trim();
     }
-
     const entry = { title, content, timestamp: new Date().toLocaleString() };
     archiveData.push(entry);
-    
     io.emit('new_archive_data', entry);
-    bot.sendMessage(msg.chat.id, `📁 ПРИНЯТО В АРХИВ: ${title}`);
+    bot.sendMessage(msg.chat.id, `📁 ПРИНЯТО: ${title}`);
 });
 
 bot.onText(/\/send (\w+) (.+)/, (msg, match) => {
     const target = match[1].toLowerCase();
     const text = match[2];
     const newMsg = { from: "SYSTEM", text: text, date: new Date().toLocaleTimeString() };
-    
     if (!mailBox[target]) mailBox[target] = [];
     mailBox[target].push(newMsg);
-    
     io.to(target).emit('new_mail', newMsg);
-    bot.sendMessage(msg.chat.id, `✉️ Сообщение для ${target} отправлено.`);
+    bot.sendMessage(msg.chat.id, `✉️ Отправлено пользователю ${target}`);
 });
 
 const PORT = process.env.PORT || 3000;
