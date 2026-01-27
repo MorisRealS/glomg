@@ -131,19 +131,18 @@ function initDashboard() {
 function toggleSidebar(open) {
     const sb = document.getElementById('sidebar');
     const overlay = document.getElementById('side-overlay');
-    const mainContent = document.getElementById('scr-dash');
+    const dash = document.getElementById('scr-dash');
 
     if (open) {
         sb.classList.add('open');
-        overlay.classList.add('open');
-        mainContent.classList.add('blurred'); // Размытие фона
+        overlay.classList.add('active'); // Включаем видимость фона
+        if (dash) dash.classList.add('blurred'); // Блюрим кабинет
     } else {
         sb.classList.remove('open');
-        overlay.classList.remove('open');
-        mainContent.classList.remove('blurred');
+        overlay.classList.remove('active'); // Выключаем фон
+        if (dash) dash.classList.remove('blurred'); // Убираем блюр
     }
 }
-
 // Обнови функцию closeAllPanels, чтобы она убирала размытие
 function closeAllPanels() {
     toggleSidebar(false);
