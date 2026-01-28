@@ -2,40 +2,71 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>G.L.O.M.G. | CORE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G.L.O.M.G. | CORE INTERFACE</title>
     <link rel="stylesheet" href="style.css">
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <body oncontextmenu="return false;">
-    <div id="fade-overlay"></div>
-    <div id="side-overlay" onclick="closeAllPanels()"></div>
 
-   <section id="scr-login" class="screen">
+    <div id="fade-overlay"></div>
+    <div id="side-overlay" onclick="toggleSidebar(false)"></div>
+
+    <section id="scr-login" class="screen">
+        <div class="vhs-overlay"></div>
         <div class="login-frame">
-            <h1 class="glitch" data-text="G.L.O.M.G.">G.L.O.M.G.</h1>
+            <div class="auth-header">
+                <h1 class="glitch" data-text="G.L.O.M.G.">G.L.O.M.G.</h1>
+                <div class="auth-line"></div>
+                <span class="auth-subtitle">SECURE_TERMINAL_ACCESS_v8.8.2</span>
+            </div>
             
             <div class="auth-inputs">
                 <div class="input-group">
                     <span class="prompt">USER_ID:></span>
-                    <input type="text" id="login-id" autocomplete="off">
+                    <input type="text" id="login-id" autocomplete="off" placeholder="Введите ник...">
                 </div>
                 <div class="input-group">
-                    <span class="prompt">PASSWORD:></span>
-                    <input type="password" id="login-pass">
+                    <span class="prompt">PASS_KEY:></span>
+                    <input type="password" id="login-pass" placeholder="****">
                 </div>
             </div>
 
             <div class="login-btns">
-                <button class="main-auth-btn" onclick="handleAuth()">AUTHORIZE_SYSTEM</button>
-                
-                <button class="guest-btn-small" onclick="goTo('scr-guest')">GUEST_LOGIN</button>
+                <button class="main-auth-btn" onclick="handleAuth()">INITIATE_AUTH</button>
+                <button class="guest-btn-small" onclick="goTo('scr-guest')">GUEST_ACCESS</button>
+            </div>
+            
+            <div class="auth-footer-decor">
+                <span>ESTABLISHING CONNECTION...</span>
+                <span class="blink-text">READY</span>
             </div>
         </div>
     </section>
 
- <section id="scr-guest" class="screen hidden">
-        <div class="vhs-overlay"></div> <header class="guest-nav">
-            <button onclick="location.reload()">[ ВЕРНУТЬСЯ ]</button>
+    <div id="boot-loader" style="display:none;">
+        <div id="boot-stage-logo" class="boot-stage active">
+            <pre id="ascii-logo">
+ ██████╗ ██╗      ██████╗ ███╗   ███╗ ██████╗ 
+██╔════╝ ██║     ██╔════╝ ████╗ ████║██╔════╝ 
+██║  ███╗██║     ██║  ███╗██╔████╔██║██║  ███╗ 
+██║   ██║██║     ██║   ██║██║╚██╔╝██║██║   ██║ 
+╚██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║╚██████╔╝ 
+ ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ 
+            </pre>
+            <div class="loading-bar-container">
+                <div class="loading-bar-fill"></div>
+            </div>
+        </div>
+        <div id="boot-stage-terminal" class="boot-stage">
+            <div id="boot-text-full"></div>
+        </div>
+    </div>
+
+    <section id="scr-guest" class="screen hidden">
+        <div class="vhs-overlay"></div>
+        <header class="guest-nav">
+            <button class="back-btn" onclick="location.reload()">[ ВЕРНУТЬСЯ ]</button>
             <div class="clock-val">00:00:00</div>
         </header>
 
@@ -49,23 +80,147 @@
                 <div class="guest-card card-left">
                     <h3>[ НОВОСТИ ]</h3>
                     <div class="card-body">
-                        <p>> Доступно обновление протокола v3.2</p>
+                        <p>> Доступно обновление протокола v4.0</p>
                         <p>> Связь с сектором 7 установлена.</p>
-                        <p>> Обнаружены попытки несанкционированного входа.</p>
+                        <p>> Обнаружены попытки входа в сектор ONG.</p>
                     </div>
                 </div>
 
                 <div class="guest-card card-right">
                     <h3>[ О НАС ]</h3>
                     <div class="card-body">
-                        <p>G.L.O.M.G. — это автономная сеть мониторинга данных. Мы обеспечиваем безопасность и архивное хранение информации в условиях тотальной цифровой изоляции.</p>
+                        <p>G.L.O.M.G. — это автономная сеть мониторинга. Мы обеспечиваем безопасность данных в условиях цифровой изоляции.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-<div id="side-overlay" onclick="toggleSidebar(false)"></div>
+    <section id="scr-dash" class="screen hidden">
+        <div class="vhs-overlay"></div>
+        <header class="dash-header">
+            <button class="menu-trigger" onclick="toggleSidebar(true)">MENU</button>
+            <div class="clock-val">00:00:00</div>
+            <div class="core-status">CORE: <span class="green-text">ONLINE</span></div>
+        </header>
+
+        <div class="dash-content-wrapper">
+            <div class="glomg-logo-mini">G.L.O.M.G.</div>
+            <h2 class="welcome-title">WELCOME, <span id="op-name">---</span></h2>
+            
+            <div class="nav-container">
+                <div class="dash-grid">
+                    <button class="mega-btn" onclick="goTo('scr-map')">ТАКТИЧЕСКИЙ РАДАР</button>
+                    <button class="mega-btn" onclick="goTo('scr-system')">СИСТЕМА</button>
+                    <button class="mega-btn" onclick="goTo('scr-archive')">АРХИВ</button>
+                </div>
+                <button class="msg-trigger" onclick="toggleMessages()">
+                    <img src="free-icon-email-2139076.png" style="width:40px; filter:invert(1);">
+                    <span class="msg-badge">1</span>
+                </button>
+            </div>
+
+            <div id="sys-messages" class="msg-dropdown hidden">
+                <div class="msg-item">
+                    <div class="msg-header">SYSTEM | ОБНОВЛЕНИЕ 4.0</div>
+                    <div class="msg-body">Система переведена на протоколы зашифрованной связи ONG.</div>
+                </div>
+            </div>
+
+            <div class="gradient-line scanner-line"></div>
+            
+            <div class="staff-briefing">
+                <h3>ИНСТРУКТАЖ ПЕРСОНАЛА</h3>
+                <p>Добро пожаловать в систему G.L.O.M.G. Ваша роль критически важна для стабильности Official Nation Group (ONG). Используйте "Радар" для мониторинга внешних угроз, "Систему" для отслеживания ресурсов ядра и "Архив" для работы с зашифрованными данными.</p>
+            </div>
+
+            <div class="ai-fixed-container">
+                <p id="dash-ai-text" class="purple-typed"></p>
+            </div>
+        </div>
+    </section>
+
+    <section id="scr-map" class="screen hidden">
+        <header class="screen-header">
+            <button class="back-btn" onclick="goTo('scr-dash')"> < BACK_TO_CORE </button>
+            <div class="screen-title">TACTICAL_RADAR_v4.0</div>
+        </header>
+
+        <div class="map-viewport">
+            <div class="radar-grid"></div>
+            <div class="radar-sweep"></div> 
+            
+            <div class="radar-point p-cyan" style="top: 30%; left: 40%;" onclick="showPoint('bunker')"></div>
+            <div class="radar-point p-purple" style="top: 60%; left: 75%;" onclick="showPoint('lab')"></div>
+            <div class="radar-point p-red" style="top: 25%; left: 65%;" onclick="showPoint('reactor')"></div>
+        </div>
+
+        <div class="gradient-line scanner-line"></div>
+        <div id="point-info" class="point-details-box">
+            <p class="blink-text">ОЖИДАНИЕ ВЫБОРА ОБЪЕКТА НА РАДАРЕ...</p>
+        </div>
+    </section>
+
+    <section id="scr-system" class="screen hidden">
+        <header class="screen-header">
+            <button class="back-btn" onclick="goTo('scr-dash')"> < BACK_TO_CORE </button>
+            <div class="screen-title">CORE_SYSTEM_MONITOR</div>
+        </header>
+
+        <div class="system-container">
+            <div class="status-plate-big">СИСТЕМА В ШТАТНОМ РЕЖИМЕ</div>
+            
+            <div class="sensor-grid">
+                <div class="sensor-card">
+                    <div class="sensor-label">ТЕМПЕРАТУРА ЯДРА</div>
+                    <div class="sensor-value"><span id="val-temp">42.0</span>°C</div>
+                </div>
+                <div class="sensor-card">
+                    <div class="sensor-label">ЗАГРУЗКА ЦП</div>
+                    <div class="sensor-value"><span id="val-cpu">18.4</span>%</div>
+                </div>
+                <div class="sensor-card">
+                    <div class="sensor-label">ПАМЯТЬ</div>
+                    <div class="sensor-value"><span id="val-ram">31.2</span>%</div>
+                </div>
+                <div class="sensor-card">
+                    <div class="sensor-label">СТАБИЛЬНОСТЬ</div>
+                    <div class="sensor-value"><span id="val-stab">99.9</span>%</div>
+                </div>
+            </div>
+            
+            <div class="system-logs-footer">
+                <p>> Пакеты данных ONG_PROTOCOL_X отправлены...</p>
+                <p>> Ошибок синхронизации не обнаружено.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="scr-archive" class="screen hidden">
+        <header class="screen-header">
+            <button class="back-btn" onclick="goTo('scr-dash')"> < BACK_TO_CORE </button>
+            <div class="screen-title">ENCRYPTED_ARCHIVES</div>
+        </header>
+
+        <div class="archive-layout">
+            <aside class="archive-sidebar">
+                <div class="archive-group">НАУЧНЫЙ ОТДЕЛ</div>
+                <div class="archive-file-link" onclick="loadDoc('echo')">ОБЪЕКТ "ЭХО"</div>
+                <div class="archive-file-link" onclick="loadDoc('ong_01')">ОТЧЕТ ONG_LEVEL_1</div>
+                
+                <div class="archive-group" style="margin-top:20px">ТАКТИЧЕСКИЙ СЕКТОР</div>
+                <div class="archive-file-link" onclick="loadDoc('classified')">CLASSIFIED [L5]</div>
+            </aside>
+
+            <main class="archive-viewer">
+                <div id="doc-title" class="viewer-header">DATABASE_MODULES</div>
+                <div class="auth-line"></div>
+                <div id="doc-body" class="viewer-content">
+                    ВЫБЕРИТЕ ФАЙЛ ДЛЯ ДЕШИФРОВКИ...
+                </div>
+            </main>
+        </div>
+    </section>
 
     <div id="sidebar" class="sidebar">
         <div class="sb-header">CORE_MENU</div>
@@ -75,238 +230,20 @@
         </nav>
     </div>
 
-    <section id="scr-dash" class="screen hidden">
-        <div class="vhs-overlay"></div>
-        
-        <header class="dash-header">
-            <button class="menu-trigger" onclick="toggleSidebar(true)">MENU</button>
-            <div class="clock-val">00:00:00</div>
-            <div class="core-status">CORE: <span class="green-text">ONLINE</span></div>
-        </header>
-
-        <div class="dash-main">
-            <h2 class="welcome-title">WELCOME, <span id="op-name">---</span></h2>
-            
-           <div class="dash-grid">
-    <button class="mega-btn" onclick="goTo('scr-map')">ТАКТИЧЕСКИЙ РАДАР</button>
-    <button class="mega-btn" onclick="goTo('scr-system')">СИСТЕМА</button>
-    <button class="mega-btn" onclick="goTo('scr-archive')">АРХИВ</button>
-</div>
-
-            <div class="gradient-line"></div>
-
-            <div class="ai-fixed-container">
-                <p id="dash-ai-text" class="purple-typed"></p>
-            </div>
-        </div>
-    </section>
-
-<div id="boot-loader">
-    <div id="boot-stage-logo" class="boot-stage active">
-        <pre id="ascii-logo">
- ██████╗ ██╗      ██████╗ ███╗   ███╗ ██████╗ 
-██╔════╝ ██║     ██╔════╝ ████╗ ████║██╔════╝ 
-██║  ███╗██║     ██║  ███╗██╔████╔██║██║  ███╗ 
-██║   ██║██║     ██║   ██║██║╚██╔╝██║██║   ██║ 
-╚██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║╚██████╔╝ 
- ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ 
-        </pre>
-    </div>
-    <div id="boot-stage-terminal" class="boot-stage">
-        <div id="boot-text-full"></div>
-    </div>
-</div>
-
-<div id="side-overlay" onclick="toggleSidebar(false)"></div>
-<div id="sidebar" class="sidebar">
-    <div class="sb-header">CORE_MENU</div>
-    <nav class="sb-nav">
-    <button class="sb-btn" onclick="openProfile()">ЛИЧНОЕ ДОСЬЕ</button>
-    <button class="sb-btn" onclick="goTo('scr-settings')">НАСТРОЙКИ</button>
-    <div class="sb-divider"></div>
-    <button class="sb-btn logout-special" onclick="location.reload()">LOGOUT</button>
-</nav>
-</div>
-
-<section id="scr-login" class="screen">
-    <div class="vhs-overlay"></div>
-    <div class="login-frame">
-        <div class="auth-header">
-            <span class="auth-title">SYSTEM_LOGIN | G.L.O.M.G.</span>
-            <div class="auth-line"></div>
-        </div>
-        <div class="auth-inputs">
-            <div class="input-group">
-                <span class="prompt">USER_ID</span>
-                <input type="text" id="login-id" autocomplete="off" placeholder="_">
-            </div>
-            <div class="input-group">
-                <span class="prompt">PASS_KEY</span>
-                <input type="password" id="login-pass" placeholder="_">
-            </div>
-        </div>
-        <div class="login-btns">
-            <button class="main-auth-btn" onclick="handleAuth()">INITIATE_AUTH</button>
-            <button class="guest-btn-small" onclick="goTo('scr-guest')">GUEST_ACCESS</button>
-        </div>
-    </div>
-</section>
-
-<section id="scr-dash" class="screen hidden">
-    <div class="vhs-overlay"></div>
-    <header class="dash-header">
-        <button class="menu-trigger" onclick="toggleSidebar(true)">MENU</button>
-        <div class="core-status">CORE: <span class="green-text">ONLINE</span></div>
-    </header>
-
-    <div class="dash-content-wrapper">
-        <div class="glomg-logo-mini">G.L.O.M.G.</div>
-        <h2 class="welcome-title">WELCOME, <span id="op-name">---</span></h2>
-        
-        <div class="nav-container">
-            <div class="dash-grid">
-                <button class="mega-btn" onclick="goTo('scr-map')">ТАКТИЧЕСКИЙ РАДАР</button>
-                <button class="mega-btn" onclick="goTo('scr-system')">СИСТЕМА</button>
-                <button class="mega-btn" onclick="goTo('scr-archive')">АРХИВ</button>
-            </div>
-            <button class="msg-trigger" onclick="toggleMessages()">
-                <img src="free-icon-email-2139076.png" style="width:40px; filter:invert(1);">
-            </button>
-        </div>
-
-        <div class="gradient-line scanner-line"></div>
-        
-        <div class="staff-briefing">
-            <h3>ИНСТРУКТАЖ ПЕРСОНАЛА</h3>
-            <p>Добро пожаловать в систему G.L.O.M.G. Ваша роль критически важна для стабильности Official Nation Group (ONG). Используйте "Радар" для мониторинга внешних угроз, "Систему" для отслеживания ресурсов ядра и "Архив" для работы с зашифрованными данными.</p>
-        </div>
-    </div>
-</section>
-
     <div id="modal-profile" class="modal-overlay" onclick="closeProfileOutside(event)">
-    <div class="profile-card" id="profile-card">
-        <div class="profile-header">
-            <div class="user-avatar">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                </svg>
+        <div class="profile-card" id="profile-card">
+            <div class="profile-header">
+                <h2 id="prof-nick">OPERATOR</h2>
+                <div class="status-badge">LEVEL: <span id="prof-rank">4</span></div>
             </div>
-            <h2 id="prof-nick">OPERATOR</h2>
-            <div class="status-badge">G.L.O.M.G. DATA TERMINAL</div>
-        </div>
-
-        <div class="profile-details">
-            <div class="detail-item">
-                <span class="label">UUID:</span>
-                <span class="value" id="prof-uuid">G-0000-ONG</span>
+            <div class="profile-details">
+                <p>UUID: <span id="prof-uuid">---</span></p>
+                <p>DIVISION: <span id="prof-div">ONG_UNIT</span></p>
             </div>
-            <div class="detail-item">
-                <span class="label">RANK:</span>
-                <span class="value" id="prof-rank">OPERATIVE</span>
-            </div>
-            <div class="detail-item">
-                <span class="label">ENLISTED:</span>
-                <span class="value" id="prof-date">28.01.2026</span>
-            </div>
-            <div class="detail-item">
-                <span class="label">DIVISION:</span>
-                <span class="value" id="prof-div">ONG</span>
-            </div>
-        </div>
-        
-        <div class="profile-footer">
-            <div class="footer-line"></div>
-            <p>ACCESS LEVEL: MAJOR GROUP ONLY</p>
+            <button class="back-btn" style="width:100%; margin-top:20px" onclick="closeProfile()">CLOSE</button>
         </div>
     </div>
-</div>
 
-    <section id="scr-map" class="screen hidden">
-    <header class="screen-header">
-        <button class="back-btn" onclick="goTo('scr-dash')"> < BACK_TO_CORE </button>
-        <div class="screen-title">TACTICAL_RADAR_v4.0</div>
-    </header>
-
-    <div class="map-viewport">
-    <div class="radar-grid"></div>
-    <div class="radar-sweep"></div> 
-    
-    <div class="radar-point p-cyan" style="top: 30%; left: 40%;" onclick="showPoint('bunker')"></div>
-    <div class="radar-point p-purple" style="top: 60%; left: 75%;" onclick="showPoint('lab')"></div>
-    <div class="radar-point p-red" style="top: 25%; left: 65%;" onclick="showPoint('reactor')"></div>
-</div>
-
-<div class="gradient-line scanner-line"></div>
-    
-<div id="point-info" class="point-details-box">
-    <p class="blink-text">ОЖИДАНИЕ ВЫБОРА ОБЪЕКТА НА РАДАРЕ...</p>
-</div>
-
-<section id="scr-system" class="screen hidden">
-    <header class="screen-header">
-        <button class="back-btn" onclick="goTo('scr-dash')"> < BACK_TO_CORE </button>
-        <div class="screen-title">CORE_SYSTEM_MONITOR</div>
-    </header>
-
-    <div class="system-container">
-        <div class="status-plate-big">СИСТЕМА В ШТАТНОМ РЕЖИМЕ</div>
-        
-        <div class="system-info-text">
-            <p>Центральный узел G.L.O.M.G. оперирует в режиме повышенной безопасности. Все протоколы шифрования ONG активны. Проверка целостности данных завершена на 99.8%.</p>
-        </div>
-
-        <div class="sensor-grid">
-            <div class="sensor-card">
-                <div class="sensor-label">ТЕМПЕРАТУРА ЯДРА</div>
-                <div class="sensor-value"><span id="val-temp">42.0</span>°C</div>
-            </div>
-            <div class="sensor-card">
-                <div class="sensor-label">ЗАГРУЗКА ЦП</div>
-                <div class="sensor-value"><span id="val-cpu">18.4</span>%</div>
-            </div>
-            <div class="sensor-card">
-                <div class="sensor-label">ПАМЯТЬ</div>
-                <div class="sensor-value"><span id="val-ram">31.2</span>%</div>
-            </div>
-            <div class="sensor-card">
-                <div class="sensor-label">СТАБИЛЬНОСТЬ</div>
-                <div class="sensor-value"><span id="val-stab">99.9</span>%</div>
-            </div>
-        </div>
-        
-        <div class="system-logs-footer">
-            <p>> Пакеты данных ONG_PROTOCOL_X отправлены...</p>
-            <p>> Ошибок синхронизации не обнаружено.</p>
-        </div>
-    </div>
-</section>
-
-<section id="scr-archive" class="screen hidden">
-    <header class="screen-header">
-        <button class="back-btn" onclick="goTo('scr-dash')"> < BACK_TO_CORE </button>
-        <div class="screen-title">ENCRYPTED_ARCHIVES</div>
-    </header>
-
-    <div class="archive-layout">
-        <aside class="archive-sidebar">
-            <div class="archive-group">НАУЧНЫЙ ОТДЕЛ</div>
-            <div class="archive-file-link" onclick="loadDoc('echo')">ОБЪЕКТ "ЭХО"</div>
-            <div class="archive-file-link" onclick="loadDoc('ong_01')">ОТЧЕТ ONG_LEVEL_1</div>
-            
-            <div class="archive-group" style="margin-top:20px">ТАКТИЧЕСКИЙ СЕКТОР</div>
-            <div class="archive-file-link" onclick="loadDoc('classified')">CLASSIFIED [L5]</div>
-        </aside>
-
-        <main class="archive-viewer">
-            <div id="doc-title" class="viewer-header">DATABASE_MODULES</div>
-            <div class="auth-line"></div>
-            <div id="doc-body" class="viewer-content">
-                ВЫБЕРИТЕ ФАЙЛ ДЛЯ ДЕШИФРОВКИ...
-            </div>
-        </main>
-    </div>
-</section>
-    
     <script src="script.js"></script>
 </body>
 </html>
