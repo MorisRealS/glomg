@@ -159,18 +159,38 @@
         <div class="clock-val">00:00:00</div>
         <div class="core-status">CORE: <span class="green-text">ONLINE</span></div>
     </header>
-    <div class="dash-main">
-        <h2 class="welcome-title">WELCOME, <span id="op-name">---</span></h2>
+   <div class="dash-main">
+    <div class="glomg-logo-mini">G.L.O.M.G.</div>
+    
+    <h2 class="welcome-title">WELCOME, <span id="op-name">---</span></h2>
+
+    <div class="nav-container">
         <div class="dash-grid">
             <button class="mega-btn" onclick="goTo('scr-map')">ТАКТИЧЕСКИЙ РАДАР</button>
-            <button class="mega-btn" onclick="openProfile()">ЛИЧНОЕ ПРОФИЛЬ</button>
-            <button class="mega-btn" onclick="goTo('scr-settings')">НАСТРОЙКИ</button>
+            <button class="mega-btn" onclick="goTo('scr-system')">СИСТЕМА</button>
+            <button class="mega-btn" onclick="goTo('scr-archive')">АРХИВ</button>
         </div>
-        <div class="gradient-line"></div>
-        <div class="ai-fixed-container">
-            <p id="dash-ai-text" class="purple-typed"></p>
+        <button class="msg-trigger" onclick="toggleMessages()">
+            <img src="free-icon-email-2139076.png" alt="Mail">
+        </button>
+    </div>
+
+    <div id="sys-messages" class="msg-dropdown hidden">
+        <div class="msg-item" onclick="expandMsg(this)">
+            <div class="msg-header">SYSTEM | ОБНОВЛЕНИЕ ЯДРА 4.0</div>
+            <div class="msg-body">Система G.L.O.M.G. переведена на протоколы зашифрованной связи с ONG серверами.</div>
         </div>
     </div>
+
+    <div class="gradient-line scanner-line"></div>
+
+    <div class="staff-briefing">
+        <h3>ИНСТРУКТАЖ ПЕРСОНАЛА</h3>
+        <p>G.L.O.M.G. (Global Laboratory Of Major Group) — это центральный узел управления данными. 
+           Ваша текущая должность предполагает строгое соблюдение регламента ONG.</p>
+        <p><strong>Навигация:</strong> Радар — для мониторинга объектов; Система — для контроля ресурсов; Архив — для логов.</p>
+    </div>
+</div>
 </section>
 
     <div id="modal-profile" class="modal-overlay" onclick="closeProfileOutside(event)">
