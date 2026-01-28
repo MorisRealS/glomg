@@ -13,13 +13,17 @@ const socket = io();
 
 // [JS_ID: CORE_LOGIC]
 function goTo(screenId) {
-    const fade = document.getElementById('fade-overlay');
-    fade.classList.add('active');
-    setTimeout(() => {
-        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-        document.getElementById(screenId).classList.remove('hidden');
-        fade.classList.remove('active');
-    }, 500);
+    // Скрываем все экраны
+    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+    // Показываем нужный
+    const target = document.getElementById(screenId);
+    if (target) {
+        target.classList.remove('hidden');
+    } else {
+        console.error("G.L.O.M.G. Error: Screen not found - " + screenId);
+    }
+    // Закрываем меню если было открыто
+    toggleSidebar(false);
 }
 
 function typeText(text, id, delay = 0) {
