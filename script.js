@@ -156,6 +156,80 @@ function toggleSidebar(open) {
     }
 }
 
+window.onload = function() {
+    const bootContainer = document.getElementById('boot-loader');
+    const bootText = document.getElementById('boot-text');
+    const bootLogo = document.getElementById('boot-logo');
+    
+    const lines = [
+        "G.L.O.M.G. CORE_OS [BUILD 8.8.2.0]",
+        "GLOBAL LABORATORY OF MAJOR GROUP",
+        "CONNECTING TO: ONG_NETWORK... OK",
+        "ERROR: SYNAPTIC_DATABASE_CORRUPTION",
+        "WARNING: SECURITY_PROTOCOL_ACTIVE",
+        "G.L.O.M.G. READY. SYSTEMS: NOMINAL"
+    ];
+
+    let lineIndex = 0;
+
+    function typeLine(text, container, callback) {
+        let charIndex = 0;
+        let lineDiv = document.createElement('div');
+        if (text.includes('ERROR')) lineDiv.className = 'text-red';
+        else if (text.includes('WARNING')) lineDiv.className = 'text-yellow';
+        else if (text.includes('G.L.O.M.G.')) lineDiv.className = 'text-purple';
+        container.appendChild(lineDiv);
+
+        function charStep() {
+            if (charIndex < text.length) {
+                lineDiv.innerHTML += text[charIndex];
+                charIndex++;
+                setTimeout(charStep, 20);
+            } else {
+                callback();
+            }
+        }
+        charStep();
+    }
+
+    function startBoot() {
+        if (lineIndex < lines.length) {
+            typeLine(`> ${lines[lineIndex]}`, bootText, () => {
+                lineIndex++;
+                setTimeout(startBoot, 200);
+            });
+        } else {
+            setTimeout(() => {
+                bootContainer.style.opacity = "0";
+                setTimeout(() => bootContainer.style.display = "none", 1000);
+            }, 1000);
+        }
+    }
+
+    setTimeout(() => {
+        bootLogo.style.opacity = "1";
+        bootLogo.classList.add('animate-glitch');
+        setTimeout(startBoot, 1000);
+    }, 500);
+};
+
+function toggleSidebar(open) {
+    const sb = document.getElementById('sidebar');
+    const overlay = document.getElementById('side-overlay');
+    const dash = document.getElementById('scr-dash');
+    if (open) {
+        sb.classList.add('open');
+        overlay.classList.add('active');
+        if (dash) dash.classList.add('blurred');
+    } else {
+        sb.classList.remove('open');
+        overlay.classList.remove('active');
+        if (dash) dash.classList.remove('blurred');
+    }
+}
+
+// Добавь сюда свои функции handleAuth() и initDashboard()
+
 // Сюда будем добавлять функции для Почты, Радара и т.д.
 
 // [/JS_ID: NEW_FUNCTIONS_ZONE]
