@@ -89,8 +89,8 @@
             
             <div class="dash-grid">
                 <button class="mega-btn" onclick="goTo('scr-map')">ТАКТИЧЕСКИЙ РАДАР</button>
-                <button class="mega-btn" onclick="goTo('scr-profile')">ЛИЧНЫЙ ПРОФИЛЬ</button>
-                <button class="mega-btn" onclick="goTo('scr-settings')">НАСТРОЙКИ</button>
+                <button class="mega-btn" onclick="goTo('scr-profile')">СИСТЕМА</button>
+                <button class="mega-btn" onclick="goTo('scr-settings')">АРХИВНАЯ</button>
             </div>
 
             <div class="gradient-line"></div>
@@ -121,9 +121,11 @@
 <div id="sidebar" class="sidebar">
     <div class="sb-header">CORE_MENU</div>
     <nav class="sb-nav">
-        <button class="sb-btn" onclick="openProfile()">ЛИЧНОЕ ДОСЬЕ</button>
-        <button class="sb-btn logout-special" onclick="location.reload()">LOGOUT</button>
-    </nav>
+    <button class="sb-btn" onclick="openProfile()">ЛИЧНОЕ ДОСЬЕ</button>
+    <button class="sb-btn" onclick="goTo('scr-settings')">НАСТРОЙКИ</button>
+    <div class="sb-divider"></div>
+    <button class="sb-btn logout-special" onclick="location.reload()">LOGOUT</button>
+</nav>
 </div>
 
 <section id="scr-login" class="screen">
