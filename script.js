@@ -315,6 +315,23 @@ function showPoint(id) {
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
 
+function updateSensors() {
+    const sensors = {
+        temp: { el: 'val-temp', base: 40, var: 5 },
+        cpu: { el: 'val-cpu', base: 20, var: 15 },
+        ram: { el: 'val-ram', base: 45, var: 3 },
+        stab: { el: 'val-stab', base: 99, var: 0.5 }
+    };
+
+    for (let key in sensors) {
+        let change = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * sensors[key].var);
+        let newVal = (sensors[key].base + change).toFixed(1);
+        document.getElementById(sensors[key].el).innerText = newVal;
+    }
+    setTimeout(updateSensors, 1500);
+}
+updateSensors();
+
 // Добавь сюда свои функции handleAuth() и initDashboard()
 
 // Сюда будем добавлять функции для Почты, Радара и т.д.
