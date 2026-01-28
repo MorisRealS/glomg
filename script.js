@@ -6,6 +6,21 @@ const PROFILES = {
     "dykzxz":    { name: "Dykzxz", pass: "0000", lvl: 4, uuid: "X-202-GLOMG" },
     "shmegh1":   { name: "shmegh1", pass: "0000", lvl: 4, uuid: "X-203-GLOMG" }
 };
+
+const accessLevels = {
+    "morisreal": 6,
+    "sumber": 5,
+    "msk4ne_": 4,
+    "dykzxz": 4,
+    "shmegh1": 4
+};
+
+function checkAccess(user) {
+    const level = accessLevels[user.toLowerCase()] || 1;
+    localStorage.setItem('accessLevel', level);
+    // В архиве можно скрывать папки, если уровень ниже нужного
+    if(level < 4) document.querySelector('.tactical-sector').style.display = 'none';
+}
 // [/JS_ID: PROFILES_DATA]
 
 let currentUser = null;
