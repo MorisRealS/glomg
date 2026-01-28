@@ -28,17 +28,18 @@ const socket = io();
 
 // [JS_ID: CORE_LOGIC]
 function goTo(screenId) {
-    // Скрываем все экраны
-    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-    // Показываем нужный
+    // Скрываем все окна
+    document.querySelectorAll('.screen').forEach(s => {
+        s.classList.add('hidden');
+    });
+    
+    // Показываем целевое
     const target = document.getElementById(screenId);
     if (target) {
         target.classList.remove('hidden');
-    } else {
-        console.error("G.L.O.M.G. Error: Screen not found - " + screenId);
+        // Принудительная прокрутка вверх при входе
+        target.scrollTop = 0;
     }
-    // Закрываем меню если было открыто
-    toggleSidebar(false);
 }
 
 function typeText(text, id, delay = 0) {
@@ -346,6 +347,26 @@ function updateSensors() {
     setTimeout(updateSensors, 1500);
 }
 updateSensors();
+
+function loadDoc(type) {
+    const title = document.getElementById('doc-title');
+    const body = document.getElementById('doc-body');
+    
+    if(type === 'echo') {
+        title.innerText = 'АРХИВ НИД: ОБЪЕКТ "ЭХО"';
+        body.innerText = 'АКУСТИЧЕСКАЯ АНОМАЛИЯ. ТРЕБУЕТСЯ УРОВЕНЬ 2 ДЛЯ РАСШИФРОВКИ ЛОГОВ.';
+    }
+    // Добавь другие условия для отчетов
+}
+
+function updateBriefing(name) {
+    const briefing = document.querySelector('.staff-briefing p');
+    if (name.toLowerCase() === 'sumber') {
+        briefing.innerHTML = "<strong>СТАТУС: АДМИНИСТРАТОР P.R.I.S.M.</strong> Ваша задача — полный контроль за распределением энергии реактора.";
+    } else {
+        briefing.innerHTML = "<strong>СТАТУС: СОТРУДНИК ONG.</strong> Используйте терминал для мониторинга закрепленных за вами объектов.";
+    }
+}
 
 // Добавь сюда свои функции handleAuth() и initDashboard()
 
