@@ -162,46 +162,91 @@ window.onload = function() {
     const terminal = document.getElementById('boot-stage-terminal');
     const termText = document.getElementById('boot-text-full');
 
+    // 30 строк в стиле Major Group / G.L.O.M.G.
     const logs = [
-        "G.L.O.M.G. CORE_OS [BUILD 8.8.2.0]",
-        "GLOBAL LABORATORY OF MAJOR GROUP",
-        "CONNECTING TO: ONG_NETWORK... OK",
-        "ERROR: SYNAPTIC_DATABASE_CORRUPTION_SECTOR_7",
-        "WARNING: ACCESS_RESTRICTED_BY_MAJOR_GROUP",
-        "LOADING_CRYPTO_PROTOCOLS... DONE",
-        "SYSTEM_READY_FOR_AUTHENTICATION."
+        "INITIALIZING G.L.O.M.G. CORE v8.8.2...",
+        "LOADING BIOS... OK",
+        "DETECTING ONG_NETWORK_ADAPTER... CONNECTED",
+        "SCANNING SYSTEM MEMORY... 64GB OK",
+        "ERROR: UNKNOWN_SECTOR_FOUND [0xAA12]",
+        "REPAIRING... 10%.. 45%.. 100%",
+        "LOADING KERNEL MODULES...",
+        "GLOBAL_LABORATORY_OF_MAJOR_GROUP_PROTOCOL_X1",
+        "ESTABLISHING SECURE_CONNECTION... SUCCESS",
+        "ACCESSING_ONG_DATA_CENTERS...",
+        "MOUNTING_VIRTUAL_DRIVE_Z:/",
+        "DECRYPTING_NEURAL_INTERFACE...",
+        "WARNING: LATENCY_DETECTED_IN_SYNAPTIC_LINK",
+        "STABILIZING_VOLTAGE... OK",
+        "LOADING_UI_RESOURCE_PACK_V4",
+        "CHECKING_USER_CREDENTIALS_DATABASE...",
+        "SYNCING_WITH_OFFICIAL_NATION_GROUP_SERVER",
+        "CLEANING_TEMP_BUFFER...",
+        "ERROR: CACHE_MISMATCH_IN_CORE",
+        "AUTOREPAIR_ROUTINE_STARTED...",
+        "SECURITY_LAYER_3_ACTIVE",
+        "BYPASSING_FIREWALL_B12...",
+        "ENABLING_ENCRYPTION_AES_256",
+        "SYSLOG: REMOTE_ACCESS_GRANTED_FOR_ONG",
+        "OPTIMIZING_RENDER_PIPELINE...",
+        "SYSTEM_INTEGRITY: 98.4%",
+        "PREPARING_GUEST_ENVIRONMENT...",
+        "PREPARING_OPERATOR_ENVIRONMENT...",
+        "ALL_SYSTEMS_NOMINAL.",
+        "G.L.O.M.G. CORE READY."
     ];
+
+    // Функция посимвольной печати строки
+    function typeLine(text, callback) {
+        let line = document.createElement('div');
+        if (text.includes('ERROR')) line.className = 'text-red';
+        else if (text.includes('WARNING')) line.className = 'text-yellow';
+        else if (text.includes('G.L.O.M.G.') || text.includes('ONG')) line.className = 'text-purple';
+        
+        termText.appendChild(line);
+        let charIdx = 0;
+        
+        function charStep() {
+            if (charIdx < text.length) {
+                line.innerHTML += text[charIdx];
+                charIdx++;
+                setTimeout(charStep, 10); // Скорость печати букв
+            } else {
+                callback();
+            }
+        }
+        charStep();
+    }
 
     function runTerminal(idx) {
         if (idx < logs.length) {
-            let line = document.createElement('div');
-            if (logs[idx].includes('ERROR')) line.className = 'text-red';
-            else if (logs[idx].includes('WARNING')) line.className = 'text-yellow';
-            else if (logs[idx].includes('G.L.O.M.G.')) line.className = 'text-purple';
-            
-            line.innerHTML = `> ${logs[idx]}`;
-            termText.appendChild(line);
-            setTimeout(() => runTerminal(idx + 1), 120);
+            typeLine(`> ${logs[idx]}`, () => {
+                // Маленькая пауза перед следующей строкой
+                setTimeout(() => runTerminal(idx + 1), 50);
+            });
         } else {
+            // ФИНАЛ: Переход через затемнение
             setTimeout(() => {
-                loader.style.opacity = "0";
-                setTimeout(() => loader.style.display = "none", 1000);
+                loader.classList.add('fade-to-black'); // Плавно чернеет
+                setTimeout(() => {
+                    loader.style.display = "none";
+                }, 1500);
             }, 1000);
         }
     }
 
-    // СЕКВЕНЦИЯ: ЛОГО -> ЗАТЕМНЕНИЕ -> КОНСОЛЬ
+    // ПОСЛЕДОВАТЕЛЬНОСТЬ
     setTimeout(() => {
-        logo.style.opacity = "1";
+        logo.style.opacity = "1"; // Показываем ASCII
         setTimeout(() => {
-            logo.style.opacity = "0";
+            logo.style.opacity = "0"; // Затемняем лого
             setTimeout(() => {
                 logo.classList.remove('active');
                 terminal.classList.add('active');
                 terminal.style.opacity = "1";
-                runTerminal(0);
+                runTerminal(0); // Запуск консоли
             }, 800);
-        }, 2500);
+        }, 3000);
     }, 500);
 };
 
