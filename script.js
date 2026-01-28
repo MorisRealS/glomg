@@ -127,22 +127,6 @@ function initDashboard() {
     const welcomeMsg = `> СИСТЕМА: Авторизация завершена. Оператор ${currentUser.name}, протоколы CORE активны.`;
     typeText(welcomeMsg, 'dash-ai-text', 1000);
 }
-
-function toggleSidebar(open) {
-    const sb = document.getElementById('sidebar');
-    const overlay = document.getElementById('side-overlay');
-    const dash = document.getElementById('scr-dash');
-
-    if (open) {
-        sb.classList.add('open');
-        overlay.classList.add('active'); // Включаем видимость фона
-        if (dash) dash.classList.add('blurred'); // Блюрим кабинет
-    } else {
-        sb.classList.remove('open');
-        overlay.classList.remove('active'); // Выключаем фон
-        if (dash) dash.classList.remove('blurred'); // Убираем блюр
-    }
-}
 // Обнови функцию closeAllPanels, чтобы она убирала размытие
 function closeAllPanels() {
     toggleSidebar(false);
@@ -154,6 +138,22 @@ function initDashboard() {
     document.getElementById('op-name').innerText = currentUser.name;
     const msg = `> СИСТЕМА: Авторизация завершена. Оператор ${currentUser.name}, протоколы CORE активны. Ожидаю указаний...`;
     typeText(msg, 'dash-ai-text', 1000);
+}
+
+function toggleSidebar(open) {
+    const sb = document.getElementById('sidebar');
+    const overlay = document.getElementById('side-overlay');
+    const dash = document.getElementById('scr-dash');
+
+    if (open) {
+        sb.classList.add('open');
+        overlay.classList.add('active');
+        if(dash) dash.classList.add('blurred');
+    } else {
+        sb.classList.remove('open');
+        overlay.classList.remove('active');
+        if(dash) dash.classList.remove('blurred');
+    }
 }
 
 // Сюда будем добавлять функции для Почты, Радара и т.д.
