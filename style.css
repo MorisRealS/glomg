@@ -270,21 +270,68 @@ button:hover { border-color: var(--p-color); color: var(--p-color); }
 }
 
 /* Сайдбар жестко вынесен за левый край экрана */
+/* САЙДБАР: Полное скрытие */
 .sidebar {
     position: fixed;
-    left: -320px; 
+    left: -350px; /* Уводим еще дальше */
     top: 0;
     width: 300px;
-    height: 100%;
-    z-index: 1001;
-    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    /* ... остальные твои стили ... */
+    height: 100vh;
+    background: #08080a;
+    border-right: 1px solid var(--p-color);
+    transition: transform 0.4s ease, left 0.4s ease;
+    z-index: 2000;
+    visibility: hidden; /* Дополнительная защита: его не видно для мыши */
 }
 
 .sidebar.open {
     left: 0;
+    visibility: visible;
 }
 
+/* КНОПКИ: Делаем их широкими и фиксированными */
+.dash-grid {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 40px auto;
+    width: 100%;
+}
+
+.mega-btn {
+    width: 300px; /* Жесткая ширина как на скрине */
+    height: 120px;
+    background: transparent;
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    color: var(--p-color);
+    font-family: inherit;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: 0.3s;
+    flex-shrink: 0; /* Запрещаем кнопкам сжиматься */
+}
+
+.mega-btn:hover {
+    background: var(--p-color);
+    color: #fff;
+    box-shadow: 0 0 25px rgba(168, 85, 247, 0.5);
+}
+
+/* КОНСОЛЬ: Она больше не влияет на кнопки */
+.ai-fixed-container {
+    width: 940px; /* Сумма ширин 3 кнопок + gap */
+    height: 80px;
+    margin: 20px auto;
+    text-align: left;
+    overflow: hidden; /* Текст не вылезет за границы */
+}
+
+.purple-typed {
+    color: var(--p-color);
+    font-size: 1.1em;
+    line-height: 1.4;
+    margin: 0;
+}
 /* Сюда будем вставлять стили Луча, Почты, Сайдбара */
 
 /* [/CSS_ID: NEW_STYLES_ZONE] */
