@@ -539,6 +539,12 @@ button:hover { border-color: var(--p-color); color: var(--p-color); }
 .label { color: #555; font-size: 11px; }
 .value { color: #ddd; font-family: monospace; }
 
+.sb-divider {
+    height: 1px;
+    background: rgba(168, 85, 247, 0.2);
+    margin: 20px 0;
+}
+
 /* Сюда будем вставлять стили Луча, Почты, Сайдбара */
 
 /* [/CSS_ID: NEW_STYLES_ZONE] */
