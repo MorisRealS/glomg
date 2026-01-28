@@ -545,6 +545,26 @@ button:hover { border-color: var(--p-color); color: var(--p-color); }
     margin: 20px 0;
 }
 
+.scanner-line {
+    position: relative;
+    overflow: hidden;
+}
+.scanner-line::after {
+    content: "";
+    position: absolute;
+    top: 0; left: -100px;
+    width: 80px; height: 100%;
+    background: linear-gradient(90deg, transparent, #fff, transparent);
+    animation: scan-ray 4s infinite;
+}
+@keyframes scan-ray {
+    0% { left: -100px; }
+    30% { left: 100%; }
+    100% { left: 100%; }
+}
+.msg-trigger img { width: 35px; filter: invert(1) drop-shadow(0 0 5px var(--p-color)); }
+.glomg-logo-mini { font-size: 2em; font-weight: 900; color: var(--p-color); text-shadow: 0 0 15px var(--p-color); margin-bottom: 10px; }
+
 /* Сюда будем вставлять стили Луча, Почты, Сайдбара */
 
 /* [/CSS_ID: NEW_STYLES_ZONE] */
