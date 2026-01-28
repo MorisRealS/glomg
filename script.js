@@ -1,19 +1,16 @@
-// [JS_ID: PROFILES_DATA]
 const PROFILES = {
-    "morisreal": { name: "MorisReal", pass: "admin", lvl: 6, uuid: "X-882-GLOMG" },
-    "sumber":    { name: "Sumber", pass: "0000", lvl: 5, uuid: "X-104-GLOMG" },
-    "msk4ne_":   { name: "Msk4ne_", pass: "0000", lvl: 4, uuid: "X-201-GLOMG" },
-    "dykzxz":    { name: "Dykzxz", pass: "0000", lvl: 4, uuid: "X-202-GLOMG" },
-    "shmegh1":   { name: "shmegh1", pass: "0000", lvl: 4, uuid: "X-203-GLOMG" }
+    "morisreal": { pass: "admin", lvl: 6, uuid: "X-882-GLOMG" },
+    "sumber":    { pass: "0000", lvl: 5, uuid: "X-104-GLOMG" },
+    "msk4ne_":   { pass: "0000", lvl: 4, uuid: "X-201-GLOMG" },
+    "dykzxz":    { pass: "0000", lvl: 4, uuid: "X-202-GLOMG" },
+    "shmegh1":   { pass: "0000", lvl: 4, uuid: "X-203-GLOMG" }
 };
 
-const accessLevels = {
-    "morisreal": 6,
-    "sumber": 5,
-    "msk4ne_": 4,
-    "dykzxz": 4,
-    "shmegh1": 4
-};
+function startSystemBoot() {
+    const loader = document.getElementById('boot-loader');
+    loader.classList.remove('fade-to-black');
+    // Тут сработает логика, которая у тебя прописана в window.onload
+}
 
 function checkAccess(user) {
     const level = accessLevels[user.toLowerCase()] || 1;
@@ -62,11 +59,43 @@ function closeAllPanels() {
 
 // НОВАЯ ФУНКЦИЯ АВТОРИЗАЦИИ
 function handleAuth() {
-    const input = document.getElementById('user-input'); // Проверь этот ID в HTML!
-    if (!input) {
-        console.error("КРИТИЧЕСКАЯ ОШИБКА: Поле ввода не найдено!");
-        return;
+    // ВАЖНО: Берем ID из твоего HTML
+    const loginInput = document.getElementById('login-id');
+    const passInput = document.getElementById('login-pass');
+    
+    if (!loginInput || !passInput) return;
+
+    const user = loginInput.value.trim().toLowerCase();
+    const pass = passInput.value.trim();
+
+    if (PROFILES[user]) {
+        if (PROFILES[user].pass === pass) {
+            // Сохраняем данные пользователя глобально
+            currentUser = {
+                name: user.toUpperCase(),
+                lvl: PROFILES[user].lvl,
+                uuid: PROFILES[user].uuid
+            };
+            
+            localStorage.setItem('opName', user);
+            
+            // Обновляем текст в кабинете сразу
+            const opDisplay = document.getElementById('op-name');
+            if (opDisplay) opDisplay.innerText = currentUser.name;
+
+            // Запускаем загрузку
+            document.getElementById('scr-login').classList.add('hidden');
+            document.getElementById('boot-loader').style.display = 'block';
+            
+            // Запускаем твою анимацию (она у тебя в window.onload, но вызовем её вручную или через триггер)
+            startSystemBoot(); 
+        } else {
+            alert("ACCESS_DENIED: НЕВЕРНЫЙ ПАРОЛЬ");
+        }
+    } else {
+        alert("ACCESS_DENIED: ПОЛЬЗОВАТЕЛЬ НЕ НАЙДЕН");
     }
+}
 
     const name = input.value.trim().toLowerCase();
     
