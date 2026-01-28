@@ -88,43 +88,14 @@
             <h2 class="welcome-title">WELCOME, <span id="op-name">---</span></h2>
             
             <div class="dash-grid">
-                <button class="mega-btn">ТАКТИЧЕСКИЙ РАДАР</button>
-                <button class="mega-btn">ЛИЧНЫЙ ПРОФИЛЬ</button>
-                <button class="mega-btn">НАСТРОЙКИ</button>
+                <button class="mega-btn" onclick="goTo('scr-map')">ТАКТИЧЕСКИЙ РАДАР</button>
+                <button class="mega-btn" onclick="goTo('scr-profile')">ЛИЧНЫЙ ПРОФИЛЬ</button>
+                <button class="mega-btn" onclick="goTo('scr-settings')">НАСТРОЙКИ</button>
             </div>
 
             <div class="gradient-line"></div>
 
             <div class="ai-fixed-container">
-                <p id="dash-ai-text" class="purple-typed"></p>
-            </div>
-        </div>
-    </section>
-    
-    <section id="scr-dash" class="screen hidden">
-        <div class="vhs-overlay"></div> <header class="dash-header">
-            <button class="menu-trigger" onclick="toggleSidebar(true)">[ MENU ]</button>
-            <div class="clock-val">00:00:00</div>
-        </header>
-
-        <div class="dash-main">
-            <h2 class="welcome-title">WELCOME, <span id="op-name">---</span></h2>
-            
-            <div class="dash-grid">
-                <button class="mega-btn" onclick="goTo('scr-map')">
-                    <span class="btn-icon">◈</span> ТАКТИЧЕСКАЯ КАРТА
-                </button>
-                <button class="mega-btn" onclick="goTo('scr-archive')">
-                    <span class="btn-icon">📂</span> АРХИВ ДАННЫХ
-                </button>
-                <button class="mega-btn" onclick="goTo('scr-status')">
-                    <span class="btn-icon">⚙</span> СТАТУС СИСТЕМЫ
-                </button>
-            </div>
-
-            <div class="gradient-line"></div>
-
-            <div class="ai-console-fixed">
                 <p id="dash-ai-text" class="purple-typed"></p>
             </div>
         </div>
