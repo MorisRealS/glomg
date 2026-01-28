@@ -282,6 +282,39 @@ function closeProfileOutside(event) {
     }
 }
 
+const pointData = {
+    bunker: {
+        title: "Бункер P.R.I.S.M",
+        owner: "SumberTheCreator",
+        uuid: "PRISM-01-SUMB",
+        desc: "Автономное подземное хранилище. Укрепленный сектор управления."
+    },
+    lab: {
+        title: "Лаборатория ONG",
+        owner: "MorisReal",
+        uuid: "ONG-LAB-772",
+        desc: "Исследовательский центр био-синтетических аномалий."
+    },
+    reactor: {
+        title: "Реактор ONG",
+        owner: "Dykzxz",
+        uuid: "ONG-PWR-990",
+        desc: "Основной источник энергии для систем G.L.O.M.G."
+    }
+};
+
+function showPoint(id) {
+    const data = pointData[id];
+    const infoBox = document.getElementById('point-info');
+    infoBox.innerHTML = `
+        <h3>Название: ${data.title}</h3>
+        <p><strong>Владелец:</strong> ${data.owner}</p>
+        <p><strong>UUID:</strong> ${data.uuid}</p>
+        <p><strong>Описание:</strong> ${data.desc}</p>
+    `;
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+}
+
 // Добавь сюда свои функции handleAuth() и initDashboard()
 
 // Сюда будем добавлять функции для Почты, Радара и т.д.
