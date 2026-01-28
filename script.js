@@ -157,59 +157,58 @@ function toggleSidebar(open) {
 }
 
 window.onload = function() {
-    const bootContainer = document.getElementById('boot-loader');
-    const bootText = document.getElementById('boot-text');
-    const bootLogo = document.getElementById('boot-logo');
-    
-    const lines = [
+    const bootLoader = document.getElementById('boot-loader');
+    const logoStage = document.getElementById('boot-stage-logo');
+    const termStage = document.getElementById('boot-stage-terminal');
+    const termText = document.getElementById('boot-text-full');
+
+    const bootLines = [
         "G.L.O.M.G. CORE_OS [BUILD 8.8.2.0]",
         "GLOBAL LABORATORY OF MAJOR GROUP",
         "CONNECTING TO: ONG_NETWORK... OK",
         "ERROR: SYNAPTIC_DATABASE_CORRUPTION",
         "WARNING: SECURITY_PROTOCOL_ACTIVE",
+        "LOADING_MODULE: SCIENTIFIC_RESEARCH... OK",
         "G.L.O.M.G. READY. SYSTEMS: NOMINAL"
     ];
 
-    let lineIndex = 0;
-
-    function typeLine(text, container, callback) {
-        let charIndex = 0;
-        let lineDiv = document.createElement('div');
-        if (text.includes('ERROR')) lineDiv.className = 'text-red';
-        else if (text.includes('WARNING')) lineDiv.className = 'text-yellow';
-        else if (text.includes('G.L.O.M.G.')) lineDiv.className = 'text-purple';
-        container.appendChild(lineDiv);
-
-        function charStep() {
-            if (charIndex < text.length) {
-                lineDiv.innerHTML += text[charIndex];
-                charIndex++;
-                setTimeout(charStep, 20);
-            } else {
-                callback();
-            }
-        }
-        charStep();
-    }
-
-    function startBoot() {
-        if (lineIndex < lines.length) {
-            typeLine(`> ${lines[lineIndex]}`, bootText, () => {
-                lineIndex++;
-                setTimeout(startBoot, 200);
-            });
+    function typeText(lines, index, callback) {
+        if (index < lines.length) {
+            let div = document.createElement('div');
+            if (lines[index].includes('ERROR')) div.className = 'text-red';
+            else if (lines[index].includes('WARNING')) div.className = 'text-yellow';
+            else if (lines[index].includes('G.L.O.M.G.')) div.className = 'text-purple';
+            
+            div.innerHTML = `> ${lines[index]}`;
+            termText.appendChild(div);
+            setTimeout(() => typeText(lines, index + 1, callback), 100);
         } else {
-            setTimeout(() => {
-                bootContainer.style.opacity = "0";
-                setTimeout(() => bootContainer.style.display = "none", 1000);
-            }, 1000);
+            setTimeout(callback, 1000);
         }
     }
 
+    // 1. Показываем ASCII логотип
     setTimeout(() => {
-        bootLogo.style.opacity = "1";
-        bootLogo.classList.add('animate-glitch');
-        setTimeout(startBoot, 1000);
+        logoStage.style.opacity = "1";
+        
+        // 2. Уходим в затемнение через 2 секунды
+        setTimeout(() => {
+            logoStage.style.opacity = "0";
+            
+            setTimeout(() => {
+                logoStage.classList.remove('active');
+                termStage.classList.add('active');
+                termStage.style.opacity = "1";
+                
+                // 3. Печатаем консоль на весь экран
+                typeText(bootLines, 0, () => {
+                    // 4. Финальное плавное затемнение перед логином
+                    bootLoader.style.backgroundColor = "#000";
+                    bootLoader.style.opacity = "0";
+                    setTimeout(() => bootLoader.style.display = "none", 1200);
+                });
+            }, 600); 
+        }, 2000);
     }, 500);
 };
 
