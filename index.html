@@ -238,24 +238,19 @@
     </header>
 
     <div class="map-viewport">
-        <div class="radar-grid"></div>
-        <div class="radar-sweep"></div> <div class="radar-point" style="top: 30%; left: 40%;" onclick="showPoint('bunker')">
-            <span class="point-label">PRISM_BUNKER</span>
-        </div>
-        <div class="radar-point" style="top: 60%; left: 75%;" onclick="showPoint('lab')">
-            <span class="point-label">ONG_LAB</span>
-        </div>
-        <div class="radar-point" style="top: 25%; left: 65%;" onclick="showPoint('reactor')">
-            <span class="point-label">ONG_REACTOR</span>
-        </div>
-    </div>
-
-    <div class="gradient-line scanner-line"></div>
+    <div class="radar-grid"></div>
+    <div class="radar-sweep"></div> 
     
-    <div id="point-info" class="point-details-box">
-        <p class="blink-text">ОЖИДАНИЕ ВЫБОРА ОБЪЕКТА НА РАДАРЕ...</p>
-    </div>
-</section>
+    <div class="radar-point p-cyan" style="top: 30%; left: 40%;" onclick="showPoint('bunker')"></div>
+    <div class="radar-point p-purple" style="top: 60%; left: 75%;" onclick="showPoint('lab')"></div>
+    <div class="radar-point p-red" style="top: 25%; left: 65%;" onclick="showPoint('reactor')"></div>
+</div>
+
+<div class="gradient-line scanner-line"></div>
+    
+<div id="point-info" class="point-details-box">
+    <p class="blink-text">ОЖИДАНИЕ ВЫБОРА ОБЪЕКТА НА РАДАРЕ...</p>
+</div>
 
 <section id="scr-system" class="screen hidden">
     <header class="screen-header">
