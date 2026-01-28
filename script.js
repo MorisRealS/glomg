@@ -258,6 +258,37 @@ function toggleSidebar(open) {
     }
 }
 
+function openProfile() {
+    // Сначала закрываем боковое меню
+    toggleSidebar(false);
+    
+    // Заполняем данные (пример)
+    const opName = localStorage.getItem('opName') || "OPERATOR";
+    document.getElementById('prof-nick').innerText = opName.toUpperCase();
+    document.getElementById('prof-uuid').innerText = "G-8821-" + Math.floor(Math.random() * 9000);
+    
+    if(opName.toLowerCase() === 'sumber') {
+        document.getElementById('prof-div').innerText = "P.R.I.S.M.";
+        document.getElementById('prof-rank').innerText = "DIVISION_HEAD";
+    }
+
+    // Активируем оверлей
+    document.getElementById('modal-profile').classList.add('active');
+}
+
+function closeProfile() {
+    document.getElementById('modal-profile').classList.remove('active');
+}
+
+// Закрытие по клику на пустое место (вне карточки)
+function closeProfileOutside(event) {
+    const card = document.getElementById('profile-card');
+    // Если кликнули именно по фону, а не по карточке
+    if (!card.contains(event.target)) {
+        closeProfile();
+    }
+}
+
 // Добавь сюда свои функции handleAuth() и initDashboard()
 
 // Сюда будем добавлять функции для Почты, Радара и т.д.
