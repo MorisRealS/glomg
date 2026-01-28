@@ -571,6 +571,78 @@ button:hover { border-color: var(--p-color); color: var(--p-color); }
 .archive-item { padding: 10px; cursor: pointer; border-left: 2px solid transparent; }
 .archive-item:hover { background: rgba(168, 85, 247, 0.1); border-left: 2px solid var(--p-color); }
 
+.map-viewport {
+    width: 90%;
+    height: 500px;
+    margin: 20px auto;
+    border: 1px solid rgba(168, 85, 247, 0.2);
+    position: relative;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.05) 0%, transparent 70%);
+    overflow: hidden;
+}
+
+/* Сетка радара */
+.radar-grid {
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(rgba(168, 85, 247, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(168, 85, 247, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+}
+
+/* Точки */
+.radar-point {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: var(--p-color);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 15px var(--p-color);
+    z-index: 10;
+}
+.radar-point:hover { transform: scale(1.5); }
+
+/* Прокрутка для всех экранов */
+.screen {
+    height: 100vh;
+    overflow-y: auto; /* Включаем скролл */
+    padding-bottom: 50px;
+}
+
+/* Логотип GLOMG над Welcome */
+.glomg-logo-mini {
+    font-size: 5em;
+    font-weight: 900;
+    color: var(--p-color);
+    text-shadow: 0 0 20px var(--p-color);
+    text-align: center;
+    margin-top: 40px;
+    letter-spacing: 10px;
+    animation: pulse-glow 3s infinite;
+}
+
+/* Стили заголовков окон */
+.screen-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    border-bottom: 1px solid rgba(168, 85, 247, 0.3);
+    margin-bottom: 30px;
+}
+
+.back-btn {
+    background: transparent;
+    border: 1px solid var(--p-color);
+    color: var(--p-color);
+    padding: 8px 20px;
+    cursor: pointer;
+    font-family: 'Consolas', monospace;
+}
+.back-btn:hover { background: var(--p-color); color: #fff; }
+
 /* Сюда будем вставлять стили Луча, Почты, Сайдбара */
 
 /* [/CSS_ID: NEW_STYLES_ZONE] */
