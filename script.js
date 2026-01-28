@@ -62,17 +62,26 @@ function closeAllPanels() {
 
 // НОВАЯ ФУНКЦИЯ АВТОРИЗАЦИИ
 function handleAuth() {
-    const login = document.getElementById('login-id').value.toLowerCase();
-    const pass = document.getElementById('login-pass').value;
+    const input = document.getElementById('user-input'); // Проверь этот ID в HTML!
+    if (!input) {
+        console.error("КРИТИЧЕСКАЯ ОШИБКА: Поле ввода не найдено!");
+        return;
+    }
 
-    if (PROFILES[login] && PROFILES[login].pass === pass) {
-        currentUser = PROFILES[login];
-        goTo('scr-dash');
-        socket.emit('auth', currentUser.name);
-        initDashboard(); // Запуск наполнения кабинета данными
+    const name = input.value.trim().toLowerCase();
+    
+    if (name.length >= 3) {
+        // Сохраняем имя
+        localStorage.setItem('opName', name);
+        
+        // Обновляем текст в личном кабинете
+        const opDisplay = document.getElementById('op-name');
+        if (opDisplay) opDisplay.innerText = name.toUpperCase();
+
+        // Запускаем анимацию загрузки
+        startBootSequence(); 
     } else {
-        alert("ОШИБКА: НЕВЕРНЫЙ ID ИЛИ ПАРОЛЬ");
-        document.getElementById('login-pass').value = "";
+        alert("ОШИБКА ДОСТУПА: Имя слишком короткое");
     }
 }
 
