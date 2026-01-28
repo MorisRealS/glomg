@@ -170,6 +170,44 @@
         </div>
     </div>
 </section>
+
+    <div id="modal-profile" class="modal-overlay" onclick="closeProfileOutside(event)">
+    <div class="profile-card" id="profile-card">
+        <div class="profile-header">
+            <div class="user-avatar">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+            </div>
+            <h2 id="prof-nick">OPERATOR</h2>
+            <div class="status-badge">G.L.O.M.G. DATA TERMINAL</div>
+        </div>
+
+        <div class="profile-details">
+            <div class="detail-item">
+                <span class="label">UUID:</span>
+                <span class="value" id="prof-uuid">G-0000-ONG</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">RANK:</span>
+                <span class="value" id="prof-rank">OPERATIVE</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">ENLISTED:</span>
+                <span class="value" id="prof-date">28.01.2026</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">DIVISION:</span>
+                <span class="value" id="prof-div">ONG</span>
+            </div>
+        </div>
+        
+        <div class="profile-footer">
+            <div class="footer-line"></div>
+            <p>ACCESS LEVEL: MAJOR GROUP ONLY</p>
+        </div>
+    </div>
+</div>
     
     <script src="script.js"></script>
 </body>
