@@ -593,16 +593,17 @@ button:hover { border-color: var(--p-color); color: var(--p-color); }
 
 /* Точки */
 .radar-point {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    background: var(--p-color);
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 0 15px var(--p-color);
-    z-index: 10;
+    position: absolute; width: 15px; height: 15px;
+    border-radius: 50%; cursor: pointer; z-index: 50;
+    transition: 0.3s; box-shadow: 0 0 10px currentColor;
 }
-.radar-point:hover { transform: scale(1.5); }
+.radar-point:hover { transform: scale(1.4); filter: brightness(1.5); }
+
+/* Цвета точек */
+.p-cyan { color: #00f2ff; background: #00f2ff; }
+.p-purple { color: #a855f7; background: #a855f7; }
+.p-red { color: #ff3b3b; background: #ff3b3b; }
+
 
 /* Прокрутка для всех экранов */
 .screen {
@@ -707,18 +708,6 @@ html, body {
     font-family: monospace; transition: 0.3s;
 }
 .archive-file-link:hover { color: var(--p-color); padding-left: 10px; }
-
-.radar-point {
-    position: absolute; width: 15px; height: 15px;
-    border-radius: 50%; cursor: pointer; z-index: 50;
-    transition: 0.3s; box-shadow: 0 0 10px currentColor;
-}
-.radar-point:hover { transform: scale(1.4); filter: brightness(1.5); }
-
-/* Цвета точек */
-.p-cyan { color: #00f2ff; background: #00f2ff; }
-.p-purple { color: #a855f7; background: #a855f7; }
-.p-red { color: #ff3b3b; background: #ff3b3b; }
 
 /* Сюда будем вставлять стили Луча, Почты, Сайдбара */
 
