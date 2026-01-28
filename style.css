@@ -450,6 +450,44 @@ button:hover { border-color: var(--p-color); color: var(--p-color); }
 .text-red { color: #ff3b3b; text-shadow: 0 0 5px #ff3b3b; }
 .text-yellow { color: #ffcc00; text-shadow: 0 0 5px #ffcc00; }
 .text-purple { color: var(--p-color); font-weight: bold; }
+
+/* Этап консоли на весь экран */
+#boot-stage-terminal {
+    justify-content: flex-start;
+    padding: 30px 50px;
+    background: #020202; /* Очень глубокий черный */
+    overflow: hidden;
+}
+
+#boot-text-full {
+    width: 100%;
+    height: 100%;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 14px;
+    color: #00ff41; /* Традиционный зеленый или фиолетовый */
+    line-height: 1.4;
+    text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+}
+
+/* Класс для финального затемнения */
+.fade-to-black {
+    background: #000 !important;
+    opacity: 0 !important;
+}
+
+/* Эффект сканирующих линий для консоли */
+#boot-stage-terminal::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+    background-size: 100% 4px;
+    pointer-events: none;
+}
+
+/* Цвета логов */
+.text-red { color: #ff3b3b !important; text-shadow: 0 0 8px #ff0000; }
+.text-yellow { color: #ffcc00 !important; text-shadow: 0 0 8px #ffcc00; }
+.text-purple { color: #a855f7 !important; text-shadow: 0 0 8px #a855f7; font-weight: bold; }
 /* Сюда будем вставлять стили Луча, Почты, Сайдбара */
 
 /* [/CSS_ID: NEW_STYLES_ZONE] */
