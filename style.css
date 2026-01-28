@@ -488,6 +488,57 @@ button:hover { border-color: var(--p-color); color: var(--p-color); }
 .text-red { color: #ff3b3b !important; text-shadow: 0 0 8px #ff0000; }
 .text-yellow { color: #ffcc00 !important; text-shadow: 0 0 8px #ffcc00; }
 .text-purple { color: #a855f7 !important; text-shadow: 0 0 8px #a855f7; font-weight: bold; }
+
+/* Оверлей (затемнение фона) */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0); /* Прозрачный по умолчанию */
+    backdrop-filter: blur(0px);
+    display: flex;
+    align-items: flex-end; /* Карточка прижимается к низу */
+    justify-content: center;
+    z-index: 5000;
+    pointer-events: none; /* Пропускает клики, когда закрыто */
+    transition: background 0.4s ease, backdrop-filter 0.4s ease;
+}
+
+/* Состояние, когда профиль открыт */
+.modal-overlay.active {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    pointer-events: auto;
+}
+
+/* Карточка профиля */
+.profile-card {
+    background: #0d0d0f;
+    border: 1px solid var(--p-color);
+    border-bottom: none; /* Убираем нижнюю рамку, так как она у края */
+    border-radius: 20px 20px 0 0; /* Скругляем только верх */
+    width: 450px;
+    padding: 35px;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
+    
+    /* Начальная позиция: полностью снизу */
+    transform: translateY(100%);
+    transition: transform 0.5s cubic-bezier(0.32, 1, 0.23, 1);
+}
+
+/* Вылет карточки при активации */
+.modal-overlay.active .profile-card {
+    transform: translateY(0);
+}
+
+/* Стили начинки (кратко) */
+.user-avatar { width: 80px; height: 80px; background: #1a1a1c; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; color: #333; }
+.user-avatar svg { width: 45px; }
+.profile-header h2 { text-align: center; color: var(--p-color); letter-spacing: 2px; }
+.status-badge { text-align: center; font-size: 10px; color: #00ff41; margin-bottom: 25px; opacity: 0.7; }
+.detail-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.label { color: #555; font-size: 11px; }
+.value { color: #ddd; font-family: monospace; }
+
 /* Сюда будем вставлять стили Луча, Почты, Сайдбара */
 
 /* [/CSS_ID: NEW_STYLES_ZONE] */
