@@ -424,6 +424,32 @@ button:hover { border-color: var(--p-color); color: var(--p-color); }
 /* АНИМАЦИИ */
 @keyframes glitch-fade { 0% { transform: skew(15deg); opacity: 0; } 100% { transform: skew(0); opacity: 1; } }
 @keyframes pulse-glow { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+
+/* BOOT STYLES */
+#boot-loader {
+    position: fixed; inset: 0; background: #000; z-index: 9999;
+    transition: opacity 1s ease, background 1s ease;
+}
+.boot-stage {
+    position: absolute; inset: 0; display: none;
+    flex-direction: column; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.8s ease;
+}
+.boot-stage.active { display: flex; }
+
+#ascii-logo {
+    font-family: monospace; font-size: 1.1vw; line-height: 1.2;
+    color: var(--p-color); text-shadow: 0 0 15px var(--p-color);
+}
+
+#boot-stage-terminal { justify-content: flex-start; padding: 50px; background: #050505; }
+#boot-text-full { width: 100%; font-family: 'Consolas', monospace; color: #ccc; line-height: 1.6; }
+
+/* FIXES FOR DASHBOARD */
+.dash-header { padding: 0 60px !important; }
+.text-red { color: #ff3b3b; text-shadow: 0 0 5px #ff3b3b; }
+.text-yellow { color: #ffcc00; text-shadow: 0 0 5px #ffcc00; }
+.text-purple { color: var(--p-color); font-weight: bold; }
 /* Сюда будем вставлять стили Луча, Почты, Сайдбара */
 
 /* [/CSS_ID: NEW_STYLES_ZONE] */
