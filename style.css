@@ -643,6 +643,83 @@ button:hover { border-color: var(--p-color); color: var(--p-color); }
 }
 .back-btn:hover { background: var(--p-color); color: #fff; }
 
+/* Глобальная фиксация */
+html, body {
+    margin: 0; padding: 0;
+    height: 100vh; width: 100vw;
+    background: #000;
+    overflow: hidden; /* Запрещаем общий скролл окна браузера */
+}
+
+/* Секции (экраны) */
+.screen {
+    position: fixed; inset: 0;
+    width: 100%; height: 100%;
+    background: #08080a;
+    display: flex; flex-direction: column;
+    overflow-y: auto; /* Разрешаем скролл ТОЛЬКО внутри экрана */
+    z-index: 10;
+}
+
+.hidden { display: none !important; }
+
+/* Шапка каждого модуля */
+.screen-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 40px; border-bottom: 1px solid rgba(168, 85, 247, 0.3);
+    background: rgba(13, 13, 15, 0.9);
+    position: sticky; top: 0; z-index: 100;
+}
+
+.status-plate-big {
+    background: rgba(168, 85, 247, 0.1);
+    border: 1px solid var(--p-color);
+    padding: 15px; margin: 20px 40px;
+    color: var(--p-color); text-align: center;
+    font-size: 0.9em; letter-spacing: 2px;
+}
+
+.system-info-text { padding: 0 40px; color: #ccc; line-height: 1.6; }
+
+/* Сенсоры (Датчики) */
+.sensor-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+    padding: 20px 40px;
+}
+
+.sensor-card {
+    background: #0f0f12; border: 1px solid rgba(168, 85, 247, 0.2);
+    padding: 25px; transition: 0.3s;
+}
+.sensor-card:hover { border-color: var(--p-color); box-shadow: 0 0 15px rgba(168, 85, 247, 0.2); }
+
+.archive-layout { display: flex; flex: 1; min-height: 0; }
+
+.archive-sidebar {
+    width: 300px; border-right: 1px solid rgba(168, 85, 247, 0.2);
+    padding: 30px; overflow-y: auto;
+}
+
+.archive-viewer { flex: 1; padding: 40px; overflow-y: auto; }
+
+.archive-file-link {
+    color: #555; padding: 10px 0; cursor: pointer;
+    font-family: monospace; transition: 0.3s;
+}
+.archive-file-link:hover { color: var(--p-color); padding-left: 10px; }
+
+.radar-point {
+    position: absolute; width: 15px; height: 15px;
+    border-radius: 50%; cursor: pointer; z-index: 50;
+    transition: 0.3s; box-shadow: 0 0 10px currentColor;
+}
+.radar-point:hover { transform: scale(1.4); filter: brightness(1.5); }
+
+/* Цвета точек */
+.p-cyan { color: #00f2ff; background: #00f2ff; }
+.p-purple { color: #a855f7; background: #a855f7; }
+.p-red { color: #ff3b3b; background: #ff3b3b; }
+
 /* Сюда будем вставлять стили Луча, Почты, Сайдбара */
 
 /* [/CSS_ID: NEW_STYLES_ZONE] */
