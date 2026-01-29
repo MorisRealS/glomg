@@ -126,7 +126,7 @@ function closeAllPanels() {
 
 function handleAuth() {
 
-    const input = document.getElementById('user-input'); // Проверь этот ID в HTML!
+    const input = document.getElementById('login-id'); // Проверь этот ID в HTML!
 
     if (!input) {
 
