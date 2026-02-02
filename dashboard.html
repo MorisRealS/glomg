@@ -10,12 +10,11 @@
             background-color: #050505;
             background: radial-gradient(circle, #0a0a0a 0%, #050505 60%, #1a0033 100%);
             font-family: 'Courier New', Courier, monospace;
-            color: #e0e0e0; min-height: 120vh; /* Позволяет листать */
+            color: #e0e0e0; min-height: 120vh;
             overflow-x: hidden;
             display: flex; flex-direction: column; align-items: center;
         }
 
-        /* Сетка */
         body::before {
             content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: linear-gradient(rgba(75, 0, 130, 0.15) 1px, transparent 1px),
@@ -24,7 +23,6 @@
             mask-image: radial-gradient(circle, black, transparent 90%);
         }
 
-        /* ВЕРХНЯЯ ПАНЕЛЬ */
         .navbar {
             width: 100%; height: 60px;
             border-bottom: 2px solid #4b0082;
@@ -72,81 +70,53 @@
         .btn-logout { border-color: #550000; color: #ff4444; margin-top: auto; background: transparent; }
         .btn-logout:hover { background: #880000; color: white; border-color: #ff0000; box-shadow: 0 0 10px #ff0000; }
 
-        /* --- [CSS] ПРОФИЛЬ --- */
-        #profile-modal {
-            position: fixed; top: 60%; left: 50%; /* Сделал повыше */
-            transform: translate(-50%, -50%) scale(0.9);
-            width: 550px; background: #0f0f0f;
-            border: 2px solid #4b0082; border-radius: 10px;
-            padding: 40px; transition: 0.4s ease;
-            z-index: 3000; box-shadow: 0 0 50px rgba(75, 0, 130, 0.4);
-            visibility: hidden; opacity: 0;
-        }
-        #profile-modal.active { visibility: visible; opacity: 1; transform: translate(-50%, -50%) scale(1); top: 50%; }
-
-        .profile-header { display: flex; gap: 30px; align-items: center; border-bottom: 1px solid #333; padding-bottom: 20px; }
-        .profile-nick { color: #a64dff; font-size: 28px; margin: 0; text-shadow: 0 0 10px #a64dff; }
-        .profile-level { color: #00ff00; font-size: 14px; margin-top: 5px; }
-
-        /* --- [CSS] ОСНОВНОЙ КОНТЕНТ --- */
+        /* --- [CSS] ЦЕНТРАЛЬНЫЙ КОНТЕНТ --- */
         .main-container { 
-    margin-top: 180px; /* Опустили контейнер еще ниже */
-    width: 85%; 
-    max-width: 1100px; 
-}
+            margin-top: 120px; 
+            width: 90%; max-width: 1100px; 
+            display: flex; flex-direction: column; align-items: center; 
+        }
 
         .action-row { 
-    display: flex; 
-    gap: 30px; /* Увеличили расстояние между кнопками */
-    width: 100%; 
-    justify-content: center; 
-    margin-bottom: 60px; 
-}
-        .btn-action {
-    flex: 1; 
-    max-width: 250px; /* Увеличили максимальную ширину */
-    height: 80px;    /* Увеличили высоту кнопок */
-    background: rgba(15, 15, 15, 0.9);
-    border: 2px solid #4b0082; /* Жирнее рамка */
-    color: #a64dff; 
-    cursor: pointer; 
-    transition: 0.4s;
-    font-family: inherit; 
-    font-size: 18px; /* Больше шрифт */
-    font-weight: bold; 
-    text-transform: uppercase;
-    letter-spacing: 2px;
-}
-        .btn-action {
-    flex: 1; 
-    max-width: 250px; /* Увеличили максимальную ширину */
-    height: 80px;    /* Увеличили высоту кнопок */
-    background: rgba(15, 15, 15, 0.9);
-    border: 2px solid #4b0082; /* Жирнее рамка */
-    color: #a64dff; 
-    cursor: pointer; 
-    transition: 0.4s;
-    font-family: inherit; 
-    font-size: 18px; /* Больше шрифт */
-    font-weight: bold; 
-    text-transform: uppercase;
-    letter-spacing: 2px;
-}
+            display: flex; gap: 30px; width: 100%; 
+            justify-content: center; margin-bottom: 50px; 
+        }
 
-        /* Полоса прозрачная по краям */
+        .btn-action {
+            flex: 1; max-width: 280px; height: 90px; 
+            background: rgba(15, 15, 15, 0.9); border: 2px solid #4b0082; 
+            color: #a64dff; cursor: pointer; transition: 0.4s;
+            font-family: inherit; font-size: 20px; font-weight: bold; 
+            text-transform: uppercase; letter-spacing: 3px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .btn-action:hover { background: #4b0082; color: #fff; box-shadow: 0 0 25px #a64dff; transform: translateY(-5px); }
+
         .gradient-line {
             width: 100%; height: 2px;
             background: linear-gradient(90deg, transparent 0%, #4b0082 50%, transparent 100%);
-            margin: 20px 0;
+            margin-bottom: 30px;
         }
 
-        .welcome-text { font-size: 20px; color: #a64dff; letter-spacing: 3px; margin-bottom: 30px; }
+        .welcome-text { font-size: 24px; color: #a64dff; letter-spacing: 5px; margin-bottom: 40px; }
 
         .info-panel {
             background: rgba(15, 15, 15, 0.9); border: 1px solid #333; border-left: 4px solid #4b0082;
             padding: 25px; width: 100%; margin-bottom: 20px; box-sizing: border-box;
         }
         .info-panel h4 { margin: 0 0 15px 0; color: #a64dff; font-size: 14px; }
+
+        /* --- [CSS] ПРОФИЛЬ --- */
+        #profile-modal {
+            position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 550px; background: #0f0f0f;
+            border: 2px solid #4b0082; border-radius: 10px;
+            padding: 40px; transition: 0.4s ease;
+            z-index: 3000; box-shadow: 0 0 50px rgba(75, 0, 130, 0.6);
+            visibility: hidden; opacity: 0;
+        }
+        #profile-modal.active { visibility: visible; opacity: 1; transform: translate(-50%, -50%) scale(1); }
     </style>
 </head>
 <body>
@@ -159,63 +129,49 @@
     <div id="sidebar-overlay" onclick="closeAll()"></div>
     <div class="sidebar" id="sidebar">
         <svg class="user-svg-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-        
         <button class="side-btn" onclick="openProfile()">MY_PROFILE</button>
         <button class="side-btn">DATABASE_ARCHIVE</button>
         <button class="side-btn">SYSTEM_LOGS</button>
-        
-        <button class="side-btn btn-logout" onclick="location.href='/'">LOGOUT</button>
+        <button class="side-btn btn-logout" onclick="location.href='autorize.html'">LOGOUT</button>
     </div>
 
-    <div class="action-row">
-    <button class="btn-action" onclick="location.href='/radar'">РАДАР</button>
-    <button class="btn-action" onclick="location.href='/mail'">ПОЧТА</button>
-    <button class="btn-action" onclick="location.href='/archive'">АРХИВ</button>
-</div>
+    <div class="main-container">
+        <div class="action-row">
+            <button class="btn-action" onclick="location.href='radar.html'">РАДАР</button>
+            <button class="btn-action" onclick="location.href='mail.html'">ПОЧТА</button>
+            <button class="btn-action" onclick="location.href='archive.html'">АРХИВ</button>
+        </div>
 
         <div class="gradient-line"></div>
-        <div class="welcome-text">WELCOME, <span id="display-name">OPERATOR</span></div>
+        <div class="welcome-text">WELCOME, <span id="display-name">MORISREAL</span></div>
 
         <div class="info-panel">
             <h4>ИНСТРУКЦИИ ДЛЯ ПЕРСОНАЛА</h4>
-            <p id="operator-note">> Ожидание вводных данных от центрального узла...</p>
+            <p id="operator-note">> Ожидание входящих директив... <br>> Все системы работают в штатном режиме.</p>
         </div>
 
         <div class="info-panel">
-            <h4>ПОСЛЕДНИЕ ОБНОВЛЕНИЯ СИСТЕМЫ</h4>
-            <p>• Протокол авторизации обновлен до v1.0.9</p>
-            <p>• Подключены модули "Радар" и "Архив" (Alpha)</p>
-            <p>• Визуальный интерфейс личного кабинета стабилизирован</p>
+            <h4>ПОСЛЕДНИЕ ОБНОВЛЕНИЯ</h4>
+            <p>• Фикс отображения кнопок (UI/UX)</p>
+            <p>• Настройка системы переходов между модулями</p>
         </div>
     </div>
 
     <div id="profile-modal">
-        <div class="profile-header">
+        <div style="display: flex; gap: 30px; align-items: center; border-bottom: 1px solid #333; padding-bottom: 20px;">
             <svg class="user-svg-icon" style="margin:0; width:80px; height:80px;" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-            <div class="profile-main-info">
-                <p class="profile-nick" id="p-nick">NAME</p>
-                <div class="profile-level">RANK: <span id="p-level">ACCESS_LEVEL</span></div>
-                <div class="profile-uuid" style="color:#555; font-size:11px; margin-top:10px;">UUID: <span id="p-uuid">XXXX-XXXX-XXXX</span></div>
+            <div>
+                <p style="color: #a64dff; font-size: 28px; margin: 0;" id="p-nick">NAME</p>
+                <div style="color: #00ff00; font-size: 14px;">RANK: <span id="p-level">ACCESS_LEVEL</span></div>
+                <div style="color:#555; font-size:11px; margin-top:10px;">UUID: <span id="p-uuid">XXXX-XXXX-XXXX</span></div>
             </div>
         </div>
-        
-        <div style="display: flex; gap: 40px; margin-top: 30px;">
-            <div>
-                <div style="color:#666; font-size:10px; text-transform:uppercase;">Отдел</div>
-                <div id="p-dept" style="color:#ddd; margin-top:5px;">Security</div>
-            </div>
-            <div>
-                <div style="color:#666; font-size:10px; text-transform:uppercase;">Статус</div>
-                <div style="color:#00ff00; margin-top:5px;">ACTIVE</div>
-            </div>
-        </div>
-
         <div style="margin-top: 25px;">
-            <div style="color:#666; font-size:10px; text-transform:uppercase;">Описание</div>
+            <div style="color:#666; font-size:10px; text-transform:uppercase;">Отдел: <span id="p-dept" style="color:#ddd; text-transform:none; margin-left:10px;">Security</span></div>
+            <div style="color:#666; font-size:10px; text-transform:uppercase; margin-top:15px;">Описание</div>
             <div id="p-desc" style="color:#bbb; font-size:13px; margin-top:5px; line-height:1.5;">...</div>
         </div>
-        
-        <button class="btn-menu" style="width: 100%; margin-top: 30px;" onclick="closeAll()">BACK_TO_TERMINAL</button>
+        <button class="btn-menu" style="width: 100%; margin-top: 30px;" onclick="closeAll()">CLOSE</button>
     </div>
 
     <script>
@@ -227,29 +183,15 @@
             "shmegh1": { uuid: "9982-22XX-ONG", level: "Operator", dept: "MONITORING", desc: "Дежурный оператор. Ответственный за стабильность шлюза." }
         };
 
-        // ТЕКУЩИЙ ПОЛЬЗОВАТЕЛЬ (Для теста поставим morisreal)
-        let user = "morisreal";
-        document.getElementById('display-name').innerText = user.toUpperCase();
-
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.add('active');
-            document.getElementById('sidebar-overlay').style.display = 'block';
-        }
-
-        function closeAll() {
-            document.getElementById('sidebar').classList.remove('active');
-            document.getElementById('profile-modal').classList.remove('active');
-            document.getElementById('sidebar-overlay').style.display = 'none';
-        }
-
+        function toggleSidebar() { document.getElementById('sidebar').classList.add('active'); document.getElementById('sidebar-overlay').style.display = 'block'; }
+        function closeAll() { document.getElementById('sidebar').classList.remove('active'); document.getElementById('profile-modal').classList.remove('active'); document.getElementById('sidebar-overlay').style.display = 'none'; }
         function openProfile() {
-            const d = operators[user];
+            const user = "morisreal"; const d = operators[user];
             document.getElementById('p-nick').innerText = user.toUpperCase();
             document.getElementById('p-uuid').innerText = d.uuid;
             document.getElementById('p-level').innerText = d.level;
             document.getElementById('p-dept').innerText = d.dept;
             document.getElementById('p-desc').innerText = d.desc;
-
             document.getElementById('sidebar').classList.remove('active');
             document.getElementById('profile-modal').classList.add('active');
         }
