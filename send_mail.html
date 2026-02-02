@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>G.L.O.M.G. | Mail Terminal</title>
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #00ff41;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .terminal {
+            width: 500px;
+            padding: 20px;
+            border: 1px solid #00ff41;
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+            background: rgba(0, 0, 0, 0.9);
+        }
+        h2 { text-align: center; text-transform: uppercase; letter-spacing: 2px; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-size: 0.8em; }
+        input, textarea {
+            width: 100%;
+            background: #000;
+            border: 1px solid #00ff41;
+            color: #00ff41;
+            padding: 8px;
+            box-sizing: border-box;
+            outline: none;
+        }
+        textarea { height: 100px; resize: none; }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #00ff41;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+        button:hover { background: #008f11; color: #fff; }
+        .status { margin-top: 10px; font-size: 0.7em; text-align: center; height: 1em; }
+    </style>
+</head>
+<body>
+
+<div class="terminal">
+    <h2>Mail Sender v1.0</h2>
+    <div class="input-group">
+        <label>> RECIPIENT_ID:</label>
+        <input type="text" id="mail_to" placeholder="nickname...">
+    </div>
+    <div class="input-group">
+        <label>> SUBJECT_HEADER:</label>
+        <input type="text" id="mail_subject" placeholder="top secret...">
+    </div>
+    <div class="input-group">
+        <label>> MESSAGE_BODY:</label>
+        <textarea id="mail_body" placeholder="enter text..."></textarea>
+    </div>
+    <button onclick="sendMail()">Execute Send</button>
+    <div id="status" class="status"></div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+    const socket = io();
+    const statusDiv = document.getElementById('status');
+
+    // Берем имя отправителя из localStorage (оно там должно быть после авторизации)
+    // Если его нет, ставим ник по умолчанию
+    const myNickname = localStorage.getItem('username') || 'Unknown_User';
+    
+    // Авторизуем сокет под этим ником
+    socket.emit('auth', myNickname);
+
+    function sendMail() {
+        const to = document.getElementById('mail_to').value.trim();
+        const subj = document.getElementById('mail_subject').value.trim();
+        const body = document.getElementById('mail_body').value.trim();
+
+        if (!to || !body) {
+            statusDiv.innerText = "❌ ERROR: DATA_MISSING";
+            statusDiv.style.color = "red";
+            return;
+        }
+
+        // Отправляем пакет данных на сервер
+        socket.emit('send_mail_from_web', {
+            to: to,
+            subj: subj || "No Subject",
+            body: body,
+            from: myNickname
+        });
+
+        // Визуальное подтверждение
+        statusDiv.innerText = "✅ PACKET_SENT_SUCCESSFULLY";
+        statusDiv.style.color = "#00ff41";
+
+        // Очистка полей через 2 секунды
+        setTimeout(() => {
+            document.getElementById('mail_to').value = '';
+            document.getElementById('mail_subject').value = '';
+            document.getElementById('mail_body').value = '';
+            statusDiv.innerText = '';
+        }, 2000);
+    }
+</script>
+
+</body>
+</html>
