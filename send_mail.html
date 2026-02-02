@@ -520,30 +520,10 @@
         };
 
         const EMPLOYEE_DB = [
-            { 
-                name: "MORISREAL", 
-                uuid: "1110001110", 
-                tgId: "542387121", 
-                desc: "Head of Operations" 
-            },
-            { 
-                name: "SUMBER", 
-                uuid: "0101010101", 
-                tgId: "987654321", 
-                desc: "Security Specialist" 
-            },
-            { 
-                name: "SYSTEM_CORE", 
-                uuid: "1111111111", 
-                tgId: "123456789", 
-                desc: "Root Access Unit" 
-            },
-            { 
-                name: "STAFF_04", 
-                uuid: "0001110011", 
-                tgId: "112233445", 
-                desc: "Maintenance Bot" 
-            }
+            { name: "MORISREAL", uuid: "1110001110", tgId: "542387121" },
+            { name: "SUMBER", uuid: "0101010101", tgId: "1865307845" },
+            { name: "DYKXZX", uuid: "2223334445", tgId: "112233445" },
+            { name: "MSK4NE_", uuid: "5556667778", tgId: "556677889" }
         ];
 
         /**
@@ -633,19 +613,58 @@
             btnTrigger.innerText = "ENCRYPTING_PACKET...";
             btnTrigger.style.opacity = "0.6";
 
-            try {
-                // Выполнение запроса к Telegram API
+           try {
+                // 1. Отправка в Telegram (Перехват)
                 const response = await fetch(`https://api.telegram.org/bot${BOT_SETTINGS.apiToken}/sendMessage`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         chat_id: finalChatId,
                         text: telegramMessage,
                         parse_mode: 'HTML'
                     })
                 });
+
+                const result = await response.json();
+
+                if (result.ok) {
+                    // --- КЛЮЧЕВОЕ ДОПОЛНЕНИЕ: СОХРАНЕНИЕ В ПАМЯТЬ САЙТА ---
+                    // Создаем структуру сообщения для истории на сайте
+                    const newPacket = {
+                        id: Date.now(),
+                        sender: senderName,
+                        senderUuid: senderUuid,
+                        targetUuid: targetUuid,
+                        subject: msgSubject,
+                        body: msgBody,
+                        time: new Date().toLocaleString()
+                    };
+
+                    // Читаем старые сообщения, добавляем новое и сохраняем обратно
+                    const archive = JSON.parse(localStorage.getItem('glomg_archive') || '[]');
+                    archive.push(newPacket);
+                    localStorage.setItem('glomg_archive', JSON.stringify(archive));
+                    // ---------------------------------------------------
+
+                    btnTrigger.innerText = "TRANSMISSION_SUCCESS";
+                    btnTrigger.style.backgroundColor = "#22cc22";
+                    btnTrigger.style.boxShadow = "0 0 40px #22cc22";
+                    
+                    console.log("Packet Intercepted and Archived Locally");
+
+                    setTimeout(() => {
+                        window.location.href = 'mail.html';
+                    }, 1500);
+                } else {
+                    throw new Error(result.description);
+                }
+
+            } catch (error) {
+                console.error("Critical Error:", error);
+                btnTrigger.disabled = false;
+                btnTrigger.innerText = "RETRY_TRANSMISSION";
+                btnTrigger.style.backgroundColor = "red";
+            }
 
                 const result = await response.json();
 
@@ -680,16 +699,22 @@
          * 6. СТАРТОВАЯ ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ
          */
         window.addEventListener('DOMContentLoaded', () => {
-            // Установка UUID текущего юзера в шапку
-            const currentUuid = localStorage.getItem('user_uuid') || '1110001110';
-            idDisplay.innerText = `NODE: ${currentUuid}`;
+            // 1. ОПРЕДЕЛЯЕМ КТО ЗА ПУЛЬТОМ
+            const activeUser = localStorage.getItem('username') || 'MORISREAL';
+            const profile = EMPLOYEE_DB.find(u => u.name === activeUser.toUpperCase()) || EMPLOYEE_DB[0];
             
-            // Отрисовка базы
+            // 2. ОБНОВЛЯЕМ ШАПКУ (Welcome Name + UUID)
+            // Добавим имя прямо в шапку динамически
+            idDisplay.innerHTML = `WELCOME, <span style="color:#fff">${profile.name}</span> | NODE: ${profile.uuid}`;
+            
+            // 3. СОХРАНЯЕМ ДАННЫЕ ТЕКУЩЕЙ СЕССИИ (чтобы другие функции видели)
+            localStorage.setItem('user_uuid', profile.uuid);
+            
+            // 4. Отрисовка списка контактов (исключая самого себя)
             buildEmployeeList();
             
-            console.log("Secure Terminal Operational...");
+            console.log("Authorized as: " + profile.name);
         });
-
         /**
          * 7. ДОПОЛНИТЕЛЬНАЯ ЛОГИКА (ИЗБЫТОЧНАЯ)
          * Для достижения нужного объема строк и сложности
