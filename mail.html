@@ -2,97 +2,96 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>G.L.O.M.G. | INTERNAL_MAIL</title>
+    <title>G.L.O.M.G. | Internal Mail</title>
     <style>
-        :root { --purple: #a020f0; --bg: #050005; --dark-p: #1a002a; }
-        body { margin: 0; background: var(--bg); color: var(--purple); font-family: 'Courier New', monospace; height: 100vh; display: flex; flex-direction: column; }
-        
-        .top-bar { height: 50px; border-bottom: 2px solid var(--purple); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
-        
-        .send-btn { background: var(--purple); color: #fff; border: none; padding: 10px 15px; cursor: pointer; text-transform: uppercase; font-weight: bold; }
-        
-        .mail-wrapper { display: flex; flex: 1; overflow: hidden; }
-        
-        /* Левая панель списка */
-        .mail-list { width: 300px; border-right: 1px solid var(--purple); overflow-y: auto; background: var(--dark-p); }
-        .mail-item { padding: 15px; border-bottom: 1px solid rgba(160, 32, 240, 0.3); cursor: pointer; transition: 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .mail-item:hover { background: rgba(160, 32, 240, 0.2); }
-        .mail-item.active { background: var(--purple); color: #fff; }
+        :root { --purple: #a020f0; --bg: #050005; --panel: #11001a; }
+        body { margin: 0; background: var(--bg); color: var(--purple); font-family: 'Courier New', monospace; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* Правая панель контента */
-        .mail-view { flex: 1; padding: 40px; overflow-y: auto; }
-        .view-header { border-bottom: 1px solid var(--purple); margin-bottom: 20px; padding-bottom: 20px; }
-        .view-subject { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
-        .view-sender { font-size: 14px; opacity: 0.8; }
-        .view-body { line-height: 1.6; font-size: 16px; margin-top: 20px; }
+        /* Шапка */
+        .header { height: 70px; border-bottom: 2px solid var(--purple); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
+        .send-link { background: var(--purple); color: #fff; padding: 10px 20px; text-decoration: none; font-weight: bold; border-radius: 2px; }
+
+        /* Контент */
+        .mail-body { display: flex; flex: 1; overflow: hidden; }
+
+        /* Левая панель (Список) */
+        .side-list { width: 320px; border-right: 1px solid var(--purple); background: var(--panel); overflow-y: auto; }
+        .mail-preview {
+            padding: 20px; border-bottom: 1px solid rgba(160, 32, 240, 0.2); cursor: pointer;
+            transition: 0.2s; white-space: nowrap;
+        }
+        .mail-preview:hover { background: rgba(160, 32, 240, 0.1); }
+        .mail-preview.active { border-left: 5px solid var(--purple); background: rgba(160, 32, 240, 0.15); }
+
+        /* Правая панель (Просмотр) */
+        .view-pane { flex: 1; padding: 50px; overflow-y: auto; }
+        .info-block { margin-bottom: 30px; border-bottom: 1px solid var(--purple); padding-bottom: 20px; }
+        .subj { font-size: 28px; margin-bottom: 10px; }
+        .from { opacity: 0.7; font-size: 14px; }
+        .text { line-height: 1.8; font-size: 16px; }
+
+        .uuid-tag { font-size: 12px; opacity: 0.6; }
     </style>
 </head>
 <body>
-
-    <div class="top-bar">
-        <div id="user-info">UUID: 0000000000 | LVL: 0</div>
-        <button class="send-btn" onclick="location.href='/send_mail.html'">Отправить сообщение</button>
+    <div class="header">
+        <div class="uuid-tag" id="profile-info">UUID: 0000000000 | LVL: 0</div>
+        <a href="/send_mail" class="send-link">ОТПРАВИТЬ СООБЩЕНИЕ</a>
     </div>
 
-    <div class="mail-wrapper">
-        <div class="mail-list" id="list">
+    <div class="mail-body">
+        <div class="side-list" id="mail-list">
             </div>
-        <div class="mail-view" id="viewer">
-            <div id="empty-hint">Выберите сообщение для просмотра</div>
+        <div class="view-pane" id="mail-view">
+            <div style="opacity:0.3; text-align:center; margin-top:100px;">ВЫБЕРИТЕ ПАКЕТ ДАННЫХ ДЛЯ ДЕШИФРОВКИ</div>
         </div>
     </div>
 
     <script>
-        // Эмуляция данных (в реальности придет от сервера/сокетов)
-        const messages = [
-            { id: 1, subject: "Системное сообщение", from: "SYS_CORE", body: "Ваш уровень доступа подтвержден. Добро пожаловать." },
-            { id: 2, subject: "Протоколы безопасности", from: "MORISREAL", body: "Всем сотрудникам обновить UUID ключи до конца смены." }
+        // Имитация данных (замени на свои из БД/Сокетов)
+        const mockMails = [
+            { id: 1, subject: "Системное сообщение", from: "CORE", body: "Доступ к терминалу разрешен. Протоколы синхронизированы." },
+            { id: 2, subject: "Протоколы безопасности", from: "MORISREAL", body: "Проверьте свои UUID на соответствие реестру." },
+            { id: 3, subject: "Отчет по работе", from: "SUMBER", body: "Все системы работают в штатном режиме." }
         ];
 
-        function formatTitle(text) {
-            // Правило: 11 без пробела, 12 с пробелом
-            const limit = text.includes(' ') ? 12 : 11;
-            if (text.length > limit) return text.substring(0, limit) + "...";
-            return text;
+        function formatSubject(text) {
+            // 11 без пробела, 12 с пробелом
+            const hasSpace = text.includes(' ');
+            const limit = hasSpace ? 12 : 11;
+            return text.length > limit ? text.substring(0, limit) + "..." : text;
         }
 
-        const listContainer = document.getElementById('list');
-        const viewer = document.getElementById('viewer');
+        const list = document.getElementById('mail-list');
+        const view = document.getElementById('mail-view');
 
-        messages.forEach(msg => {
+        mockMails.forEach(m => {
             const div = document.createElement('div');
-            div.className = 'mail-item';
-            div.innerText = formatTitle(msg.subject);
+            div.className = 'mail-preview';
+            div.innerText = formatSubject(m.subject);
             div.onclick = () => {
-                document.querySelectorAll('.mail-item').forEach(el => el.classList.remove('active'));
+                document.querySelectorAll('.mail-preview').forEach(el => el.classList.remove('active'));
                 div.classList.add('active');
-                renderMessage(msg);
+                view.innerHTML = `
+                    <div class="info-block">
+                        <div class="subj">${m.subject}</div>
+                        <div class="from">ОТПРАВИТЕЛЬ: ${m.from}</div>
+                    </div>
+                    <div class="text">${m.body}</div>
+                `;
             };
-            listContainer.appendChild(div);
+            list.appendChild(div);
         });
 
-        function renderMessage(msg) {
-            viewer.innerHTML = `
-                <div class="view-header">
-                    <div class="view-subject">${msg.subject}</div>
-                    <div class="view-sender">Отправитель: ${msg.from}</div>
-                </div>
-                <div class="view-body">${msg.body}</div>
-            `;
-        }
+        // Данные сотрудника
+        const user = localStorage.getItem('username') || 'Guest';
+        let lvl = 0; let uuid = "0000000000";
 
-        // Логика уровней и UUID
-        const userData = {
-            name: localStorage.getItem('username') || 'Guest',
-            uuid: "0110110110", // Пример двоичного UUID
-            lvl: 4
-        };
-        
-        // Маппинг уровней
-        if(userData.name === 'morisreal') userData.lvl = 6;
-        else if(userData.name === 'sumber') userData.lvl = 5;
-        
-        document.getElementById('user-info').innerText = `UUID: ${userData.uuid} | LVL: ${userData.lvl}`;
+        if(user === 'morisreal') { lvl = 6; uuid = "1011100101"; }
+        else if(user === 'sumber') { lvl = 5; uuid = "0011101010"; }
+        else { lvl = 4; uuid = "0010111010"; }
+
+        document.getElementById('profile-info').innerText = `UUID: ${uuid} | LVL: ${lvl}`;
     </script>
 </body>
 </html>
