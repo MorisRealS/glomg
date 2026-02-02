@@ -4,29 +4,31 @@
     <meta charset="UTF-8">
     <title>G.L.O.M.G. // DASHBOARD</title>
     <style>
-        /* --- [CSS] БАЗОВЫЕ СТИЛИ (КАК У ГОСТЯ) --- */
+        /* --- [CSS] БАЗОВЫЕ СТИЛИ --- */
         body {
             margin: 0; padding: 0;
             background-color: #050505;
             background: radial-gradient(circle, #0a0a0a 0%, #050505 60%, #1a0033 100%);
             font-family: 'Courier New', Courier, monospace;
-            color: #e0e0e0; min-height: 100vh;
+            color: #e0e0e0; min-height: 120vh; /* Позволяет листать */
             overflow-x: hidden;
+            display: flex; flex-direction: column; align-items: center;
         }
 
-        /* Фоновая сетка */
+        /* Сетка */
         body::before {
             content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: linear-gradient(rgba(75, 0, 130, 0.15) 1px, transparent 1px),
                               linear-gradient(90deg, rgba(75, 0, 130, 0.15) 1px, transparent 1px);
             background-size: 50px 50px; z-index: -1;
+            mask-image: radial-gradient(circle, black, transparent 90%);
         }
 
         /* ВЕРХНЯЯ ПАНЕЛЬ */
         .navbar {
             width: 100%; height: 60px;
             border-bottom: 2px solid #4b0082;
-            background: rgba(5, 5, 5, 0.9);
+            background: rgba(5, 5, 5, 0.95);
             display: flex; align-items: center; padding: 0 20px;
             position: fixed; top: 0; z-index: 1000;
             box-sizing: border-box; backdrop-filter: blur(10px);
@@ -37,126 +39,164 @@
             cursor: pointer; font-family: inherit; font-size: 12px;
             text-transform: uppercase; font-weight: bold; transition: 0.3s;
         }
-
         .btn-menu:hover { background: #a64dff; box-shadow: 0 0 10px #a64dff; }
 
-        /* --- [CSS] СЛАЙДБАР (БОКОВОЕ МЕНЮ) --- */
+        /* --- [CSS] СЛАЙДБАР --- */
         #sidebar-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px);
-            z-index: 2000; display: none; /* Скрыто по дефолту */
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px);
+            z-index: 2000; display: none;
         }
 
         .sidebar {
             position: fixed; top: 0; left: -300px; width: 280px; height: 100%;
-            background: #0a0a0a; border-right: 2px solid #4b0082;
+            background: rgba(10, 10, 10, 0.98); border-right: 2px solid #4b0082;
             transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex; flex-direction: column; padding: 40px 20px;
             box-sizing: border-box; z-index: 2001;
         }
-
         .sidebar.active { left: 0; }
 
-        .user-icon-big {
-            width: 80px; height: 80px; background: #333;
-            border-radius: 50%; margin: 0 auto 30px;
-            display: flex; align-items: center; justify-content: center;
-            border: 2px solid #4b0082; color: #666; font-size: 40px;
+        .user-svg-icon {
+            width: 60px; height: 60px; fill: #666; margin: 0 auto 30px;
+            border: 2px solid #4b0082; border-radius: 50%; padding: 10px;
         }
 
         .side-btn {
-            background: transparent; border: 1px solid #333; color: #ccc;
+            background: rgba(75, 0, 130, 0.1); border: 1px solid #4b0082; color: #a64dff;
             padding: 12px; margin-bottom: 10px; cursor: pointer;
             font-family: inherit; text-align: left; transition: 0.3s;
         }
+        .side-btn:hover { background: #4b0082; color: #fff; box-shadow: 0 0 10px #4b0082; }
 
-        .side-btn:hover { background: #1a1a1a; border-color: #4b0082; color: #fff; }
-
-        .btn-logout { border-color: #550000; color: #ff4444; margin-top: auto; }
+        .btn-logout { border-color: #550000; color: #ff4444; margin-top: auto; background: transparent; }
         .btn-logout:hover { background: #880000; color: white; border-color: #ff0000; box-shadow: 0 0 10px #ff0000; }
 
-        /* --- [CSS] ПРОФИЛЬ (ВЫДВИЖНОЙ СНИЗУ) --- */
+        /* --- [CSS] ПРОФИЛЬ --- */
         #profile-modal {
-            position: fixed; bottom: -100%; left: 50%;
-            transform: translateX(-50%);
-            width: 500px; background: #111;
-            border: 2px solid #4b0082; border-radius: 8px 8px 0 0;
-            padding: 30px; transition: 0.5s ease;
-            z-index: 3000; box-shadow: 0 -10px 30px rgba(0,0,0,0.8);
+            position: fixed; top: 60%; left: 50%; /* Сделал повыше */
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 550px; background: #0f0f0f;
+            border: 2px solid #4b0082; border-radius: 10px;
+            padding: 40px; transition: 0.4s ease;
+            z-index: 3000; box-shadow: 0 0 50px rgba(75, 0, 130, 0.4);
+            visibility: hidden; opacity: 0;
+        }
+        #profile-modal.active { visibility: visible; opacity: 1; transform: translate(-50%, -50%) scale(1); top: 50%; }
+
+        .profile-header { display: flex; gap: 30px; align-items: center; border-bottom: 1px solid #333; padding-bottom: 20px; }
+        .profile-nick { color: #a64dff; font-size: 28px; margin: 0; text-shadow: 0 0 10px #a64dff; }
+        .profile-level { color: #00ff00; font-size: 14px; margin-top: 5px; }
+
+        /* --- [CSS] ОСНОВНОЙ КОНТЕНТ --- */
+        .main-container { margin-top: 100px; width: 85%; max-width: 1000px; display: flex; flex-direction: column; align-items: center; }
+
+        .action-row { display: flex; gap: 20px; width: 100%; justify-content: center; margin-bottom: 40px; }
+        .btn-action {
+            flex: 1; max-width: 200px; padding: 15px; background: rgba(10,10,10,0.8);
+            border: 1px solid #4b0082; color: #fff; cursor: pointer; transition: 0.3s;
+            font-family: inherit; font-weight: bold; text-transform: uppercase;
+        }
+        .btn-action:hover { background: #4b0082; box-shadow: 0 0 15px #4b0082; transform: translateY(-3px); }
+
+        /* Полоса прозрачная по краям */
+        .gradient-line {
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent 0%, #4b0082 50%, transparent 100%);
+            margin: 20px 0;
         }
 
-        #profile-modal.active { bottom: 20%; border-radius: 8px; }
+        .welcome-text { font-size: 20px; color: #a64dff; letter-spacing: 3px; margin-bottom: 30px; }
 
-        .profile-header { display: flex; gap: 20px; align-items: flex-start; }
-
-        .profile-main-info { flex-grow: 1; }
-
-        .profile-nick { color: #a64dff; font-size: 24px; font-weight: bold; margin: 0; }
-        .profile-level { color: #00ff00; font-size: 12px; margin-top: 5px; }
-        .profile-uuid { color: #555; font-size: 10px; margin-top: 15px; }
-
-        .profile-details { margin-top: 25px; border-top: 1px solid #333; padding-top: 20px; }
-        .detail-label { color: #666; font-size: 10px; text-transform: uppercase; }
-        .detail-value { color: #ddd; font-size: 14px; margin-bottom: 15px; }
-
+        .info-panel {
+            background: rgba(15, 15, 15, 0.9); border: 1px solid #333; border-left: 4px solid #4b0082;
+            padding: 25px; width: 100%; margin-bottom: 20px; box-sizing: border-box;
+        }
+        .info-panel h4 { margin: 0 0 15px 0; color: #a64dff; font-size: 14px; }
     </style>
 </head>
 <body>
 
     <div class="navbar">
         <button class="btn-menu" onclick="toggleSidebar()">MENU</button>
-        <span style="margin-left: 20px; font-size: 10px; color: #444;">G.L.O.M.G. // OPERATOR_CABINET</span>
+        <span style="margin-left: 20px; font-size: 10px; color: #444;">G.L.O.M.G. // SECURITY_CORE</span>
     </div>
 
     <div id="sidebar-overlay" onclick="closeAll()"></div>
-
     <div class="sidebar" id="sidebar">
-        <div class="user-icon-big">👤</div>
+        <svg class="user-svg-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        
         <button class="side-btn" onclick="openProfile()">MY_PROFILE</button>
         <button class="side-btn">DATABASE_ARCHIVE</button>
-        <button class="side-btn">COMMUNICATION_LINK</button>
+        <button class="side-btn">SYSTEM_LOGS</button>
         
         <button class="side-btn btn-logout" onclick="location.href='/'">LOGOUT</button>
     </div>
 
+    <div class="main-container">
+        <div class="action-row">
+            <button class="btn-action">РАДАР</button>
+            <button class="btn-action">ПОЧТА</button>
+            <button class="btn-action">АРХИВ</button>
+        </div>
+
+        <div class="gradient-line"></div>
+        <div class="welcome-text">WELCOME, <span id="display-name">OPERATOR</span></div>
+
+        <div class="info-panel">
+            <h4>ИНСТРУКЦИИ ДЛЯ ПЕРСОНАЛА</h4>
+            <p id="operator-note">> Ожидание вводных данных от центрального узла...</p>
+        </div>
+
+        <div class="info-panel">
+            <h4>ПОСЛЕДНИЕ ОБНОВЛЕНИЯ СИСТЕМЫ</h4>
+            <p>• Протокол авторизации обновлен до v1.0.9</p>
+            <p>• Подключены модули "Радар" и "Архив" (Alpha)</p>
+            <p>• Визуальный интерфейс личного кабинета стабилизирован</p>
+        </div>
+    </div>
+
     <div id="profile-modal">
         <div class="profile-header">
-            <div class="user-icon-big" style="margin:0; width:60px; height:60px; font-size: 30px;">👤</div>
+            <svg class="user-svg-icon" style="margin:0; width:80px; height:80px;" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
             <div class="profile-main-info">
-                <p class="profile-nick" id="p-nick">USER_NAME</p>
-                <div class="profile-level">LEVEL: <span id="p-level">0</span></div>
-                <div class="profile-uuid">UUID: <span id="p-uuid">0000-0000-0000</span></div>
+                <p class="profile-nick" id="p-nick">NAME</p>
+                <div class="profile-level">RANK: <span id="p-level">ACCESS_LEVEL</span></div>
+                <div class="profile-uuid" style="color:#555; font-size:11px; margin-top:10px;">UUID: <span id="p-uuid">XXXX-XXXX-XXXX</span></div>
             </div>
         </div>
         
-        <div class="profile-details">
-            <div class="detail-label">Отдел</div>
-            <div class="detail-value" id="p-dept">Internal Security</div>
-            
-            <div class="detail-label">Описание</div>
-            <div class="detail-value" id="p-desc">Системный оператор группы мониторинга ONG.</div>
+        <div style="display: flex; gap: 40px; margin-top: 30px;">
+            <div>
+                <div style="color:#666; font-size:10px; text-transform:uppercase;">Отдел</div>
+                <div id="p-dept" style="color:#ddd; margin-top:5px;">Security</div>
+            </div>
+            <div>
+                <div style="color:#666; font-size:10px; text-transform:uppercase;">Статус</div>
+                <div style="color:#00ff00; margin-top:5px;">ACTIVE</div>
+            </div>
+        </div>
+
+        <div style="margin-top: 25px;">
+            <div style="color:#666; font-size:10px; text-transform:uppercase;">Описание</div>
+            <div id="p-desc" style="color:#bbb; font-size:13px; margin-top:5px; line-height:1.5;">...</div>
         </div>
         
-        <button class="btn-menu" style="width: 100%; margin-top: 10px;" onclick="closeAll()">CLOSE</button>
-    </div>
-
-    <div style="margin-top: 100px; text-align: center; color: #333;">
-        <h1>ACCESS_POINT: DASHBOARD</h1>
-        <p>Используйте MENU для доступа к функциям.</p>
+        <button class="btn-menu" style="width: 100%; margin-top: 30px;" onclick="closeAll()">BACK_TO_TERMINAL</button>
     </div>
 
     <script>
-        // База сотрудников
         const operators = {
-            "morisreal": { uuid: "7741-09XX-ONG", level: "Admin", dept: "CORE_MANAGEMENT", desc: "Главный архитектор системы G.L.O.M.G." },
-            "sumber": { uuid: "3312-88XX-ONG", level: "Senior", dept: "PRISM_OPERATOR", desc: "Оператор организации P.R.I.S.M" },
-            "dykzxz": { uuid: "5590-11XX-ONG", level: "Agent", dept: "FIELD_OPERATIONS", desc: "Оперативный сбор данных в секторах 4-9." },
-            "msk4ne_": { uuid: "1004-44XX-ONG", level: "Analyst", dept: "DATA_ARCHIVE", desc: "Обработка и расшифровка логов ONG." },
-            "shmegh1": { uuid: "9982-22XX-ONG", level: "Operator", dept: "MONITORING", desc: "Круглосуточный мониторинг состояния ядра." }
+            "morisreal": { uuid: "7741-09XX-ONG", level: "Admin", dept: "CORE_MANAGEMENT", desc: "Главный архитектор системы. Полный доступ к ядру." },
+            "sumber": { uuid: "3312-88XX-ONG", level: "Senior", dept: "NETWORK_SECURITY", desc: "Контроль внешних периметров и шифрование каналов." },
+            "dykzxz": { uuid: "5590-11XX-ONG", level: "Agent", dept: "FIELD_OPERATIONS", desc: "Сбор данных в горячих точках. Оперативная разведка." },
+            "msk4ne_": { uuid: "1004-44XX-ONG", level: "Analyst", dept: "DATA_ARCHIVE", desc: "Архивация логов и поиск аномалий в истории ONG." },
+            "shmegh1": { uuid: "9982-22XX-ONG", level: "Operator", dept: "MONITORING", desc: "Дежурный оператор. Ответственный за стабильность шлюза." }
         };
 
-        // Текущий пользователь (потом сделаем динамически)
-        let currentUser = "morisreal"; 
+        // ТЕКУЩИЙ ПОЛЬЗОВАТЕЛЬ (Для теста поставим morisreal)
+        let user = "morisreal";
+        document.getElementById('display-name').innerText = user.toUpperCase();
 
         function toggleSidebar() {
             document.getElementById('sidebar').classList.add('active');
@@ -170,12 +210,12 @@
         }
 
         function openProfile() {
-            const data = operators[currentUser];
-            document.getElementById('p-nick').innerText = currentUser.toUpperCase();
-            document.getElementById('p-uuid').innerText = data.uuid;
-            document.getElementById('p-level').innerText = data.level;
-            document.getElementById('p-dept').innerText = data.dept;
-            document.getElementById('p-desc').innerText = data.desc;
+            const d = operators[user];
+            document.getElementById('p-nick').innerText = user.toUpperCase();
+            document.getElementById('p-uuid').innerText = d.uuid;
+            document.getElementById('p-level').innerText = d.level;
+            document.getElementById('p-dept').innerText = d.dept;
+            document.getElementById('p-desc').innerText = d.desc;
 
             document.getElementById('sidebar').classList.remove('active');
             document.getElementById('profile-modal').classList.add('active');
