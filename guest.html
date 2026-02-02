@@ -2,105 +2,151 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>G.L.O.M.G. // GUEST_ACCESS</title>
+    <title>G.L.O.M.G. // GUEST_PAGE</title>
     <style>
-        /* --- [CSS] СТИЛИ СТРАНИЦЫ --- */
         body {
-            margin: 0; padding: 20px;
+            margin: 0; padding: 0;
             background-color: #050505;
             font-family: 'Courier New', Courier, monospace;
             color: #e0e0e0;
+            min-height: 120vh;
             display: flex;
             flex-direction: column;
-            align-items: center; /* Центрируем блоки по горизонтали */
-            min-height: 120vh; /* Больше высоты экрана, чтобы можно было листать */
+            align-items: center;
         }
 
-        /* Общий стиль для всех плашек */
-        .panel {
-            background: rgba(20, 20, 20, 0.9);
-            border: 1px solid #4b0082;
-            box-shadow: 0 0 10px rgba(75, 0, 130, 0.3);
-            padding: 20px;
-            margin-bottom: 20px;
+        /* Украшение фона: Сетка */
+        body::before {
+            content: "";
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(75, 0, 130, 0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(75, 0, 130, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+        }
+
+        /* 4. ВЕРХНЯЯ ПАНЕЛЬ И ПОЛОСА */
+        .navbar {
+            width: 100%;
+            height: 60px;
+            border-bottom: 2px solid #4b0082;
+            background: rgba(10, 10, 10, 0.9);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
             box-sizing: border-box;
         }
 
-        /* Верхняя длинная плажка */
-        .status-header {
-            width: 80%; /* Не до конца, но широкая */
-            text-align: center;
-            border-left: 5px solid #4b0082;
+        .btn-nav {
+            background: #4b0082;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+            transition: 0.3s;
         }
 
-        .status-ok { color: #00ff00; font-weight: bold; }
+        .btn-nav:hover { background: #a64dff; box-shadow: 0 0 10px #a64dff; }
 
-        /* Контейнер для средних блоков */
-        .middle-row {
+        /* 3. ОПУСКАЕМ БЛОКИ ВНИЗ */
+        .container {
+            margin-top: 150px; /* Отступ сверху, чтобы блоки ушли ниже */
             width: 80%;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .panel {
+            background: rgba(15, 15, 15, 0.95);
+            border: 1px solid #333;
+            border-left: 5px solid #4b0082;
+            padding: 20px;
+            margin-bottom: 25px;
+            width: 100%;
+            box-sizing: border-box;
+            box-shadow: 10px 10px 0px rgba(75, 0, 130, 0.1);
+        }
+
+        /* 2. ВЕРХНЯЯ ПЛАЖКА: ТЕКСТ НА ВСЮ ДЛИНУ + КРУЖОК */
+        .status-bar {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            background-color: #a64dff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #a64dff;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.4; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .middle-row {
+            display: flex;
+            width: 100%;
             gap: 20px;
         }
 
-        .info-block {
-            flex: 1; /* Делит место 50/50 */
-        }
+        .info-block { flex: 1; }
 
-        /* Нижняя плажка */
-        .bottom-panel {
-            width: 80%;
-        }
+        h3 { color: #a64dff; margin-top: 0; font-size: 14px; text-transform: uppercase; }
+        p { font-size: 13px; color: #aaa; line-height: 1.6; }
 
-        h3 { color: #a64dff; margin-top: 0; border-bottom: 1px solid #333; }
-        p { font-size: 14px; line-height: 1.5; color: #bbb; }
-
-        /* Эффект VHS (полосы) */
-        body::after {
-            content: " ";
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-            background-size: 100% 4px;
-            z-index: 1000;
-            pointer-events: none;
-        }
-        
         /* ПОСЛЕ ЭТОЙ СТРОКИ ПИСАТЬ НОВЫЙ CSS */
     </style>
 </head>
 <body>
 
-    <div class="panel status-header">
-        /* ПОСЛЕ ЭТОЙ СТРОКИ ПИСАТЬ КОД HTML (ВНУТРИ СТАТУСА) */
-        <h2>SYSTEM STATUS: <span class="status-ok">OPERATIONAL</span></h2>
-        <small>G.L.O.M.G. CORE v1.0.4 - Глобальный мониторинг ONG</small>
+    <div class="navbar">
+        <button class="btn-nav" onclick="location.href='/'">← АВТОРИЗАЦИЯ</button>
+        <span style="margin-left: 20px; font-size: 10px; color: #444;">G.L.O.M.G. VISITOR_ACCESS_PORTAL</span>
     </div>
 
-    <div class="middle-row">
-        <div class="panel info-block">
-            <h3>НОВОСТИ</h3>
-            /* ПОСЛЕ ЭТОЙ СТРОКИ ПИСАТЬ КОД HTML (НОВОСТИ) */
-            <p>> 02.02.2026: Успешный запуск ядра.</p>
-            <p>> 01.02.2026: Синхронизация с ботом завершена.</p>
+    <div class="container">
+        <div class="panel status-bar">
+            <div class="dot"></div>
+            <div style="flex-grow: 1;">
+                SYSTEM_STATUS: <span style="color: #00ff00;">ONLINE</span> // CORE_MODE: STANDBY // NO_THREATS_DETECTED
+            </div>
         </div>
-        <div class="panel info-block">
-            <h3>О НАС</h3>
-            /* ПОСЛЕ ЭТОЙ СТРОКИ ПИСАТЬ КОД HTML (О НАС) */
-            <p>ONG (Operations Network Group) — закрытая система управления ресурсами и мониторинга данных.</p>
-        </div>
-    </div>
 
-    <div class="panel bottom-panel">
-        <h3>НЕДАВНИЕ ИЗМЕНЕНИЯ</h3>
-        /* ПОСЛЕ ЭТОЙ СТРОКИ ПИСАТЬ КОД HTML (ИЗМЕНЕНИЯ) */
-        <p>• Оптимизация авторизации (удаление дубликатов кода).</p>
-        <p>• Внедрение VHS-фильтров на стороне клиента.</p>
-        <p>• Подключение Telegram-шлюза для архивации.</p>
+        <div class="middle-row">
+            <div class="panel info-block">
+                <h3>НОВОСТИ</h3>
+                <p>> База данных переведена в режим чтения.</p>
+                <p>> Обнаружена активность в секторе ONG-7.</p>
+            </div>
+            <div class="panel info-block">
+                <h3>О НАС</h3>
+                <p>Мы — децентрализованная сеть мониторинга G.L.O.M.G. Наша цель: стабильность системы ONG.</p>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h3>НЕДАВНИЕ ИЗМЕНЕНИЯ</h3>
+            <p>• Добавлена фоновая сетка терминала.</p>
+            <p>• Исправлены ошибки отображения комментариев.</p>
+            <p>• Настроена навигационная панель.</p>
+        </div>
     </div>
 
     <script>
-        /* --- [JS] ЛОГИКА ГОСТЕВОЙ СТРАНИЦЫ --- */
-        console.log("Guest access granted.");
+        console.log("Guest interface active.");
         // ПОСЛЕ ЭТОЙ СТРОКИ ПИСАТЬ НОВЫЕ ФУНКЦИИ JS
     </script>
 </body>
