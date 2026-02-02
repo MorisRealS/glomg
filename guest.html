@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>G.L.O.M.G. // GUEST_ACCESS</title>
+    <style>
+        /* --- [CSS] СТИЛИ СТРАНИЦЫ --- */
+        body {
+            margin: 0; padding: 20px;
+            background-color: #050505;
+            font-family: 'Courier New', Courier, monospace;
+            color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Центрируем блоки по горизонтали */
+            min-height: 120vh; /* Больше высоты экрана, чтобы можно было листать */
+        }
+
+        /* Общий стиль для всех плашек */
+        .panel {
+            background: rgba(20, 20, 20, 0.9);
+            border: 1px solid #4b0082;
+            box-shadow: 0 0 10px rgba(75, 0, 130, 0.3);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Верхняя длинная плажка */
+        .status-header {
+            width: 80%; /* Не до конца, но широкая */
+            text-align: center;
+            border-left: 5px solid #4b0082;
+        }
+
+        .status-ok { color: #00ff00; font-weight: bold; }
+
+        /* Контейнер для средних блоков */
+        .middle-row {
+            width: 80%;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .info-block {
+            flex: 1; /* Делит место 50/50 */
+        }
+
+        /* Нижняя плажка */
+        .bottom-panel {
+            width: 80%;
+        }
+
+        h3 { color: #a64dff; margin-top: 0; border-bottom: 1px solid #333; }
+        p { font-size: 14px; line-height: 1.5; color: #bbb; }
+
+        /* Эффект VHS (полосы) */
+        body::after {
+            content: " ";
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 4px;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        /* ПОСЛЕ ЭТОЙ СТРОКИ ПИСАТЬ НОВЫЙ CSS */
+    </style>
+</head>
+<body>
+
+    <div class="panel status-header">
+        /* ПОСЛЕ ЭТОЙ СТРОКИ ПИСАТЬ КОД HTML (ВНУТРИ СТАТУСА) */
+        <h2>SYSTEM STATUS: <span class="status-ok">OPERATIONAL</span></h2>
+        <small>G.L.O.M.G. CORE v1.0.4 - Глобальный мониторинг ONG</small>
+    </div>
+
+    <div class="middle-row">
+        <div class="panel info-block">
+            <h3>НОВОСТИ</h3>
+            /* ПОСЛЕ ЭТОЙ СТРОКИ ПИСАТЬ КОД HTML (НОВОСТИ) */
+            <p>> 02.02.2026: Успешный запуск ядра.</p>
+            <p>> 01.02.2026: Синхронизация с ботом завершена.</p>
+        </div>
+        <div class="panel info-block">
+            <h3>О НАС</h3>
+            /* ПОСЛЕ ЭТОЙ СТРОКИ ПИСАТЬ КОД HTML (О НАС) */
+            <p>ONG (Operations Network Group) — закрытая система управления ресурсами и мониторинга данных.</p>
+        </div>
+    </div>
+
+    <div class="panel bottom-panel">
+        <h3>НЕДАВНИЕ ИЗМЕНЕНИЯ</h3>
+        /* ПОСЛЕ ЭТОЙ СТРОКИ ПИСАТЬ КОД HTML (ИЗМЕНЕНИЯ) */
+        <p>• Оптимизация авторизации (удаление дубликатов кода).</p>
+        <p>• Внедрение VHS-фильтров на стороне клиента.</p>
+        <p>• Подключение Telegram-шлюза для архивации.</p>
+    </div>
+
+    <script>
+        /* --- [JS] ЛОГИКА ГОСТЕВОЙ СТРАНИЦЫ --- */
+        console.log("Guest access granted.");
+        // ПОСЛЕ ЭТОЙ СТРОКИ ПИСАТЬ НОВЫЕ ФУНКЦИИ JS
+    </script>
+</body>
+</html>
