@@ -3,371 +3,411 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G.L.O.M.G. | INTERNAL_TERMINAL_V5</title>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>G.L.O.M.G. | SECURE_STATION_TERMINAL_PRO_V9</title>
     <style>
-        /* --- ЦВЕТОВАЯ ПАЛИТРА И ПЕРЕМЕННЫЕ --- */
+        /* --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ЦВЕТА --- */
         :root {
-            --purple-main: #a020f0;
-            --purple-glow: rgba(160, 32, 240, 0.4);
-            --bg-black: #050005;
-            --sidebar-bg: rgba(10, 0, 20, 0.6);
-            --active-item-bg: rgba(30, 0, 50, 0.95);
-            --border-color: rgba(160, 32, 240, 0.3);
-            --circuit-opacity: 0.07;
+            --neon-purple: #a020f0;
+            --deep-purple: #1a002a;
+            --ultra-black: #050005;
+            --glow-color: rgba(160, 32, 240, 0.4);
+            --sidebar-width: 380px;
+            --header-height: 75px;
+            --vhs-scan-speed: 8s;
+            --crt-opacity: 0.15;
         }
 
-        /* --- ГЛОБАЛЬНЫЕ СТИЛИ --- */
+        /* --- БАЗОВЫЙ СКЕЛЕТ И VHS ENGINE --- */
         * {
             box-sizing: border-box;
-            outline: none;
+            margin: 0;
+            padding: 0;
+            cursor: crosshair;
         }
 
         body, html {
-            margin: 0;
-            padding: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: var(--bg-black);
-            color: var(--purple-main);
+            width: 100%;
+            height: 100%;
+            background-color: var(--ultra-black);
+            color: var(--neon-purple);
             font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            position: relative;
         }
 
-        /* --- ФОНОВАЯ ПОДЛОЖКА (ПЛАТА + СВЕТ) --- */
-        .background-overlay {
+        /* Эффект шума VHS */
+        body::before {
+            content: " ";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_30fps_static_noise.gif');
+            opacity: 0.03;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        /* Полосы сканирования CRT */
+        body::after {
+            content: " ";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%, 
+                rgba(0, 0, 0, 0.2) 50%
+            ), linear-gradient(
+                90deg, 
+                rgba(255, 0, 0, 0.05), 
+                rgba(0, 255, 0, 0.02), 
+                rgba(0, 0, 255, 0.05)
+            );
+            background-size: 100% 3px, 3px 100%;
+            z-index: 9998;
+            pointer-events: none;
+        }
+
+        /* Бегущая VHS линия */
+        .vhs-scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(160, 32, 240, 0.2);
+            opacity: 0.6;
+            z-index: 10000;
+            pointer-events: none;
+            animation: moveScanline var(--vhs-scan-speed) linear infinite;
+            box-shadow: 0 0 15px var(--neon-purple);
+        }
+
+        @keyframes moveScanline {
+            0% { top: -10%; }
+            100% { top: 110%; }
+        }
+
+        /* Фоновая геометрия платы */
+        .background-pcb {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
-            background: 
-                radial-gradient(circle at 50% 50%, rgba(160, 32, 240, 0.18) 0%, transparent 75%),
-                linear-gradient(var(--circuit-opacity) 1px, transparent 1px),
-                linear-gradient(90deg, var(--circuit-opacity) 1px, transparent 1px);
-            background-size: 100% 100%, 65px 65px, 65px 65px;
-            pointer-events: none;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(160, 32, 240, 0.15) 0%, transparent 80%),
+                linear-gradient(rgba(160, 32, 240, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(160, 32, 240, 0.05) 1px, transparent 1px);
+            background-size: 100% 100%, 55px 55px, 55px 55px;
         }
 
-        /* --- ВЕРХНЯЯ НАВИГАЦИЯ --- */
-        .header-interface {
-            height: 70px;
-            width: 100%;
-            border-bottom: 2px solid var(--purple-main);
-            background-color: rgba(5, 0, 10, 0.96);
+        /* --- ВЕРХНЯЯ ПАНЕЛЬ --- */
+        .main-header {
+            height: var(--header-height);
+            border-bottom: 2px solid var(--neon-purple);
+            background-color: rgba(5, 0, 10, 0.95);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 40px;
-            z-index: 100;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            padding: 0 45px;
+            z-index: 1000;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.8);
         }
 
-        .back-navigation-unit a {
-            color: var(--purple-main);
-            text-decoration: none;
-            border: 1px solid var(--purple-main);
-            padding: 10px 22px;
+        .header-logo {
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 5px;
+            text-shadow: 0 0 10px var(--neon-purple);
+        }
+
+        .nav-group {
+            display: flex;
+            gap: 25px;
+        }
+
+        .btn-ui {
+            background: transparent;
+            color: var(--neon-purple);
+            border: 1px solid var(--neon-purple);
+            padding: 10px 24px;
+            font-family: inherit;
             font-size: 13px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            transition: all 0.4s ease;
-        }
-
-        .back-navigation-unit a:hover {
-            background-color: var(--purple-main);
-            color: #ffffff;
-            box-shadow: 0 0 15px var(--purple-glow);
-        }
-
-        .user-identity-block {
-            font-size: 14px;
             font-weight: bold;
-            letter-spacing: 3px;
-            text-shadow: 0 0 5px var(--purple-main);
-        }
-
-        .action-controls .write-btn {
-            background-color: rgba(45, 0, 75, 0.6);
-            color: #ffffff;
-            border: 1px solid var(--purple-main);
-            padding: 12px 28px;
+            text-transform: uppercase;
             text-decoration: none;
-            font-weight: bold;
-            text-transform: uppercase;
-            transition: 0.3s;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .action-controls .write-btn:hover {
-            background-color: var(--purple-main);
-            box-shadow: 0 0 20px var(--purple-main);
+        .btn-ui:hover {
+            background-color: var(--neon-purple);
+            color: #fff;
+            box-shadow: 0 0 20px var(--neon-purple);
+            transform: scale(1.05);
         }
 
-        /* --- ОСНОВНОЙ КОНТЕЙНЕР --- */
-        .main-workspace-container {
+        /* --- РАБОЧЕЕ ПРОСТРАНСТВО --- */
+        .workspace {
             display: flex;
             flex: 1;
             width: 100%;
             overflow: hidden;
-            position: relative;
         }
 
-        /* --- ЛЕВАЯ ПАНЕЛЬ (SIDEBAR) --- */
-        .mail-selection-sidebar {
-            width: 350px;
-            height: 100%;
-            border-right: 1px solid var(--purple-main);
-            background-color: var(--sidebar-bg);
-            /* ПОСТОЯННОЕ РАЗМЫТИЕ */
+        /* ЛЕВАЯ ПАНЕЛЬ: РАЗМЫТА ВСЕГДА */
+        .sidebar {
+            width: var(--sidebar-width);
+            border-right: 1px solid var(--neon-purple);
+            background-color: rgba(15, 0, 25, 0.5);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
-            overflow-y: auto;
-            position: relative;
-            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            z-index: 500;
         }
 
-        .mail-selection-sidebar::-webkit-scrollbar {
-            width: 4px;
-        }
-        .mail-selection-sidebar::-webkit-scrollbar-thumb {
-            background: var(--purple-main);
+        .tabs-header {
+            display: flex;
+            border-bottom: 1px solid var(--neon-purple);
         }
 
-        .mail-entry-node {
-            padding: 25px;
-            border-bottom: 1px solid var(--border-color);
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: transparent;
-            position: relative;
-        }
-
-        .mail-entry-node:hover {
-            background-color: rgba(160, 32, 240, 0.12);
-        }
-
-        .mail-entry-node.is-active {
-            background-color: var(--active-item-bg);
-            color: #ffffff;
-            border-left: 6px solid var(--purple-main);
-            box-shadow: inset 10px 0 20px rgba(0, 0, 0, 0.4);
-        }
-
-        /* --- ПРАВАЯ ПАНЕЛЬ (VIEWER) --- */
-        .mail-view-module {
+        .tab-item {
             flex: 1;
-            height: 100%;
-            padding: 70px;
-            position: relative;
-            transition: backdrop-filter 0.7s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.7s;
+            padding: 18px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: 0.3s;
+            opacity: 0.5;
+            border-right: 1px solid var(--neon-purple);
         }
 
-        /* РАЗМЫТИЕ ТОЛЬКО ПРИ ЧТЕНИИ */
-        .mail-view-module.reading-mode-active {
+        .tab-item:last-child { border-right: none; }
+        .tab-item.active {
+            opacity: 1;
+            background-color: rgba(160, 32, 240, 0.2);
+            text-shadow: 0 0 5px #fff;
+        }
+
+        .data-list {
+            flex: 1;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--neon-purple) transparent;
+        }
+
+        .data-node {
+            padding: 25px 30px;
+            border-bottom: 1px solid rgba(160, 32, 240, 0.1);
+            transition: 0.4s;
+            position: relative;
+        }
+
+        .data-node:hover {
+            background-color: rgba(160, 32, 240, 0.1);
+        }
+
+        .data-node.is-active {
+            background-color: rgba(40, 0, 70, 0.9);
+            border-left: 6px solid var(--neon-purple);
+            color: #fff;
+        }
+
+        /* ПРАВАЯ ПАНЕЛЬ: РАЗМЫТИЕ ПРИ ЧТЕНИИ */
+        .content-viewer {
+            flex: 1;
+            padding: 80px;
+            position: relative;
+            transition: 0.8s ease-in-out;
+            display: flex;
+            justify-content: center;
+        }
+
+        .content-viewer.is-blurred {
             backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
-            background-color: rgba(5, 0, 10, 0.75);
+            background-color: rgba(5, 0, 5, 0.7);
         }
 
-        .message-content-wrapper {
+        .inner-content {
+            width: 100%;
+            max-width: 900px;
             opacity: 0;
             transform: translateY(30px);
-            transition: all 0.5s ease-out;
-            pointer-events: none;
-            max-width: 850px;
+            transition: 0.5s;
         }
 
-        .message-content-wrapper.is-visible {
+        .inner-content.visible {
             opacity: 1;
             transform: translateY(0);
-            pointer-events: auto;
         }
 
-        .mail-subject-header {
-            font-size: 36px;
-            font-weight: 800;
-            letter-spacing: 1px;
+        .msg-title {
+            font-size: 38px;
+            font-weight: 900;
             margin-bottom: 20px;
-            border-bottom: 1px solid var(--purple-main);
+            border-bottom: 1px solid var(--neon-purple);
             padding-bottom: 20px;
             text-transform: uppercase;
         }
 
-        .mail-metadata-row {
+        .msg-meta {
             font-size: 13px;
-            color: rgba(160, 32, 240, 0.7);
+            opacity: 0.6;
             margin-bottom: 50px;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
         }
 
-        .mail-body-paragraph {
+        .msg-body {
             font-size: 19px;
-            line-height: 2;
-            white-space: pre-wrap;
+            line-height: 1.9;
             color: rgba(255, 255, 255, 0.9);
+            white-space: pre-wrap;
         }
 
-        /* --- ДЕКОРАТИВНЫЕ ЭЛЕМЕНТЫ --- */
-        .corner-deco {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            border: 1px solid var(--purple-main);
-        }
-        .top-left { top: 40px; left: 40px; border-right: none; border-bottom: none; }
-        .bottom-right { bottom: 40px; right: 40px; border-left: none; border-top: none; }
+        /* --- СКРОЛЛБАР --- */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--neon-purple); }
 
     </style>
 </head>
 <body>
 
-    <div class="background-overlay"></div>
+    <div class="vhs-scanline"></div>
+    <div class="background-pcb"></div>
 
-    <header class="header-interface">
-        <div class="back-navigation-unit">
-            <a href="dashboard.html">← ЛИЧНЫЙ КАБИНЕТ</a>
+    <header class="main-header">
+        <div class="header-logo">G.L.O.M.G. TERMINAL</div>
+        <div class="nav-group">
+            <a href="dashboard.html" class="btn-ui">ПРОФИЛЬ</a>
+            <a href="send_mail.html" class="btn-ui" id="btn-write">НАПИСАТЬ</a>
         </div>
-        
-        <div class="user-identity-block" id="display-uuid">
-            LOADING_IDENTITY...
-        </div>
-
-        <div class="action-controls">
-            <a href="send_mail.html" class="write-btn">СОЗДАТЬ ПАКЕТ</a>
-        </div>
+        <div id="uuid-display" style="font-weight: bold; font-size: 14px; opacity: 0.8;">UUID: NULL_DATA</div>
     </header>
 
-    <div class="main-workspace-container">
-        <aside class="mail-selection-sidebar" id="sidebar-list-root">
-            </aside>
+    <section class="workspace">
+        <aside class="sidebar">
+            <div class="tabs-header">
+                <div class="tab-item active" id="tab-inbox" onclick="toggleLayer('inbox')">MESSAGES</div>
+                <div class="tab-item" id="tab-archive" onclick="toggleLayer('archive')">ARCHIVE</div>
+            </div>
+            <div class="data-list" id="list-container">
+                </div>
+        </aside>
 
-        <main class="mail-view-module" id="viewer-root">
-            <div class="corner-deco top-left"></div>
-            <div class="corner-deco bottom-right"></div>
-            
-            <section class="message-content-wrapper" id="content-root">
-                </section>
+        <main class="content-viewer" id="viewer-pane">
+            <div class="inner-content" id="content-root">
+                </div>
         </main>
-    </div>
+    </section>
 
     <script>
-        /**
-         * ЛОГИКА ПОЧТОВОГО ТЕРМИНАЛА G.L.O.M.G.
-         */
+        /* ================================================================
+           ЛОГИКА ТЕРМИНАЛА
+           ================================================================ */
 
-        const mailDatabase = [
-            { 
-                id: 2041, 
-                subject: "Центральный узел", 
-                sender: "SYSTEM_CORE", 
-                content: "Внимание! Все системы терминала переведены в режим повышенной готовности. Шифрование: 256-bit AES. Протокол 10-бит активен." 
-            },
-            { 
-                id: 2042, 
-                subject: "Директива UUID", 
-                sender: "MORISREAL", 
-                content: "Напоминаю всем сотрудникам: ваш двоичный идентификатор должен быть верифицирован в течение 24 часов. Невыполнение приведет к блокировке." 
-            },
-            { 
-                id: 2043, 
-                subject: "Статус сети", 
-                sender: "SUMBER", 
-                content: "Проверка визуального слоя 'Circuit' завершена. Размытие фона и световые эффекты синхронизированы с Личным Кабинетом." 
-            }
-        ];
+        const database = {
+            inbox: [
+                { id: 1, sender: "SYSTEM_CORE", title: "Доступ разрешен", body: "Ваша авторизация в системе G.L.O.M.G. прошла успешно. Все протоколы VHS и CRT синхронизированы с вашим UUID." },
+                { id: 2, sender: "MORISREAL", title: "Координаты сектора", body: "Проверь зашифрованный канал в Telegram. Я скинул новые спецификации для 10-битных ключей." },
+                { id: 3, sender: "SUMBER", title: "Тест полосы", body: "Если ты видишь бегущую полосу, значит VHS-движок работает корректно. Конец связи." }
+            ],
+            archive: [
+                { id: 101, sender: "SEC_ARCHIVE", title: "Лог_1998_04", body: "Первое упоминание о MorisReal в логах системы. Проект 'Плата' запущен в производство." },
+                { id: 102, sender: "G.L.O.M.G.", title: "Чертеж_V1", body: "Интерфейс должен быть фиолетовым. Любое использование зеленого цвета карается блокировкой UUID." },
+                { id: 103, sender: "SYSTEM", title: "Final_Warn", body: "Попытка несанкционированного доступа к TG_BOT_API будет пресечена." }
+            ]
+        };
 
-        let currentlySelectedMailId = null;
+        let currentLayer = 'inbox';
+        let activeMessageId = null;
 
-        const sidebarElement = document.getElementById('sidebar-list-root');
-        const viewerElement = document.getElementById('viewer-root');
-        const contentElement = document.getElementById('content-root');
+        const listRoot = document.getElementById('list-container');
+        const viewer = document.getElementById('viewer-pane');
+        const content = document.getElementById('content-root');
 
         /**
-         * Функция форматирования заголовка (Правило 11/12)
+         * Умная обрезка текста 11/12
          */
-        function getSmartTruncatedTitle(text) {
-            const containsSpace = text.indexOf(' ') !== -1;
-            const threshold = containsSpace ? 12 : 11;
-            
-            if (text.length > threshold) {
-                return text.substring(0, threshold) + "...";
-            }
-            return text;
+        function getPrettyTitle(str) {
+            const hasSpace = str.indexOf(' ') !== -1 || str.indexOf('_') !== -1;
+            const limit = hasSpace ? 12 : 11;
+            return str.length > limit ? str.substring(0, limit) + ".." : str;
         }
 
         /**
-         * Отрисовка списка сообщений
+         * Переключение вкладок
          */
-        function renderMailInterface() {
-            sidebarElement.innerHTML = '';
+        function toggleLayer(layer) {
+            currentLayer = layer;
+            activeMessageId = null;
+            
+            document.getElementById('tab-inbox').classList.toggle('active', layer === 'inbox');
+            document.getElementById('tab-archive').classList.toggle('active', layer === 'archive');
+            document.getElementById('btn-write').style.display = layer === 'inbox' ? 'block' : 'none';
+            
+            viewer.classList.remove('is-blurred');
+            content.classList.remove('visible');
+            
+            render();
+        }
 
-            mailDatabase.forEach(message => {
+        /**
+         * Отрисовка списка
+         */
+        function render() {
+            listRoot.innerHTML = '';
+            const items = database[currentLayer];
+
+            items.forEach(item => {
                 const node = document.createElement('div');
-                node.className = 'mail-entry-node';
+                node.className = `data-node ${activeMessageId === item.id ? 'is-active' : ''}`;
+                node.innerText = getPrettyTitle(item.title);
                 
-                if (currentlySelectedMailId === message.id) {
-                    node.classList.add('is-active');
-                }
-
-                node.innerText = getSmartTruncatedTitle(message.subject);
-
-                node.addEventListener('click', () => {
-                    handleMailSelection(message);
-                });
-
-                sidebarElement.appendChild(node);
+                node.onclick = () => {
+                    if (activeMessageId === item.id) {
+                        activeMessageId = null;
+                        viewer.classList.remove('is-blurred');
+                        content.classList.remove('visible');
+                    } else {
+                        activeMessageId = item.id;
+                        openMsg(item);
+                    }
+                    render();
+                };
+                listRoot.appendChild(node);
             });
         }
 
         /**
-         * Обработка клика по письму
+         * Открытие сообщения
          */
-        function handleMailSelection(mailObject) {
-            if (currentlySelectedMailId === mailObject.id) {
-                // ПОВТОРНЫЙ КЛИК - ЗАКРЫВАЕМ
-                currentlySelectedMailId = null;
-                viewerElement.classList.remove('reading-mode-active');
-                contentElement.classList.remove('is-visible');
-            } else {
-                // НОВЫЙ ВЫБОР
-                currentlySelectedMailId = mailObject.id;
-                viewerElement.classList.add('reading-mode-active');
-                contentElement.classList.add('is-visible');
-
-                contentElement.innerHTML = `
-                    <div class="mail-subject-header">${mailObject.subject}</div>
-                    <div class="mail-metadata-row">ОТПРАВИТЕЛЬ: [${mailObject.sender}]</div>
-                    <div class="mail-body-paragraph">${mailObject.content}</div>
-                `;
-            }
-            renderMailInterface();
+        function openMsg(msg) {
+            viewer.classList.add('is-blurred');
+            content.classList.add('visible');
+            content.innerHTML = `
+                <h1 class="msg-title">${msg.title}</h1>
+                <div class="msg-meta">ОТПРАВИТЕЛЬ: ${msg.sender} | LAYER: ${currentLayer.toUpperCase()}</div>
+                <div class="msg-body">${msg.body}</div>
+            `;
         }
 
-        /**
-         * Инициализация данных пользователя
-         */
-        function initUserSession() {
-            const storedName = localStorage.getItem('username') || 'staff';
-            let accessLevel = 4;
-            let binaryUUID = "0010111010";
+        // Инициализация профиля
+        const realName = localStorage.getItem('username') || 'MORISREAL';
+        const realUUID = localStorage.getItem('user_uuid') || '1110001110';
+        document.getElementById('uuid-display').innerText = `ID: ${realUUID}`;
 
-            if (storedName === 'morisreal') {
-                accessLevel = 6;
-                binaryUUID = "1110001110";
-            } else if (storedName === 'sumber') {
-                accessLevel = 5;
-                binaryUUID = "0101010101";
-            }
-
-            document.getElementById('display-uuid').innerText = `UUID: ${binaryUUID} | LVL: ${accessLevel}`;
-        }
-
-        // Запуск терминала
-        initUserSession();
-        renderMailInterface();
-
+        render();
     </script>
 </body>
 </html>
