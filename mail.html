@@ -3,131 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G.L.O.M.G. | CORE_ACCESS_TERMINAL</title>
+    <title>G.L.O.M.G. | TERMINAL_STATION_v4.5</title>
     <style>
-        /* --- ТЕРМИНАЛЬНЫЕ СТИЛИ --- 
+        /* G.L.O.M.G. CORE TERMINAL STYLESHEET
+           STRICT DESIGN - NO EXTERNAL ASSETS
         */
+
         :root {
             --green: #00ff41;
             --dark-green: #003b00;
-            --deep-bg: #050505;
-            --scanline-color: rgba(0, 255, 65, 0.1);
+            --bg-black: #000000;
+            --text-glow: 0 0 10px rgba(0, 255, 65, 0.5);
+            --border-glow: 0 0 20px rgba(0, 255, 65, 0.2);
         }
 
         * {
             box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            margin: 0;
+            padding: 0;
+            cursor: crosshair;
         }
 
         body, html {
-            background-color: var(--deep-bg);
+            background-color: var(--bg-black);
             color: var(--green);
             font-family: 'Courier New', Courier, monospace;
-            margin: 0;
-            padding: 0;
             height: 100vh;
             width: 100vw;
             overflow: hidden;
-            text-shadow: 0 0 5px var(--green);
-        }
-
-        /* Эффект старого монитора (CRT) */
-        .crt-filter {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 999;
-            background-size: 100% 3px, 3px 100%;
-            pointer-events: none;
-        }
-
-        .scanline-anim {
-            width: 100%;
-            height: 100px;
-            z-index: 1000;
-            background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, var(--scanline-color) 50%, rgba(0, 0, 0, 0) 100%);
-            opacity: 0.1;
-            position: absolute;
-            bottom: 100%;
-            animation: scanlineMove 8s linear infinite;
-            pointer-events: none;
-        }
-
-        @keyframes scanlineMove {
-            0% { bottom: 100%; }
-            100% { bottom: -100px; }
-        }
-
-        #matrix-bg {
-            position: fixed;
-            top: 0; left: 0;
-            z-index: 0;
-            opacity: 0.25;
-        }
-
-        /* Контейнер интерфейса */
-        .ui-wrapper {
-            position: relative;
-            z-index: 10;
             display: flex;
             flex-direction: column;
-            height: 100vh;
-            padding: 25px;
-            background: rgba(0, 8, 0, 0.88);
-            border: 1px solid var(--green);
-            margin: 15px;
-            box-shadow: inset 0 0 30px rgba(0, 255, 65, 0.1), 0 0 15px rgba(0, 255, 65, 0.2);
         }
 
-        .top-info-panel {
+        /* ОСНОВНАЯ ОБОЛОЧКА */
+        .terminal-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            border: 2px solid var(--green);
+            margin: 10px;
+            background: rgba(0, 10, 0, 0.95);
+            box-shadow: inset 0 0 50px rgba(0, 255, 65, 0.1), var(--border-glow);
+            position: relative;
+        }
+
+        /* ВЕРХНЯЯ ПАНЕЛЬ ИНФОРМАЦИИ */
+        .top-status-bar {
             display: flex;
             justify-content: space-between;
-            border-bottom: 2px double var(--green);
-            padding-bottom: 10px;
+            align-items: center;
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--green);
             margin-bottom: 20px;
             font-size: 14px;
-            text-transform: uppercase;
             letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
-        #terminal-content {
-            flex-grow: 1;
+        .status-node { color: #fff; text-shadow: var(--text-glow); }
+        .status-time { font-weight: bold; }
+        .status-encryption { color: var(--green); animation: pulse 2s infinite; }
+
+        @keyframes pulse {
+            50% { opacity: 0.3; }
+        }
+
+        /* ЗОНА ВЫВОДА ПИСЕМ (ИНБОКС) */
+        #main-display {
+            flex: 1;
             overflow-y: auto;
             padding-right: 15px;
-            scrollbar-width: thin;
-            scrollbar-color: var(--green) #000;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
-        /* Стилизация скроллбара */
-        #terminal-content::-webkit-scrollbar { width: 8px; }
-        #terminal-content::-webkit-scrollbar-track { background: #000; }
-        #terminal-content::-webkit-scrollbar-thumb { background: var(--green); border: 2px solid #000; }
+        /* СТИЛЬ КАЖДОГО ПИСЬМА */
+        .packet-entry {
+            border: 1px solid var(--dark-green);
+            background: rgba(0, 255, 65, 0.02);
+            padding: 15px;
+            position: relative;
+            animation: slideIn 0.3s ease-out;
+            transition: 0.3s;
+        }
 
-        .line-wrap { margin-bottom: 12px; line-height: 1.4; animation: blinkIn 0.05s ease; }
-        @keyframes blinkIn { from { opacity: 0; } to { opacity: 1; } }
+        .packet-entry:hover {
+            border-color: var(--green);
+            background: rgba(0, 255, 65, 0.05);
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.1);
+        }
 
-        .prefix-sys { color: #fff; background: var(--dark-green); padding: 0 5px; margin-right: 8px; font-size: 12px; }
-        .prefix-mail { color: #000; background: var(--green); padding: 0 5px; margin-right: 8px; font-size: 12px; font-weight: bold; }
-        .prefix-err { color: #fff; background: #900; padding: 0 5px; margin-right: 8px; font-size: 12px; }
-        
-        .time-stamp { color: #008f11; font-size: 0.85em; margin-right: 10px; }
-        .user-tag { color: #fff; text-shadow: 0 0 10px var(--green); }
-
-        .command-input-container {
+        .packet-meta {
             display: flex;
-            align-items: center;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--dark-green);
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--dark-green);
+            padding-bottom: 5px;
+        }
+
+        .packet-sender { color: #fff; font-weight: bold; }
+        .packet-body { line-height: 1.5; font-size: 15px; color: var(--green); }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ПОЛЕ КОМАНД И ВВОДА */
+        .terminal-input-section {
             border-top: 1px solid var(--green);
             padding-top: 15px;
-            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        .terminal-prompt {
+        .prompt-line {
+            display: flex;
+            align-items: center;
+        }
+
+        .prompt-symbol {
             color: var(--green);
             font-weight: bold;
-            margin-right: 12px;
-            white-space: nowrap;
+            margin-right: 10px;
         }
 
         #cli-input {
@@ -136,219 +140,192 @@
             color: var(--green);
             font-family: inherit;
             font-size: 18px;
-            width: 100%;
+            flex: 1;
             outline: none;
-            caret-color: #fff;
+            text-shadow: var(--text-glow);
         }
 
-        .action-bar {
+        /* КНОПКИ УПРАВЛЕНИЯ */
+        .action-tray {
             display: flex;
-            gap: 20px;
-            margin-top: 20px;
+            gap: 15px;
+            margin-top: 10px;
         }
 
-        .terminal-btn {
+        .nav-btn {
             background: transparent;
             border: 1px solid var(--green);
             color: var(--green);
-            padding: 8px 20px;
+            padding: 8px 18px;
+            font-family: inherit;
+            font-size: 12px;
             cursor: pointer;
             text-transform: uppercase;
-            font-size: 12px;
-            font-family: inherit;
             transition: 0.2s;
         }
 
-        .terminal-btn:hover {
+        .nav-btn:hover {
             background: var(--green);
             color: #000;
             box-shadow: 0 0 15px var(--green);
         }
 
-        .blink { animation: fastBlink 1s infinite; }
-        @keyframes fastBlink { 50% { opacity: 0; } }
+        /* СКРОЛЛБАР */
+        #main-display::-webkit-scrollbar { width: 4px; }
+        #main-display::-webkit-scrollbar-track { background: var(--bg-black); }
+        #main-display::-webkit-scrollbar-thumb { background: var(--green); }
+
+        /* СПЕЦ-ЭФФЕКТЫ */
+        .scanline {
+            width: 100%; height: 2px; background: rgba(0, 255, 65, 0.1);
+            position: absolute; top: 0; left: 0; pointer-events: none;
+            animation: moveScan 8s linear infinite;
+        }
+
+        @keyframes moveScan {
+            0% { top: 0; } 100% { top: 100%; }
+        }
+
+        .system-alert { color: #fff; background: var(--dark-green); padding: 2px 5px; font-size: 10px; margin-right: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="crt-filter"></div>
-    <div class="scanline-anim"></div>
-    <canvas id="matrix-bg"></canvas>
+    <div class="terminal-wrapper">
+        <div class="scanline"></div>
 
-    <div class="ui-wrapper">
-        <div class="top-info-panel">
-            <div id="sys-name">G.L.O.M.G. NETWORK v4.5.1</div>
-            <div id="sys-clock">00:00:00</div>
-            <div id="sys-user">ID: ---</div>
+        <div class="top-status-bar">
+            <div class="status-node">NODE: G.L.O.M.G._PRIMARY</div>
+            <div class="status-time" id="clock">00:00:00</div>
+            <div class="status-encryption">AES-256_ACTIVE</div>
         </div>
 
-        <div id="terminal-content">
+        <div id="main-display">
+            <div class="packet-entry">
+                <div class="packet-meta">
+                    <span>TYPE: SYSTEM_INIT</span>
+                    <span>TS: [REDACTED]</span>
+                </div>
+                <div class="packet-body">
+                    Welcome to the decentralized relay network. Your session is currently being routed through 127.0.0.1. Waiting for inbound data packets...
+                </div>
+            </div>
+        </div>
+
+        <div class="terminal-input-section">
+            <div class="prompt-line">
+                <span class="prompt-symbol" id="prompt-id">user@glomg:~$</span>
+                <input type="text" id="cli-input" autofocus spellcheck="false" autocomplete="off">
             </div>
 
-        <div class="command-input-container">
-            <span class="terminal-prompt" id="prompt-text">user@glomg:~$</span>
-            <input type="text" id="cli-input" autofocus spellcheck="false" autocomplete="off">
-        </div>
-
-        <div class="action-bar">
-            <button class="terminal-btn" onclick="location.href='/send_mail'">[F1] TRANSMIT_DATA</button>
-            <button class="terminal-btn" onclick="clearConsole()">[F2] CLEAR_BUFFER</button>
-            <button class="terminal-btn" onclick="location.href='/dashboard'">[F3] DASHBOARD</button>
-            <button class="terminal-btn" onclick="location.href='/'">[F4] TERMINATE</button>
+            <div class="action-tray">
+                <button class="nav-btn" onclick="location.href='/send_mail'">[F1] COMPOSE_PACKET</button>
+                <button class="nav-btn" onclick="clearDisplay()">[F2] WIPE_SCREEN</button>
+                <button class="nav-btn" onclick="location.href='/dashboard'">[F3] ANALYTICS</button>
+                <button class="nav-btn" onclick="terminateSession()">[F4] DISCONNECT</button>
+            </div>
         </div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
         /**
-         * INITIALIZATION & VARIABLES
+         * G.L.O.M.G. TERMINAL CORE LOGIC
          */
-        const terminal = document.getElementById('terminal-content');
-        const inputField = document.getElementById('cli-input');
-        const clockDisplay = document.getElementById('sys-clock');
-        const promptLabel = document.getElementById('prompt-text');
-        const userDisplay = document.getElementById('sys-user');
-        
+        const display = document.getElementById('main-display');
+        const input = document.getElementById('cli-input');
+        const clock = document.getElementById('clock');
+        const prompt = document.getElementById('prompt-id');
         const socket = io();
-        const userName = localStorage.getItem('username') || 'Guest_' + Math.floor(Math.random() * 9999);
 
-        // Update UI
-        userDisplay.innerText = "ID: " + userName.toUpperCase();
-        promptLabel.innerText = userName.toLowerCase() + "@glomg:~$";
+        // 1. ИНИЦИАЛИЗАЦИЯ ПОЛЬЗОВАТЕЛЯ
+        const currentName = localStorage.getItem('username') || 'Guest_' + Math.floor(Math.random()*999);
+        prompt.innerText = currentName.toLowerCase() + "@glomg:~$";
+        socket.emit('auth', currentName);
 
-        /**
-         * MATRIX BACKGROUND ENGINE
-         */
-        const canvas = document.getElementById('matrix-bg');
-        const ctx = canvas.getContext('2d');
-
-        let width = canvas.width = window.innerWidth;
-        let height = canvas.height = window.innerHeight;
-
-        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()_+-=[]{}|;:,.<>?";
-        const fontSize = 16;
-        const columns = Math.floor(width / fontSize);
-        const rainDrops = Array(columns).fill(1);
-
-        function renderMatrix() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-            ctx.fillRect(0, 0, width, height);
-
-            ctx.fillStyle = "#0F0";
-            ctx.font = fontSize + "px monospace";
-
-            for (let i = 0; i < rainDrops.length; i++) {
-                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
-
-                if (rainDrops[i] * fontSize > height && Math.random() > 0.975) {
-                    rainDrops[i] = 0;
-                }
-                rainDrops[i]++;
-            }
-        }
-        setInterval(renderMatrix, 35);
-
-        /**
-         * TERMINAL CORE FUNCTIONS
-         */
-        function getCurrentTime() {
+        // 2. ЧАСЫ (РЕАЛЬНОЕ ВРЕМЯ)
+        function updateTime() {
             const now = new Date();
-            return now.getHours().toString().padStart(2, '0') + ":" + 
-                   now.getMinutes().toString().padStart(2, '0') + ":" + 
-                   now.getSeconds().toString().padStart(2, '0');
+            clock.innerText = now.getHours().toString().padStart(2, '0') + ":" +
+                              now.getMinutes().toString().padStart(2, '0') + ":" +
+                              now.getSeconds().toString().padStart(2, '0');
         }
+        setInterval(updateTime, 1000);
+        updateTime();
 
-        function updateClock() {
-            clockDisplay.innerText = getCurrentTime();
-        }
-        setInterval(updateClock, 1000);
-
-        function writeToTerminal(text, type = 'default') {
-            const line = document.createElement('div');
-            line.className = 'line-wrap';
-            
-            const timeSpan = `<span class="time-stamp">[${getCurrentTime()}]</span>`;
-            let prefix = "";
-
-            switch(type) {
-                case 'sys': prefix = `<span class="prefix-sys">CORE</span> `; break;
-                case 'mail': prefix = `<span class="prefix-mail">MAIL</span> `; break;
-                case 'error': prefix = `<span class="prefix-err">ERR!</span> `; break;
-                default: prefix = `<span style="color:var(--green)">></span> `;
-            }
-
-            line.innerHTML = `${timeSpan} ${prefix} ${text}`;
-            terminal.appendChild(line);
-            terminal.scrollTop = terminal.scrollHeight;
-        }
-
-        function clearConsole() {
-            terminal.innerHTML = "";
-            writeToTerminal("Console buffer reset. System ready.", "sys");
-        }
-
-        /**
-         * SOCKET.IO & EVENTS
-         */
-        socket.emit('auth', userName);
-
-        socket.on('connect', () => {
-            writeToTerminal("Socket established with central node.", "sys");
-        });
-
+        // 3. ОБРАБОТКА ВХОДЯЩИХ ПИСЕМ
         socket.on('new_mail', (data) => {
-            writeToTerminal(`INBOUND FROM <span class="user-tag">${data.from}</span>: ${data.text}`, "mail");
-            const alertSfx = new Audio('https://www.soundjay.com/buttons/beep-07a.mp3');
-            alertSfx.volume = 0.3;
-            alertSfx.play().catch(() => {});
+            const packet = document.createElement('div');
+            packet.className = 'packet-entry';
+            packet.innerHTML = `
+                <div class="packet-meta">
+                    <span>TYPE: INBOUND_DATA</span>
+                    <span class="packet-sender">FROM: ${data.from}</span>
+                    <span>${data.date}</span>
+                </div>
+                <div class="packet-body">${data.text}</div>
+            `;
+            display.prepend(packet);
+            
+            // Звук (бип)
+            const audio = new Audio('https://www.soundjay.com/buttons/beep-07a.mp3');
+            audio.volume = 0.2;
+            audio.play().catch(() => {});
         });
 
-        /**
-         * COMMAND PROCESSOR
-         */
-        inputField.addEventListener('keydown', function(e) {
+        // 4. КОМАНДНЫЙ ИНТЕРПРЕТАТОР
+        input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
-                const cmd = this.value.trim();
-                if (cmd === "") return;
+                const rawCmd = input.value.trim();
+                if (!rawCmd) return;
 
-                writeToTerminal(`<span style="color:#fff">${cmd}</span>`);
-                const command = cmd.toLowerCase();
+                const cmd = rawCmd.toLowerCase();
+                appendSysMsg(`EXECUTING: ${cmd}`);
 
-                // Расширенная логика команд
-                if (command === 'help') {
-                    writeToTerminal("Available commands: status, clear, whoami, info, mail, reboot");
-                } else if (command === 'status') {
-                    writeToTerminal("CPU: 12% | MEMORY: 442MB/1024MB | LINK: SECURE", "sys");
-                } else if (command === 'whoami') {
-                    writeToTerminal(`USER: ${userName} | PRIVILEGES: LEVEL_1_ACCESS`, "sys");
-                } else if (command === 'clear') {
-                    clearConsole();
-                } else if (command === 'mail') {
+                if (cmd === 'help') {
+                    appendSysMsg("AVAILABLE: clear, status, info, logout, send");
+                } else if (cmd === 'clear') {
+                    clearDisplay();
+                } else if (cmd === 'status') {
+                    appendSysMsg("CORE: ONLINE | DB: CONNECTED | ENCRYPTION: AES-256");
+                } else if (cmd === 'send') {
                     location.href = '/send_mail';
-                } else if (command === 'reboot') {
-                    writeToTerminal("System rebooting...", "error");
-                    setTimeout(() => location.reload(), 1500);
-                } else if (command === 'about') {
-                    writeToTerminal("G.L.O.M.G. Core. Created for decentralized encrypted communication.", "sys");
+                } else if (cmd === 'logout') {
+                    terminateSession();
                 } else {
-                    writeToTerminal(`Unknown command: '${command}'. Type 'help' for manual.`, "error");
+                    appendSysMsg(`ERROR: COMMAND '${cmd}' NOT RECOGNIZED`, true);
                 }
 
-                this.value = "";
+                input.value = '';
             }
         });
+
+        function appendSysMsg(text, isErr = false) {
+            const msg = document.createElement('div');
+            msg.style.fontSize = '12px';
+            msg.style.margin = '5px 0';
+            msg.style.color = isErr ? '#ff3e3e' : '#008f11';
+            msg.innerHTML = `<span class="system-alert">SYS</span> ${text}`;
+            display.prepend(msg);
+            display.scrollTop = 0;
+        }
+
+        function clearDisplay() {
+            display.innerHTML = '';
+            appendSysMsg("Screen buffer wiped.");
+        }
+
+        function terminateSession() {
+            if(confirm("Terminate encrypted link?")) {
+                localStorage.removeItem('username');
+                location.href = '/';
+            }
+        }
 
         // ПРИВЕТСТВЕННАЯ ЗАГРУЗКА
-        setTimeout(() => writeToTerminal("Booting G.L.O.M.G. OS...", "sys"), 400);
-        setTimeout(() => writeToTerminal("Scanning for unread packets in Supabase...", "sys"), 900);
-        setTimeout(() => writeToTerminal("User authenticated as " + userName, "sys"), 1400);
-        setTimeout(() => writeToTerminal("Welcome to the decentralized relay. Type 'help' for commands.", "sys"), 2000);
+        setTimeout(() => appendSysMsg("Terminal initialized. Listening on port 3000..."), 500);
+        setTimeout(() => appendSysMsg("Socket handshake complete. Identity: " + currentName), 1000);
 
-        window.addEventListener('resize', () => {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        });
     </script>
 </body>
 </html>
