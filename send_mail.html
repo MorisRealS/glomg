@@ -3,22 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G.L.O.M.G. | COMPOSE_NEW_PACKET</title>
+    <title>G.L.O.M.G. | SECURE_TRANSMISSION_TERMINAL_V5</title>
     <style>
-        /* --- ЦВЕТОВАЯ СХЕМА СИСТЕМЫ --- */
+        /* ================================================================
+           ЦВЕТОВАЯ ПАЛИТРА И ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
+           ================================================================
+        */
         :root {
-            --purple-neon: #a020f0;
-            --purple-low: rgba(160, 32, 240, 0.2);
-            --bg-black: #050005;
-            --glass-bg: rgba(20, 0, 40, 0.45);
-            --input-bg: rgba(0, 0, 0, 0.7);
-            --transition-speed: 0.4s;
+            --p-neon: #a020f0;
+            --p-glow: rgba(160, 32, 240, 0.45);
+            --p-dim: rgba(160, 32, 240, 0.12);
+            --p-dark: rgba(25, 0, 45, 0.85);
+            --bg-deep: #050005;
+            --glass-sidebar: rgba(10, 0, 20, 0.55);
+            --glass-form: rgba(20, 0, 40, 0.4);
+            --text-main: #a020f0;
+            --text-bright: #ffffff;
+            --transition-main: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* --- БАЗОВЫЕ ПАРАМЕТРЫ СТРАНИЦЫ --- */
+        /* ================================================================
+           БАЗОВЫЕ НАСТРОЙКИ И ОБНУЛЕНИЕ
+           ================================================================
+        */
         * {
             box-sizing: border-box;
             -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         body, html {
@@ -26,241 +37,433 @@
             padding: 0;
             width: 100vw;
             height: 100vh;
-            background-color: var(--bg-black);
-            color: var(--purple-neon);
+            background-color: var(--bg-deep);
+            color: var(--text-main);
             font-family: 'Courier New', Courier, monospace;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            /* ФОН: Центральный свет + Электронные дорожки */
-            background-image: 
-                radial-gradient(circle at 50% 50%, rgba(160, 32, 240, 0.15) 0%, transparent 80%),
-                linear-gradient(rgba(160, 32, 240, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(160, 32, 240, 0.05) 1px, transparent 1px);
-            background-size: 100% 100%, 55px 55px, 55px 55px;
         }
 
-        /* --- ВЕРХНЯЯ ПАНЕЛЬ (HEADER) --- */
-        .top-status-header {
-            height: 65px;
+        /* ================================================================
+           ФОНОВАЯ ПОДЛОЖКА: ПЛАТА + ЦЕНТРАЛЬНЫЙ СВЕТ
+           ================================================================
+        */
+        .system-background {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(160, 32, 240, 0.2) 0%, transparent 80%),
+                linear-gradient(var(--p-dim) 1px, transparent 1px),
+                linear-gradient(90deg, var(--p-dim) 1px, transparent 1px);
+            background-size: 100% 100%, 65px 65px, 65px 65px;
+            pointer-events: none;
+        }
+
+        /* ================================================================
+           ВЕРХНЯЯ НАВИГАЦИОННАЯ ПАНЕЛЬ (HEADER)
+           ================================================================
+        */
+        .header-interface {
+            height: 70px;
             width: 100%;
-            border-bottom: 2px solid var(--purple-neon);
-            background-color: rgba(5, 0, 10, 0.9);
+            border-bottom: 2px solid var(--p-neon);
+            background-color: rgba(5, 0, 10, 0.96);
             display: flex;
             align-items: center;
-            padding: 0 35px;
-            z-index: 50;
-            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.9);
+            justify-content: flex-start;
+            padding: 0 40px;
+            z-index: 100;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.9);
         }
 
-        .back-nav-container a {
-            color: var(--purple-neon);
+        .nav-back-unit a {
+            color: var(--p-neon);
             text-decoration: none;
-            border: 1px solid var(--purple-neon);
-            padding: 8px 20px;
-            font-size: 13px;
+            border: 1px solid var(--p-neon);
+            padding: 10px 25px;
+            font-size: 14px;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 2px;
-            transition: all var(--transition-speed) ease;
-        }
-
-        .back-nav-container a:hover {
-            background-color: var(--purple-neon);
-            color: #ffffff;
-            box-shadow: 0 0 15px var(--purple-neon);
-        }
-
-        /* --- ЦЕНТРАЛЬНАЯ ОБЛАСТЬ ФОРМЫ --- */
-        .form-viewport {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        /* СТЕКЛЯННЫЙ МОДУЛЬ (GLASSMORPHISM) */
-        .glass-terminal-node {
-            width: 100%;
-            max-width: 580px;
-            background-color: var(--glass-bg);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--purple-neon);
-            border-radius: 25px; /* Сглаженные углы */
-            padding: 50px;
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5), 
-                        inset 0 0 20px rgba(160, 32, 240, 0.1);
+            transition: var(--transition-main);
             position: relative;
             overflow: hidden;
         }
 
-        /* Заголовок формы */
-        .glass-terminal-node h2 {
-            margin-top: 0;
-            margin-bottom: 40px;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 6px;
-            font-size: 24px;
-            text-shadow: 0 0 10px var(--purple-neon);
+        .nav-back-unit a:hover {
+            background-color: var(--p-neon);
+            color: var(--text-bright);
+            box-shadow: 0 0 20px var(--p-neon);
         }
 
-        /* --- ПОЛЯ ВВОДА --- */
-        .input-wrapper {
-            margin-bottom: 30px;
+        /* ================================================================
+           ОСНОВНОЙ КОНТЕЙНЕР (LAYOUT)
+           ================================================================
+        */
+        .main-transmission-layout {
+            display: flex;
+            flex: 1;
+            width: 100%;
+            height: calc(100vh - 70px);
+            overflow: hidden;
+        }
+
+        /* ================================================================
+           ЛЕВАЯ ПАНЕЛЬ: БАЗА КОНТАКТОВ (SIDEBAR)
+           ================================================================
+        */
+        .contacts-module {
+            width: 380px;
+            height: 100%;
+            border-right: 1px solid var(--p-neon);
+            background-color: var(--glass-sidebar);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        .module-header {
+            padding: 25px;
+            text-align: center;
+            border-bottom: 1px solid var(--p-neon);
+            background: rgba(160, 32, 240, 0.05);
+        }
+
+        .module-header h3 {
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-shadow: 0 0 8px var(--p-neon);
+        }
+
+        .contacts-scroll-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+
+        .contacts-scroll-area::-webkit-scrollbar { width: 5px; }
+        .contacts-scroll-area::-webkit-scrollbar-thumb { background: var(--p-neon); }
+
+        .contact-card {
+            padding: 22px 30px;
+            border-bottom: 1px solid rgba(160, 32, 240, 0.08);
+            cursor: pointer;
+            transition: var(--transition-main);
             position: relative;
         }
 
-        .input-wrapper label {
+        .contact-card:hover {
+            background-color: rgba(160, 32, 240, 0.1);
+            padding-left: 40px;
+        }
+
+        .contact-card .username {
             display: block;
-            margin-bottom: 10px;
-            font-size: 11px;
+            font-size: 15px;
+            font-weight: 900;
+            margin-bottom: 6px;
+            color: var(--text-bright);
+        }
+
+        .contact-card .user-uuid {
+            display: block;
+            font-size: 12px;
+            opacity: 0.6;
+            letter-spacing: 1.5px;
+        }
+
+        .contact-card .access-level {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 10px;
+            border: 1px solid var(--p-neon);
+            padding: 2px 6px;
+        }
+
+        /* ================================================================
+           ЦЕНТРАЛЬНАЯ ЧАСТЬ: ФОРМА ОТПРАВКИ
+           ================================================================
+        */
+        .composition-module {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 50px;
+            position: relative;
+        }
+
+        .glass-form-container {
+            width: 100%;
+            max-width: 620px;
+            background-color: var(--glass-form);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--p-neon);
+            border-radius: 30px; /* Сглаженные края */
+            padding: 55px;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.6), inset 0 0 30px rgba(160, 32, 240, 0.1);
+            animation: formFadeIn 0.8s ease-out;
+        }
+
+        @keyframes formFadeIn {
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 45px;
+            letter-spacing: 8px;
+            font-size: 26px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .input-group-unit {
+            margin-bottom: 35px;
+            position: relative;
+        }
+
+        .input-group-unit label {
+            display: block;
+            font-size: 12px;
+            margin-bottom: 12px;
             text-transform: uppercase;
             letter-spacing: 2px;
-            opacity: 0.7;
+            font-weight: bold;
         }
 
-        .input-control {
+        .terminal-input {
             width: 100%;
-            background-color: var(--input-bg);
-            border: 1px solid var(--purple-neon);
-            border-radius: 12px; /* Мягкие края */
-            padding: 15px 18px;
-            color: #ffffff;
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--p-neon);
+            border-radius: 12px;
+            padding: 16px 20px;
+            color: var(--text-bright);
             font-family: 'Courier New', monospace;
-            font-size: 15px;
-            transition: all 0.3s ease;
+            font-size: 16px;
+            transition: var(--transition-main);
+            outline: none;
         }
 
-        .input-control:focus {
-            box-shadow: 0 0 15px var(--purple-low);
-            background-color: rgba(20, 0, 40, 0.8);
+        .terminal-input:focus {
+            background-color: rgba(25, 0, 50, 0.8);
+            box-shadow: 0 0 15px var(--p-glow);
             border-color: #ffffff;
         }
 
-        .textarea-control {
+        .terminal-textarea {
+            min-height: 180px;
             resize: none;
-            min-height: 160px;
+            line-height: 1.6;
         }
 
-        /* --- КНОПКА ОТПРАВКИ --- */
-        .submit-action-container {
-            margin-top: 40px;
+        /* ================================================================
+           КНОПКА ОТПРАВКИ И ЭФФЕКТЫ
+           ================================================================
+        */
+        .submission-trigger-area {
+            margin-top: 50px;
         }
 
-        .send-packet-button {
+        .btn-transmit {
             width: 100%;
-            background-color: var(--purple-neon);
-            color: #ffffff;
+            background-color: var(--p-neon);
+            color: var(--text-bright);
             border: none;
-            padding: 18px;
-            border-radius: 15px;
+            padding: 20px;
+            border-radius: 18px;
             font-family: inherit;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 3px;
+            letter-spacing: 5px;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 10px var(--p-glow);
         }
 
-        .send-packet-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(160, 32, 240, 0.5);
-            background-color: #b040ff;
+        .btn-transmit:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px var(--p-glow);
+            background-color: #b347ff;
         }
 
-        .send-packet-button:active {
-            transform: translateY(1px);
+        .btn-transmit:active {
+            transform: translateY(2px);
         }
 
-        /* Декоративные точки по углам */
-        .corner-dot {
+        /* Декоративные уголки */
+        .deco-corner {
             position: absolute;
-            width: 4px;
-            height: 4px;
-            background-color: var(--purple-neon);
-            border-radius: 50%;
+            width: 30px; height: 30px;
+            border: 2px solid var(--p-neon);
+            pointer-events: none;
         }
-        .dot-tl { top: 15px; left: 15px; }
-        .dot-tr { top: 15px; right: 15px; }
-        .dot-bl { bottom: 15px; left: 15px; }
-        .dot-br { bottom: 15px; right: 15px; }
+        .deco-tl { top: 25px; left: 25px; border-right: none; border-bottom: none; }
+        .deco-br { bottom: 25px; right: 25px; border-left: none; border-top: none; }
 
     </style>
 </head>
 <body>
 
-    <header class="top-status-header">
-        <nav class="back-nav-container">
-            <a href="mail.html">← ОТМЕНИТЬ</a>
-        </nav>
+    <div class="system-background"></div>
+
+    <header class="header-interface">
+        <div class="nav-back-unit">
+            <a href="mail.html">← ОТМЕНА_ОПЕРАЦИИ</a>
+        </div>
     </header>
 
-    <main class="form-viewport">
+    <div class="main-transmission-layout">
         
-        <div class="glass-terminal-node">
-            <div class="corner-dot dot-tl"></div>
-            <div class="corner-dot dot-tr"></div>
-            <div class="corner-dot dot-bl"></div>
-            <div class="corner-dot dot-br"></div>
-
-            <h2>СОЗДАНИЕ ПАКЕТА</h2>
-
-            <form id="mail-compose-form">
-                
-                <div class="input-wrapper">
-                    <label for="target-uuid">Идентификатор получателя (UUID)</label>
-                    <input type="text" id="target-uuid" class="input-control" placeholder="0000000000" maxlength="10" required>
+        <aside class="contacts-module">
+            <div class="module-header">
+                <h3>КОНТАКТЫ_UUID</h3>
+            </div>
+            
+            <div class="contacts-scroll-area" id="contacts-list-container">
                 </div>
+        </aside>
 
-                <div class="input-wrapper">
-                    <label for="packet-subject">Тема передачи данных</label>
-                    <input type="text" id="packet-subject" class="input-control" placeholder="ВВЕДИТЕ ЗАГОЛОВОК..." required>
-                </div>
+        <main class="composition-module">
+            
+            <div class="glass-form-container">
+                <div class="deco-corner deco-tl"></div>
+                <div class="deco-corner deco-br"></div>
 
-                <div class="input-wrapper">
-                    <label for="packet-body">Зашифрованное содержимое</label>
-                    <textarea id="packet-body" class="input-control textarea-control" placeholder="ПРОТОКОЛ ПЕРЕДАЧИ..."></textarea>
-                </div>
+                <h2 class="form-title">НОВЫЙ ПАКЕТ</h2>
 
-                <div class="submit-action-container">
-                    <button type="submit" class="send-packet-button">ВЫПОЛНИТЬ ПЕРЕДАЧУ</button>
-                </div>
+                <form id="secure-transmission-form">
+                    
+                    <div class="input-group-unit">
+                        <label for="dest-uuid">Идентификатор получателя</label>
+                        <input type="text" id="dest-uuid" class="terminal-input" placeholder="ВЫБЕРИТЕ ИЗ СПИСКА..." maxlength="10" required>
+                    </div>
 
-            </form>
-        </div>
+                    <div class="input-group-unit">
+                        <label for="dest-subject">Тема передачи данных</label>
+                        <input type="text" id="dest-subject" class="terminal-input" placeholder="SUBJECT_LINE" required>
+                    </div>
 
-    </main>
+                    <div class="input-group-unit">
+                        <label for="dest-body">Шифрованный блок данных</label>
+                        <textarea id="dest-body" class="terminal-input terminal-textarea" placeholder="ВВЕДИТЕ СООБЩЕНИЕ..."></textarea>
+                    </div>
+
+                    <div class="submission-trigger-area">
+                        <button type="submit" class="btn-transmit" id="submit-btn">ВЫПОЛНИТЬ ПЕРЕДАЧУ</button>
+                    </div>
+
+                </form>
+            </div>
+
+        </main>
+    </div>
 
     <script>
         /**
-         * ОБРАБОТКА ОТПРАВКИ ФОРМЫ
+         * Список верифицированных сотрудников G.L.O.M.G.
          */
-        document.getElementById('mail-compose-form').addEventListener('submit', function(event) {
-            event.preventDefault();
+        const employeeDatabase = [
+            { name: "MORISREAL", uuid: "1110001110", level: "L6" },
+            { name: "SUMBER", uuid: "0101010101", level: "L5" },
+            { name: "CORE_ADMIN", uuid: "1111111111", level: "L7" },
+            { name: "STAFF_UNIT_01", uuid: "0010111010", level: "L4" },
+            { name: "ANALYST_09", uuid: "0001110011", level: "L4" },
+            { name: "TECH_SUPPORT", uuid: "0111000111", level: "L3" },
+            { name: "GATE_KEEPER", uuid: "0000000001", level: "L2" }
+        ];
 
-            const uuid = document.getElementById('target-uuid').value;
-            const subject = document.getElementById('packet-subject').value;
+        const listContainer = document.getElementById('contacts-list-container');
+        const uuidInputField = document.getElementById('dest-uuid');
+        const transmissionForm = document.getElementById('secure-transmission-form');
+        const submitButton = document.getElementById('submit-btn');
+
+        /**
+         * Функция генерации списка контактов в левой панели
+         */
+        function populateContacts() {
+            listContainer.innerHTML = '';
+
+            employeeDatabase.forEach(employee => {
+                const card = document.createElement('div');
+                card.className = 'contact-card';
+                
+                card.innerHTML = `
+                    <span class="username">${employee.name}</span>
+                    <span class="user-uuid">UUID: ${employee.uuid}</span>
+                    <span class="access-level">${employee.level}</span>
+                `;
+
+                // Обработка клика по контакту
+                card.addEventListener('click', () => {
+                    selectContact(employee.uuid);
+                });
+
+                listContainer.appendChild(card);
+            });
+        }
+
+        /**
+         * Автоматическая подстановка UUID в поле ввода
+         */
+        function selectContact(uuid) {
+            uuidInputField.value = uuid;
             
-            // Имитация процесса отправки
-            const btn = document.querySelector('.send-packet-button');
-            btn.innerText = "ШИФРОВАНИЕ...";
-            btn.style.opacity = "0.7";
-            btn.disabled = true;
+            // Визуальный эффект фокуса
+            uuidInputField.focus();
+            uuidInputField.style.borderColor = "#ffffff";
+            uuidInputField.style.boxShadow = "0 0 25px #a020f0";
+            
+            setTimeout(() => {
+                uuidInputField.style.borderColor = "#a020f0";
+                uuidInputField.style.boxShadow = "0 0 15px rgba(160, 32, 240, 0.45)";
+            }, 600);
+        }
+
+        /**
+         * Обработка процесса отправки пакета данных
+         */
+        transmissionForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // Изменение состояния кнопки (имитация шифрования)
+            submitButton.disabled = true;
+            submitButton.innerText = "ШИФРОВАНИЕ ПАКЕТА...";
+            submitButton.style.backgroundColor = "rgba(160, 32, 240, 0.5)";
 
             setTimeout(() => {
-                btn.innerText = "ПАКЕТ ПЕРЕДАН";
-                btn.style.backgroundColor = "#22ff22"; // Кратковременный успех
+                submitButton.innerText = "ПЕРЕДАЧА ДАННЫХ...";
                 
                 setTimeout(() => {
-                    window.location.href = 'mail.html';
-                }, 1000);
-            }, 1500);
-        });
-    </script>
+                    submitButton.innerText = "УСПЕШНО ЗАВЕРШЕНО";
+                    submitButton.style.backgroundColor = "#22cc22";
+                    submitButton.style.boxShadow = "0 0 30px #22cc22";
 
+                    // Перенаправление обратно в почту через секунду
+                    setTimeout(() => {
+                        window.location.href = 'mail.html';
+                    }, 1200);
+                }, 1500);
+            }, 1000);
+        });
+
+        // Инициализация при загрузке
+        window.onload = () => {
+            populateContacts();
+            console.log("Transmission Terminal Initialized...");
+        };
+    </script>
 </body>
 </html>
