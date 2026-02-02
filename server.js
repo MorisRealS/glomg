@@ -30,12 +30,23 @@ const bot = new TelegramBot(TOKEN, {polling: true});
 app.use(express.static(__dirname));
 
 // --- МАРШРУТЫ (ROUTING) ---
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'autorize.html')));
-app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'dashboard.html')));
-app.get('/mail', (req, res) => res.sendFile(path.join(__dirname, 'mail.html')));
-app.get('/guest', (req, res) => res.sendFile(path.join(__dirname, 'guest.html')));
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'autorize.html'));
+});
 
-// Ссылка для "будильника" Cron-job.org
+app.get('/dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dashboard.html'));
+});
+
+app.get('/mail', (req, res) => {
+    res.sendFile(path.join(__dirname, 'mail.html'));
+});
+
+app.get('/guest', (req, res) => {
+    res.sendFile(path.join(__dirname, 'guest.html'));
+});
+
+// Ссылка для Cron-job.org
 app.get('/check', async (req, res) => {
     try {
         const { data, error } = await supabase
@@ -52,7 +63,6 @@ app.get('/check', async (req, res) => {
                                `📄 **ТЕКСТ:**\n${msg.body}`;
 
                 await bot.sendMessage(MY_TELEGRAM_ID, report, { parse_mode: 'Markdown' });
-                // Помечаем как прочитанное, чтобы не слать дубли
                 await supabase.from('messages').update({ is_read: true }).eq('id', msg.id);
             }
         }
@@ -67,49 +77,32 @@ io.on('connection', (socket) => {
     console.log('[SYSTEM] Соединение установлено');
 
     socket.on('auth', (username) => {
-        socket.join(username.toLowerCase());
-        console.log(`[AUTH] Пользователь ${username} в сети`);
+        const userClean = username ? username.toLowerCase() : 'anonymous';
+        socket.join(userClean);
+        console.log(`[AUTH] Пользователь ${userClean} в сети`);
     });
 
     socket.on('send_mail_from_web', async (data) => {
         const { to, subj, body, from } = data;
         
-        // Сохраняем в Supabase
         const { error } = await supabase.from('messages').insert([{ 
-            sender: from, 
+            sender: from || 'Unknown', 
             recipient: to, 
-            subject: subj, 
+            subject: subj || 'No Subject', 
             body: body, 
             is_read: false 
         }]);
 
         if (error) console.error('[DB ERROR]', error);
 
-        // Мгновенное уведомление тебе в Telegram
-        bot.sendMessage(MY_TELEGRAM_ID, `📩 **СРОЧНО:**\n${from} -> ${to}\n${body}`);
+        bot.sendMessage(MY_TELEGRAM_ID, `📩 **СООБЩЕНИЕ:**\n${from} -> ${to}\n${body}`);
         
-        // Отправка получателю внутри сайта (если он онлайн)
         io.to(to.toLowerCase()).emit('new_mail', { 
             from, 
             text: `[${subj}] ${body}`, 
             date: new Date().toLocaleTimeString() 
         });
     });
-});
-
-// --- КОМАНДЫ БОТА ---
-bot.onText(/\/start/, (msg) => {
-    bot.sendMessage(msg.chat.id, "🛠 **G.L.O.M.G. CORE**\nСистема мониторинга писем активирована.");
-});
-
-bot.onText(/\/broadcast (.+)/, (msg, match) => {
-    const text = match[1];
-    io.emit('new_mail', { 
-        from: "SYSTEM_OVERRIDE", 
-        text: `⚠️ ВНИМАНИЕ: ${text}`, 
-        date: new Date().toLocaleTimeString() 
-    });
-    bot.sendMessage(msg.chat.id, "📢 Глобальный сигнал отправлен.");
 });
 
 const PORT = process.env.PORT || 3000;
