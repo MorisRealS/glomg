@@ -20,7 +20,7 @@ const MY_TELEGRAM_ID = '1865307845';
 
 // 3. Твой токен бота и Anon ключ (уже вставлены)
 const SUPABASE_ANON_KEY = 'sb_publishable_Rj_xPyWk0cO_pwoT7IaMkA_CcwrhM7B';
-const TOKEN = '8117485520:AAGmoirMAsrxWtgF2R72YyjkV4Z5MSfI-BQ'; 
+const TOKEN = '8117485520:AAFU7M0LfFbvMDD_x5CGD_QGiRVrYtJWQpE'; 
 
 // ==========================================================
 
