@@ -2,140 +2,313 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>G.L.O.M.G. // DASHBOARD</title>
     <style>
-        /* --- [CSS] БАЗОВЫЕ СТИЛИ --- */
+        /* --- [CSS] ОБЩИЕ ПАРАМЕТРЫ СТРАНИЦЫ --- */
         body {
-            margin: 0; padding: 0;
+            margin: 0;
+            padding: 0;
             background-color: #050505;
             background: radial-gradient(circle, #0a0a0a 0%, #050505 60%, #1a0033 100%);
             font-family: 'Courier New', Courier, monospace;
-            color: #e0e0e0; min-height: 120vh;
+            color: #e0e0e0;
+            min-height: 150vh; /* Для возможности листать */
             overflow-x: hidden;
-            display: flex; flex-direction: column; align-items: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
+        /* СЕТКА ФОНА */
         body::before {
-            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-image: linear-gradient(rgba(75, 0, 130, 0.15) 1px, transparent 1px),
                               linear-gradient(90deg, rgba(75, 0, 130, 0.15) 1px, transparent 1px);
-            background-size: 50px 50px; z-index: -1;
+            background-size: 50px 50px;
+            z-index: -1;
             mask-image: radial-gradient(circle, black, transparent 90%);
         }
 
+
+        /* --- [CSS] ШАПКА (NAVBAR) --- */
         .navbar {
-            width: 100%; height: 60px;
+            width: 100%;
+            height: 60px;
             border-bottom: 2px solid #4b0082;
             background: rgba(5, 5, 5, 0.95);
-            display: flex; align-items: center; padding: 0 20px;
-            position: fixed; top: 0; z-index: 1000;
-            box-sizing: border-box; backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+            box-sizing: border-box;
+            backdrop-filter: blur(10px);
         }
 
         .btn-menu {
-            background: #4b0082; color: white; border: none; padding: 8px 20px;
-            cursor: pointer; font-family: inherit; font-size: 12px;
-            text-transform: uppercase; font-weight: bold; transition: 0.3s;
+            background: #4b0082;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: 0.3s;
         }
-        .btn-menu:hover { background: #a64dff; box-shadow: 0 0 10px #a64dff; }
 
-        /* --- [CSS] СЛАЙДБАР --- */
+        .btn-menu:hover {
+            background: #a64dff;
+            box-shadow: 0 0 10px #a64dff;
+        }
+
+
+        /* --- [CSS] СЛАЙДБАР (SIDEBAR) --- */
         #sidebar-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px);
-            z-index: 2000; display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: none;
         }
 
         .sidebar {
-            position: fixed; top: 0; left: -300px; width: 280px; height: 100%;
-            background: rgba(10, 10, 10, 0.98); border-right: 2px solid #4b0082;
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 280px;
+            height: 100%;
+            background: rgba(10, 10, 10, 0.98);
+            border-right: 2px solid #4b0082;
             transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex; flex-direction: column; padding: 40px 20px;
-            box-sizing: border-box; z-index: 2001;
+            display: flex;
+            flex-direction: column;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            z-index: 2001;
         }
-        .sidebar.active { left: 0; }
+
+        .sidebar.active {
+            left: 0;
+        }
 
         .user-svg-icon {
-            width: 60px; height: 60px; fill: #666; margin: 0 auto 30px;
-            border: 2px solid #4b0082; border-radius: 50%; padding: 10px;
+            width: 60px;
+            height: 60px;
+            fill: #a64dff;
+            margin: 0 auto 30px;
+            border: 2px solid #4b0082;
+            border-radius: 50%;
+            padding: 10px;
+            background: rgba(75, 0, 130, 0.1);
         }
 
         .side-btn {
-            background: rgba(75, 0, 130, 0.1); border: 1px solid #4b0082; color: #a64dff;
-            padding: 12px; margin-bottom: 10px; cursor: pointer;
-            font-family: inherit; text-align: left; transition: 0.3s;
-        }
-        .side-btn:hover { background: #4b0082; color: #fff; box-shadow: 0 0 10px #4b0082; }
-
-        .btn-logout { border-color: #550000; color: #ff4444; margin-top: auto; background: transparent; }
-        .btn-logout:hover { background: #880000; color: white; border-color: #ff0000; box-shadow: 0 0 10px #ff0000; }
-
-        /* --- [CSS] ЦЕНТРАЛЬНЫЙ КОНТЕНТ --- */
-        .main-container { 
-            margin-top: 120px; 
-            width: 90%; max-width: 1100px; 
-            display: flex; flex-direction: column; align-items: center; 
+            background: rgba(75, 0, 130, 0.1);
+            border: 1px solid #4b0082;
+            color: #a64dff;
+            padding: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            font-family: inherit;
+            text-align: left;
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-size: 11px;
         }
 
-        .action-row { 
-            display: flex; gap: 30px; width: 100%; 
-            justify-content: center; margin-bottom: 50px; 
+        .side-btn:hover {
+            background: #4b0082;
+            color: #fff;
+            box-shadow: 0 0 10px #4b0082;
+        }
+
+        .btn-logout {
+            border-color: #550000;
+            color: #ff4444;
+            margin-top: auto;
+            background: transparent;
+        }
+
+        .btn-logout:hover {
+            background: #880000;
+            color: white;
+            border-color: #ff0000;
+        }
+
+
+        /* --- [CSS] ОСНОВНОЙ КОНТЕНТ --- */
+        .main-container {
+            margin-top: 140px;
+            width: 90%;
+            max-width: 1100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .action-row {
+            display: flex;
+            gap: 30px;
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 60px;
         }
 
         .btn-action {
-            flex: 1; max-width: 280px; height: 90px; 
-            background: rgba(15, 15, 15, 0.9); border: 2px solid #4b0082; 
-            color: #a64dff; cursor: pointer; transition: 0.4s;
-            font-family: inherit; font-size: 20px; font-weight: bold; 
-            text-transform: uppercase; letter-spacing: 3px;
-            display: flex; align-items: center; justify-content: center;
+            flex: 1;
+            max-width: 280px;
+            height: 90px;
+            background: rgba(15, 15, 15, 0.9);
+            border: 2px solid #4b0082;
+            color: #a64dff;
+            cursor: pointer;
+            transition: 0.4s;
+            font-family: inherit;
+            font-size: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .btn-action:hover { background: #4b0082; color: #fff; box-shadow: 0 0 25px #a64dff; transform: translateY(-5px); }
 
+        .btn-action:hover {
+            background: #4b0082;
+            color: #fff;
+            box-shadow: 0 0 30px rgba(166, 77, 255, 0.5);
+            transform: translateY(-5px);
+        }
+
+
+        /* РАЗДЕЛИТЕЛЬНАЯ ЛИНИЯ */
         .gradient-line {
-            width: 100%; height: 2px;
+            width: 100%;
+            height: 2px;
             background: linear-gradient(90deg, transparent 0%, #4b0082 50%, transparent 100%);
+            margin-bottom: 40px;
+        }
+
+        .welcome-text {
+            font-size: 24px;
+            color: #a64dff;
+            letter-spacing: 5px;
+            margin-bottom: 50px;
+            text-transform: uppercase;
+        }
+
+
+        /* ИНФОРМАЦИОННЫЕ ПАНЕЛИ */
+        .info-panel {
+            background: rgba(15, 15, 15, 0.9);
+            border: 1px solid #333;
+            border-left: 4px solid #4b0082;
+            padding: 30px;
+            width: 100%;
+            margin-bottom: 25px;
+            box-sizing: border-box;
+            backdrop-filter: blur(5px);
+        }
+
+        .info-panel h4 {
+            margin: 0 0 20px 0;
+            color: #a64dff;
+            font-size: 14px;
+            letter-spacing: 2px;
+        }
+
+        .info-panel p {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #bbb;
+            margin: 10px 0;
+        }
+
+
+        /* --- [CSS] МОДАЛЬНОЕ ОКНО ПРОФИЛЯ --- */
+        #profile-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 550px;
+            background: #0f0f0f;
+            border: 2px solid #4b0082;
+            border-radius: 10px;
+            padding: 50px;
+            transition: 0.4s ease;
+            z-index: 3000;
+            box-shadow: 0 0 60px rgba(75, 0, 130, 0.7);
+            visibility: hidden;
+            opacity: 0;
+        }
+
+        #profile-modal.active {
+            visibility: visible;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .profile-header {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            padding-bottom: 25px;
             margin-bottom: 30px;
         }
 
-        .welcome-text { font-size: 24px; color: #a64dff; letter-spacing: 5px; margin-bottom: 40px; }
-
-        .info-panel {
-            background: rgba(15, 15, 15, 0.9); border: 1px solid #333; border-left: 4px solid #4b0082;
-            padding: 25px; width: 100%; margin-bottom: 20px; box-sizing: border-box;
+        .profile-nick {
+            color: #a64dff;
+            font-size: 32px;
+            margin: 0;
+            text-shadow: 0 0 10px #a64dff;
         }
-        .info-panel h4 { margin: 0 0 15px 0; color: #a64dff; font-size: 14px; }
 
-        /* --- [CSS] ПРОФИЛЬ --- */
-        #profile-modal {
-            position: fixed; top: 50%; left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            width: 550px; background: #0f0f0f;
-            border: 2px solid #4b0082; border-radius: 10px;
-            padding: 40px; transition: 0.4s ease;
-            z-index: 3000; box-shadow: 0 0 50px rgba(75, 0, 130, 0.6);
-            visibility: hidden; opacity: 0;
-        }
-        #profile-modal.active { visibility: visible; opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        /* КОНЕЦ CSS */
     </style>
 </head>
 <body>
 
     <div class="navbar">
         <button class="btn-menu" onclick="toggleSidebar()">MENU</button>
-        <span style="margin-left: 20px; font-size: 10px; color: #444;">G.L.O.M.G. // SECURITY_CORE</span>
+        <div style="margin-left: 20px; font-size: 10px; color: #444; letter-spacing: 1px;">
+            G.L.O.M.G. // SECURITY_TERMINAL_V1
+        </div>
     </div>
 
+
     <div id="sidebar-overlay" onclick="closeAll()"></div>
+
     <div class="sidebar" id="sidebar">
-        <svg class="user-svg-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        <svg class="user-svg-icon" viewBox="0 0 24 24">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </svg>
+
         <button class="side-btn" onclick="openProfile()">MY_PROFILE</button>
         <button class="side-btn">DATABASE_ARCHIVE</button>
         <button class="side-btn">SYSTEM_LOGS</button>
+        <button class="side-btn">NETWORK_MAP</button>
+        
         <button class="side-btn btn-logout" onclick="location.href='autorize.html'">LOGOUT</button>
     </div>
 
+
     <div class="main-container">
+
         <div class="action-row">
             <button class="btn-action" onclick="location.href='radar.html'">РАДАР</button>
             <button class="btn-action" onclick="location.href='mail.html'">ПОЧТА</button>
@@ -143,58 +316,94 @@
         </div>
 
         <div class="gradient-line"></div>
-        <div class="welcome-text">WELCOME, <span id="display-name">MORISREAL</span></div>
+
+        <div class="welcome-text">
+            WELCOME, <span id="display-name">MORISREAL</span>
+        </div>
+
 
         <div class="info-panel">
             <h4>ИНСТРУКЦИИ ДЛЯ ПЕРСОНАЛА</h4>
-            <p id="operator-note">> Ожидание входящих директив... <br>> Все системы работают в штатном режиме.</p>
+            <p>> Все действия в системе логируются протоколом G-LOG.</p>
+            <p>> При обнаружении несанкционированного доступа используйте экстренный разрыв связи.</p>
+            <p>> Ожидание новых директив от центрального узла...</p>
         </div>
+
 
         <div class="info-panel">
             <h4>ПОСЛЕДНИЕ ОБНОВЛЕНИЯ</h4>
-            <p>• Фикс отображения кнопок (UI/UX)</p>
-            <p>• Настройка системы переходов между модулями</p>
+            <p>• [UPD] Визуальный интерфейс кабинета стабилизирован.</p>
+            <p>• [FIX] Кнопки навигации адаптированы под терминалы высокого разрешения.</p>
+            <p>• [NEW] Запущен почтовый шлюз ENCRYPTED_MAIL.</p>
         </div>
+
     </div>
+
 
     <div id="profile-modal">
-        <div style="display: flex; gap: 30px; align-items: center; border-bottom: 1px solid #333; padding-bottom: 20px;">
-            <svg class="user-svg-icon" style="margin:0; width:80px; height:80px;" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        <div class="profile-header">
+            <svg class="user-svg-icon" style="margin:0; width:80px; height:80px;" viewBox="0 0 24 24">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
             <div>
-                <p style="color: #a64dff; font-size: 28px; margin: 0;" id="p-nick">NAME</p>
-                <div style="color: #00ff00; font-size: 14px;">RANK: <span id="p-level">ACCESS_LEVEL</span></div>
-                <div style="color:#555; font-size:11px; margin-top:10px;">UUID: <span id="p-uuid">XXXX-XXXX-XXXX</span></div>
+                <p class="profile-nick" id="p-nick">MORISREAL</p>
+                <div style="color: #00ff00; font-size: 14px; margin-top: 5px;">RANK: <span id="p-level">ADMIN</span></div>
+                <div style="color:#555; font-size:11px; margin-top:10px;">UUID: <span id="p-uuid">7741-09XX-ONG</span></div>
             </div>
         </div>
-        <div style="margin-top: 25px;">
-            <div style="color:#666; font-size:10px; text-transform:uppercase;">Отдел: <span id="p-dept" style="color:#ddd; text-transform:none; margin-left:10px;">Security</span></div>
-            <div style="color:#666; font-size:10px; text-transform:uppercase; margin-top:15px;">Описание</div>
-            <div id="p-desc" style="color:#bbb; font-size:13px; margin-top:5px; line-height:1.5;">...</div>
+
+        <div style="margin-top: 30px;">
+            <div style="color:#666; font-size:10px; text-transform:uppercase;">Отдел: 
+                <span id="p-dept" style="color:#ddd; text-transform:none; margin-left:10px;">CORE_MANAGEMENT</span>
+            </div>
+            
+            <div style="color:#666; font-size:10px; text-transform:uppercase; margin-top:20px;">Описание:</div>
+            <div id="p-desc" style="color:#bbb; font-size:14px; margin-top:10px; line-height:1.6;">
+                Главный архитектор системы. Имеет полный доступ к управлению ядром и архивам данных.
+            </div>
         </div>
-        <button class="btn-menu" style="width: 100%; margin-top: 30px;" onclick="closeAll()">CLOSE</button>
+
+        <button class="btn-menu" style="width: 100%; margin-top: 40px;" onclick="closeAll()">CLOSE_TERMINAL</button>
     </div>
 
+
     <script>
+        /* --- [JS] ЛОГИКА --- */
+
         const operators = {
-            "morisreal": { uuid: "7741-09XX-ONG", level: "Admin", dept: "CORE_MANAGEMENT", desc: "Главный архитектор системы. Полный доступ к ядру." },
-            "sumber": { uuid: "3312-88XX-ONG", level: "Senior", dept: "NETWORK_SECURITY", desc: "Контроль внешних периметров и шифрование каналов." },
-            "dykzxz": { uuid: "5590-11XX-ONG", level: "Agent", dept: "FIELD_OPERATIONS", desc: "Сбор данных в горячих точках. Оперативная разведка." },
-            "msk4ne_": { uuid: "1004-44XX-ONG", level: "Analyst", dept: "DATA_ARCHIVE", desc: "Архивация логов и поиск аномалий в истории ONG." },
-            "shmegh1": { uuid: "9982-22XX-ONG", level: "Operator", dept: "MONITORING", desc: "Дежурный оператор. Ответственный за стабильность шлюза." }
+            "morisreal": { uuid: "7741-09XX-ONG", level: "Admin", dept: "CORE_MANAGEMENT", desc: "Главный архитектор системы G.L.O.M.G." },
+            "sumber": { uuid: "3312-88XX-ONG", level: "Senior", dept: "NETWORK_SECURITY", desc: "Специалист по защите протоколов связи." },
+            "dykzxz": { uuid: "5590-11XX-ONG", level: "Agent", dept: "FIELD_OPERATIONS", desc: "Оперативный сбор данных в секторах 4-9." },
+            "msk4ne_": { uuid: "1004-44XX-ONG", level: "Analyst", dept: "DATA_ARCHIVE", desc: "Обработка и расшифровка логов ONG." },
+            "shmegh1": { uuid: "9982-22XX-ONG", level: "Operator", dept: "MONITORING", desc: "Круглосуточный мониторинг состояния ядра." }
         };
 
-        function toggleSidebar() { document.getElementById('sidebar').classList.add('active'); document.getElementById('sidebar-overlay').style.display = 'block'; }
-        function closeAll() { document.getElementById('sidebar').classList.remove('active'); document.getElementById('profile-modal').classList.remove('active'); document.getElementById('sidebar-overlay').style.display = 'none'; }
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.add('active');
+            document.getElementById('sidebar-overlay').style.display = 'block';
+        }
+
+        function closeAll() {
+            document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('profile-modal').classList.remove('active');
+            document.getElementById('sidebar-overlay').style.display = 'none';
+        }
+
         function openProfile() {
-            const user = "morisreal"; const d = operators[user];
+            // Тестовый пользователь
+            const user = "morisreal";
+            const d = operators[user];
+
             document.getElementById('p-nick').innerText = user.toUpperCase();
             document.getElementById('p-uuid').innerText = d.uuid;
             document.getElementById('p-level').innerText = d.level;
             document.getElementById('p-dept').innerText = d.dept;
             document.getElementById('p-desc').innerText = d.desc;
+
             document.getElementById('sidebar').classList.remove('active');
             document.getElementById('profile-modal').classList.add('active');
         }
+
     </script>
 </body>
 </html>
