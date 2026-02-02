@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G.L.O.M.G. // AUTHORIZATION</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #050505;
+            font-family: 'Courier New', Courier, monospace;
+            color: #e0e0e0;
+        }
+
+        .login-card {
+            width: 350px;
+            padding: 30px;
+            background: #111;
+            border: 2px solid #4b0082;
+            box-shadow: 0 0 15px rgba(75, 0, 130, 0.7);
+            border-radius: 4px;
+            position: relative;
+        }
+
+        /* Эффект сканирующей линии (VHS стиль) */
+        .login-card::before {
+            content: " ";
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        h2 {
+            text-align: center;
+            color: #a64dff;
+            text-shadow: 0 0 5px #a64dff;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 10px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            background: #000;
+            border: 1px solid #4b0082;
+            color: #00ff00;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+        }
+
+        .btn {
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        /* Кнопка Авторизации */
+        .btn-auth {
+            background: #4b0082;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+
+        .btn-auth:hover {
+            background: #a64dff;
+            box-shadow: 0 0 10px #a64dff;
+        }
+
+        /* Кнопка Гостя */
+        .btn-guest {
+            background: #333;
+            color: #888;
+            padding: 6px 12px;
+            font-size: 11px;
+        }
+
+        .btn-guest:hover {
+            background: #444;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <h2>CORE_LOGIN</h2>
+        <div class="input-group">
+            <label>OPERATOR_NAME</label>
+            <input type="text" id="username">
+        </div>
+        <div class="input-group">
+            <label>ACCESS_KEY</label>
+            <input type="password" id="password">
+        </div>
+
+        <div class="button-container">
+            <button class="btn btn-auth" onclick="tryAuth()">Авторизация</button>
+            <button class="btn btn-guest" onclick="tryGuest()">Гость</button>
+        </div>
+    </div>
+
+    <script>
+        function tryAuth() {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            if(u && p) {
+                // Перенаправляем на главную панель (создадим её позже)
+                window.location.href = '/dashboard';
+            } else {
+                alert("ACCESS DENIED: EMPTY FIELDS");
+            }
+        }
+
+        function tryGuest() {
+            window.location.href = '/guest';
+        }
+    </script>
+</body>
+</html>
