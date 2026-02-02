@@ -3,313 +3,352 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G.L.O.M.G. // MAIL_SYSTEM</title>
+    <title>G.L.O.M.G. | CORE_ACCESS_TERMINAL</title>
     <style>
-        /* --- [CSS] ОБЩИЕ СТИЛИ --- */
-        body {
+        /* --- ТЕРМИНАЛЬНЫЕ СТИЛИ --- 
+        */
+        :root {
+            --green: #00ff41;
+            --dark-green: #003b00;
+            --deep-bg: #050505;
+            --scanline-color: rgba(0, 255, 65, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body, html {
+            background-color: var(--deep-bg);
+            color: var(--green);
+            font-family: 'Courier New', Courier, monospace;
             margin: 0;
             padding: 0;
-            background-color: #050505;
-            background: radial-gradient(circle, #0a0a0a 0%, #050505 60%, #1a0033 100%);
-            font-family: 'Courier New', Courier, monospace;
-            color: #e0e0e0;
             height: 100vh;
+            width: 100vw;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            text-shadow: 0 0 5px var(--green);
         }
 
-        /* ЭФФЕКТ РАЗМЫТОЙ СЕТКИ */
-        body::before {
-            content: "";
+        /* Эффект старого монитора (CRT) */
+        .crt-filter {
             position: fixed;
-            top: 0;
-            left: 0;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 999;
+            background-size: 100% 3px, 3px 100%;
+            pointer-events: none;
+        }
+
+        .scanline-anim {
             width: 100%;
-            height: 100%;
-            background-image: linear-gradient(rgba(75, 0, 130, 0.1) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(75, 0, 130, 0.1) 1px, transparent 1px);
-            background-size: 40px 40px;
-            z-index: -1;
-            filter: blur(1.5px);
+            height: 100px;
+            z-index: 1000;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, var(--scanline-color) 50%, rgba(0, 0, 0, 0) 100%);
+            opacity: 0.1;
+            position: absolute;
+            bottom: 100%;
+            animation: scanlineMove 8s linear infinite;
+            pointer-events: none;
         }
 
-
-        /* --- [CSS] ВЕРХНЯЯ ПАНЕЛЬ --- */
-        .navbar {
-            width: 100%;
-            height: 65px;
-            border-bottom: 2px solid #4b0082;
-            background: rgba(10, 10, 10, 0.95);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 30px;
-            box-sizing: border-box;
-            z-index: 100;
-            backdrop-filter: blur(10px);
+        @keyframes scanlineMove {
+            0% { bottom: 100%; }
+            100% { bottom: -100px; }
         }
 
-        .btn-nav {
-            background: #4b0082;
-            color: white;
-            border: none;
-            padding: 10px 25px;
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 13px;
-            text-transform: uppercase;
-            font-weight: bold;
-            transition: 0.3s;
+        #matrix-bg {
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 0;
+            opacity: 0.25;
         }
 
-        .btn-nav:hover {
-            background: #a64dff;
-            box-shadow: 0 0 15px #a64dff;
-        }
-
-        .btn-send {
-            background: transparent;
-            border: 1px solid #4b0082;
-            color: #a64dff;
-        }
-
-
-        /* --- [CSS] СТРУКТУРА ПОЧТЫ --- */
-        .mail-wrapper {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
-
-
-        /* ЛЕВАЯ ПАНЕЛЬ (СПИСОК) */
-        .mail-sidebar {
-            width: 350px;
-            border-right: 2px solid #4b0082;
-            background: rgba(15, 15, 15, 0.7);
-            overflow-y: auto;
+        /* Контейнер интерфейса */
+        .ui-wrapper {
+            position: relative;
+            z-index: 10;
             display: flex;
             flex-direction: column;
-        }
-
-        .mail-item {
+            height: 100vh;
             padding: 25px;
-            border-bottom: 1px solid #222;
-            cursor: pointer;
-            transition: 0.2s;
-            position: relative;
+            background: rgba(0, 8, 0, 0.88);
+            border: 1px solid var(--green);
+            margin: 15px;
+            box-shadow: inset 0 0 30px rgba(0, 255, 65, 0.1), 0 0 15px rgba(0, 255, 65, 0.2);
         }
 
-        .mail-item:hover {
-            background: rgba(75, 0, 130, 0.15);
-        }
-
-        .mail-item.active {
-            background: rgba(75, 0, 130, 0.3);
-            border-left: 5px solid #a64dff;
-        }
-
-        /* ТРОЕТОЧИЕ (ОБРЕЗКА ТЕКСТА) */
-        .mail-subject-preview {
-            display: block;
-            width: 180px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-size: 15px;
-            font-weight: bold;
-            color: #ccc;
-        }
-
-        .mail-item.active .mail-subject-preview {
-            color: #fff;
-        }
-
-        .mail-meta {
-            font-size: 10px;
-            color: #555;
-            margin-top: 8px;
+        .top-info-panel {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px double var(--green);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
             text-transform: uppercase;
-        }
-
-
-        /* ПРАВАЯ ПАНЕЛЬ (ПРОСМОТР) */
-        .mail-content {
-            flex: 1;
-            padding: 60px;
-            background: rgba(5, 5, 5, 0.2);
-            overflow-y: auto;
-            box-sizing: border-box;
-        }
-
-        .content-header {
-            margin-bottom: 45px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 35px;
-        }
-
-        .label {
-            font-size: 11px;
-            color: #444;
-            text-transform: uppercase;
-            margin-bottom: 10px;
             letter-spacing: 2px;
         }
 
-        .value-topic {
-            font-size: 28px;
-            color: #a64dff;
-            margin-bottom: 25px;
-            text-shadow: 0 0 15px rgba(166, 77, 255, 0.4);
+        #terminal-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-right: 15px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--green) #000;
         }
 
-        .value-sender {
-            font-size: 16px;
-            color: #fff;
-            margin-bottom: 20px;
+        /* Стилизация скроллбара */
+        #terminal-content::-webkit-scrollbar { width: 8px; }
+        #terminal-content::-webkit-scrollbar-track { background: #000; }
+        #terminal-content::-webkit-scrollbar-thumb { background: var(--green); border: 2px solid #000; }
+
+        .line-wrap { margin-bottom: 12px; line-height: 1.4; animation: blinkIn 0.05s ease; }
+        @keyframes blinkIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .prefix-sys { color: #fff; background: var(--dark-green); padding: 0 5px; margin-right: 8px; font-size: 12px; }
+        .prefix-mail { color: #000; background: var(--green); padding: 0 5px; margin-right: 8px; font-size: 12px; font-weight: bold; }
+        .prefix-err { color: #fff; background: #900; padding: 0 5px; margin-right: 8px; font-size: 12px; }
+        
+        .time-stamp { color: #008f11; font-size: 0.85em; margin-right: 10px; }
+        .user-tag { color: #fff; text-shadow: 0 0 10px var(--green); }
+
+        .command-input-container {
+            display: flex;
+            align-items: center;
+            border-top: 1px solid var(--green);
+            padding-top: 15px;
+            margin-top: 10px;
         }
 
-        .message-body {
-            line-height: 2;
-            color: #bbb;
-            font-size: 16px;
-            max-width: 900px;
-            word-wrap: break-word;
-            white-space: pre-line;
+        .terminal-prompt {
+            color: var(--green);
+            font-weight: bold;
+            margin-right: 12px;
+            white-space: nowrap;
         }
 
+        #cli-input {
+            background: transparent;
+            border: none;
+            color: var(--green);
+            font-family: inherit;
+            font-size: 18px;
+            width: 100%;
+            outline: none;
+            caret-color: #fff;
+        }
 
-        /* СКРОЛЛБАР */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #050505;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #4b0082;
+        .action-bar {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
         }
 
-        /* КОНЕЦ CSS */
+        .terminal-btn {
+            background: transparent;
+            border: 1px solid var(--green);
+            color: var(--green);
+            padding: 8px 20px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 12px;
+            font-family: inherit;
+            transition: 0.2s;
+        }
+
+        .terminal-btn:hover {
+            background: var(--green);
+            color: #000;
+            box-shadow: 0 0 15px var(--green);
+        }
+
+        .blink { animation: fastBlink 1s infinite; }
+        @keyframes fastBlink { 50% { opacity: 0; } }
     </style>
 </head>
 <body>
 
-    <div class="navbar">
-        <button class="btn-nav" onclick="location.href='dashboard.html'">← НАЗАД</button>
-        <span style="font-size: 12px; color: #444; letter-spacing: 4px;">G.L.O.M.G. // ENCRYPTED_COMMUNICATION</span>
-        <button class="btn-nav btn-send">ОТПРАВИТЬ СООБЩЕНИЕ</button>
-    </div>
+    <div class="crt-filter"></div>
+    <div class="scanline-anim"></div>
+    <canvas id="matrix-bg"></canvas>
 
-
-    <div class="mail-wrapper">
-
-        <div class="mail-sidebar" id="mail-list">
-
-            <div class="mail-item active" onclick="loadMail(0)">
-                <span class="mail-subject-preview">Системное сообщение</span>
-                <div class="mail-meta">FROM: SYSTEM_CORE // ID: 0000</div>
-            </div>
-
-            <div class="mail-item" onclick="loadMail(1)">
-                <span class="mail-subject-preview">Директива ONG-44_FINAL</span>
-                <div class="mail-meta">FROM: COMMANDER_X // ID: 0742</div>
-            </div>
-
-            <div class="mail-item" onclick="loadMail(2)">
-                <span class="mail-subject-preview">Запрос доступа к ядру</span>
-                <div class="mail-meta">FROM: shmegh1 // ID: 9982</div>
-            </div>
-
-            <div class="mail-item" onclick="loadMail(3)">
-                <span class="mail-subject-preview">morisreal_private_archive</span>
-                <div class="mail-meta">FROM: Unknown // ID: ????</div>
-            </div>
-
-            </div>
-
-
-        <div class="mail-content" id="mail-view">
-            
-            <div class="content-header">
-                <div class="label">Тема сообщения:</div>
-                <div class="value-topic" id="view-subject">Системное сообщение</div>
-                
-                <div class="label">Отправитель:</div>
-                <div class="value-sender" id="view-sender">SYSTEM_CORE (ID: 0000)</div>
-            </div>
-
-            <div class="label">Текст сообщения:</div>
-            <div class="message-body" id="view-body">
-                Добро пожаловать в защищенную систему обмена данными G.L.O.M.G.
-                
-                Ваша учетная запись успешно прошла верификацию. Текущий уровень доступа позволяет просматривать архивы и использовать радар в штатном режиме.
-                
-                При обнаружении утечек данных немедленно используйте протокол экстренной связи.
-                
-                --
-                ONG_MANAGEMENT_BOT
-            </div>
-
+    <div class="ui-wrapper">
+        <div class="top-info-panel">
+            <div id="sys-name">G.L.O.M.G. NETWORK v4.5.1</div>
+            <div id="sys-clock">00:00:00</div>
+            <div id="sys-user">ID: ---</div>
         </div>
 
+        <div id="terminal-content">
+            </div>
+
+        <div class="command-input-container">
+            <span class="terminal-prompt" id="prompt-text">user@glomg:~$</span>
+            <input type="text" id="cli-input" autofocus spellcheck="false" autocomplete="off">
+        </div>
+
+        <div class="action-bar">
+            <button class="terminal-btn" onclick="location.href='/send_mail'">[F1] TRANSMIT_DATA</button>
+            <button class="terminal-btn" onclick="clearConsole()">[F2] CLEAR_BUFFER</button>
+            <button class="terminal-btn" onclick="location.href='/dashboard'">[F3] DASHBOARD</button>
+            <button class="terminal-btn" onclick="location.href='/'">[F4] TERMINATE</button>
+        </div>
     </div>
 
-
+    <script src="/socket.io/socket.io.js"></script>
     <script>
-        /* --- [JS] БАЗА ДАННЫХ ПИСЕМ --- */
+        /**
+         * INITIALIZATION & VARIABLES
+         */
+        const terminal = document.getElementById('terminal-content');
+        const inputField = document.getElementById('cli-input');
+        const clockDisplay = document.getElementById('sys-clock');
+        const promptLabel = document.getElementById('prompt-text');
+        const userDisplay = document.getElementById('sys-user');
+        
+        const socket = io();
+        const userName = localStorage.getItem('username') || 'Guest_' + Math.floor(Math.random() * 9999);
 
-        const mailDB = {
-            0: {
-                subject: "Системное сообщение",
-                sender: "SYSTEM_CORE (ID: 0000)",
-                body: "Добро пожаловать в систему G.L.O.M.G.\n\nВаш доступ подтвержден. Все системы мониторинга активны.\n\nСоблюдайте протоколы секретности."
-            },
-            1: {
-                subject: "Директива ONG-44_FINAL",
-                sender: "COMMANDER_X (ID: 0742)",
-                body: "ВНИМАНИЕ.\n\nСогласно новой директиве, все логи за период 2025 года должны быть перемещены в закрытый архив.\n\nДоступ по обычному ключу будет ограничен."
-            },
-            2: {
-                subject: "Запрос доступа к ядру",
-                sender: "shmegh1 (ID: 9982)",
-                body: "Система охлаждения дает сбой. Температура поднята на 0.7 градуса.\n\nПрошу выдать расширенные права на ручную корректировку мощности охладителей."
-            },
-            3: {
-                subject: "morisreal_private_archive",
-                sender: "Unknown (ID: ???? Encrypted)",
-                body: "Файл найден. Передача данных начнется после подтверждения личности оператора.\n\nОжидайте сигнала на частоте 44.9."
-            }
-        };
+        // Update UI
+        userDisplay.innerText = "ID: " + userName.toUpperCase();
+        promptLabel.innerText = userName.toLowerCase() + "@glomg:~$";
 
+        /**
+         * MATRIX BACKGROUND ENGINE
+         */
+        const canvas = document.getElementById('matrix-bg');
+        const ctx = canvas.getContext('2d');
 
-        /* --- [JS] ЛОГИКА ПЕРЕКЛЮЧЕНИЯ --- */
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
 
-        function loadMail(id) {
-            const data = mailDB[id];
-            if (!data) return;
+        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()_+-=[]{}|;:,.<>?";
+        const fontSize = 16;
+        const columns = Math.floor(width / fontSize);
+        const rainDrops = Array(columns).fill(1);
 
-            // Обновление контента
-            document.getElementById('view-subject').innerText = data.subject;
-            document.getElementById('view-sender').innerText = data.sender;
-            document.getElementById('view-body').innerText = data.body;
+        function renderMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, width, height);
 
-            // Смена активного класса
-            const items = document.querySelectorAll('.mail-item');
-            items.forEach((item, index) => {
-                if (index === id) {
-                    item.classList.add('active');
-                } else {
-                    item.classList.remove('active');
+            ctx.fillStyle = "#0F0";
+            ctx.font = fontSize + "px monospace";
+
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+
+                if (rainDrops[i] * fontSize > height && Math.random() > 0.975) {
+                    rainDrops[i] = 0;
                 }
-            });
+                rainDrops[i]++;
+            }
+        }
+        setInterval(renderMatrix, 35);
 
-            // Скролл наверх
-            document.getElementById('mail-view').scrollTop = 0;
+        /**
+         * TERMINAL CORE FUNCTIONS
+         */
+        function getCurrentTime() {
+            const now = new Date();
+            return now.getHours().toString().padStart(2, '0') + ":" + 
+                   now.getMinutes().toString().padStart(2, '0') + ":" + 
+                   now.getSeconds().toString().padStart(2, '0');
         }
 
-        // КОНЕЦ СКРИПТА
+        function updateClock() {
+            clockDisplay.innerText = getCurrentTime();
+        }
+        setInterval(updateClock, 1000);
+
+        function writeToTerminal(text, type = 'default') {
+            const line = document.createElement('div');
+            line.className = 'line-wrap';
+            
+            const timeSpan = `<span class="time-stamp">[${getCurrentTime()}]</span>`;
+            let prefix = "";
+
+            switch(type) {
+                case 'sys': prefix = `<span class="prefix-sys">CORE</span> `; break;
+                case 'mail': prefix = `<span class="prefix-mail">MAIL</span> `; break;
+                case 'error': prefix = `<span class="prefix-err">ERR!</span> `; break;
+                default: prefix = `<span style="color:var(--green)">></span> `;
+            }
+
+            line.innerHTML = `${timeSpan} ${prefix} ${text}`;
+            terminal.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function clearConsole() {
+            terminal.innerHTML = "";
+            writeToTerminal("Console buffer reset. System ready.", "sys");
+        }
+
+        /**
+         * SOCKET.IO & EVENTS
+         */
+        socket.emit('auth', userName);
+
+        socket.on('connect', () => {
+            writeToTerminal("Socket established with central node.", "sys");
+        });
+
+        socket.on('new_mail', (data) => {
+            writeToTerminal(`INBOUND FROM <span class="user-tag">${data.from}</span>: ${data.text}`, "mail");
+            const alertSfx = new Audio('https://www.soundjay.com/buttons/beep-07a.mp3');
+            alertSfx.volume = 0.3;
+            alertSfx.play().catch(() => {});
+        });
+
+        /**
+         * COMMAND PROCESSOR
+         */
+        inputField.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const cmd = this.value.trim();
+                if (cmd === "") return;
+
+                writeToTerminal(`<span style="color:#fff">${cmd}</span>`);
+                const command = cmd.toLowerCase();
+
+                // Расширенная логика команд
+                if (command === 'help') {
+                    writeToTerminal("Available commands: status, clear, whoami, info, mail, reboot");
+                } else if (command === 'status') {
+                    writeToTerminal("CPU: 12% | MEMORY: 442MB/1024MB | LINK: SECURE", "sys");
+                } else if (command === 'whoami') {
+                    writeToTerminal(`USER: ${userName} | PRIVILEGES: LEVEL_1_ACCESS`, "sys");
+                } else if (command === 'clear') {
+                    clearConsole();
+                } else if (command === 'mail') {
+                    location.href = '/send_mail';
+                } else if (command === 'reboot') {
+                    writeToTerminal("System rebooting...", "error");
+                    setTimeout(() => location.reload(), 1500);
+                } else if (command === 'about') {
+                    writeToTerminal("G.L.O.M.G. Core. Created for decentralized encrypted communication.", "sys");
+                } else {
+                    writeToTerminal(`Unknown command: '${command}'. Type 'help' for manual.`, "error");
+                }
+
+                this.value = "";
+            }
+        });
+
+        // ПРИВЕТСТВЕННАЯ ЗАГРУЗКА
+        setTimeout(() => writeToTerminal("Booting G.L.O.M.G. OS...", "sys"), 400);
+        setTimeout(() => writeToTerminal("Scanning for unread packets in Supabase...", "sys"), 900);
+        setTimeout(() => writeToTerminal("User authenticated as " + userName, "sys"), 1400);
+        setTimeout(() => writeToTerminal("Welcome to the decentralized relay. Type 'help' for commands.", "sys"), 2000);
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
     </script>
 </body>
 </html>
