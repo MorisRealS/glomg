@@ -1,14 +1,16 @@
 {
-  "name": "glomg-terminal",
+  "name": "glomg-core",
   "version": "1.0.0",
-  "description": "ONG CORE System",
+  "description": "Terminal System with Supabase and Telegram",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
     "express": "^4.18.2",
-    "node-telegram-bot-api": "^0.61.0",
-    "socket.io": "^4.7.2"
+    "node-telegram-bot-api": "^0.64.0",
+    "socket.io": "^4.7.2",
+    "path": "^0.12.7"
   }
 }
