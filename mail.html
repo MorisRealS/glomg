@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>G.L.O.M.G. // MAIL_SYSTEM</title>
+    <style>
+        /* --- [CSS] БАЗОВЫЙ ФОН С РАЗМЫТИЕМ --- */
+        body {
+            margin: 0; padding: 0;
+            background-color: #050505;
+            background: radial-gradient(circle, #0a0a0a 0%, #050505 60%, #1a0033 100%);
+            font-family: 'Courier New', Courier, monospace;
+            color: #e0e0e0; height: 100vh; overflow: hidden;
+            display: flex; flex-direction: column;
+        }
+
+        /* Сетка с размытием */
+        body::before {
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(75, 0, 130, 0.1) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(75, 0, 130, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px; z-index: -1;
+            filter: blur(1px); /* Размытие фона */
+        }
+
+        /* ВЕРХНЯЯ ПЛАЖКА */
+        .navbar {
+            width: 100%; height: 65px;
+            border-bottom: 2px solid #4b0082;
+            background: rgba(10, 10, 10, 0.9);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 30px; box-sizing: border-box; z-index: 100;
+        }
+
+        .btn-nav {
+            background: #4b0082; color: white; border: none; padding: 10px 20px;
+            cursor: pointer; font-family: inherit; font-size: 13px;
+            text-transform: uppercase; font-weight: bold; transition: 0.3s;
+        }
+        .btn-nav:hover { background: #a64dff; box-shadow: 0 0 15px #a64dff; }
+
+        /* ОСНОВНОЙ МОДУЛЬ ПОЧТЫ */
+        .mail-wrapper {
+            display: flex; flex: 1; overflow: hidden;
+        }
+
+        /* ЛЕВАЯ КОЛОНКА (СПИСОК) */
+        .mail-sidebar {
+            width: 300px; border-right: 2px solid #4b0082;
+            background: rgba(15, 15, 15, 0.5);
+            overflow-y: auto; display: flex; flex-direction: column;
+        }
+
+        .mail-item {
+            padding: 20px; border-bottom: 1px solid #222;
+            cursor: pointer; transition: 0.2s;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            max-width: 100%; font-size: 14px; color: #888;
+        }
+
+        /* Правило для троеточия: если больше 11-12 символов */
+        .mail-item span {
+            display: block; width: 150px; /* Ограничиваем ширину для срабатывания троеточия */
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+
+        .mail-item:hover { background: rgba(75, 0, 130, 0.2); color: #fff; }
+        .mail-item.active { background: rgba(75, 0, 130, 0.4); border-left: 4px solid #a64dff; color: #fff; }
+
+        /* ПРАВАЯ КОЛОНКА (СОДЕРЖИМОЕ) */
+        .mail-content {
+            flex: 1; padding: 40px;
+            background: rgba(5, 5, 5, 0.3);
+            overflow-y: auto; box-sizing: border-box;
+        }
+
+        .content-header { margin-bottom: 30px; border-bottom: 1px solid #333; padding-bottom: 20px; }
+        
+        .label { font-size: 10px; color: #666; text-transform: uppercase; margin-bottom: 5px; }
+        .value { font-size: 18px; color: #a64dff; margin-bottom: 15px; }
+        
+        .message-body {
+            line-height: 1.8; color: #bbb; font-size: 15px;
+            max-width: 800px; /* Чтобы текст не растягивал страницу по ширине */
+            word-wrap: break-word;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <button class="btn-nav" onclick="window.history.back()">← НАЗАД</button>
+        <span style="font-size: 12px; color: #666; letter-spacing: 2px;">G.L.O.M.G. // ENCRYPTED_MAIL</span>
+        <button class="btn-nav" style="background: #222; border: 1px solid #4b0082;">ОТПРАВИТЬ СООБЩЕНИЕ</button>
+    </div>
+
+    <div class="mail-wrapper">
+        <div class="mail-sidebar">
+            <div class="mail-item active"><span>Системное сообщение</span></div>
+            <div class="mail-item"><span>Директива ONG-44</span></div>
+            <div class="mail-item"><span>Запрос доступа к ядру</span></div>
+            <div class="mail-item"><span>Отчет по сектору 7</span></div>
+            <div class="mail-item"><span>morisreal_private</span></div>
+        </div>
+
+        <div class="mail-content">
+            <div class="content-header">
+                <div class="label">Тема сообщения:</div>
+                <div class="value">Системное сообщение от ядра G.L.O.M.G.</div>
+                
+                <div class="label">Отправитель:</div>
+                <div class="value" style="font-size: 14px; color: #fff;">SYSTEM_CORE (ID: 0000)</div>
+            </div>
+
+            <div class="label">Содержимое:</div>
+            <div class="message-body">
+                Добро пожаловать в систему мониторинга. Ваша учетная запись успешно активирована. 
+                Пожалуйста, проверьте наличие обновлений в архиве данных. 
+                Любые аномалии в работе радара должны быть немедленно переданы в отдел безопасности.
+                <br><br>
+                -- <br>
+                ONG_AUTODATA_SERVICE
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
