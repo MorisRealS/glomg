@@ -89,15 +89,49 @@
         .profile-level { color: #00ff00; font-size: 14px; margin-top: 5px; }
 
         /* --- [CSS] ОСНОВНОЙ КОНТЕНТ --- */
-        .main-container { margin-top: 100px; width: 85%; max-width: 1000px; display: flex; flex-direction: column; align-items: center; }
+        .main-container { 
+    margin-top: 180px; /* Опустили контейнер еще ниже */
+    width: 85%; 
+    max-width: 1100px; 
+}
 
-        .action-row { display: flex; gap: 20px; width: 100%; justify-content: center; margin-bottom: 40px; }
+        .action-row { 
+    display: flex; 
+    gap: 30px; /* Увеличили расстояние между кнопками */
+    width: 100%; 
+    justify-content: center; 
+    margin-bottom: 60px; 
+}
         .btn-action {
-            flex: 1; max-width: 200px; padding: 15px; background: rgba(10,10,10,0.8);
-            border: 1px solid #4b0082; color: #fff; cursor: pointer; transition: 0.3s;
-            font-family: inherit; font-weight: bold; text-transform: uppercase;
-        }
-        .btn-action:hover { background: #4b0082; box-shadow: 0 0 15px #4b0082; transform: translateY(-3px); }
+    flex: 1; 
+    max-width: 250px; /* Увеличили максимальную ширину */
+    height: 80px;    /* Увеличили высоту кнопок */
+    background: rgba(15, 15, 15, 0.9);
+    border: 2px solid #4b0082; /* Жирнее рамка */
+    color: #a64dff; 
+    cursor: pointer; 
+    transition: 0.4s;
+    font-family: inherit; 
+    font-size: 18px; /* Больше шрифт */
+    font-weight: bold; 
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+        .btn-action {
+    flex: 1; 
+    max-width: 250px; /* Увеличили максимальную ширину */
+    height: 80px;    /* Увеличили высоту кнопок */
+    background: rgba(15, 15, 15, 0.9);
+    border: 2px solid #4b0082; /* Жирнее рамка */
+    color: #a64dff; 
+    cursor: pointer; 
+    transition: 0.4s;
+    font-family: inherit; 
+    font-size: 18px; /* Больше шрифт */
+    font-weight: bold; 
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
 
         /* Полоса прозрачная по краям */
         .gradient-line {
