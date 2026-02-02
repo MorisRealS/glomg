@@ -2,36 +2,40 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>G.L.O.M.G. // ENCRYPTED_MAIL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G.L.O.M.G. // MAIL_SYSTEM</title>
     <style>
-        /* --- [CSS] ОБЩИЕ СТИЛИ И ФОН --- */
+        /* --- [CSS] ОБЩИЕ СТИЛИ --- */
         body {
             margin: 0;
             padding: 0;
             background-color: #050505;
-            /* Фон с глубоким фиолетовым свечением и размытием */
             background: radial-gradient(circle, #0a0a0a 0%, #050505 60%, #1a0033 100%);
             font-family: 'Courier New', Courier, monospace;
             color: #e0e0e0;
             height: 100vh;
-            overflow: hidden; /* Чтобы не было общей прокрутки страницы */
+            overflow: hidden;
             display: flex;
             flex-direction: column;
         }
 
-        /* Эффект сетки с легким блюром */
+        /* ЭФФЕКТ РАЗМЫТОЙ СЕТКИ */
         body::before {
             content: "";
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-image: linear-gradient(rgba(75, 0, 130, 0.1) 1px, transparent 1px),
                               linear-gradient(90deg, rgba(75, 0, 130, 0.1) 1px, transparent 1px);
             background-size: 40px 40px;
             z-index: -1;
-            filter: blur(0.5px);
+            filter: blur(1.5px);
         }
 
-        /* ВЕРХНЯЯ ПАНЕЛЬ */
+
+        /* --- [CSS] ВЕРХНЯЯ ПАНЕЛЬ --- */
         .navbar {
             width: 100%;
             height: 65px;
@@ -50,7 +54,7 @@
             background: #4b0082;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 10px 25px;
             cursor: pointer;
             font-family: inherit;
             font-size: 13px;
@@ -64,151 +68,170 @@
             box-shadow: 0 0 15px #a64dff;
         }
 
-        /* Кнопка "Отправить" */
         .btn-send {
             background: transparent;
             border: 1px solid #4b0082;
             color: #a64dff;
         }
 
-        /* --- [CSS] ИНТЕРФЕЙС ПОЧТЫ --- */
+
+        /* --- [CSS] СТРУКТУРА ПОЧТЫ --- */
         .mail-wrapper {
             display: flex;
             flex: 1;
             overflow: hidden;
         }
 
-        /* Левая колонка - Список */
+
+        /* ЛЕВАЯ ПАНЕЛЬ (СПИСОК) */
         .mail-sidebar {
-            width: 320px;
+            width: 350px;
             border-right: 2px solid #4b0082;
-            background: rgba(15, 15, 15, 0.6);
+            background: rgba(15, 15, 15, 0.7);
             overflow-y: auto;
             display: flex;
             flex-direction: column;
         }
 
         .mail-item {
-            padding: 20px;
+            padding: 25px;
             border-bottom: 1px solid #222;
             cursor: pointer;
             transition: 0.2s;
             position: relative;
         }
 
-        /* Эффект троеточия (11-12 символов) */
-        .mail-subject {
-            display: block;
-            width: 160px; /* Ограничитель ширины */
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-size: 14px;
-            color: #888;
-            font-weight: bold;
-        }
-
         .mail-item:hover {
             background: rgba(75, 0, 130, 0.15);
         }
 
-        .mail-item:hover .mail-subject {
-            color: #a64dff;
-        }
-
         .mail-item.active {
             background: rgba(75, 0, 130, 0.3);
-            border-left: 4px solid #a64dff;
+            border-left: 5px solid #a64dff;
         }
 
-        .mail-item.active .mail-subject {
+        /* ТРОЕТОЧИЕ (ОБРЕЗКА ТЕКСТА) */
+        .mail-subject-preview {
+            display: block;
+            width: 180px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 15px;
+            font-weight: bold;
+            color: #ccc;
+        }
+
+        .mail-item.active .mail-subject-preview {
             color: #fff;
         }
 
-        /* Правая колонка - Содержимое */
+        .mail-meta {
+            font-size: 10px;
+            color: #555;
+            margin-top: 8px;
+            text-transform: uppercase;
+        }
+
+
+        /* ПРАВАЯ ПАНЕЛЬ (ПРОСМОТР) */
         .mail-content {
             flex: 1;
-            padding: 50px;
+            padding: 60px;
             background: rgba(5, 5, 5, 0.2);
             overflow-y: auto;
             box-sizing: border-box;
         }
 
         .content-header {
-            margin-bottom: 40px;
+            margin-bottom: 45px;
             border-bottom: 1px solid #333;
-            padding-bottom: 30px;
+            padding-bottom: 35px;
         }
 
         .label {
-            font-size: 10px;
-            color: #555;
+            font-size: 11px;
+            color: #444;
             text-transform: uppercase;
-            margin-bottom: 8px;
-            letter-spacing: 1px;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
         }
 
         .value-topic {
-            font-size: 24px;
+            font-size: 28px;
             color: #a64dff;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px rgba(166, 77, 255, 0.3);
+            margin-bottom: 25px;
+            text-shadow: 0 0 15px rgba(166, 77, 255, 0.4);
         }
 
         .value-sender {
-            font-size: 15px;
+            font-size: 16px;
             color: #fff;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .message-body {
-            line-height: 1.8;
+            line-height: 2;
             color: #bbb;
             font-size: 16px;
-            max-width: 850px; /* Ограничение по ширине текста */
+            max-width: 900px;
             word-wrap: break-word;
-            white-space: pre-line; /* Сохраняет переносы строк */
+            white-space: pre-line;
         }
 
-        /* Кастомный скроллбар */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #050505; }
-        ::-webkit-scrollbar-thumb { background: #4b0082; }
+
+        /* СКРОЛЛБАР */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050505;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4b0082;
+        }
+
+        /* КОНЕЦ CSS */
     </style>
 </head>
 <body>
 
     <div class="navbar">
-        <button class="btn-nav" onclick="window.location.href='dashboard.html'">← НАЗАД</button>
-        <span style="font-size: 12px; color: #444; letter-spacing: 3px;">G.L.O.M.G. // ENCRYPTED_MAIL_SERVICE</span>
-        <button class="btn-nav btn-send" onclick="alert('Переход к созданию сообщения...')">ОТПРАВИТЬ СООБЩЕНИЕ</button>
+        <button class="btn-nav" onclick="location.href='dashboard.html'">← НАЗАД</button>
+        <span style="font-size: 12px; color: #444; letter-spacing: 4px;">G.L.O.M.G. // ENCRYPTED_COMMUNICATION</span>
+        <button class="btn-nav btn-send">ОТПРАВИТЬ СООБЩЕНИЕ</button>
     </div>
 
+
     <div class="mail-wrapper">
-        
+
         <div class="mail-sidebar" id="mail-list">
+
             <div class="mail-item active" onclick="loadMail(0)">
-                <span class="mail-subject">Системное сообщение</span>
-                <div style="font-size: 10px; color: #444; margin-top: 5px;">FROM: SYSTEM_CORE</div>
+                <span class="mail-subject-preview">Системное сообщение</span>
+                <div class="mail-meta">FROM: SYSTEM_CORE // ID: 0000</div>
             </div>
-            
+
             <div class="mail-item" onclick="loadMail(1)">
-                <span class="mail-subject">Директива ONG-44_FINAL</span>
-                <div style="font-size: 10px; color: #444; margin-top: 5px;">FROM: COMMANDER_X</div>
+                <span class="mail-subject-preview">Директива ONG-44_FINAL</span>
+                <div class="mail-meta">FROM: COMMANDER_X // ID: 0742</div>
             </div>
 
             <div class="mail-item" onclick="loadMail(2)">
-                <span class="mail-subject">Запрос доступа к ядру управления</span>
-                <div style="font-size: 10px; color: #444; margin-top: 5px;">FROM: shmegh1</div>
+                <span class="mail-subject-preview">Запрос доступа к ядру</span>
+                <div class="mail-meta">FROM: shmegh1 // ID: 9982</div>
             </div>
 
             <div class="mail-item" onclick="loadMail(3)">
-                <span class="mail-subject">morisreal_private_archive</span>
-                <div style="font-size: 10px; color: #444; margin-top: 5px;">FROM: Unknown</div>
+                <span class="mail-subject-preview">morisreal_private_archive</span>
+                <div class="mail-meta">FROM: Unknown // ID: ????</div>
             </div>
-        </div>
+
+            </div>
+
 
         <div class="mail-content" id="mail-view">
+            
             <div class="content-header">
                 <div class="label">Тема сообщения:</div>
                 <div class="value-topic" id="view-subject">Системное сообщение</div>
@@ -217,7 +240,7 @@
                 <div class="value-sender" id="view-sender">SYSTEM_CORE (ID: 0000)</div>
             </div>
 
-            <div class="label">Содержимое:</div>
+            <div class="label">Текст сообщения:</div>
             <div class="message-body" id="view-body">
                 Добро пожаловать в защищенную систему обмена данными G.L.O.M.G.
                 
@@ -228,45 +251,51 @@
                 --
                 ONG_MANAGEMENT_BOT
             </div>
+
         </div>
+
     </div>
 
+
     <script>
-        // База данных писем (имитация сервера)
+        /* --- [JS] БАЗА ДАННЫХ ПИСЕМ --- */
+
         const mailDB = {
             0: {
                 subject: "Системное сообщение",
                 sender: "SYSTEM_CORE (ID: 0000)",
-                body: "Добро пожаловать в защищенную систему обмена данными G.L.O.M.G.\n\nВаша учетная запись успешно прошла верификацию. Текущий уровень доступа позволяет просматривать архивы и использовать радар в штатном режиме.\n\nПри обнаружении утечек данных немедленно используйте протокол экстренной связи."
+                body: "Добро пожаловать в систему G.L.O.M.G.\n\nВаш доступ подтвержден. Все системы мониторинга активны.\n\nСоблюдайте протоколы секретности."
             },
             1: {
                 subject: "Директива ONG-44_FINAL",
                 sender: "COMMANDER_X (ID: 0742)",
-                body: "ВНИМАНИЕ ОПЕРАТОРАМ.\n\nСогласно новой директиве, все логи за период 2025-2026 должны быть перемещены в закрытый архив. Доступ по обычному ключу будет ограничен через 24 часа."
+                body: "ВНИМАНИЕ.\n\nСогласно новой директиве, все логи за период 2025 года должны быть перемещены в закрытый архив.\n\nДоступ по обычному ключу будет ограничен."
             },
             2: {
-                subject: "Запрос доступа к ядру управления",
+                subject: "Запрос доступа к ядру",
                 sender: "shmegh1 (ID: 9982)",
-                body: "Система охлаждения дает сбой. Температура поднята на 0.7 градуса. Прошу выдать расширенные права на ручную корректировку мощности охладителей."
+                body: "Система охлаждения дает сбой. Температура поднята на 0.7 градуса.\n\nПрошу выдать расширенные права на ручную корректировку мощности охладителей."
             },
             3: {
                 subject: "morisreal_private_archive",
                 sender: "Unknown (ID: ???? Encrypted)",
-                body: "Файл найден. Передача данных начнется после подтверждения личности. Ожидайте сигнала."
+                body: "Файл найден. Передача данных начнется после подтверждения личности оператора.\n\nОжидайте сигнала на частоте 44.9."
             }
         };
 
-        // Функция смены письма
+
+        /* --- [JS] ЛОГИКА ПЕРЕКЛЮЧЕНИЯ --- */
+
         function loadMail(id) {
             const data = mailDB[id];
             if (!data) return;
 
-            // 1. Обновляем текст в правой панели
+            // Обновление контента
             document.getElementById('view-subject').innerText = data.subject;
             document.getElementById('view-sender').innerText = data.sender;
             document.getElementById('view-body').innerText = data.body;
 
-            // 2. Меняем активный класс в списке слева
+            // Смена активного класса
             const items = document.querySelectorAll('.mail-item');
             items.forEach((item, index) => {
                 if (index === id) {
@@ -276,9 +305,11 @@
                 }
             });
 
-            // 3. Плавная прокрутка наверх при открытии нового письма
+            // Скролл наверх
             document.getElementById('mail-view').scrollTop = 0;
         }
+
+        // КОНЕЦ СКРИПТА
     </script>
 </body>
 </html>
