@@ -2,99 +2,48 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G.L.O.M.G. | GUEST_ACCESS</title>
+    <title>G.L.O.M.G. | Guest Access</title>
     <style>
-        :root {
-            --purple: #a020f0;
-            --dark-p: #2d004d;
-            --bg: #050005;
-        }
+        :root { --purple: #a020f0; --bg: #050005; }
+        body, html { margin: 0; padding: 0; background: var(--bg); color: var(--purple); font-family: 'Courier New', monospace; height: 100vh; }
 
-        body, html {
-            margin: 0; padding: 0; background: var(--bg);
-            color: var(--purple); font-family: 'Courier New', monospace;
-            height: 100vh; overflow: hidden;
-        }
-
-        /* 1. Верхняя плажка с авторизацией */
+        /* Верхняя плажка как в ЛК */
         .top-nav {
-            width: 100%;
-            height: 60px;
-            border-bottom: 2px solid var(--purple);
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            background: rgba(20, 0, 30, 0.8);
+            width: 100%; height: 60px; border-bottom: 2px solid var(--purple);
+            display: flex; align-items: center; padding: 0 30px; background: rgba(20, 0, 35, 0.9);
         }
-
-        .auth-btn {
-            background: transparent;
-            border: 1px solid var(--purple);
-            color: var(--purple);
-            padding: 8px 20px;
-            text-transform: uppercase;
-            cursor: pointer;
-            font-family: inherit;
-            transition: 0.3s;
+        .btn-auth {
+            background: transparent; border: 1px solid var(--purple); color: var(--purple);
+            padding: 10px 25px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
         }
+        .btn-auth:hover { background: var(--purple); color: #fff; box-shadow: 0 0 15px var(--purple); }
 
-        .auth-btn:hover {
-            background: var(--purple);
-            color: #fff;
-            box-shadow: 0 0 15px var(--purple);
-        }
-
-        /* 2. Плажка статуса по центру */
+        /* Центрированная плажка статуса */
         .status-container {
-            display: flex;
-            justify-content: center;
-            margin-top: 40px;
+            display: flex; justify-content: center; align-items: center; height: calc(100vh - 200px);
         }
-
         .status-banner {
-            width: 90%;
-            border: 1px solid var(--purple);
-            background: rgba(45, 0, 77, 0.2);
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
+            width: 85%; max-width: 1200px; border: 1px solid var(--purple);
+            padding: 25px; background: rgba(160, 32, 240, 0.05);
+            display: flex; align-items: center; gap: 25px;
         }
-
-        .status-indicator {
-            width: 15px;
-            height: 15px;
-            background: var(--purple);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--purple);
-            animation: blink 1.5s infinite;
+        .led-circle {
+            width: 18px; height: 18px; background: var(--purple); border-radius: 50%;
+            box-shadow: 0 0 15px var(--purple); animation: pulse 1.5s infinite;
         }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(0.8); }
-        }
-
-        .status-text {
-            font-size: 18px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.2; } 100% { opacity: 1; } }
+        .status-text { font-size: 20px; letter-spacing: 3px; text-transform: uppercase; }
     </style>
 </head>
 <body>
-
     <div class="top-nav">
-        <button class="auth-btn" onclick="location.href='/login'">Авторизация</button>
+        <button class="btn-auth" onclick="location.href='/login'">Авторизация</button>
     </div>
-
     <div class="status-container">
         <div class="status-banner">
-            <div class="status-indicator"></div>
-            <div class="status-text">Система G.L.O.M.G работает в штатном режиме</div>
+            <div class="led-circle"></div>
+            <div class="status-text">Система G.L.O.M.G в штатном режиме</div>
         </div>
     </div>
-
 </body>
 </html>
