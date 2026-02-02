@@ -404,6 +404,30 @@
             document.getElementById('profile-modal').classList.add('active');
         }
 
+        document.addEventListener('DOMContentLoaded', () => {
+        const SYSTEM_USERS = [
+            { name: "MORISREAL", uuid: "1110001110" },
+            { name: "SUMBER", uuid: "0101010101" },
+            { name: "DYKXZX", uuid: "2223334445" },
+            { name: "MSK4NE_", uuid: "5556667778" }
+        ];
+
+        const savedName = localStorage.getItem('username') || 'MORISREAL';
+        const userProfile = SYSTEM_USERS.find(u => u.name === savedName.toUpperCase()) || SYSTEM_USERS[0];
+
+        const welcomeText = document.querySelector('.welcome-text') || document.querySelector('h1');
+        if (welcomeText) {
+            welcomeText.innerHTML = `WELCOME, <span style="color: #a020f0; text-shadow: 0 0 10px #a020f0;">${userProfile.name}</span>`;
+        }
+
+        const sidebarId = document.getElementById('node-id-display') || document.querySelector('.user-uuid');
+        if (sidebarId) {
+            sidebarId.innerText = `NODE: ${userProfile.uuid}`;
+        }
+
+        localStorage.setItem('user_uuid', userProfile.uuid);
+    });
+        
     </script>
 </body>
 </html>
