@@ -2,118 +2,265 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>G.L.O.M.G. | Mail Terminal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G.L.O.M.G. | COMPOSE_NEW_PACKET</title>
     <style>
-        body {
-            background-color: #0a0a0a;
-            color: #00ff41;
+        /* --- ЦВЕТОВАЯ СХЕМА СИСТЕМЫ --- */
+        :root {
+            --purple-neon: #a020f0;
+            --purple-low: rgba(160, 32, 240, 0.2);
+            --bg-black: #050005;
+            --glass-bg: rgba(20, 0, 40, 0.45);
+            --input-bg: rgba(0, 0, 0, 0.7);
+            --transition-speed: 0.4s;
+        }
+
+        /* --- БАЗОВЫЕ ПАРАМЕТРЫ СТРАНИЦЫ --- */
+        * {
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--bg-black);
+            color: var(--purple-neon);
             font-family: 'Courier New', Courier, monospace;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            overflow: hidden;
+            /* ФОН: Центральный свет + Электронные дорожки */
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(160, 32, 240, 0.15) 0%, transparent 80%),
+                linear-gradient(rgba(160, 32, 240, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(160, 32, 240, 0.05) 1px, transparent 1px);
+            background-size: 100% 100%, 55px 55px, 55px 55px;
+        }
+
+        /* --- ВЕРХНЯЯ ПАНЕЛЬ (HEADER) --- */
+        .top-status-header {
+            height: 65px;
+            width: 100%;
+            border-bottom: 2px solid var(--purple-neon);
+            background-color: rgba(5, 0, 10, 0.9);
+            display: flex;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            padding: 0 35px;
+            z-index: 50;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.9);
         }
-        .terminal {
-            width: 500px;
-            padding: 20px;
-            border: 1px solid #00ff41;
-            box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
-            background: rgba(0, 0, 0, 0.9);
-        }
-        h2 { text-align: center; text-transform: uppercase; letter-spacing: 2px; }
-        .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-size: 0.8em; }
-        input, textarea {
-            width: 100%;
-            background: #000;
-            border: 1px solid #00ff41;
-            color: #00ff41;
-            padding: 8px;
-            box-sizing: border-box;
-            outline: none;
-        }
-        textarea { height: 100px; resize: none; }
-        button {
-            width: 100%;
-            padding: 10px;
-            background: #00ff41;
-            color: #000;
-            border: none;
-            cursor: pointer;
+
+        .back-nav-container a {
+            color: var(--purple-neon);
+            text-decoration: none;
+            border: 1px solid var(--purple-neon);
+            padding: 8px 20px;
+            font-size: 13px;
             font-weight: bold;
             text-transform: uppercase;
-            transition: 0.3s;
+            letter-spacing: 2px;
+            transition: all var(--transition-speed) ease;
         }
-        button:hover { background: #008f11; color: #fff; }
-        .status { margin-top: 10px; font-size: 0.7em; text-align: center; height: 1em; }
+
+        .back-nav-container a:hover {
+            background-color: var(--purple-neon);
+            color: #ffffff;
+            box-shadow: 0 0 15px var(--purple-neon);
+        }
+
+        /* --- ЦЕНТРАЛЬНАЯ ОБЛАСТЬ ФОРМЫ --- */
+        .form-viewport {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* СТЕКЛЯННЫЙ МОДУЛЬ (GLASSMORPHISM) */
+        .glass-terminal-node {
+            width: 100%;
+            max-width: 580px;
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--purple-neon);
+            border-radius: 25px; /* Сглаженные углы */
+            padding: 50px;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5), 
+                        inset 0 0 20px rgba(160, 32, 240, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Заголовок формы */
+        .glass-terminal-node h2 {
+            margin-top: 0;
+            margin-bottom: 40px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            font-size: 24px;
+            text-shadow: 0 0 10px var(--purple-neon);
+        }
+
+        /* --- ПОЛЯ ВВОДА --- */
+        .input-wrapper {
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .input-wrapper label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.7;
+        }
+
+        .input-control {
+            width: 100%;
+            background-color: var(--input-bg);
+            border: 1px solid var(--purple-neon);
+            border-radius: 12px; /* Мягкие края */
+            padding: 15px 18px;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .input-control:focus {
+            box-shadow: 0 0 15px var(--purple-low);
+            background-color: rgba(20, 0, 40, 0.8);
+            border-color: #ffffff;
+        }
+
+        .textarea-control {
+            resize: none;
+            min-height: 160px;
+        }
+
+        /* --- КНОПКА ОТПРАВКИ --- */
+        .submit-action-container {
+            margin-top: 40px;
+        }
+
+        .send-packet-button {
+            width: 100%;
+            background-color: var(--purple-neon);
+            color: #ffffff;
+            border: none;
+            padding: 18px;
+            border-radius: 15px;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .send-packet-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(160, 32, 240, 0.5);
+            background-color: #b040ff;
+        }
+
+        .send-packet-button:active {
+            transform: translateY(1px);
+        }
+
+        /* Декоративные точки по углам */
+        .corner-dot {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background-color: var(--purple-neon);
+            border-radius: 50%;
+        }
+        .dot-tl { top: 15px; left: 15px; }
+        .dot-tr { top: 15px; right: 15px; }
+        .dot-bl { bottom: 15px; left: 15px; }
+        .dot-br { bottom: 15px; right: 15px; }
+
     </style>
 </head>
 <body>
 
-<div class="terminal">
-    <h2>Mail Sender v1.0</h2>
-    <div class="input-group">
-        <label>> RECIPIENT_ID:</label>
-        <input type="text" id="mail_to" placeholder="nickname...">
-    </div>
-    <div class="input-group">
-        <label>> SUBJECT_HEADER:</label>
-        <input type="text" id="mail_subject" placeholder="top secret...">
-    </div>
-    <div class="input-group">
-        <label>> MESSAGE_BODY:</label>
-        <textarea id="mail_body" placeholder="enter text..."></textarea>
-    </div>
-    <button onclick="sendMail()">Execute Send</button>
-    <div id="status" class="status"></div>
-</div>
+    <header class="top-status-header">
+        <nav class="back-nav-container">
+            <a href="mail.html">← ОТМЕНИТЬ</a>
+        </nav>
+    </header>
 
-<script src="/socket.io/socket.io.js"></script>
+    <main class="form-viewport">
+        
+        <div class="glass-terminal-node">
+            <div class="corner-dot dot-tl"></div>
+            <div class="corner-dot dot-tr"></div>
+            <div class="corner-dot dot-bl"></div>
+            <div class="corner-dot dot-br"></div>
 
-<script>
-    const socket = io();
-    const statusDiv = document.getElementById('status');
+            <h2>СОЗДАНИЕ ПАКЕТА</h2>
 
-    // Берем имя отправителя из localStorage (оно там должно быть после авторизации)
-    // Если его нет, ставим ник по умолчанию
-    const myNickname = localStorage.getItem('username') || 'Unknown_User';
-    
-    // Авторизуем сокет под этим ником
-    socket.emit('auth', myNickname);
+            <form id="mail-compose-form">
+                
+                <div class="input-wrapper">
+                    <label for="target-uuid">Идентификатор получателя (UUID)</label>
+                    <input type="text" id="target-uuid" class="input-control" placeholder="0000000000" maxlength="10" required>
+                </div>
 
-    function sendMail() {
-        const to = document.getElementById('mail_to').value.trim();
-        const subj = document.getElementById('mail_subject').value.trim();
-        const body = document.getElementById('mail_body').value.trim();
+                <div class="input-wrapper">
+                    <label for="packet-subject">Тема передачи данных</label>
+                    <input type="text" id="packet-subject" class="input-control" placeholder="ВВЕДИТЕ ЗАГОЛОВОК..." required>
+                </div>
 
-        if (!to || !body) {
-            statusDiv.innerText = "❌ ERROR: DATA_MISSING";
-            statusDiv.style.color = "red";
-            return;
-        }
+                <div class="input-wrapper">
+                    <label for="packet-body">Зашифрованное содержимое</label>
+                    <textarea id="packet-body" class="input-control textarea-control" placeholder="ПРОТОКОЛ ПЕРЕДАЧИ..."></textarea>
+                </div>
 
-        // Отправляем пакет данных на сервер
-        socket.emit('send_mail_from_web', {
-            to: to,
-            subj: subj || "No Subject",
-            body: body,
-            from: myNickname
+                <div class="submit-action-container">
+                    <button type="submit" class="send-packet-button">ВЫПОЛНИТЬ ПЕРЕДАЧУ</button>
+                </div>
+
+            </form>
+        </div>
+
+    </main>
+
+    <script>
+        /**
+         * ОБРАБОТКА ОТПРАВКИ ФОРМЫ
+         */
+        document.getElementById('mail-compose-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const uuid = document.getElementById('target-uuid').value;
+            const subject = document.getElementById('packet-subject').value;
+            
+            // Имитация процесса отправки
+            const btn = document.querySelector('.send-packet-button');
+            btn.innerText = "ШИФРОВАНИЕ...";
+            btn.style.opacity = "0.7";
+            btn.disabled = true;
+
+            setTimeout(() => {
+                btn.innerText = "ПАКЕТ ПЕРЕДАН";
+                btn.style.backgroundColor = "#22ff22"; // Кратковременный успех
+                
+                setTimeout(() => {
+                    window.location.href = 'mail.html';
+                }, 1000);
+            }, 1500);
         });
-
-        // Визуальное подтверждение
-        statusDiv.innerText = "✅ PACKET_SENT_SUCCESSFULLY";
-        statusDiv.style.color = "#00ff41";
-
-        // Очистка полей через 2 секунды
-        setTimeout(() => {
-            document.getElementById('mail_to').value = '';
-            document.getElementById('mail_subject').value = '';
-            document.getElementById('mail_body').value = '';
-            statusDiv.innerText = '';
-        }, 2000);
-    }
-</script>
+    </script>
 
 </body>
 </html>
