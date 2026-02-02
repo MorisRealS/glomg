@@ -5,22 +5,36 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const TelegramBot = require('node-telegram-bot-api');
 
-// Твой актуальный токен
+// --- НАСТРОЙКИ ---
 const TOKEN = '8117485520:AAF4oGiiFI18knK_VPGu5M0bVBC465lsSzs'; 
 const bot = new TelegramBot(TOKEN, {polling: true});
-
-// Замени на свой ID, чтобы получать уведомления с сайта
 const MY_TELEGRAM_ID = 'ТВОЙ_ID_ЧАТА'; 
 
 let mailBox = {};
 let archiveData = [];
-const userState = {}; // Для пошагового ввода через кнопки
+const userState = {}; 
 
 app.use(express.static(__dirname));
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 
+// --- МАРШРУТИЗАЦИЯ (ROUTING) ---
+// Главная точка входа теперь ведет на файл авторизации
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'autorize.html'));
+});
+
+// Маршрут для будущей панели управления
+app.get('/dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dashboard.html'));
+});
+
+// Маршрут для гостевого доступа
+app.get('/guest', (req, res) => {
+    res.sendFile(path.join(__dirname, 'guest.html'));
+});
+
+// --- LOGIC SOCKET.IO ---
 io.on('connection', (socket) => {
-    console.log('[SOCKET] Новый пользователь подключился');
+    console.log('[SOCKET] Оператор подключился к терминалу');
 
     socket.on('auth', (username) => {
         const user = username.toLowerCase();
@@ -31,7 +45,6 @@ io.on('connection', (socket) => {
         socket.emit('init_archive', archiveData);
     });
 
-    // ЛОГИКА ОТПРАВКИ С САЙТА (Пункт 7)
     socket.on('send_mail_from_web', (data) => {
         const { to, subj, body, from } = data;
         const target = to.toLowerCase();
@@ -41,20 +54,16 @@ io.on('connection', (socket) => {
             date: new Date().toLocaleTimeString() 
         };
         
-        // 1. Сохраняем в ящик получателя
         if (!mailBox[target]) mailBox[target] = [];
         mailBox[target].push(newMsg);
         
-        // 2. Доставляем в реальном времени на сайт
         io.to(target).emit('new_mail', newMsg);
-        
-        // 3. Дублируем тебе в Telegram
         bot.sendMessage(MY_TELEGRAM_ID, `📩 С САЙТА: ${from} -> ${target}\nТема: ${subj}\n\n${body}`);
     });
 });
 
-// --- ИНТЕРФЕЙС БОТА (КНОПКИ) ---
-
+// --- ИНТЕРФЕЙС БОТА И КОМАНДЫ ---
+// (Оставляем без изменений, так как логика команд /broadcast, /archive и /send верна)
 bot.on('message', (msg) => {
     const chatId = msg.chat.id;
     const text = msg.text;
@@ -72,7 +81,6 @@ bot.on('message', (msg) => {
         });
     }
 
-    // Пошаговый ввод Архива
     if (userState[chatId]) {
         const state = userState[chatId];
         if (state.step === 'WAIT_TITLE') {
@@ -102,15 +110,9 @@ bot.on('callback_query', (query) => {
     bot.answerCallbackQuery(query.id);
 });
 
-// --- КОМАНДЫ (Твой исходный код + Broadcast) ---
-
 bot.onText(/\/broadcast (.+)/, (msg, match) => {
     const text = match[1];
-    const systemMsg = { 
-        from: "CORE_SYSTEM", 
-        text: `⚠️ ГЛОБАЛЬНОЕ УВЕДОМЛЕНИЕ: ${text}`, 
-        date: new Date().toLocaleTimeString() 
-    };
+    const systemMsg = { from: "CORE_SYSTEM", text: `⚠️ ГЛОБАЛЬНОЕ УВЕДОМЛЕНИЕ: ${text}`, date: new Date().toLocaleTimeString() };
     io.emit('new_mail', systemMsg); 
     bot.sendMessage(msg.chat.id, "📢 Системное сообщение разослано.");
 });
@@ -143,4 +145,4 @@ bot.onText(/\/send (\w+) (.+)/, (msg, match) => {
 });
 
 const PORT = process.env.PORT || 3000;
-http.listen(PORT, () => console.log('--- CORE ONLINE ---'));
+http.listen(PORT, () => console.log('--- CORE ONLINE (AUTORIZE_READY) ---'));
