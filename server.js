@@ -1,3 +1,4 @@
+const { createClient } = require('@supabase/supabase-js');
 const express = require('express');
 const path = require('path');
 const app = express();
@@ -5,144 +6,96 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const TelegramBot = require('node-telegram-bot-api');
 
-// --- НАСТРОЙКИ ---
-const TOKEN = '8117485520:AAF4oGiiFI18knK_VPGu5M0bVBC465lsSzs'; 
-const bot = new TelegramBot(TOKEN, {polling: true});
-const MY_TELEGRAM_ID = 'ТВОЙ_ID_ЧАТА'; 
+// --- 1. НАСТРОЙКИ СИСТЕМЫ ---
+const SUPABASE_URL = 'https://svcafgfruyehllzzfmml.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_Rj_xPyWk0cO_pwoT7IaMkA_CcwrhM7B';
 
-let mailBox = {};
-let archiveData = [];
-const userState = {}; 
+// ВСТАВЬ СВОЙ СЕКРЕТНЫЙ КЛЮЧ НИЖЕ
+const SUPABASE_SERVICE_KEY = 'sb_secret_chajhWezR0LZ_byvw5r5qw_mMlyumkr'; 
+
+// ВСТАВЬ СВОЙ ID ИЗ @userinfobot НИЖЕ
+const MY_TELEGRAM_ID = '1865307845'; 
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+const TOKEN = '8117485520:AAGmoirMAsrxWtgF2R72YyjkV4Z5MSfI-BQ'; 
+const bot = new TelegramBot(TOKEN, {polling: true});
+
+let archiveData = []; // Для временного хранения архива в сессии
 
 app.use(express.static(__dirname));
 
-// --- МАРШРУТИЗАЦИЯ (ROUTING) ---
-// Главная точка входа теперь ведет на файл авторизации
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'autorize.html'));
+// --- 2. МАРШРУТЫ (САЙТ) ---
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'autorize.html')));
+app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'dashboard.html')));
+
+// Ссылка для Cron-job.org (проверка почты раз в минуту)
+app.get('/check', async (req, res) => {
+    try {
+        const { data, error } = await supabase
+            .from('messages')
+            .select('*')
+            .eq('is_read', false);
+
+        if (data && data.length > 0) {
+            for (let msg of data) {
+                const report = `📩 **НОВОЕ ПИСЬМО С САЙТА**\n\n` +
+                               `👤 **ОТ:** ${msg.sender}\n` +
+                               `🎯 **КОМУ:** ${msg.recipient}\n` +
+                               `📂 **ТЕМА:** ${msg.subject}\n` +
+                               `📄 **ТЕКСТ:** ${msg.body}`;
+
+                await bot.sendMessage(MY_TELEGRAM_ID, report, { parse_mode: 'Markdown' });
+                await supabase.from('messages').update({ is_read: true }).eq('id', msg.id);
+            }
+        }
+        res.status(200).send('OK');
+    } catch (err) {
+        res.status(500).send('Error');
+    }
 });
 
-// Маршрут для будущей панели управления
-app.get('/dashboard', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dashboard.html'));
-});
-
-// Маршрут для гостевого доступа
-app.get('/guest', (req, res) => {
-    res.sendFile(path.join(__dirname, 'guest.html'));
-});
-
-// --- LOGIC SOCKET.IO ---
+// --- 3. ЛОГИКА SOCKET.IO ---
 io.on('connection', (socket) => {
-    console.log('[SOCKET] Оператор подключился к терминалу');
-
     socket.on('auth', (username) => {
-        const user = username.toLowerCase();
-        socket.join(user);
-        console.log(`[AUTH] Оператор ${user} вошел в систему`);
-        
-        if (mailBox[user]) socket.emit('load_mail', mailBox[user]);
-        socket.emit('init_archive', archiveData);
+        socket.join(username.toLowerCase());
     });
 
-    socket.on('send_mail_from_web', (data) => {
+    socket.on('send_mail_from_web', async (data) => {
         const { to, subj, body, from } = data;
-        const target = to.toLowerCase();
-        const newMsg = { 
+        
+        // 1. Сохраняем в Supabase
+        await supabase.from('messages').insert([{ 
+            sender: from, recipient: to, subject: subj, body: body, is_read: false 
+        }]);
+
+        // 2. Мгновенно шлем в Телеграм
+        const fastReport = `⚡️ **ЭКСТРЕННОЕ СООБЩЕНИЕ**\n${from} -> ${to}\n\n${body}`;
+        bot.sendMessage(MY_TELEGRAM_ID, fastReport);
+        
+        // 3. Дублируем на экран получателю (если он онлайн)
+        io.to(to.toLowerCase()).emit('new_mail', { 
             from: from, 
             text: `[${subj}] ${body}`, 
             date: new Date().toLocaleTimeString() 
-        };
-        
-        if (!mailBox[target]) mailBox[target] = [];
-        mailBox[target].push(newMsg);
-        
-        io.to(target).emit('new_mail', newMsg);
-        bot.sendMessage(MY_TELEGRAM_ID, `📩 С САЙТА: ${from} -> ${target}\nТема: ${subj}\n\n${body}`);
+        });
     });
 });
 
-// --- ИНТЕРФЕЙС БОТА И КОМАНДЫ ---
-// (Оставляем без изменений, так как логика команд /broadcast, /archive и /send верна)
-bot.on('message', (msg) => {
-    const chatId = msg.chat.id;
-    const text = msg.text;
-    if (!text) return;
-
-    if (text === '/glomg' || text === '/start') {
-        delete userState[chatId]; 
-        return bot.sendMessage(chatId, "🛠 ПАНЕЛЬ УПРАВЛЕНИЯ G.L.O.M.G.", {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: "📁 Добавить в Архив", callback_data: "btn_add_archive" }],
-                    [{ text: "✉️ Отправить Почту", callback_data: "btn_info_mail" }]
-                ]
-            }
-        });
-    }
-
-    if (userState[chatId]) {
-        const state = userState[chatId];
-        if (state.step === 'WAIT_TITLE') {
-            state.title = text;
-            state.step = 'WAIT_CONTENT';
-            return bot.sendMessage(chatId, `✅ Тема принята. Теперь введи содержимое:`);
-        }
-        if (state.step === 'WAIT_CONTENT') {
-            const entry = { title: state.title, content: text, timestamp: new Date().toLocaleString() };
-            archiveData.push(entry);
-            io.emit('new_archive_data', entry);
-            delete userState[chatId];
-            return bot.sendMessage(chatId, `🚀 Опубликовано в архиве: ${entry.title}`);
-        }
-    }
+// --- 4. КОМАНДЫ БОТА ---
+bot.onText(/\/start/, (msg) => {
+    bot.sendMessage(msg.chat.id, "🛠 G.L.O.M.G. CORE ONLINE\nЯ буду присылать сообщения с сайта сюда.");
 });
 
-bot.on('callback_query', (query) => {
-    const chatId = query.message.chat.id;
-    if (query.data === 'btn_add_archive') {
-        userState[chatId] = { step: 'WAIT_TITLE' };
-        bot.sendMessage(chatId, "📝 Введите заголовок для архива:");
-    }
-    if (query.data === 'btn_info_mail') {
-        bot.sendMessage(chatId, "📨 Используй команду:\n`/send [ник] [текст]`");
-    }
-    bot.answerCallbackQuery(query.id);
-});
-
+// Глобальная рассылка на все открытые вкладки сайта
 bot.onText(/\/broadcast (.+)/, (msg, match) => {
     const text = match[1];
-    const systemMsg = { from: "CORE_SYSTEM", text: `⚠️ ГЛОБАЛЬНОЕ УВЕДОМЛЕНИЕ: ${text}`, date: new Date().toLocaleTimeString() };
-    io.emit('new_mail', systemMsg); 
-    bot.sendMessage(msg.chat.id, "📢 Системное сообщение разослано.");
-});
-
-bot.onText(/\/archive (.+)/, (msg, match) => {
-    const rawText = match[1];
-    let title, content;
-    if (rawText.includes('|')) {
-        const parts = rawText.split('|');
-        title = parts[0].trim();
-        content = parts[1].trim();
-    } else {
-        title = "LOG_" + Math.floor(Math.random() * 999);
-        content = rawText.trim();
-    }
-    const entry = { title, content, timestamp: new Date().toLocaleString() };
-    archiveData.push(entry);
-    io.emit('new_archive_data', entry);
-    bot.sendMessage(msg.chat.id, `📁 ПРИНЯТО: ${title}`);
-});
-
-bot.onText(/\/send (\w+) (.+)/, (msg, match) => {
-    const target = match[1].toLowerCase();
-    const text = match[2];
-    const newMsg = { from: "SYSTEM", text: text, date: new Date().toLocaleTimeString() };
-    if (!mailBox[target]) mailBox[target] = [];
-    mailBox[target].push(newMsg);
-    io.to(target).emit('new_mail', newMsg);
-    bot.sendMessage(msg.chat.id, `✉️ Отправлено пользователю ${target}`);
+    io.emit('new_mail', { 
+        from: "CORE_SYSTEM", 
+        text: `⚠️ УВЕДОМЛЕНИЕ: ${text}`, 
+        date: new Date().toLocaleTimeString() 
+    });
+    bot.sendMessage(msg.chat.id, "📢 Рассылка выполнена.");
 });
 
 const PORT = process.env.PORT || 3000;
-http.listen(PORT, () => console.log('--- CORE ONLINE (AUTORIZE_READY) ---'));
+http.listen(PORT, () => console.log('--- SYSTEM READY ---'));
