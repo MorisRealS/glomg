@@ -6,29 +6,36 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const TelegramBot = require('node-telegram-bot-api');
 
-// --- 1. НАСТРОЙКИ СИСТЕМЫ ---
-const SUPABASE_URL = 'https://svcafgfruyehllzzfmml.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_Rj_xPyWk0cO_pwoT7IaMkA_CcwrhM7B';
+// ==========================================================
+// --- НАСТРОЙКИ (ЗАПОЛНИ ЭТИ ПОЛЯ) ---
+// ==========================================================
 
-// ВСТАВЬ СВОЙ СЕКРЕТНЫЙ КЛЮЧ НИЖЕ
+const SUPABASE_URL = 'https://svcafgfruyehllzzfmml.supabase.co';
+
+// 1. Вставь сюда длинный SECRET ключ (service_role) из Supabase
 const SUPABASE_SERVICE_KEY = 'sb_secret_chajhWezR0LZ_byvw5r5qw_mMlyumkr'; 
 
-// ВСТАВЬ СВОЙ ID ИЗ @userinfobot НИЖЕ
+// 2. Вставь сюда свой цифровой ID из Telegram (от @userinfobot)
 const MY_TELEGRAM_ID = '1865307845'; 
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+// 3. Твой токен бота и Anon ключ (уже вставлены)
+const SUPABASE_ANON_KEY = 'sb_publishable_Rj_xPyWk0cO_pwoT7IaMkA_CcwrhM7B';
 const TOKEN = '8117485520:AAGmoirMAsrxWtgF2R72YyjkV4Z5MSfI-BQ'; 
-const bot = new TelegramBot(TOKEN, {polling: true});
 
-let archiveData = []; // Для временного хранения архива в сессии
+// ==========================================================
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+const bot = new TelegramBot(TOKEN, {polling: true});
 
 app.use(express.static(__dirname));
 
-// --- 2. МАРШРУТЫ (САЙТ) ---
+// --- МАРШРУТЫ (ROUTING) ---
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'autorize.html')));
 app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'dashboard.html')));
+app.get('/mail', (req, res) => res.sendFile(path.join(__dirname, 'mail.html')));
+app.get('/guest', (req, res) => res.sendFile(path.join(__dirname, 'guest.html')));
 
-// Ссылка для Cron-job.org (проверка почты раз в минуту)
+// Ссылка для "будильника" Cron-job.org
 app.get('/check', async (req, res) => {
     try {
         const { data, error } = await supabase
@@ -38,64 +45,72 @@ app.get('/check', async (req, res) => {
 
         if (data && data.length > 0) {
             for (let msg of data) {
-                const report = `📩 **НОВОЕ ПИСЬМО С САЙТА**\n\n` +
+                const report = `📩 **НОВОЕ ПИСЬМО С ТЕРМИНАЛА**\n\n` +
                                `👤 **ОТ:** ${msg.sender}\n` +
                                `🎯 **КОМУ:** ${msg.recipient}\n` +
-                               `📂 **ТЕМА:** ${msg.subject}\n` +
-                               `📄 **ТЕКСТ:** ${msg.body}`;
+                               `📂 **ТЕМА:** ${msg.subject}\n\n` +
+                               `📄 **ТЕКСТ:**\n${msg.body}`;
 
                 await bot.sendMessage(MY_TELEGRAM_ID, report, { parse_mode: 'Markdown' });
+                // Помечаем как прочитанное, чтобы не слать дубли
                 await supabase.from('messages').update({ is_read: true }).eq('id', msg.id);
             }
         }
         res.status(200).send('OK');
     } catch (err) {
-        res.status(500).send('Error');
+        res.status(500).send('Database Error');
     }
 });
 
-// --- 3. ЛОГИКА SOCKET.IO ---
+// --- ЛОГИКА SOCKET.IO ---
 io.on('connection', (socket) => {
+    console.log('[SYSTEM] Соединение установлено');
+
     socket.on('auth', (username) => {
         socket.join(username.toLowerCase());
+        console.log(`[AUTH] Пользователь ${username} в сети`);
     });
 
     socket.on('send_mail_from_web', async (data) => {
         const { to, subj, body, from } = data;
         
-        // 1. Сохраняем в Supabase
-        await supabase.from('messages').insert([{ 
-            sender: from, recipient: to, subject: subj, body: body, is_read: false 
+        // Сохраняем в Supabase
+        const { error } = await supabase.from('messages').insert([{ 
+            sender: from, 
+            recipient: to, 
+            subject: subj, 
+            body: body, 
+            is_read: false 
         }]);
 
-        // 2. Мгновенно шлем в Телеграм
-        const fastReport = `⚡️ **ЭКСТРЕННОЕ СООБЩЕНИЕ**\n${from} -> ${to}\n\n${body}`;
-        bot.sendMessage(MY_TELEGRAM_ID, fastReport);
+        if (error) console.error('[DB ERROR]', error);
+
+        // Мгновенное уведомление тебе в Telegram
+        bot.sendMessage(MY_TELEGRAM_ID, `📩 **СРОЧНО:**\n${from} -> ${to}\n${body}`);
         
-        // 3. Дублируем на экран получателю (если он онлайн)
+        // Отправка получателю внутри сайта (если он онлайн)
         io.to(to.toLowerCase()).emit('new_mail', { 
-            from: from, 
+            from, 
             text: `[${subj}] ${body}`, 
             date: new Date().toLocaleTimeString() 
         });
     });
 });
 
-// --- 4. КОМАНДЫ БОТА ---
+// --- КОМАНДЫ БОТА ---
 bot.onText(/\/start/, (msg) => {
-    bot.sendMessage(msg.chat.id, "🛠 G.L.O.M.G. CORE ONLINE\nЯ буду присылать сообщения с сайта сюда.");
+    bot.sendMessage(msg.chat.id, "🛠 **G.L.O.M.G. CORE**\nСистема мониторинга писем активирована.");
 });
 
-// Глобальная рассылка на все открытые вкладки сайта
 bot.onText(/\/broadcast (.+)/, (msg, match) => {
     const text = match[1];
     io.emit('new_mail', { 
-        from: "CORE_SYSTEM", 
-        text: `⚠️ УВЕДОМЛЕНИЕ: ${text}`, 
+        from: "SYSTEM_OVERRIDE", 
+        text: `⚠️ ВНИМАНИЕ: ${text}`, 
         date: new Date().toLocaleTimeString() 
     });
-    bot.sendMessage(msg.chat.id, "📢 Рассылка выполнена.");
+    bot.sendMessage(msg.chat.id, "📢 Глобальный сигнал отправлен.");
 });
 
 const PORT = process.env.PORT || 3000;
-http.listen(PORT, () => console.log('--- SYSTEM READY ---'));
+http.listen(PORT, () => console.log(`--- SERVER STARTED ON PORT ${PORT} ---`));
