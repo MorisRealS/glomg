@@ -7,10 +7,16 @@
     <style>
         /* --- [CSS] СТИЛИ СТРАНИЦЫ --- */
         body {
-            margin: 0; padding: 0;
-            display: flex; justify-content: center; align-items: center;
-            height: 100vh; background-color: #050505;
-            font-family: 'Courier New', Courier, monospace; color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #050505;
+            background: radial-gradient(circle, #0a0a0a 0%, #050505 60%, #1a0033 100%);
+            font-family: 'Courier New', Courier, monospace;
+            color: #e0e0e0;
             overflow: hidden;
             position: relative;
         }
@@ -18,92 +24,181 @@
         /* Эффект сканирующих линий на весь экран */
         body::before {
             content: " ";
-            position: absolute; top: 0; left: 0; bottom: 0; right: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
                         linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-            z-index: 100; background-size: 100% 4px, 3px 100%;
+            z-index: 60;
+            background-size: 100% 4px, 3px 100%;
             pointer-events: none;
         }
+
 
         /* ПОСЛЕ ЭТОЙ СТРОКИ ПИСАТЬ НОВЫЙ CSS ДЛЯ ФОНА И ЭФФЕКТОВ */
 
-        /* Фиолетовая бегущая полоса */
+
         .vhs-line {
             position: fixed;
-            top: -100px;
             left: 0;
             width: 100%;
             height: 2px;
-            background: rgba(166, 77, 255, 0.4);
-            box-shadow: 0 0 15px 2px rgba(166, 77, 255, 0.6);
-            z-index: 102;
+            background: rgba(166, 77, 255, 0.3);
+            box-shadow: 0 0 15px 1px rgba(166, 77, 255, 0.4);
+            z-index: 50;
             pointer-events: none;
-            animation: vhs_move 6s linear infinite;
+            animation: vhs_move linear infinite;
+        }
+
+        .line-1 {
+            animation-duration: 5s;
+            opacity: 0.5;
+        }
+
+        .line-2 {
+            animation-duration: 8s;
+            opacity: 0.3;
+            height: 1px;
+        }
+
+        .line-3 {
+            animation-duration: 12s;
+            opacity: 0.2;
+            height: 4px;
         }
 
         @keyframes vhs_move {
-            0% { top: -5%; }
-            100% { top: 105%; }
+            0% {
+                top: -10%;
+            }
+            100% {
+                top: 110%;
+            }
         }
 
-        body::after {
-            content: " ";
-            position: fixed;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 255, 0, 0.06));
-            z-index: 999;
-            background-size: 100% 2px, 3px 100%;
-            pointer-events: none;
-            opacity: 0.3;
-            animation: scanline 10s linear infinite;
-        }
-
-        @keyframes scanline {
-            0% { background-position: 0 0; }
-            100% { background-position: 0 100%; }
-        }
 
         .login-card {
-            width: 350px; padding: 30px;
-            background: #111; border: 2px solid #4b0082;
-            box-shadow: 0 0 15px rgba(75, 0, 130, 0.7);
-            border-radius: 4px; position: relative;
+            width: 350px;
+            padding: 30px;
+            background: rgba(17, 17, 17, 0.95);
+            border: 2px solid #4b0082;
+            box-shadow: 0 0 30px rgba(75, 0, 130, 0.6);
+            border-radius: 4px;
+            position: relative;
             z-index: 101;
         }
+
+
         /* ПОСЛЕ ЭТОЙ СТРОКИ ПИСАТЬ CSS ДЛЯ ВНУТРЕННИХ БЛОКОВ КАРТОЧКИ */
 
-        h2 { text-align: center; color: #a64dff; text-shadow: 0 0 5px #a64dff; margin-bottom: 30px; letter-spacing: 2px; }
-        .input-group { margin-bottom: 15px; }
-        label { display: block; font-size: 10px; color: #666; margin-bottom: 5px; }
-        input { width: 100%; padding: 10px; background: #000; border: 1px solid #4b0082; color: #00ff00; outline: none; box-sizing: border-box; }
-        input:focus { border-color: #a64dff; box-shadow: 0 0 5px #a64dff; }
 
-        /* ИЗМЕНЕНО: Сближение кнопок */
-        .button-container { 
-            display: flex; 
-            justify-content: center; /* Центрируем */
-            gap: 15px; /* Расстояние между ними */
-            align-items: center; 
-            margin-top: 25px; 
+        h2 {
+            text-align: center;
+            color: #a64dff;
+            text-shadow: 0 0 5px #a64dff;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
         }
 
-        .btn { border: none; cursor: pointer; font-family: inherit; font-weight: bold; transition: 0.3s; text-transform: uppercase; }
-        .btn-auth { background: #4b0082; color: #fff; padding: 10px 20px; font-size: 14px; }
-        .btn-auth:hover { background: #a64dff; box-shadow: 0 0 10px #a64dff; transform: translateY(-1px); }
-        .btn-guest { background: #333; color: #888; padding: 8px 12px; font-size: 11px; }
-        .btn-guest:hover { background: #444; color: #fff; }
+        .input-group {
+            margin-bottom: 15px;
+        }
 
-        #status-line { animation: blink 2s infinite; font-family: 'Courier New', monospace; }
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        label {
+            display: block;
+            font-size: 10px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            background: #000;
+            border: 1px solid #4b0082;
+            color: #00ff00;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            border-color: #a64dff;
+            box-shadow: 0 0 5px #a64dff;
+        }
+
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            align-items: center;
+            margin-top: 25px;
+        }
+
+        .btn {
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .btn-auth {
+            background: #4b0082;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+
+        .btn-auth:hover {
+            background: #a64dff;
+            box-shadow: 0 0 10px #a64dff;
+            transform: translateY(-1px);
+        }
+
+        .btn-guest {
+            background: #333;
+            color: #888;
+            padding: 8px 12px;
+            font-size: 11px;
+        }
+
+        .btn-guest:hover {
+            background: #444;
+            color: #fff;
+        }
+
+        #status-line {
+            animation: blink 2s infinite;
+            font-family: 'Courier New', monospace;
+        }
+
+        @keyframes blink {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
         
         /* ПОСЛЕ ЭТОЙ СТРОКИ ПИСАТЬ CSS ДЛЯ КНОПОК */
     </style>
 </head>
 <body>
-    <div class="vhs-line"></div>
+
+    <div class="vhs-line line-1"></div>
+    <div class="vhs-line line-2"></div>
+    <div class="vhs-line line-3"></div>
 
     <div class="login-card">
+
         <div style="text-align:center; font-size: 8px; color: #4b0082; margin-bottom: 10px;">[ ONG_NETWORK_PROTECTED ]</div>
 
         <h2>CORE_LOGIN</h2>
@@ -118,27 +213,37 @@
             <input type="password" id="password" placeholder="******">
         </div>
 
+
         <div class="button-container">
             <button class="btn btn-auth" onclick="tryAuth()">Авторизация</button>
             <button class="btn btn-guest" onclick="tryGuest()">Гость</button>
         </div>
         
+        
         <div id="status-line" style="font-size: 9px; margin-top: 20px; color: #4b0082; text-align: center;">
             SYSTEM_READY
         </div>
+
     </div>
 
     <script>
         /* --- [JS] ЛОГИКА И СКРИПТЫ --- */
+
         function tryAuth() {
             const u = document.getElementById('username').value;
             const p = document.getElementById('password').value;
             const status = document.getElementById('status-line');
             
+            // ПОСЛЕ ЭТОЙ СТРОКИ МОЖНО ДОБАВИТЬ ПРОВЕРКУ ПАРОЛЯ
+            
             if(u && p) {
                 status.innerText = "ACCESS_GRANTED. REDIRECTING...";
                 status.style.color = "#00ff00";
-                setTimeout(() => { window.location.href = '/dashboard'; }, 1000);
+                
+                setTimeout(() => {
+                    window.location.href = '/dashboard';
+                }, 1000);
+                
             } else {
                 status.innerText = "ERROR: ACCESS_DENIED";
                 status.style.color = "#ff0000";
@@ -149,6 +254,8 @@
         function tryGuest() {
             window.location.href = '/guest';
         }
+
+        /* ПОСЛЕ ЭТОЙ СТРОКИ ПИСАТЬ НОВЫЕ ФУНКЦИИ JS */
     </script>
 </body>
 </html>
