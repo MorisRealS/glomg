@@ -3,139 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G.L.O.M.G. | GUEST_STATION</title>
+    <title>G.L.O.M.G. | GUEST_ACCESS_NODE</title>
     <style>
         :root {
-            --p: #a020f0;
-            --bg: #050005;
-            --card: rgba(15, 0, 25, 0.95);
+            --purple: #a020f0;
+            --purple-dim: rgba(160, 32, 240, 0.1);
+            --bg-deep: #050005;
+            --panel-bg: rgba(10, 0, 20, 0.95);
         }
 
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
 
         body, html {
-            margin: 0; padding: 0;
-            background: var(--bg);
-            color: var(--p);
-            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 0;
+            background: var(--bg-deep);
+            color: var(--purple);
+            font-family: 'Courier New', Courier, monospace;
             width: 100vw;
             height: 100vh;
-            overflow-x: hidden; /* Фиксация по ширине */
+            overflow-x: hidden; /* Строгий запрет горизонтального скролла */
+            background-image: 
+                radial-gradient(circle at center, #1a0033 0%, #050005 100%),
+                repeating-linear-gradient(rgba(160, 32, 240, 0.03) 0px, rgba(160, 32, 240, 0.03) 1px, transparent 1px, transparent 20px);
         }
 
-        /* Верхняя плажка */
-        .top-nav {
+        /* 1. Верхняя плажка */
+        .header-strip {
             width: 100%;
-            height: 65px;
-            border-bottom: 2px solid var(--p);
-            background: var(--card);
+            height: 70px;
+            border-bottom: 2px solid var(--purple);
+            background: var(--panel-bg);
             display: flex;
             align-items: center;
-            padding: 0 40px;
+            padding: 0 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+            position: relative;
+            z-index: 10;
         }
 
-        .auth-btn {
+        .auth-link-button {
             background: transparent;
-            border: 1px solid var(--p);
-            color: var(--p);
-            padding: 10px 25px;
-            cursor: pointer;
-            text-transform: uppercase;
+            border: 1px solid var(--purple);
+            color: var(--purple);
+            padding: 10px 30px;
+            font-family: inherit;
             font-weight: bold;
-            transition: 0.3s;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1.5px;
         }
 
-        .auth-btn:hover {
-            background: var(--p);
+        .auth-link-button:hover {
+            background: var(--purple);
             color: #fff;
-            box-shadow: 0 0 15px var(--p);
+            box-shadow: 0 0 20px var(--purple);
         }
 
-        .content-container {
+        /* 2. Основная сетка контента */
+        .content-wrap {
             width: 90%;
-            max-width: 1200px;
-            margin: 30px auto;
+            max-width: 1100px;
+            margin: 40px auto;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
         }
 
-        /* Статус системы */
-        .status-strip {
-            border: 1px solid var(--p);
-            background: var(--card);
-            padding: 15px 25px;
+        /* Плажка статуса (Узкая и высокая) */
+        .system-status-banner {
+            border: 1px solid var(--purple);
+            background: var(--purple-dim);
+            padding: 25px 35px;
             display: flex;
             align-items: center;
-            gap: 20px;
-            margin-bottom: 30px;
+            gap: 25px;
+            box-shadow: inset 0 0 20px rgba(160, 32, 240, 0.1);
         }
 
-        .led {
-            width: 14px; height: 14px;
-            background: var(--p);
+        .status-led {
+            width: 16px;
+            height: 16px;
+            background: var(--purple);
             border-radius: 50%;
-            box-shadow: 0 0 10px var(--p);
-            animation: pulse 1.5s infinite;
+            box-shadow: 0 0 15px var(--purple);
+            animation: pulse-glow 2s infinite ease-in-out;
         }
 
-        @keyframes pulse { 50% { opacity: 0.2; } }
+        @keyframes pulse-glow {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
 
-        /* Блоки */
-        .grid {
+        .status-msg {
+            font-size: 1.1em;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        /* Сетка инфо-блоков */
+        .info-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
+            gap: 30px;
         }
 
-        .box {
-            border: 1px solid var(--p);
-            background: var(--card);
-            padding: 20px;
-            min-height: 180px;
+        .info-box {
+            border: 1px solid var(--purple);
+            background: var(--panel-bg);
+            padding: 30px;
+            min-height: 220px;
+            position: relative;
         }
 
-        .box h2 {
-            font-size: 16px;
-            border-bottom: 1px solid var(--p);
-            padding-bottom: 10px;
+        .info-box h3 {
             margin-top: 0;
+            font-size: 14px;
+            border-bottom: 1px solid var(--purple);
+            padding-bottom: 12px;
+            margin-bottom: 20px;
             letter-spacing: 2px;
         }
 
-        .full-box {
-            border: 1px solid var(--p);
-            background: var(--card);
-            padding: 20px;
+        .full-width-box {
+            border: 1px solid var(--purple);
+            background: var(--panel-bg);
+            padding: 35px;
+            position: relative;
         }
 
-        .desc { font-size: 14px; line-height: 1.6; opacity: 0.8; }
+        .text-body {
+            font-size: 14px;
+            line-height: 1.8;
+            color: rgba(160, 32, 240, 0.8);
+        }
+
+        .decoration-line {
+            position: absolute;
+            bottom: 0; right: 0;
+            width: 50px; height: 50px;
+            border-right: 2px solid var(--purple);
+            border-bottom: 2px solid var(--purple);
+        }
     </style>
 </head>
 <body>
 
-    <div class="top-nav">
-        <button class="auth-btn" onclick="window.location.href='autorize.html'">Авторизация</button>
+    <div class="header-strip">
+        <button class="auth-link-button" onclick="location.href='autorize.html'">Авторизация</button>
     </div>
 
-    <div class="content-container">
-        <div class="status-strip">
-            <div class="led"></div>
-            <div style="text-transform: uppercase; font-weight: bold; letter-spacing: 1px;">Система G.L.O.M.G работает в штатном режиме</div>
+    <div class="content-wrap">
+        <div class="system-status-banner">
+            <div class="status-led"></div>
+            <div class="status-msg">Система G.L.O.M.G работает в штатном режиме</div>
         </div>
 
-        <div class="grid">
-            <div class="box">
-                <h2>НОВОСТИ</h2>
-                <p class="desc">> Протокол дешифровки обновлен.<br>> Все узлы связи стабильны.</p>
+        <div class="info-row">
+            <div class="info-box">
+                <h3>НОВОСТИ</h3>
+                <div class="text-body">
+                    > Узел 07: Синхронизация завершена.<br>
+                    > Уровень шифрования поднят до военного стандарта.<br>
+                    > Ожидание входящих запросов...
+                </div>
+                <div class="decoration-line"></div>
             </div>
-            <div class="box">
-                <h2>О НАС</h2>
-                <p class="desc">Закрытый терминал обмена данными. Доступ только по UUID 4-го уровня и выше.</p>
+            <div class="info-box">
+                <h3>О НАС</h3>
+                <div class="text-body">
+                    G.L.O.M.G — это защищенный шлюз для передачи конфиденциальных данных. Только авторизованные сотрудники имеют доступ к почтовому терминалу.
+                </div>
+                <div class="decoration-line"></div>
             </div>
         </div>
 
-        <div class="full-box">
-            <h2>НОВЫЕ ИЗМЕНЕНИЯ</h2>
-            <p class="desc">- Интегрирован эффект размытия (Blur) при просмотре пакетов.<br>- UUID переведены на двоичный стандарт (10 бит).<br>- Оптимизирована навигация гостевого режима.</p>
+        <div class="full-width-box">
+            <h3>НОВЫЕ ИЗМЕНЕНИЯ</h3>
+            <div class="text-body">
+                - Внедрена визуальная оболочка "Circuit-Violet" (Электронная плата).<br>
+                - Добавлена динамическая дешифровка сообщений с эффектом размытия фона.<br>
+                - UUID сотрудников теперь генерируются в 10-битном двоичном формате.
+            </div>
         </div>
     </div>
 
