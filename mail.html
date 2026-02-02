@@ -2,123 +2,177 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>G.L.O.M.G. | Почта</title>
+    <title>G.L.O.M.G. | INTERNAL_MAIL_TERMINAL</title>
     <style>
-        :root { --p: #a020f0; --bg: #050005; --side: #0a0012; }
-        body { margin: 0; background: var(--bg); color: var(--p); font-family: 'Courier New', monospace; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        :root {
+            --p: #a020f0;
+            --bg: #050005;
+            --dark-btn: #080010;
+            --circuit-line: rgba(160, 32, 240, 0.15);
+        }
 
-        /* Верхняя плажка */
-        .top-bar {
-            height: 60px; border-bottom: 2px solid var(--p);
+        body, html {
+            margin: 0; padding: 0; height: 100vh; width: 100vw;
+            background: var(--bg); color: var(--p);
+            font-family: 'Courier New', monospace;
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+
+        /* 1. Верхняя панель */
+        .top-navigation {
+            height: 65px; border-bottom: 2px solid var(--p);
             display: flex; align-items: center; justify-content: space-between;
-            padding: 0 25px; background: rgba(10, 0, 15, 0.95);
-        }
-        .nav-link { color: var(--p); text-decoration: none; border: 1px solid var(--p); padding: 5px 15px; font-size: 12px; }
-        .nav-link:hover { background: var(--p); color: #fff; }
-
-        .btn-send {
-            background: rgba(160, 32, 240, 0.35); /* Не слишком яркая */
-            color: #fff; border: 1px solid var(--p); padding: 8px 18px;
-            text-decoration: none; font-weight: bold; font-size: 13px;
-        }
-        .btn-send:hover { background: var(--p); }
-
-        /* Рабочее пространство */
-        .workspace { display: flex; flex: 1; overflow: hidden; }
-
-        /* Левая часть (Список) */
-        .mail-list { width: 320px; border-right: 1px solid var(--p); background: var(--side); overflow-y: auto; }
-        .mail-btn {
-            padding: 20px; border-bottom: 1px solid rgba(160, 32, 240, 0.1);
-            background: rgba(15, 0, 25, 0.6); cursor: pointer; transition: 0.3s;
-        }
-        .mail-btn:hover { background: rgba(160, 32, 240, 0.1); }
-        .mail-btn.active { background: var(--p); color: #fff; }
-
-        /* Правая часть (Просмотр с размытием) */
-        .mail-view {
-            flex: 1; padding: 50px; position: relative;
-            background: url('bg-pattern.png'); /* Стиль как в ЛК */
-            transition: 0.4s ease;
-        }
-        /* Размытие при выборе */
-        .mail-view.active-blur {
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            background: rgba(5, 0, 5, 0.7);
+            padding: 0 30px; background: rgba(5,0,5,0.95); z-index: 20;
         }
 
-        .view-inner { opacity: 0; transform: translateY(10px); transition: 0.3s; pointer-events: none; }
-        .view-inner.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .btn-nav {
+            color: var(--p); text-decoration: none; border: 1px solid var(--p);
+            padding: 7px 18px; font-size: 13px; font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn-nav:hover { background: var(--p); color: #fff; }
 
-        .subj { font-size: 26px; border-bottom: 1px solid var(--p); padding-bottom: 10px; margin-bottom: 10px; }
-        .from { font-size: 14px; opacity: 0.6; margin-bottom: 30px; }
-        .body-text { line-height: 1.7; font-size: 16px; }
+        .btn-compose {
+            background: rgba(160, 32, 240, 0.25);
+            color: #fff; border: 1px solid var(--p);
+            padding: 10px 22px; text-decoration: none;
+            font-weight: bold; text-transform: uppercase;
+        }
+        .btn-compose:hover { background: var(--p); box-shadow: 0 0 15px var(--p); }
+
+        .profile-uuid { font-size: 14px; letter-spacing: 2px; }
+
+        /* 2. Рабочая область */
+        .interface-split { display: flex; flex: 1; overflow: hidden; position: relative; }
+
+        /* Левая панель списка */
+        .mail-sidebar {
+            width: 330px; border-right: 1px solid var(--p);
+            background: #020005; overflow-y: auto; z-index: 10;
+        }
+
+        .mail-entry-btn {
+            padding: 22px; border-bottom: 1px solid rgba(160, 32, 240, 0.1);
+            background: var(--dark-btn); cursor: pointer; transition: 0.4s;
+            position: relative;
+        }
+        .mail-entry-btn:hover { background: rgba(160, 32, 240, 0.08); }
+        .mail-entry-btn.active {
+            background: var(--p); color: #fff;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        /* Правая панель просмотра (ФОН ПЛАТЫ) */
+        .mail-viewer {
+            flex: 1; padding: 60px; position: relative;
+            background: var(--bg);
+            /* Тот самый фон "Плата" через CSS-паттерн */
+            background-image: 
+                linear-gradient(var(--circuit-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--circuit-line) 1px, transparent 1px);
+            background-size: 60px 60px;
+            display: flex; flex-direction: column;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ЭФФЕКТ РАЗМЫТИЯ ПРИ ВЫБОРЕ */
+        .mail-viewer.active-blur {
+            backdrop-filter: blur(25px) brightness(0.3);
+            -webkit-backdrop-filter: blur(25px) brightness(0.3);
+            background-color: rgba(5, 0, 10, 0.8);
+        }
+
+        .view-inner-content {
+            opacity: 0; transform: translateY(20px);
+            transition: 0.4s ease-out;
+            pointer-events: none;
+        }
+        .view-inner-content.reveal {
+            opacity: 1; transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .msg-subj { font-size: 30px; font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid var(--p); padding-bottom: 10px; }
+        .msg-meta { font-size: 14px; opacity: 0.6; margin-bottom: 40px; text-transform: uppercase; }
+        .msg-text { font-size: 18px; line-height: 2; letter-spacing: 0.5px; }
     </style>
 </head>
 <body>
 
-    <div class="top-bar">
-        <a href="dashboard.html" class="nav-link">← ЛИЧНЫЙ КАБИНЕТ</a>
-        <div id="user-stats" style="font-size: 13px;">UUID: 0010111010 | LVL: 4</div>
-        <a href="send_mail.html" class="btn-send">ОТПРАВИТЬ СООБЩЕНИЕ</a>
-    </div>
+    <nav class="top-navigation">
+        <a href="dashboard.html" class="btn-nav">← ЛИЧНЫЙ КАБИНЕТ</a>
+        <div class="profile-uuid" id="profile-tag">UUID: 0000000000 | LVL: 0</div>
+        <a href="send_mail.html" class="btn-compose">ОТПРАВИТЬ СООБЩЕНИЕ</a>
+    </nav>
 
-    <div class="workspace">
-        <div class="mail-list" id="list"></div>
-        <div class="mail-view" id="view-pane">
-            <div class="view-inner" id="inner-view"></div>
+    <div class="interface-split">
+        <div class="mail-sidebar" id="mail-list">
+            </div>
+        <div class="mail-viewer" id="viewer-pane">
+            <div class="view-inner-content" id="view-content">
+                </div>
         </div>
     </div>
 
     <script>
-        const mails = [
-            { id: 1, title: "Системное сообщение", from: "G.L.O.M.G. CORE", text: "Ваш двоичный идентификатор успешно верифицирован." },
-            { id: 2, title: "Протоколы безопасности", from: "MORISREAL", text: "Всем сотрудникам 4 уровня проверить UUID." },
-            { id: 3, title: "Обновление", from: "SUMBER", text: "Версия терминала обновлена до 5.0.1." }
+        const mailData = [
+            { id: 101, subject: "Протокол инициации", sender: "G.L.O.M.G. SERVER", body: "Ваш узел связи был успешно подключен к основной магистрали. Уровень шифрования: 4." },
+            { id: 102, subject: "Обновление UUID", sender: "MORISREAL", body: "Напоминаю: UUID сотрудников теперь состоят строго из 10 двоичных символов. Проверьте свои настройки." },
+            { id: 103, subject: "Отчет по сектору B", sender: "SUMBER", body: "Все системы охлаждения и передачи данных работают в штатном режиме. Потерь пакетов не зафиксировано." }
         ];
 
-        let selectedId = null;
-        const listContainer = document.getElementById('list');
-        const viewPane = document.getElementById('view-pane');
-        const innerView = document.getElementById('inner-view');
+        let activeId = null;
+        const listContainer = document.getElementById('mail-list');
+        const viewPane = document.getElementById('viewer-pane');
+        const viewContent = document.getElementById('view-content');
 
-        function formatTitle(text) {
+        // Функция обрезки заголовка (11 без пробела, 12 с пробелом)
+        function getTruncatedSubject(text) {
             const limit = text.includes(' ') ? 12 : 11;
             return text.length > limit ? text.substring(0, limit) + "..." : text;
         }
 
-        function render() {
+        function renderList() {
             listContainer.innerHTML = '';
-            mails.forEach(m => {
+            mailData.forEach(mail => {
                 const btn = document.createElement('div');
-                btn.className = `mail-btn ${selectedId === m.id ? 'active' : ''}`;
-                btn.innerText = formatTitle(m.title);
-                btn.onclick = () => toggle(m);
+                btn.className = `mail-entry-btn ${activeId === mail.id ? 'active' : ''}`;
+                btn.innerText = getTruncatedSubject(mail.subject);
+                
+                btn.onclick = () => {
+                    if (activeId === mail.id) {
+                        // Повторный клик - закрываем сообщение
+                        activeId = null;
+                        viewPane.classList.remove('active-blur');
+                        viewContent.classList.remove('reveal');
+                    } else {
+                        // Открываем сообщение
+                        activeId = mail.id;
+                        viewPane.classList.add('active-blur');
+                        viewContent.classList.add('reveal');
+                        viewContent.innerHTML = `
+                            <div class="msg-subj">${mail.subject}</div>
+                            <div class="msg-meta">ОТПРАВИТЕЛЬ: ${mail.sender}</div>
+                            <div class="msg-text">${mail.body}</div>
+                        `;
+                    }
+                    renderList();
+                };
                 listContainer.appendChild(btn);
             });
         }
 
-        function toggle(m) {
-            if (selectedId === m.id) {
-                // Повторный клик - закрываем всё
-                selectedId = null;
-                viewPane.classList.remove('active-blur');
-                innerView.classList.remove('visible');
-            } else {
-                // Выбор нового
-                selectedId = m.id;
-                viewPane.classList.add('active-blur');
-                innerView.classList.add('visible');
-                innerView.innerHTML = `
-                    <div class="subj">${m.title}</div>
-                    <div class="from">ОТПРАВИТЕЛЬ: ${m.from}</div>
-                    <div class="body-text">${m.text}</div>
-                `;
-            }
-            render();
-        }
+        // Логика профиля
+        const user = localStorage.getItem('username') || 'staff';
+        let level = 4;
+        let uuid = "0010111010"; // Дефолт для сотрудников
 
-        render();
+        if(user === 'morisreal') { level = 6; uuid = "1100110011"; }
+        else if(user === 'sumber') { level = 5; uuid = "0101010101"; }
+        
+        document.getElementById('profile-tag').innerText = `UUID: ${uuid} | LVL: ${level}`;
+
+        renderList();
     </script>
 </body>
 </html>
