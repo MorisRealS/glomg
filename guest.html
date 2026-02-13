@@ -3,196 +3,484 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G.L.O.M.G. | GUEST_ACCESS_NODE</title>
+    <title>Cloud Messenger | Dashboard</title>
+    
+    <!-- Внешние ресурсы: Иконки и Шрифты -->
+    <script src="https://cdn.jsdelivr.net"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
+    <link href="https://fonts.googleapis.com" rel="stylesheet">
+
     <style>
+        /* 1. ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ И СТИЛИ (CSS) */
         :root {
-            --purple: #a020f0;
-            --purple-dim: rgba(160, 32, 240, 0.1);
-            --bg-deep: #050005;
-            --panel-bg: rgba(10, 0, 20, 0.95);
+            --bg-deep: #000000;
+            --accent-cyan: #00BFFF;
+            --accent-glow: rgba(0, 191, 255, 0.25);
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+            --text-muted: #333333; /* Почти сливается с фоном */
+            --text-secondary: #888888;
+            --sidebar-width: 380px;
+            --top-bar-height: 70px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
-            box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        body, html {
             margin: 0;
             padding: 0;
-            background: var(--bg-deep);
-            color: var(--purple);
-            font-family: 'Courier New', Courier, monospace;
-            width: 100vw;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
             height: 100vh;
-            overflow-x: hidden; /* Строгий запрет горизонтального скролла */
-            background-image: 
-                radial-gradient(circle at center, #1a0033 0%, #050005 100%),
-                repeating-linear-gradient(rgba(160, 32, 240, 0.03) 0px, rgba(160, 32, 240, 0.03) 1px, transparent 1px, transparent 20px);
+            width: 100vw;
+            overflow: hidden;
+            cursor: none; /* Кастомный курсор на ПК */
         }
 
-        /* 1. Верхняя плажка */
-        .header-strip {
-            width: 100%;
-            height: 70px;
-            border-bottom: 2px solid var(--purple);
-            background: var(--panel-bg);
-            display: flex;
-            align-items: center;
-            padding: 0 50px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.8);
-            position: relative;
-            z-index: 10;
-        }
-
-        .auth-link-button {
-            background: transparent;
-            border: 1px solid var(--purple);
-            color: var(--purple);
-            padding: 10px 30px;
-            font-family: inherit;
-            font-weight: bold;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            letter-spacing: 1.5px;
-        }
-
-        .auth-link-button:hover {
-            background: var(--purple);
-            color: #fff;
-            box-shadow: 0 0 20px var(--purple);
-        }
-
-        /* 2. Основная сетка контента */
-        .content-wrap {
-            width: 90%;
-            max-width: 1100px;
-            margin: 40px auto;
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-        }
-
-        /* Плажка статуса (Узкая и высокая) */
-        .system-status-banner {
-            border: 1px solid var(--purple);
-            background: var(--purple-dim);
-            padding: 25px 35px;
-            display: flex;
-            align-items: center;
-            gap: 25px;
-            box-shadow: inset 0 0 20px rgba(160, 32, 240, 0.1);
-        }
-
-        .status-led {
-            width: 16px;
-            height: 16px;
-            background: var(--purple);
-            border-radius: 50%;
-            box-shadow: 0 0 15px var(--purple);
-            animation: pulse-glow 2s infinite ease-in-out;
+        /* 2. ЭФФЕКТЫ ФОНА (МЕРЦАНИЕ) */
+        .ambient-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 75%);
+            transform: translate(-50%, -50%);
+            filter: blur(120px);
+            z-index: -1;
+            animation: pulse-glow 6s infinite ease-in-out;
         }
 
         @keyframes pulse-glow {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(0.9); }
-            100% { opacity: 1; transform: scale(1); }
+            0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.15); }
         }
 
-        .status-msg {
-            font-size: 1.1em;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 3px;
+        /* 3. КАСТОМНЫЙ КУРСОР-ФОНАРЬ */
+        #light-cursor {
+            position: fixed;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(0, 191, 255, 0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s ease, width 0.3s ease;
         }
 
-        /* Сетка инфо-блоков */
-        .info-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
+        /* 4. ВЕРХНЯЯ ПЛАШКА */
+        .navbar {
+            height: var(--top-bar-height);
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            padding: 0 25px;
+            position: relative;
+            z-index: 100;
         }
 
-        .info-box {
-            border: 1px solid var(--purple);
-            background: var(--panel-bg);
+        .nav-left { display: flex; align-items: center; gap: 20px; flex: 1; }
+        .nav-center { flex: 2; display: flex; justify-content: center; }
+        .nav-right { flex: 1; display: flex; justify-content: flex-end; }
+
+        .burger-btn {
+            font-size: 22px;
+            color: var(--accent-cyan);
+            cursor: pointer;
+            padding: 10px;
+            transition: var(--transition);
+        }
+
+        .search-box {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            max-width: 450px;
+            transition: var(--transition);
+        }
+
+        .search-box:focus-within {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 191, 255, 0.05);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: white;
+            width: 100%;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        /* 5. SLIDE BAR (ВЫДВИЖНОЕ МЕНЮ) */
+        .sidebar-menu {
+            position: fixed;
+            top: 0;
+            left: -320px;
+            width: 320px;
+            height: 100%;
+            background: #050505;
+            z-index: 1000;
+            transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border-right: 1px solid var(--accent-cyan);
+            padding: 60px 25px;
+        }
+
+        .sidebar-menu.open { left: 0; }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 18px;
+            color: white;
+            text-decoration: none;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        .menu-link:hover {
+            background: var(--accent-glow);
+            color: var(--accent-cyan);
+        }
+
+        .menu-link i { width: 25px; text-align: center; }
+
+        /* 6. ОСНОВНОЙ ПЛАНЕТАРНЫЙ ЛЕЙАУТ */
+        .app-container {
+            display: flex;
+            height: calc(100vh - var(--top-bar-height));
+        }
+
+        /* Левая панель чатов */
+        .chats-container {
+            width: var(--sidebar-width);
+            border-right: 1px solid var(--glass-border);
+            overflow-y: auto;
+            background: rgba(0,0,0,0.2);
+            scrollbar-width: none;
+        }
+
+        /* Лента новостей */
+        .news-container {
+            flex: 1;
+            overflow-y: auto;
             padding: 30px;
-            min-height: 220px;
-            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            scrollbar-width: none;
         }
 
-        .info-box h3 {
-            margin-top: 0;
-            font-size: 14px;
-            border-bottom: 1px solid var(--purple);
-            padding-bottom: 12px;
+        /* Элемент чата/канала (Кнопки) */
+        .list-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 18px;
+            margin: 5px 12px;
+            border-radius: 18px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: var(--transition);
+        }
+
+        .list-item:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 191, 255, 0.05);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .avatar-circle {
+            width: 55px;
+            height: 55px;
+            background: #111;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid var(--glass-border);
+        }
+
+        .item-info b { display: block; margin-bottom: 4px; font-weight: 600; }
+        .item-info span { color: var(--text-secondary); font-size: 0.85rem; }
+
+        /* Состояние "ПУСТО" */
+        .status-empty {
+            margin-top: 100px;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        /* 7. МОБИЛЬНАЯ ВЕРСИЯ (CSS) */
+        @media (max-width: 900px) {
+            body { cursor: auto; }
+            #light-cursor { display: none; }
+            
+            .chats-container, .news-container {
+                width: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                display: none;
+            }
+
+            .chats-container.active, .news-container.active {
+                display: block;
+            }
+
+            .navbar { height: 110px; flex-direction: column; padding: 10px; }
+            .nav-center { order: 3; width: 100%; margin-top: 10px; }
+            .search-box { max-width: 100%; }
+
+            /* Табы для мобилки */
+            .mobile-switcher {
+                display: flex;
+                gap: 30px;
+                margin-top: 5px;
+            }
+
+            .tab-trigger {
+                color: var(--text-secondary);
+                font-weight: bold;
+                cursor: pointer;
+                padding-bottom: 5px;
+                border-bottom: 2px solid transparent;
+            }
+
+            .tab-trigger.active {
+                color: var(--accent-cyan);
+                border-bottom-color: var(--accent-cyan);
+            }
+        }
+
+        /* Полноэкранный мобильный поиск */
+        #mob-search-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 2000;
+            display: none;
+            padding: 30px;
+        }
+
+        .news-card {
+            width: 100%;
+            max-width: 550px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 20px;
             margin-bottom: 20px;
-            letter-spacing: 2px;
-        }
-
-        .full-width-box {
-            border: 1px solid var(--purple);
-            background: var(--panel-bg);
-            padding: 35px;
-            position: relative;
-        }
-
-        .text-body {
-            font-size: 14px;
-            line-height: 1.8;
-            color: rgba(160, 32, 240, 0.8);
-        }
-
-        .decoration-line {
-            position: absolute;
-            bottom: 0; right: 0;
-            width: 50px; height: 50px;
-            border-right: 2px solid var(--purple);
-            border-bottom: 2px solid var(--purple);
         }
     </style>
 </head>
 <body>
 
-    <div class="header-strip">
-        <button class="auth-link-button" onclick="location.href='autorize.html'">Авторизация</button>
-    </div>
+    <!-- 1. ФОНОВЫЕ СЛОИ -->
+    <div class="ambient-glow"></div>
+    <div id="light-cursor"></div>
 
-    <div class="content-wrap">
-        <div class="system-status-banner">
-            <div class="status-led"></div>
-            <div class="status-msg">Система G.L.O.M.G работает в штатном режиме</div>
-        </div>
-
-        <div class="info-row">
-            <div class="info-box">
-                <h3>НОВОСТИ</h3>
-                <div class="text-body">
-                    > Узел 07: Синхронизация завершена.<br>
-                    > Уровень шифрования поднят до военного стандарта.<br>
-                    > Ожидание входящих запросов...
-                </div>
-                <div class="decoration-line"></div>
-            </div>
-            <div class="info-box">
-                <h3>О НАС</h3>
-                <div class="text-body">
-                    G.L.O.M.G — это защищенный шлюз для передачи конфиденциальных данных. Только авторизованные сотрудники имеют доступ к почтовому терминалу.
-                </div>
-                <div class="decoration-line"></div>
-            </div>
-        </div>
-
-        <div class="full-width-box">
-            <h3>НОВЫЕ ИЗМЕНЕНИЯ</h3>
-            <div class="text-body">
-                - Внедрена визуальная оболочка "Circuit-Violet" (Электронная плата).<br>
-                - Добавлена динамическая дешифровка сообщений с эффектом размытия фона.<br>
-                - UUID сотрудников теперь генерируются в 10-битном двоичном формате.
-            </div>
+    <!-- 2. СЛАЙД-БАР -->
+    <div class="sidebar-menu" id="sideMenu">
+        <div class="menu-link"><i class="fa-solid fa-circle-user"></i> Мой Профиль</div>
+        <div class="menu-link"><i class="fa-solid fa-bookmark"></i> Избранное</div>
+        <div class="menu-link"><i class="fa-solid fa-gear"></i> Настройки</div>
+        <div class="menu-link" style="color: #ff4444; margin-top: 40px;" onclick="toggleSidebar()">
+            <i class="fa-solid fa-arrow-left"></i> Закрыть
         </div>
     </div>
 
+    <!-- 3. НАВИГАЦИЯ -->
+    <header class="navbar">
+        <div class="nav-left">
+            <i class="fa-solid fa-bars burger-btn" onclick="toggleSidebar()"></i>
+            <div class="mobile-switcher">
+                <span class="tab-trigger active" id="tab-c" onclick="switchMobile('chats')">ЧАТЫ</span>
+                <span class="tab-trigger" id="tab-n" onclick="switchMobile('news')">НОВОСТИ</span>
+            </div>
+        </div>
+
+        <div class="nav-center">
+            <div class="search-box" id="globalSearch">
+                <i class="fa-solid fa-magnifying-glass" style="color: var(--accent-cyan);"></i>
+                <input type="text" id="searchInput" placeholder="Поиск..." onfocus="onSearchFocus()">
+            </div>
+        </div>
+
+        <div class="nav-right" id="mobSearchBtn" style="display:none;">
+            <i class="fa-solid fa-magnifying-glass burger-btn" onclick="toggleMobSearch(true)"></i>
+        </div>
+    </header>
+
+    <!-- 4. КОНТЕНТ -->
+    <div class="app-container">
+        <!-- СПИСОК ЧАТОВ -->
+        <aside class="chats-container active" id="chatPanel">
+            <div id="chats-list-wrapper">
+                <div class="status-empty" id="chat-empty-msg">нет чатов :(</div>
+            </div>
+        </aside>
+
+        <!-- ЛЕНТА НОВОСТЕЙ -->
+        <main class="news-container" id="newsPanel">
+            <div id="news-list-wrapper" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                <div class="status-empty" id="news-empty-msg">и тут пусто...</div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 5. МОБИЛЬНЫЙ ПОИСК (OVERLAY) -->
+    <div id="mob-search-overlay">
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <i class="fa-solid fa-arrow-left burger-btn" onclick="toggleMobSearch(false)"></i>
+            <input type="text" placeholder="Поиск..." style="flex:1; background: none; border: none; border-bottom: 2px solid var(--accent-cyan); color: white; padding: 10px; font-size: 1.2rem;">
+            <i class="fa-solid fa-xmark burger-btn" onclick="toggleMobSearch(false)"></i>
+        </div>
+    </div>
+
+    <!-- 6. ЛОГИКА (JAVASCRIPT) -->
+    <script>
+        /**
+         * УПРАВЛЕНИЕ КУРСОРОМ
+         */
+        const light = document.getElementById('light-cursor');
+        document.addEventListener('mousemove', (e) => {
+            light.style.left = e.clientX + 'px';
+            light.style.top = e.clientY + 'px';
+            
+            // Проверка наведения на активные элементы
+            const isInteractive = e.target.closest('.list-item, .burger-btn, .search-box, .menu-link');
+            if (isInteractive) {
+                light.style.opacity = '0.1';
+                light.style.width = '100px';
+            } else {
+                light.style.opacity = '1';
+                light.style.width = '200px';
+            }
+        });
+
+        /**
+         * УПРАВЛЕНИЕ БОКОВЫМ МЕНЮ
+         */
+        function toggleSidebar() {
+            document.getElementById('sideMenu').classList.toggle('open');
+        }
+
+        /**
+         * ПЕРЕКЛЮЧАТЕЛЬ ДЛЯ МОБИЛКИ
+         */
+        function switchMobile(type) {
+            const chatP = document.getElementById('chatPanel');
+            const newsP = document.getElementById('newsPanel');
+            const tabC = document.getElementById('tab-c');
+            const tabN = document.getElementById('tab-n');
+
+            if (type === 'chats') {
+                chatP.classList.add('active');
+                newsP.classList.remove('active');
+                tabC.classList.add('active');
+                tabN.classList.remove('active');
+            } else {
+                newsP.classList.add('active');
+                chatP.classList.remove('active');
+                tabN.classList.add('active');
+                tabC.classList.remove('active');
+            }
+        }
+
+        /**
+         * МОБИЛЬНЫЙ ПОИСК
+         */
+        function toggleMobSearch(show) {
+            document.getElementById('mob-search-overlay').style.display = show ? 'block' : 'none';
+        }
+
+        /**
+         * ГЕНЕРАТОР КОНТЕНТА (ДЛЯ ТЕСТА ДИЗАЙНА)
+         * Эта часть кода наполняет сайт чатами и новостями
+         */
+        const ContentEngine = {
+            chats: [], // Сюда придут данные из Supabase
+            news: [
+                { id: 1, author: "Tech Inside", text: "Новый процессор от Apple бьет рекорды...", popular: true },
+                { id: 2, author: "Cyber World", text: "Мировые продажи VR очков выросли на 40%.", popular: true },
+                { id: 3, author: "Solo Dev", text: "Сегодня я закончил свой первый мессенджер!", popular: false },
+                { id: 4, author: "AI News", text: "ChatGPT научился рисовать 3D модели.", popular: true }
+            ],
+
+            render: function() {
+                const chatWrapper = document.getElementById('chats-list-wrapper');
+                const newsWrapper = document.getElementById('news-list-wrapper');
+
+                // Отрисовка чатов (если есть)
+                if (this.chats.length > 0) {
+                    document.getElementById('chat-empty-msg').style.display = 'none';
+                    this.chats.forEach(chat => {
+                        const div = document.createElement('div');
+                        div.className = 'list-item';
+                        div.innerHTML = `
+                            <div class="avatar-circle"><i class="fa-solid fa-user"></i></div>
+                            <div class="item-info">
+                                <b>${chat.name}</b>
+                                <span>${chat.lastMsg}</span>
+                            </div>
+                        `;
+                        chatWrapper.appendChild(div);
+                    });
+                }
+
+                // Отрисовка новостей (чередование 2 популярных / 1 нет)
+                if (this.news.length > 0) {
+                    document.getElementById('news-empty-msg').style.display = 'none';
+                    this.news.forEach((post, index) => {
+                        const card = document.createElement('div');
+                        card.className = 'news-card';
+                        card.innerHTML = `
+                            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                                <b style="color:var(--accent-cyan)">@${post.author}</b>
+                                <span style="font-size:0.7rem; color:#555">${post.popular ? 'POPULAR' : 'NEW'}</span>
+                            </div>
+                            <p style="color:#ccc; line-height:1.4;">${post.text}</p>
+                        `;
+                        newsWrapper.appendChild(card);
+                    });
+                }
+            }
+        };
+
+        // Запуск генерации при загрузке
+        window.onload = () => {
+            ContentEngine.render();
+            console.log("System Status: Online");
+            
+            // Если мобилка - показываем иконку поиска отдельно
+            if(window.innerWidth < 900) {
+                document.getElementById('mobSearchBtn').style.display = 'block';
+            }
+        };
+
+    </script>
 </body>
 </html>
