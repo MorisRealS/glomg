@@ -1,261 +1,428 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G.L.O.M.G. // AUTHORIZATION</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Выбор устройства | темная тема</title>
     <style>
-        /* --- [CSS] СТИЛИ СТРАНИЦЫ --- */
-        body {
+        /* Глобальные переменные — чёрный, голубой и оттенки */
+        * {
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #050505;
-            background: radial-gradient(circle, #0a0a0a 0%, #050505 60%, #1a0033 100%);
-            font-family: 'Courier New', Courier, monospace;
-            color: #e0e0e0;
-            overflow: hidden;
-            position: relative;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
         }
 
-        /* Эффект сканирующих линий на весь экран */
-        body::before {
-            content: " ";
-            position: absolute;
+        body {
+            min-height: 100vh;
+            background: #0a0c0f;  /* глубокий чёрный с оттенком */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            padding: 16px;
+        }
+
+        /* затемнение — полупрозрачный чёрный слой поверх фона (имитация окна) */
+        .overlay {
+            position: fixed;
             top: 0;
             left: 0;
-            bottom: 0;
-            right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-            z-index: 60;
-            background-size: 100% 4px, 3px 100%;
-            pointer-events: none;
-        }
-
-
-        /* ПОСЛЕ ЭТОЙ СТРОКИ ПИСАТЬ НОВЫЙ CSS ДЛЯ ФОНА И ЭФФЕКТОВ */
-
-
-        .vhs-line {
-            position: fixed;
-            left: 0;
             width: 100%;
-            height: 2px;
-            background: rgba(166, 77, 255, 0.3);
-            box-shadow: 0 0 15px 1px rgba(166, 77, 255, 0.4);
-            z-index: 50;
-            pointer-events: none;
-            animation: vhs_move linear infinite;
-        }
-
-        .line-1 {
-            animation-duration: 5s;
-            opacity: 0.5;
-        }
-
-        .line-2 {
-            animation-duration: 8s;
-            opacity: 0.3;
-            height: 1px;
-        }
-
-        .line-3 {
-            animation-duration: 12s;
-            opacity: 0.2;
-            height: 4px;
-        }
-
-        @keyframes vhs_move {
-            0% {
-                top: -10%;
-            }
-            100% {
-                top: 110%;
-            }
-        }
-
-
-        .login-card {
-            width: 350px;
-            padding: 30px;
-            background: rgba(17, 17, 17, 0.95);
-            border: 2px solid #4b0082;
-            box-shadow: 0 0 30px rgba(75, 0, 130, 0.6);
-            border-radius: 4px;
-            position: relative;
-            z-index: 101;
-        }
-
-
-        /* ПОСЛЕ ЭТОЙ СТРОКИ ПИСАТЬ CSS ДЛЯ ВНУТРЕННИХ БЛОКОВ КАРТОЧКИ */
-
-
-        h2 {
-            text-align: center;
-            color: #a64dff;
-            text-shadow: 0 0 5px #a64dff;
-            margin-bottom: 30px;
-            letter-spacing: 2px;
-        }
-
-        .input-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            font-size: 10px;
-            color: #666;
-            margin-bottom: 5px;
-        }
-
-        input {
-            width: 100%;
-            padding: 10px;
-            background: #000;
-            border: 1px solid #4b0082;
-            color: #00ff00;
-            outline: none;
-            box-sizing: border-box;
-        }
-
-        input:focus {
-            border-color: #a64dff;
-            box-shadow: 0 0 5px #a64dff;
-        }
-
-
-        .button-container {
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85); /* затемнение */
+            backdrop-filter: blur(2px);
             display: flex;
-            justify-content: center;
-            gap: 15px;
             align-items: center;
-            margin-top: 25px;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.3s ease;
         }
 
-        .btn {
-            border: none;
+        /* само окно (карточка) */
+        .device-modal {
+            max-width: 440px;
+            width: 90%;
+            background: #111417;        /* чёрный с легкой серостью */
+            border: 1px solid #2a2f36;
+            border-radius: 28px;
+            padding: 32px 20px 28px;
+            box-shadow: 0 20px 40px rgba(0, 20, 40, 0.8), 0 0 0 1px #1e3b4f inset; /* голубоватое свечение снаружи */
+            text-align: center;
+            transition: box-shadow 0.2s;
+        }
+
+        .modal-title {
+            color: #e1e9f0;
+            font-size: 1.7rem;
+            font-weight: 400;
+            letter-spacing: 1px;
+            margin-bottom: 24px;
+            text-shadow: 0 0 8px #1e90ff30;
+        }
+
+        .question-text {
+            color: #a0b5c9;
+            font-size: 1.2rem;
+            margin-bottom: 36px;
+            border-bottom: 1px dashed #2f455b;
+            padding-bottom: 18px;
+        }
+
+        /* контейнер кнопок */
+        .buttons-row {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* базовый стиль кнопки — серая обводка, чёрная внутри, белый текст */
+        .device-btn {
+            background: #0e1217;        /* чёрная внутренность */
+            border: 2px solid #4a5560;  /* слегка серая обводка */
+            color: #ffffffec;
+            font-size: 1.3rem;
+            font-weight: 500;
+            padding: 14px 28px;
+            min-width: 160px;
+            border-radius: 60px;         /* округлая форма как на точках */
             cursor: pointer;
-            font-family: inherit;
-            font-weight: bold;
-            transition: 0.3s;
-            text-transform: uppercase;
+            box-shadow: 0 4px 0 #020304, 0 6px 12px rgba(0, 10, 20, 0.8);
+            transition: all 0.12s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(2px);
+            position: relative;
+            outline: none;
+            user-select: none;
         }
 
-        .btn-auth {
-            background: #4b0082;
-            color: #fff;
-            padding: 10px 20px;
-            font-size: 14px;
-        }
-
-        .btn-auth:hover {
-            background: #a64dff;
-            box-shadow: 0 0 10px #a64dff;
-            transform: translateY(-1px);
-        }
-
-        .btn-guest {
-            background: #333;
-            color: #888;
-            padding: 8px 12px;
-            font-size: 11px;
-        }
-
-        .btn-guest:hover {
-            background: #444;
-            color: #fff;
-        }
-
-        #status-line {
-            animation: blink 2s infinite;
-            font-family: 'Courier New', monospace;
-        }
-
-        @keyframes blink {
-            0% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.3;
-            }
-            100% {
-                opacity: 1;
+        /* hover для ПК (будет действовать только если мышь) */
+        @media (hover: hover) and (pointer: fine) {
+            .device-btn:hover {
+                border-color: #2aa0ff;              /* внешний темно-голубой */
+                background: #14242e;                 /* внутри чуть светлее чёрного с голубым отливом */
+                box-shadow: 0 0 18px #0088ff, 0 4px 0 #0b2a3a;
+                transform: translateY(-1px);
+                transition: 0.1s;
             }
         }
-        
-        /* ПОСЛЕ ЭТОЙ СТРОКИ ПИСАТЬ CSS ДЛЯ КНОПОК */
+
+        /* активное нажатие (для всех) */
+        .device-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 0 22px #3aa2ff, 0 2px 0 #06212e;
+        }
+
+        /* состояния выбора — голубое выделение (нажали валидно) */
+        .device-btn.selected {
+            background: #103d5e !important;          /* глубокий голубой внутри */
+            border-color: #48b4ff !important;        /* яркая голубая кайма */
+            box-shadow: 0 0 24px #0077ff, 0 4px 0 #033752 !important;
+            color: white;
+            transform: scale(1.01);
+        }
+
+        /* анимация "дерганья" (shake) для неверного выбора */
+        @keyframes shakeError {
+            0% { transform: translateX(0); }
+            20% { transform: translateX(-6px); }
+            40% { transform: translateX(6px); }
+            60% { transform: translateX(-3px); }
+            80% { transform: translateX(3px); }
+            100% { transform: translateX(0); }
+        }
+
+        .device-btn.error-shake {
+            animation: shakeError 0.25s ease-in-out;
+        }
+
+        /* красная рамка при ошибке выбора */
+        .device-btn.error {
+            border-color: #ff3b4a !important;
+            background: #2a1116 !important;
+            box-shadow: 0 0 14px #ff2222, 0 4px 0 #4f0000 !important;
+        }
+
+        /* основной контент сайта (версия для устройства) изначально скрыт */
+        .site-content {
+            display: none;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            color: #cde1f5;
+        }
+
+        /* имитация интерфейса под разные устройства */
+        .content-card {
+            background: #11171f;
+            border: 1px solid #25475f;
+            border-radius: 32px;
+            padding: 28px 24px;
+            box-shadow: 0 25px 40px -10px #001c33;
+        }
+
+        .badge-device {
+            display: inline-block;
+            background: #0a1f2c;
+            border-left: 5px solid #2aa0ff;
+            padding: 10px 25px;
+            border-radius: 40px;
+            color: #aae0ff;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+        }
+
+        .welcome-text {
+            font-size: 2rem;
+            font-weight: 300;
+            color: #eaf3fc;
+        }
+
+        .accent {
+            color: #60bcff;
+            font-weight: 500;
+            text-shadow: 0 0 6px #1e90ff;
+        }
+
+        hr {
+            border: 0.5px solid #1c3d55;
+            margin: 25px 0;
+        }
+
+        .note {
+            color: #7a94ab;
+        }
+
+        /* вибрация для телефона будет через Web Vibration API */
+        @media (max-width: 600px) {
+            .device-btn {
+                min-width: 130px;
+                padding: 14px 18px;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div class="vhs-line line-1"></div>
-    <div class="vhs-line line-2"></div>
-    <div class="vhs-line line-3"></div>
-
-    <div class="login-card">
-
-        <div style="text-align:center; font-size: 8px; color: #4b0082; margin-bottom: 10px;">[ ONG_NETWORK_PROTECTED ]</div>
-
-        <h2>CORE_LOGIN</h2>
-        
-        <div class="input-group">
-            <label>OPERATOR_NAME</label>
-            <input type="text" id="username" placeholder="...">
+    <!-- Затемнение и модальное окно выбора устройства -->
+    <div class="overlay" id="modalOverlay">
+        <div class="device-modal" id="deviceModal">
+            <div class="modal-title">⚡ ВЫБОР УСТРОЙСТВА ⚡</div>
+            <div class="question-text">с какого устройства ты сидишь?</div>
+            <div class="buttons-row">
+                <button class="device-btn" id="btnPhone" data-device="phone">📱 С телефона</button>
+                <button class="device-btn" id="btnDesktop" data-device="desktop">💻 С компьютера</button>
+            </div>
+            <div style="margin-top: 28px; color: #3c5a75; font-size: 0.9rem; border-top: 1px dashed #1d3343; padding-top: 12px;">
+                <span style="color:#5f8eb0;">✶ версия определится автоматически ✶</span>
+            </div>
         </div>
-        
-        <div class="input-group">
-            <label>ACCESS_KEY</label>
-            <input type="password" id="password" placeholder="******">
-        </div>
+    </div>
 
-
-        <div class="button-container">
-            <button class="btn btn-auth" onclick="tryAuth()">Авторизация</button>
-            <button class="btn btn-guest" onclick="tryGuest()">Гость</button>
+    <!-- Основной контент (версия сайта, показывается после выбора) -->
+    <div class="site-content" id="siteContent">
+        <div class="content-card" id="dynamicContent">
+            <!-- будет заполнено в зависимости от версии -->
         </div>
-        
-        
-        <div id="status-line" style="font-size: 9px; margin-top: 20px; color: #4b0082; text-align: center;">
-            SYSTEM_READY
-        </div>
-
     </div>
 
     <script>
-        /* --- [JS] ЛОГИКА И СКРИПТЫ --- */
-
-        function tryAuth() {
-            const u = document.getElementById('username').value;
-            const p = document.getElementById('password').value;
-            const status = document.getElementById('status-line');
-            
-            // ПОСЛЕ ЭТОЙ СТРОКИ МОЖНО ДОБАВИТЬ ПРОВЕРКУ ПАРОЛЯ
-            
-            if(u && p) {
-                status.innerText = "ACCESS_GRANTED. REDIRECTING...";
-                status.style.color = "#00ff00";
+        (function() {
+            // --- ЖЕСТКАЯ ДЕТЕКЦИЯ РЕАЛЬНОГО УСТРОЙСТВА ---
+            // Проверка по userAgent + touch capability + max touch points (более надежно)
+            function detectRealDevice() {
+                const ua = navigator.userAgent || navigator.vendor || window.opera;
+                // мобильные ключи
+                const mobileRegex = /android|iphone|ipad|ipod|blackberry|windows phone|opera mini|iemobile|mobile/i;
                 
-                setTimeout(() => {
-                    window.location.href = '/dashboard';
-                }, 1000);
+                // Проверка: если есть touch и соотношение указывает на мобильное (маленький экран или сенсорная ёмкость)
+                const hasTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+                const isSmallScreen = window.innerWidth <= 800 && window.innerHeight <= 1000; // примерная логика
                 
-            } else {
-                status.innerText = "ERROR: ACCESS_DENIED";
-                status.style.color = "#ff0000";
-                alert("ACCESS DENIED: EMPTY FIELDS");
+                // явный мобильный юзер-агент
+                if (mobileRegex.test(ua)) {
+                    return 'phone';
+                }
+                
+                // Дополнительно: если это планшет с большим экраном, но сенсорный — всё равно считаем телефоном? По заданию телефон/пк. Условимся: если есть сенсор и экран не очень большой => телефон
+                if (hasTouch && isSmallScreen) {
+                    return 'phone';
+                }
+                
+                // также iPadOS 13+ выдает mac, но имеет touch — ловим
+                if (ua.includes('Mac') && hasTouch && 'ontouchend' in document) {
+                    return 'phone'; // ipad как телефон (в контексте задания)
+                }
+                
+                return 'desktop'; // всё остальное считаем пк
             }
-        }
 
-        function tryGuest() {
-            window.location.href = '/guest';
-        }
+            const realDevice = detectRealDevice();
+            console.log('[detect] реальное устройство:', realDevice);
 
-        /* ПОСЛЕ ЭТОЙ СТРОКИ ПИСАТЬ НОВЫЕ ФУНКЦИИ JS */
+            // DOM элементы
+            const overlay = document.getElementById('modalOverlay');
+            const siteContent = document.getElementById('siteContent');
+            const dynamicDiv = document.getElementById('dynamicContent');
+            const btnPhone = document.getElementById('btnPhone');
+            const btnDesktop = document.getElementById('btnDesktop');
+            
+            // состояние: была ли уже выбрана версия
+            let versionSelected = false;
+
+            // Функция показа версии сайта (скрываем модалку, показываем контент)
+            function showVersion(deviceType) {
+                if (versionSelected) return; // уже выбрано
+
+                // заполняем контент согласно версии
+                let html = '';
+                if (deviceType === 'phone') {
+                    html = `
+                        <div class="badge-device">📱 ТЕЛЕФОН — мобильная версия</div>
+                        <div class="welcome-text">Привет с <span class="accent">смартфона</span> 📲</div>
+                        <hr>
+                        <div class="note">Интерфейс оптимизирован под сенсорное управление.<br>Цвета: чёрный и голубой. Кнопки крупные.</div>
+                        <div style="margin-top:25px; background:#0b1926; border-radius:40px; padding:20px; text-align:center; border:1px solid #2a6c9a;">✨ Голубое свечение ✨</div>
+                    `;
+                } else {
+                    html = `
+                        <div class="badge-device">💻 КОМПЬЮТЕР — десктопная версия</div>
+                        <div class="welcome-text">Добро пожаловать с <span class="accent">ПК</span> 🖥️</div>
+                        <hr>
+                        <div class="note">Классический вид для клавиатуры и мыши.<br>При наведении кнопки светятся голубым.</div>
+                        <div style="margin-top:25px; background:#0b1b2a; border-radius:30px; padding:20px; border:1px solid #2f78b0; box-shadow: 0 0 30px #004477;">💙 тёмно-голубая подсветка 💙</div>
+                    `;
+                }
+                dynamicDiv.innerHTML = html;
+
+                // скрываем оверлей с затемнением
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                }, 280);
+
+                // показываем контент
+                siteContent.style.display = 'block';
+                versionSelected = true;
+            }
+
+            // Функция обработки ошибочного нажатия (красное, дерганье + вибрация если телефон)
+            function handleMismatch(clickedDevice, btnElement) {
+                // сбросим возможные предыдущие классы
+                btnElement.classList.remove('selected', 'error-shake', 'error');
+                
+                // добавляем красный цвет и анимацию тряски
+                btnElement.classList.add('error', 'error-shake');
+                
+                // вибрация, если реальное устройство — телефон
+                if (realDevice === 'phone') {
+                    try {
+                        if (window.navigator && window.navigator.vibrate) {
+                            window.navigator.vibrate(50); // слабая вибрация 50ms
+                        }
+                    } catch (e) {}
+                }
+
+                // убираем класс ошибки через 0.4 сек (анимация проходит), но красное оставим на некоторое время, потом снимем
+                setTimeout(() => {
+                    btnElement.classList.remove('error-shake');
+                }, 400);
+                
+                // дополнительно убираем красную рамку через 1 секунду, но если не нажато правильно
+                setTimeout(() => {
+                    // не убираем selected если вдруг был выбран другой? но selected не ставится, убираем error
+                    btnElement.classList.remove('error');
+                }, 800);
+            }
+
+            // Обработчики кликов
+            btnPhone.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const clicked = 'phone';
+                
+                // блокируем если версия уже открыта (чтоб не вызывать повторно)
+                if (versionSelected) return;
+
+                // Если реальное устройство НЕ соответствует нажатой кнопке: 
+                // телефон нажал на "компьютер" или компьютер нажал на "телефон"
+                if (clicked !== realDevice) {
+                    // несоответствие: подсветить красным и дерганье + вибрация
+                    handleMismatch(clicked, btnPhone);
+                    
+                    // также сбрасываем возможное выделение другой кнопки (если вдруг было)
+                    btnDesktop.classList.remove('selected', 'error');
+                } else {
+                    // Валидный выбор: выделяем голубым, снимаем возможные ошибки
+                    btnPhone.classList.remove('error', 'error-shake');
+                    btnDesktop.classList.remove('selected', 'error', 'error-shake');
+                    
+                    btnPhone.classList.add('selected');
+                    
+                    // небольшая задержка, чтобы показать выделение, потом открываем версию
+                    setTimeout(() => {
+                        showVersion('phone');
+                    }, 150);
+                }
+            });
+
+            btnDesktop.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const clicked = 'desktop';
+                if (versionSelected) return;
+
+                if (clicked !== realDevice) {
+                    // ошибка: компьютерная кнопка нажата на телефоне ИЛИ телефонная на пк
+                    handleMismatch(clicked, btnDesktop);
+                    btnPhone.classList.remove('selected', 'error');
+                } else {
+                    btnDesktop.classList.remove('error', 'error-shake');
+                    btnPhone.classList.remove('selected', 'error', 'error-shake');
+                    
+                    btnDesktop.classList.add('selected');
+                    
+                    setTimeout(() => {
+                        showVersion('desktop');
+                    }, 150);
+                }
+            });
+
+            // Дополнительно: при наведении на ПК у нас уже есть css .device-btn:hover 
+            // также убираем ошибочные классы при повторном наведении, чтобы не вводить в заблуждение
+            [btnPhone, btnDesktop].forEach(btn => {
+                btn.addEventListener('mouseenter', () => {
+                    // если кнопка в состоянии ошибки и мышь зашла — можем подсветить иначе, но оставим логику
+                    // просто для удобства: при наведении снимаем анимацию тряски (не красный фон)
+                    btn.classList.remove('error-shake');
+                });
+            });
+
+            // Дополнительная защита: если вдруг уже был выбран вариант, игнорируем дальнейшие клики
+            // (реализовано через флаг versionSelected)
+
+            // Инициализация: кнопки не выделены
+            // Также хорошо бы сразу удостовериться, что при загрузке overlay виден
+            window.addEventListener('load', function() {
+                // небольшая задержка на всякий случай
+                overlay.style.display = 'flex';
+                overlay.style.opacity = '1';
+                siteContent.style.display = 'none';
+                versionSelected = false;
+                // сброс классов
+                btnPhone.classList.remove('selected', 'error', 'error-shake');
+                btnDesktop.classList.remove('selected', 'error', 'error-shake');
+            });
+
+            // На случай изменения размера экрана (например, поворот) мы не переопределяем реальное устройство,
+            // но это не требуется — реальное устройство сохраняется.
+        })();
     </script>
+
+    <!-- добавим маленький блок для наглядности соответствия ТЗ: тёмная тема, фон чёрный, окна и кнопки -->
 </body>
 </html>
