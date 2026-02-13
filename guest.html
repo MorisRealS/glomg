@@ -3,34 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tuko! Messenger | Workspace</title>
+    <title>Tuko! Messenger | Global Workspace</title>
     
-    <!-- EXTERNAL ASSETS -->
+    <!-- 
+        ПОДКЛЮЧЕНИЕ ВНЕШНИХ БИБЛИОТЕК 
+        - FontAwesome: для иконок профиля, поиска и настроек
+        - Google Fonts: шрифт Inter для современного вида
+        - Supabase: для будущей реальной базы данных
+    -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
     <link href="https://fonts.googleapis.com" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net"></script>
 
     <style>
         /* 
-           ========================================
-           1. CORE VARIABLES & THEME
-           ========================================
+           ================================================================
+           1. ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ (CSS VARIABLES)
+           ================================================================
         */
         :root {
             --bg-black: #000000;
-            --tuko-cyan: #00BFFF;
+            --tuko-cyan: #00BFFF; /* Твой идеальный голубой */
             --glow-cyan: rgba(0, 191, 255, 0.4);
-            --glass-card: rgba(255, 255, 255, 0.03);
+            --glass-surface: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.1);
-            --text-empty: #222222;
-            --text-dim: #888888;
-            --anim-main: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            --text-main: #ffffff;
+            --text-secondary: #888888;
+            --text-empty: #222222; /* Для надписей "пусто" */
+            --sidebar-pc-width: 400px;
+            --header-height: 80px;
+            --anim-speed: 0.7s;
+            --ease: cubic-bezier(0.65, 0, 0.35, 1);
         }
 
         /* 
-           ========================================
-           2. GLOBAL RESET & SCROLL FIX
-           ========================================
+           ================================================================
+           2. БАЗОВЫЙ СБРОС И ФИКС МОБИЛЬНОГО ОКНА
+           ================================================================
         */
         * {
             margin: 0;
@@ -44,87 +53,88 @@
             height: 100%;
             width: 100%;
             background-color: var(--bg-black);
-            color: #ffffff;
-            overflow: hidden; /* Fixes mobile "walking window" bug */
+            color: var(--text-main);
+            overflow: hidden; /* Запрещает "шатание" сайта на мобилках */
             position: fixed;
         }
 
         /* 
-           ========================================
-           3. SAND & NOISE EFFECTS (AUTHORIZATION STYLE)
-           ========================================
+           ================================================================
+           3. СПЕЦЭФФЕКТЫ: ПЕСОК, ВСПЫШКА И ЧАСТИЦЫ
+           ================================================================
         */
-        .noise-overlay {
+        /* Эффект шума/песка как в авторизации */
+        .sand-noise-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background-image: url('https://grainy-gradients.vercel.app');
-            opacity: 0.07;
+            opacity: 0.08;
             pointer-events: none;
             z-index: 5000;
-            filter: contrast(160%) brightness(100%);
+            filter: contrast(150%) brightness(100%);
         }
 
-        /* Static Background Glow Pulse */
-        .ambient-glow {
+        /* Центральная пульсирующая вспышка */
+        .central-glow {
             position: fixed;
             width: 500px;
             height: 500px;
-            background: radial-gradient(circle, var(--glow-cyan) 0%, transparent 75%);
+            background: radial-gradient(circle, var(--glow-cyan) 0%, transparent 70%);
             filter: blur(100px);
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: -1;
-            animation: breathe-glow 6s infinite alternate ease-in-out;
+            animation: glow-pulse-cycle 8s infinite alternate ease-in-out;
         }
 
-        @keyframes breathe-glow {
-            0% { opacity: 0.2; transform: translate(-50%, -50%) scale(0.9); }
-            100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.3); }
+        @keyframes glow-pulse-cycle {
+            0% { opacity: 0.3; transform: translate(-50%, -50%) scale(0.9); }
+            100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.2); }
         }
 
         /* 
-           ========================================
-           4. TUKO! NEON LOGO ENGINE
-           ========================================
+           ================================================================
+           4. НЕОНОВЫЙ ЛОГОТИП TUKO!
+           ================================================================
         */
-        .tuko-neon {
+        .tuko-neon-logo {
             font-weight: 900;
-            font-size: 28px;
+            font-size: 30px;
             color: var(--tuko-cyan);
             text-transform: uppercase;
             letter-spacing: 5px;
             text-shadow: 0 0 10px var(--tuko-cyan), 0 0 25px var(--tuko-cyan);
-            transition: var(--anim-main);
+            transition: var(--anim-speed) var(--ease);
             z-index: 2000;
             user-select: none;
         }
 
         /* 
-           ========================================
-           5. PC LIGHT ORB (CURSOR ONLY)
-           ========================================
+           ================================================================
+           5. ПК ЭФФЕКТЫ (КУРСОРНЫЙ ШАР)
+           ================================================================
         */
-        #pc-orb {
+        #pc-cursor-orb {
             position: fixed;
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, var(--glow-cyan) 0%, transparent 70%);
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, var(--glow-cyan) 0%, transparent 75%);
             border-radius: 50%;
             pointer-events: none;
             z-index: 9999;
             transform: translate(-50%, -50%);
-            display: none; /* Active via JS on PC only */
+            display: none; /* Включается в JS только на ПК */
         }
 
         /* 
-           ========================================
-           6. HEADER & SEARCH LOGIC
-           ========================================
+           ================================================================
+           6. ШАПКА И СИСТЕМА ПОИСКА
+           ================================================================
         */
-        .header {
-            height: 80px;
-            background: rgba(5, 5, 5, 0.95);
+        .app-header {
+            height: var(--header-height);
+            background: rgba(5, 5, 5, 0.96);
             backdrop-filter: blur(25px);
             border-bottom: 1px solid var(--glass-border);
             display: flex;
@@ -133,11 +143,11 @@
             padding: 0 40px;
             position: relative;
             z-index: 1000;
-            transition: var(--anim-main);
+            transition: var(--anim-speed) var(--ease);
         }
 
-        .search-wrapper {
-            background: var(--glass-card);
+        .search-engine-wrap {
+            background: var(--glass-surface);
             border: 1px solid var(--glass-border);
             border-radius: 60px;
             padding: 12px 25px;
@@ -145,12 +155,12 @@
             align-items: center;
             gap: 15px;
             width: 380px;
-            transition: var(--anim-main);
+            transition: var(--anim-speed) var(--ease);
             position: relative;
         }
 
-        .search-wrapper i { color: var(--tuko-cyan); font-size: 20px; }
-        .search-wrapper input {
+        .search-engine-wrap i { color: var(--tuko-cyan); font-size: 20px; }
+        .search-engine-wrap input {
             background: none;
             border: none;
             color: #fff;
@@ -159,74 +169,75 @@
             font-size: 1rem;
         }
 
-        .btn-close-search {
-            display: none;
+        .btn-mobile-x-close {
+            display: none; /* Появляется только при фокусе на мобилке */
             cursor: pointer;
             color: var(--tuko-cyan);
-            font-size: 24px;
+            font-size: 26px;
             margin-left: 15px;
         }
 
-        .pc-sidebar-trigger {
+        .pc-sidebar-toggle {
             color: var(--tuko-cyan);
             font-size: 26px;
             cursor: pointer;
-            margin-right: 25px;
-            transition: transform 0.3s ease;
+            margin-right: 30px;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .pc-sidebar-trigger:hover { transform: rotate(90deg); }
+        .pc-sidebar-toggle:hover { transform: scale(1.2); }
 
         /* 
-           ========================================
-           7. MAIN LAYOUT ENGINE
-           ========================================
+           ================================================================
+           7. ГЛАВНЫЙ ВЬЮПОРТ (ЛЕЙАУТ)
+           ================================================================
         */
-        .viewport-engine {
+        .main-viewport {
             display: flex;
-            height: calc(100% - 80px);
+            height: calc(100% - var(--header-height));
             width: 100%;
-            transition: var(--anim-main);
+            position: relative;
+            transition: var(--anim-speed) var(--ease);
         }
 
-        /* SIDEBAR (CHATS) */
-        .sidebar-chats {
-            width: 420px;
+        /* ПАНЕЛЬ ЧАТОВ */
+        .aside-chats {
+            width: var(--sidebar-pc-width);
             border-right: 1px solid var(--glass-border);
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.3);
             overflow-y: auto;
             flex-shrink: 0;
-            transition: var(--anim-main);
+            transition: var(--anim-speed) var(--ease);
             scrollbar-width: none;
         }
 
-        /* CONTENT (NEWS) */
-        .content-news {
+        /* ПАНЕЛЬ НОВОСТЕЙ */
+        .section-news {
             flex-grow: 1;
             padding: 50px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: var(--anim-main);
+            transition: var(--anim-speed) var(--ease);
             scrollbar-width: none;
         }
 
-        /* PC Sidebar Hiding State */
-        body.pc-collapsed .sidebar-chats {
+        /* Состояние скрытия панели ПК */
+        body.pc-collapsed .aside-chats {
             width: 0;
             transform: translateX(-100%);
             opacity: 0;
         }
 
         /* 
-           ========================================
-           8. CARDS & EMPTY STATES
-           ========================================
+           ================================================================
+           8. КАРТОЧКИ ПОСТОВ И СОСТОЯНИЕ "ПУСТО"
+           ================================================================
         */
-        .post-box {
+        .news-item-card {
             width: 100%;
             max-width: 680px;
-            background: var(--glass-card);
+            background: var(--glass-surface);
             border: 1px solid var(--glass-border);
             border-radius: 30px;
             padding: 35px;
@@ -235,285 +246,308 @@
             cursor: pointer;
         }
 
-        .post-box:hover {
+        .news-item-card:hover {
             border-color: var(--tuko-cyan);
             box-shadow: 0 0 30px var(--glow-cyan);
             background: rgba(0, 191, 255, 0.02);
-            transform: scale(1.02);
+            transform: translateY(-5px);
         }
 
-        .post-box b { color: var(--tuko-cyan); font-size: 1.2rem; }
-        .post-box p { margin-top: 15px; line-height: 1.7; color: #ddd; }
+        .news-item-card b { color: var(--tuko-cyan); font-size: 1.2rem; }
+        .news-item-card p { margin-top: 15px; line-height: 1.7; color: #ccc; }
 
-        .label-empty {
+        .placeholder-empty {
             color: var(--text-empty);
             font-weight: 900;
             font-size: 1.5rem;
             margin-top: 150px;
             text-align: center;
+            user-select: none;
             letter-spacing: 2px;
         }
 
         /* 
-           ========================================
-           9. MOBILE SYSTEM (THEMES & SEARCH)
-           ========================================
+           ================================================================
+           9. МОБИЛЬНАЯ АДАПТАЦИЯ (PHONE ENGINE)
+           ================================================================
         */
         @media (max-width: 768px) {
-            .header {
-                height: 190px;
+            .app-header {
+                height: 200px;
                 flex-direction: column;
                 padding: 25px;
                 justify-content: flex-start;
             }
 
-            .tuko-neon {
+            .tuko-neon-logo {
                 position: absolute;
-                top: 30px;
+                top: 35px;
                 left: 50%;
                 transform: translateX(-50%);
             }
 
-            .search-wrapper {
+            /* Центрированный поиск */
+            .search-engine-wrap {
                 width: 90%;
                 position: absolute;
                 bottom: 85px;
                 left: 50%;
                 transform: translateX(-50%);
-                z-index: 1005;
+                z-index: 1010;
             }
 
-            .pc-sidebar-trigger { display: none; }
+            .pc-sidebar-toggle { display: none; }
 
-            /* Mobile Navigation Tabs */
-            .mobile-nav-tabs {
+            /* Кнопки вкладок */
+            .mobile-navigation {
                 display: flex;
                 position: absolute;
                 bottom: 25px;
                 gap: 70px;
-                transition: var(--anim-main);
+                transition: var(--anim-speed) var(--ease);
             }
 
-            .m-tab-btn {
+            .m-nav-btn {
                 background: none;
                 border: none;
-                color: #444444;
+                color: #444;
                 font-weight: 900;
-                font-size: 1.2rem;
+                font-size: 1.1rem;
                 cursor: pointer;
+                padding-bottom: 5px;
                 transition: 0.3s;
-                padding: 5px 10px;
             }
 
-            .m-tab-btn.active {
+            .m-nav-btn.active {
                 color: var(--tuko-cyan);
-                border-bottom: 4px solid var(--tuko-cyan);
+                border-bottom: 3px solid var(--tuko-cyan);
             }
 
-            /* Mobile Slide Transition */
-            .viewport-engine {
+            /* Слайд-вьюпорт на телефоне */
+            .main-viewport {
                 width: 200vw;
-                transition: transform 0.7s cubic-bezier(0.7, 0, 0.3, 1);
-                height: calc(100% - 190px);
+                transition: transform 0.7s var(--ease);
+                height: calc(100% - 200px);
             }
 
-            .sidebar-chats, .content-news {
+            .aside-chats, .section-news {
                 width: 100vw;
                 flex-shrink: 0;
             }
 
-            body.active-news .viewport-engine {
+            body.mobile-news-active .main-viewport {
                 transform: translateX(-100vw);
             }
 
-            /* MOBILE SEARCH FOCUS MODE */
-            body.search-focus .tuko-neon {
-                transform: translate(250%, -50%); /* Fly right */
+            /* 
+               ================================================================
+               10. ЛОГИКА ПОИСКА (УЕЗЖАЕТ ВВЕРХ)
+               ================================================================
+            */
+            body.search-focus-active .tuko-neon-logo {
+                transform: translate(-50%, -250px); /* Улетает ВВЕРХ */
                 opacity: 0;
             }
 
-            body.search-focus .viewport-engine {
-                transform: translateY(100vh); /* Drop down */
+            body.search-focus-active .main-viewport {
+                transform: translateY(100vh); /* Улетает ВНИЗ */
                 opacity: 0;
             }
 
-            body.search-focus .mobile-nav-tabs {
-                transform: translateY(120px);
+            body.search-focus-active .mobile-navigation {
+                transform: translateY(150px);
                 opacity: 0;
             }
 
-            body.search-focus .search-wrapper {
+            body.search-focus-active .search-engine-wrap {
                 bottom: 50%;
                 transform: translate(-50%, 50%);
                 width: 85%;
             }
 
-            body.search-focus .btn-close-search {
+            body.search-focus-active .btn-mobile-x-close {
                 display: block;
             }
         }
 
-        /* Visibility Filters */
-        @media (min-width: 769px) { .mobile-nav-tabs { display: none; } }
+        /* Скрытие лишнего на ПК */
+        @media (min-width: 769px) { .mobile-navigation { display: none; } }
 
     </style>
 </head>
-<body>
+<body class="mobile-chats-active">
 
-    <!-- VISUAL FX LAYERS -->
-    <div class="noise-overlay"></div>
-    <div class="ambient-glow"></div>
-    <div id="pc-orb"></div>
+    <!-- FX СЛОИ -->
+    <div class="sand-noise-overlay"></div>
+    <div class="central-glow"></div>
+    <div id="pc-cursor-orb"></div>
 
-    <!-- MAIN HEADER -->
-    <header class="header">
+    <!-- ШАПКА -->
+    <header class="app-header">
         <div style="display: flex; align-items: center;">
-            <i class="fa-solid fa-align-left pc-sidebar-trigger" onclick="togglePcSidebar()"></i>
+            <i class="fa-solid fa-align-left pc-sidebar-toggle" onclick="handlePcSidebar()"></i>
             
-            <div class="search-wrapper" id="searchMain">
+            <div class="search-engine-wrap" id="mainSearchContainer">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Поиск в Tuko!..." id="searchField" onfocus="mobileSearchUI(true)">
-                <i class="fa-solid fa-circle-xmark btn-close-search" onclick="mobileSearchUI(false)"></i>
+                <input type="text" placeholder="Поиск в Tuko!..." id="searchField" onfocus="handleSearchSystem(true)">
+                <i class="fa-solid fa-circle-xmark btn-mobile-x-close" onclick="handleSearchSystem(false)"></i>
             </div>
         </div>
 
-        <nav class="mobile-nav-tabs">
-            <button class="m-tab-btn active" id="tab-c" onclick="switchView('chats')">ЧАТЫ</button>
-            <button class="m-tab-btn" id="tab-n" onclick="switchView('news')">НОВОСТИ</button>
+        <!-- Навигация только для телефонов -->
+        <nav class="mobile-navigation">
+            <button class="m-nav-btn active" id="tab-c" onclick="changeTab('chats')">ЧАТЫ</button>
+            <button class="m-nav-btn" id="tab-n" onclick="changeTab('news')">НОВОСТИ</button>
         </nav>
 
-        <div class="tuko-neon">Tuko!</div>
+        <div class="tuko-neon-logo">Tuko!</div>
     </header>
 
-    <!-- WORKSPACE VIEWPORT -->
-    <div class="viewport-engine" id="viewport">
+    <!-- РАБОЧАЯ ОБЛАСТЬ -->
+    <main class="main-viewport" id="viewportMain">
         
-        <!-- SECTION: CHATS -->
-        <aside class="sidebar-chats">
-            <div class="label-empty">нет чатов :(</div>
+        <!-- Секция ЧАТОВ -->
+        <aside class="aside-chats">
+            <div class="placeholder-empty">нет чатов :(</div>
             
-            <!-- JavaScript will inject chat items here -->
-            <div id="chats-list-container"></div>
+            <!-- Заглушка для будущего списка чатов -->
+            <div id="chat-list-dynamic" style="padding: 10px;"></div>
         </aside>
 
-        <!-- SECTION: NEWS FEED -->
-        <main class="content-news">
+        <!-- Секция НОВОСТЕЙ -->
+        <section class="section-news">
             
-            <article class="post-box">
-                <b>@Tuko_Official</b>
-                <p>Мы полностью обновили движок анимаций. Теперь переходы между чатами и новостями на телефонах стали на 60% плавнее. Также добавлен эффект песка для глубины интерфейса!</p>
+            <article class="news-item-card">
+                <b>@Tuko_Dev_Team</b>
+                <p>Мы внедрили песочный фильтр и обновленную логику переходов. Теперь Tuko! выглядит одинаково круто как на твоем ПК, так и на смартфоне. Спасибо, что ты с нами!</p>
             </article>
 
-            <article class="post-box">
-                <b>@Apple_Tech</b>
-                <p>Новые тесты показывают, что веб-приложения на базе Tuko! работают быстрее, чем нативные клиенты. Будущее за неоновым стилем.</p>
+            <article class="news-item-card">
+                <b>@Apple_Daily</b>
+                <p>iPhone 16 Pro получит специальную оптимизацию для веб-приложений с неоновой графикой. Мессенджеры нового поколения теперь в приоритете.</p>
             </article>
 
-            <article class="post-box">
-                <b>@Community_Hub</b>
-                <p>Если у вас не отображаются чаты, просто напишите кому-нибудь первым. Список появится автоматически.</p>
+            <article class="news-item-card">
+                <b>@Global_Tech</b>
+                <p>Как сделать идеальный поиск? Мы решили, что логотип должен улетать вверх, освобождая пространство для твоих идей.</p>
             </article>
 
-            <div class="label-empty" style="color: #111; margin-bottom: 50px;">и тут пусто...</div>
-        </main>
+            <div class="placeholder-empty" style="color: #111; margin-bottom: 80px;">и тут пусто...</div>
+        </section>
 
-    </div>
+    </main>
 
-    <!-- CORE JAVASCRIPT LOGIC -->
+    <!-- 
+        ================================================================
+        11. ЛОГИКА (JAVASCRIPT ENGINE)
+        ================================================================
+    -->
     <script>
         /**
-         * 1. SYSTEM INITIALIZATION
+         * ПРОВЕРКА ОКРУЖЕНИЯ
          */
-        const isTouchDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-        const pcOrb = document.getElementById('pc-orb');
-        const viewport = document.getElementById('viewport');
+        const isTouch = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        const cursorOrb = document.getElementById('pc-cursor-orb');
 
-        console.log("%c Tuko! OS v1.2.4 Loaded ", "background: #00BFFF; color: #000; font-weight: bold; padding: 5px;");
+        console.log("%c Tuko! Engine v1.5.0 Booted ", "color: #00BFFF; font-weight: 900; background: #000; padding: 10px; border: 1px solid #00BFFF;");
 
         /**
-         * 2. PC CURSOR ENGINE
+         * ДВИЖОК ПК КУРСОРНОГО ШАРА
          */
-        if (!isTouchDevice) {
-            pcOrb.style.display = 'block';
+        if (!isTouch) {
+            cursorOrb.style.display = 'block';
             
-            document.addEventListener('mousemove', (e) => {
-                pcOrb.style.left = e.clientX + 'px';
-                pcOrb.style.top = e.clientY + 'px';
+            document.addEventListener('mousemove', (event) => {
+                // Плавное следование за мышью
+                cursorOrb.style.left = event.clientX + 'px';
+                cursorOrb.style.top = event.clientY + 'px';
                 
-                // Opacity Check for readability
-                const hovering = e.target.closest('.post-box, input, button, i');
-                pcOrb.style.opacity = hovering ? '0.1' : '1';
+                // Эффект прозрачности при наведении на интерактивные элементы
+                const interactive = event.target.closest('.news-item-card, input, button, i');
+                cursorOrb.style.opacity = interactive ? '0.1' : '1';
+                cursorOrb.style.transform = interactive ? 'translate(-50%, -50%) scale(0.5)' : 'translate(-50%, -50%) scale(1)';
             });
         }
 
-        function togglePcSidebar() {
+        /**
+         * ФУНКЦИЯ СКРЫТИЯ ПАНЕЛИ НА ПК
+         */
+        function handlePcSidebar() {
             document.body.classList.toggle('pc-collapsed');
-            console.log("[System]: PC Sidebar toggled");
+            console.log("[System]: PC Sidebar toggled state.");
         }
 
         /**
-         * 3. MOBILE VIEW NAVIGATION (TAB SLIDING)
+         * МОБИЛЬНАЯ НАВИГАЦИЯ (ТАБЫ)
          */
-        function switchView(mode) {
-            const btnC = document.getElementById('tab-c');
-            const btnN = document.getElementById('tab-n');
+        function changeTab(mode) {
+            const btnChats = document.getElementById('tab-c');
+            const btnNews = document.getElementById('tab-n');
 
             if (mode === 'news') {
-                document.body.classList.add('active-news');
-                btnN.classList.add('active');
-                btnC.classList.remove('active');
+                document.body.classList.add('mobile-news-active');
+                btnNews.classList.add('active');
+                btnChats.classList.remove('active');
             } else {
-                document.body.classList.remove('active-news');
-                btnC.classList.add('active');
-                btnN.classList.remove('active');
+                document.body.classList.remove('mobile-news-active');
+                btnChats.classList.add('active');
+                btnNews.classList.remove('active');
             }
         }
 
         /**
-         * 4. MOBILE SEARCH ANIMATION ENGINE
+         * СИСТЕМА ПОИСКА ДЛЯ ТЕЛЕФОНА
          */
-        function mobileSearchUI(active) {
-            if (!isTouchDevice) return; // Disable drop-animation on Desktop
+        function handleSearchSystem(isActive) {
+            if (!isTouch) return; // На ПК анимация "улета" не нужна
 
-            if (active) {
-                document.body.classList.add('search-focus');
-                console.log("[Search]: Mobile Engine Activated");
+            if (isActive) {
+                document.body.classList.add('search-focus-active');
+                console.log("[Search]: Mobile Focus - Tuko! moving out.");
             } else {
-                document.body.classList.remove('search-focus');
+                document.body.classList.remove('search-focus-active');
                 const inp = document.getElementById('searchField');
                 inp.value = "";
                 inp.blur();
-                console.log("[Search]: Mobile Engine Deactivated");
+                console.log("[Search]: Focus Lost - All elements returned.");
             }
         }
 
         /**
-         * 5. TOUCH PROTECTION & SCROLL LOCK
+         * ЗАЩИТА ОТ БАГОВ СКРОЛЛА (Walking Window Fix)
          */
         document.addEventListener('touchmove', (e) => {
-            // Prevent whole-page dragging (walking window bug)
-            const scrollable = e.target.closest('.sidebar-chats, .content-news');
-            if (!scrollable) {
+            // Разрешаем прокрутку только внутри списков чатов и новостей
+            const isScrollable = e.target.closest('.aside-chats, .section-news');
+            if (!isScrollable) {
                 e.preventDefault();
             }
         }, { passive: false });
 
         /**
-         * 6. DATA LOGIC (PLACEHOLDER FOR SUPABASE)
+         * ИНИЦИАЛИЗАЦИЯ ДАННЫХ (MOCK DATA)
          */
-        const TukoData = {
-            sync: function() {
-                // Future Supabase Realtime logic goes here
-                console.log("[Database]: Ready for sync...");
+        const TukoApp = {
+            start: function() {
+                this.checkConnection();
+                this.setupRealtime();
+            },
+            checkConnection: function() {
+                // Здесь будет проверка интернета или Supabase
+                console.log("[Network]: Status - Connected.");
+            },
+            setupRealtime: function() {
+                // Заготовка для Supabase Realtime
+                console.log("[Realtime]: Listening for new posts...");
             }
         };
 
-        window.onload = () => TukoData.sync();
+        window.onload = () => TukoApp.start();
 
-        // Screen Resize Guard
+        // Обработка изменения размера окна
         window.addEventListener('resize', () => {
             if (window.innerWidth > 768) {
-                document.body.classList.remove('active-news', 'search-focus');
+                document.body.classList.remove('search-focus-active', 'mobile-news-active');
             }
         });
     </script>
